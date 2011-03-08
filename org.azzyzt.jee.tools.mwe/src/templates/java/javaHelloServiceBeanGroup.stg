@@ -1,0 +1,9 @@
+group javaHelloServiceBeanGroup : javaGroup;
+
+@javaClass.extra_methods() ::= <<
+public String hello(String s) {
+    return "Hello "+s;
+}
+
+>>
+

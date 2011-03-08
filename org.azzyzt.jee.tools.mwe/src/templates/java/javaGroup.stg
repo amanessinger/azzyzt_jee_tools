@@ -1,0 +1,133 @@
+group javaGroup;
+
+javaClass(mdt, generator) ::= <<
+package <mdt.packageName>;
+
+<mdt:importDeclarations()>
+
+/**
+ * Generated class <mdt.fqName>
+ */
+<mdt:annotations()><@extra_class_annotations()><mdt.modifiers> class <mdt.simpleName><extendsClasses(mdt)><implementsInterfaces(mdt)> {
+
+    <if(mdt.serialVersionNeeded)>
+    private static final long serialVersionUID = 1L;
+    
+    <endif>
+    <if(generator.generateFields)><mdt.fields:fieldDeclaration()><endif>
+    <@extra_fields()>
+    <if(generator.generateDefaultConstructor)><defaultConstructor(mdt)><endif>
+    <@extra_constructors()>
+    <if(generator.generateGettersSetters)><mdt.fields:getterSetter()><endif>
+    <mdt.methods:classMethodDeclaration()>
+    <@extra_methods()>
+}
+>>
+
+javaInterface(mdt, generator) ::= <<
+package <mdt.packageName>;
+
+<mdt:importDeclarations()>
+
+/**
+ * Generated interface <mdt.fqName>
+ */
+<mdt:annotations()><@extra_interface_annotations()><mdt.modifiers> interface <mdt.simpleName><extendsClasses(mdt)> {
+
+    <mdt.methods:interfaceMethodDeclaration()>
+    <@extra_methods()>
+}
+>>
+
+importDeclarations(mdt) ::= <<
+<mdt.referencedForeignTypes:import()><@extraImports()>
+>>
+
+import() ::= <<
+import <attr.fqName>;
+
+>>
+
+annotations(annotated) ::= <<
+<annotated.metaAnnotationInstances:annotation()>
+>>
+
+annotation() ::= <<
+@<attr.name><if(attr.notEmpty)>(<attr.elements.keys:{k|<k>=<attr.elements.(k)>}; separator=", ">)<endif>
+
+>>
+
+fieldDeclaration() ::= <<
+<attr:annotations()><attr.fieldType.shortName> <attr.name><if(attr.initializer)> = <attr.initializer><endif>;
+
+
+>>
+
+defaultConstructor(mdt) ::= <<
+public <mdt.simpleName>() { super(); }
+
+
+>>
+
+getterSetter() ::= <<
+<attr.getterMetaAnnotationInstances:annotation()>public <attr.fieldType.shortName> get<attr.ucName>() {
+    return this.<attr.name>;
+}
+
+<attr.setterMetaAnnotationInstances:annotation()>public void set<attr.ucName>(<attr.fieldType.shortName> <attr.name>) {
+    this.<attr.name> = <attr.name>;
+}
+
+
+>>
+
+extendsClasses(mdt) ::= <<
+<if(mdt.superMetaClass)> extends <mdt.superMetaClass.shortName><mdt.superMetaClass.shortTypeParameterString><endif>
+>>
+
+implementsInterfaces(mdt) ::= <<
+<if(mdt.implementingInterfaces)> implements <mdt.interfaces:interfaceList(); separator=", "><endif>
+>>
+
+interfaceList() ::= <<
+<attr.simpleName><attr.shortTypeParameterString>
+>>
+
+classMethodDeclaration() ::= <<
+<attr.modifiers> <attr.returnType.shortName> <attr.name>(<attr.signature:parameterList(); separator=", ">) {
+    <if(attr.notVoid)><attr.returnType.shortName> result<if(attr.returnType.canBeNull)> = null<endif>;
+    
+    // TODO implement body
+    
+    return result;
+    <else>
+    // TODO implement body
+    
+    <endif>
+}
+
+
+>>
+
+interfaceMethodDeclaration() ::= <<
+<attr.modifiers> <attr.returnType.shortName> <attr.name>(<attr.signature:parameterList(); separator=", ">);
+
+>>
+
+parameterList() ::= <<
+<attr.type.shortName> <attr.name>
+>>
+
+
+initializedList(type, name) ::= <<
+List\<<type>\> <name> = new ArrayList\<<type>\>();
+>>
+
+initializedSet(type, name) ::= <<
+Set\<<type>\> <name> = new HashSet\<<type>\>();
+>>
+
+initializedMap(keytype, valuetype, name) ::= <<
+Map\<<keytype>, <valuetype>\> <name> = new HashMap\<<keytype>, <valuetype>\>();
+>>
+

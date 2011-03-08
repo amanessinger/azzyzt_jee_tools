@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <wizard
+            category="org.eclipse.jst.j2ee.internal"
+            class="org.azzyzt.jee.tools.mwe.projectgen.wizards.NewAzzyztedProjectWizard"
+            icon="icons/azzyzt-16x16.png"
+            id="com.manessinger.jee.project.gen.wizards.NewAzzyztedProjectWizard"
+            name="New Azzyzted JEE Project">
+      </wizard>
+   </extension>
+   <extension
+         id="org.azzyzt.jee.mwe.nature.id"
+         name="Azzyzted project nature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="org.azzyzt.jee.tools.mwe.projectgen.plugin.AzzyztedNature">
+         </run>
+      </runtime>
+   </extension>
+   <extension
+         point="org.eclipse.ui.ide.projectNatureImages">
+      <image
+            icon="icons/azzyzt-16x16.png"
+            id="org.azzyzt.jee.tools.mwe.projectgen.plugin.image1"
+            natureId="org.azzyzt.jee.mwe.nature.id">
+      </image>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IProject"
+            id="org.azzyzt.jee.tools.mwe.projectgen.plugin.popup1">
+         <menu
+               label="Azzyzt"
+               path="additions"
+               icon="icons/azzyzt-16x16.png"
+               id="org.azzyzt.jee.tools.mwe.projectgen.plugin.menu1">
+            <separator
+                  name="group1">
+            </separator>
+         </menu>
+         <action
+               label="Start code generator"
+               class="org.azzyzt.jee.tools.mwe.projectgen.popup.actions.StartMWEGeneratorAction"
+               menubarPath="org.azzyzt.jee.tools.mwe.projectgen.plugin.menu1/group1"
+               enablesFor="1"
+               icon="icons/azzyzt-16x16.png"
+               id="org.azzyzt.jee.tools.mwe.projectgen.popup.actions.StartMWEGeneratorAction">
+         </action>
+      </objectContribution>
+   </extension>
+
+</plugin>

@@ -1,0 +1,7 @@
+group javaSiteAdapterGroup : javaGroup;
+
+@javaClass.extra_class_annotations() ::= <<
+@Local( { SiteAdapterInterface.class })
+
+>>
+

@@ -1,0 +1,19 @@
+group javaInvocationRegistryGroup : javaGroup;
+
+@javaClass.extra_methods() ::= <<
+@EJB SiteAdapterInterface siteAdapter;
+@Resource TransactionSynchronizationRegistry tsr;
+
+public InvocationRegistry() { }
+
+@Override
+public SiteAdapterInterface getSiteAdapter() {
+	return siteAdapter;
+}
+
+@Override
+public TransactionSynchronizationRegistry getTsr() {
+	return tsr;
+}
+
+>>

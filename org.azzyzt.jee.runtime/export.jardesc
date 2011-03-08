@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="WINDOWS-1252" standalone="no"?>
+<jardesc>
+    <jar path="org.azzyzt.jee.tools.mwe.projectgen.plugin/lib/org.azzyzt.jee.runtime.jar"/>
+    <options buildIfNeeded="true" compress="true" descriptionLocation="/org.azzyzt.jee.runtime/export.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="true" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
+    <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
+    <selectedProjects/>
+    <manifest generateManifest="false" manifestLocation="/org.azzyzt.jee.runtime/src/META-INF/MANIFEST.MF" manifestVersion="1.0" reuseManifest="true" saveManifest="true" usesManifest="true">
+        <sealing sealJar="false">
+            <packagesToSeal/>
+            <packagesToUnSeal/>
+        </sealing>
+    </manifest>
+    <selectedElements exportClassFiles="true" exportJavaFiles="true" exportOutputFolder="false">
+        <file path="/org.azzyzt.jee.runtime/.project"/>
+        <javaElement handleIdentifier="=org.azzyzt.jee.runtime/src"/>
+        <file path="/org.azzyzt.jee.runtime/.classpath"/>
+        <folder path="/org.azzyzt.jee.runtime/build"/>
+    </selectedElements>
+</jardesc>

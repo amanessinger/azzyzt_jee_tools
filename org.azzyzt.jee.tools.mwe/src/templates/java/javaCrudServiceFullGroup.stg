@@ -1,0 +1,135 @@
+group javaCrudServiceFullGroup : javaGroup;
+
+@javaClass.extra_methods() ::= <<
+@Override
+<byIdHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+<byIdBody(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+
+@Override
+<listHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+<listBody(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+
+@Override
+<listXmlHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+<listXmlBody(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+
+@Override
+<storeHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+<storeBody(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+
+@Override
+<updateHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+<updateBody(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+
+@Override
+<deleteHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+<deleteBody(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+>>
+
+@javaInterface.extra_methods() ::= <<
+<byIdHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>;
+<if(mdt.properties.entity.properties.isNamed)>
+
+<byNameHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>;<endif>
+
+<listHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>;
+
+<listXmlHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>;
+
+<storeHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>;
+
+<updateHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>;
+
+<deleteHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>;
+>>
+
+byIdHead(entity, dto) ::= <<
+public <dto.simpleName> <entity.lcFirstSimpleName>ById(<dto.properties.idFieldType.simpleName> id)
+    throws EntityNotFoundException, AccessDeniedException, InvalidIdException
+>>
+
+byIdBody(entity, dto) ::= <<
+{
+    <entity.simpleName> e = eao.findOrFail(<entity.simpleName>.class, id);
+    return converter.fromEntity(e);
+}
+>>
+
+listHead(entity, dto) ::= <<
+public List\<<dto.simpleName>\> <entity.lcFirstSimpleName>List(QuerySpec qs)
+    throws InvalidFieldException, AccessDeniedException, QuerySyntaxException, NotYetImplementedException
+>>
+
+listBody(entity, dto) ::= <<
+{
+    List\<<dto.simpleName>\> result = new ArrayList\<<dto.simpleName>\>();
+    List\<<entity.simpleName>\> entities = eao.list(qs, <entity.simpleName>.class, emi);
+    
+    for (<entity.simpleName> e : entities) {
+        <dto.simpleName> dto = converter.fromEntity(e);
+        result.add(dto);
+    }
+    
+    return result;
+}
+>>
+
+listXmlHead(entity, dto) ::= <<
+public List\<<dto.simpleName>\> <entity.lcFirstSimpleName>ListByXML(String querySpecXml)
+    throws InvalidFieldException, AccessDeniedException, QuerySyntaxException, NotYetImplementedException
+>>
+
+listXmlBody(entity, dto) ::= <<
+{
+    QuerySpec qs = QuerySpec.fromXML(querySpecXml);
+    
+    List\<<dto.simpleName>\> result = new ArrayList\<<dto.simpleName>\>();
+    List\<<entity.simpleName>\> entities = eao.list(qs, <entity.simpleName>.class, emi);
+    
+    for (<entity.simpleName> e : entities) {
+        <dto.simpleName> dto = converter.fromEntity(e);
+        result.add(dto);
+    }
+    
+    return result;
+}
+>>
+
+storeHead(entity, dto) ::= <<
+public <dto.properties.idFieldType.simpleName> <entity.lcFirstSimpleName>Store(<dto.simpleName> dto)
+    throws EntityNotFoundException, AccessDeniedException, EntityInstantiationException, InvalidIdException
+>>
+
+storeBody(entity, dto) ::= <<
+{    
+    <entity.simpleName> e = converter.fromDto(dto);
+
+    // in case of embedded IDs, this must be the corresponding DTO
+    <dto.properties.idFieldType.simpleName> id = e.getId();
+    
+    return id;
+}
+>>
+
+updateHead(entity, dto) ::= <<
+public void <entity.lcFirstSimpleName>Update(<dto.simpleName> dto)
+    throws EntityNotFoundException, AccessDeniedException, EntityInstantiationException, InvalidIdException
+>>
+
+updateBody(entity, dto) ::= <<
+{    
+    <entity.lcFirstSimpleName>Store(dto);
+}
+>>
+
+deleteHead(entity, dto) ::= <<
+public void <entity.lcFirstSimpleName>Delete(<dto.properties.idFieldType.simpleName> id)
+    throws EntityNotFoundException, AccessDeniedException, InvalidIdException
+>>
+
+deleteBody(entity, dto) ::= <<
+{    
+    // in case of embedded IDs, the ID must be converted from the corresponding DTO
+    eao.delete(<entity.simpleName>.class, id);
+}
+>>

@@ -1,0 +1,75 @@
+group javaCrudServiceRestrictedGroup : javaGroup;
+
+@javaClass.extra_methods() ::= <<
+@Override
+<byIdHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+<byIdBody(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+
+@Override
+<listHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+<listBody(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+
+@Override
+<listXmlHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+<listXmlBody(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+>>
+
+@javaInterface.extra_methods() ::= <<
+<byIdHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>;
+
+<listHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>;
+
+<listXmlHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>;
+>>
+
+byIdHead(entity, dto) ::= <<
+public <dto.simpleName> <entity.lcFirstSimpleName>ById_r(<dto.properties.idFieldType.simpleName> id)
+    throws EntityNotFoundException, AccessDeniedException, InvalidIdException
+>>
+
+byIdBody(entity, dto) ::= <<
+{
+    <entity.simpleName> e = eao.findOrFail(<entity.simpleName>.class, id);
+    return converter.fromEntity(e);
+}
+>>
+
+listHead(entity, dto) ::= <<
+public List\<<dto.simpleName>\> <entity.lcFirstSimpleName>List_r(QuerySpec qs)
+    throws InvalidFieldException, AccessDeniedException, QuerySyntaxException, NotYetImplementedException
+>>
+
+listBody(entity, dto) ::= <<
+{
+    List\<<dto.simpleName>\> result = new ArrayList\<<dto.simpleName>\>();
+    List\<<entity.simpleName>\> entities = eao.list(qs, <entity.simpleName>.class, emi);
+    
+    for (<entity.simpleName> e : entities) {
+        <dto.simpleName> dto = converter.fromEntity(e);
+        result.add(dto);
+    }
+    
+    return result;
+}
+>>
+
+listXmlHead(entity, dto) ::= <<
+public List\<<dto.simpleName>\> <entity.lcFirstSimpleName>ListByXML_r(String querySpecXml)
+    throws InvalidFieldException, AccessDeniedException, QuerySyntaxException, NotYetImplementedException
+>>
+
+listXmlBody(entity, dto) ::= <<
+{
+    QuerySpec qs = QuerySpec.fromXML(querySpecXml);
+    
+    List\<<dto.simpleName>\> result = new ArrayList\<<dto.simpleName>\>();
+    List\<<entity.simpleName>\> entities = eao.list(qs, <entity.simpleName>.class, emi);
+    
+    for (<entity.simpleName> e : entities) {
+        <dto.simpleName> dto = converter.fromEntity(e);
+        result.add(dto);
+    }
+    
+    return result;
+}
+>>

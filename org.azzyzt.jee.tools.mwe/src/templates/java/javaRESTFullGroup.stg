@@ -1,0 +1,139 @@
+group javaRESTFullGroup : javaGroup;
+
+@javaClass.extra_class_annotations() ::= <<
+@Interceptors(RESTInterceptor.class)
+
+>>
+
+@javaClass.extra_methods() ::= <<
+<byIdHeadPp(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+<byIdBody(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+
+<byIdHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+<byIdBody(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+
+<allHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+<allBody(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+
+<listHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+<listBody(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+
+<storeHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+<storeBody(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+
+<updateHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+<updateBody(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+
+<deleteHeadPp(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+<deleteBody(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+
+<deleteHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+<deleteBody(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+>>
+
+byIdHeadPp(entity, dto) ::= <<
+@GET
+@Path("byIdPp/id={id}")
+@Produces(MediaType.APPLICATION_XML)
+public <dto.simpleName> <entity.lcFirstSimpleName>ByIdPp(@PathParam(value="id") <dto.properties.idFieldType.simpleName> id)
+    throws EntityNotFoundException, AccessDeniedException, EntityInstantiationException, InvalidIdException
+>>
+
+byIdHead(entity, dto) ::= <<
+@GET
+@Path("byId")
+@Produces(MediaType.APPLICATION_XML)
+public <dto.simpleName> <entity.lcFirstSimpleName>ById(@QueryParam(value="id") <dto.properties.idFieldType.simpleName> id)
+    throws EntityNotFoundException, AccessDeniedException, EntityInstantiationException, InvalidIdException
+>>
+
+byIdBody(entity, dto) ::= <<
+{
+    nocache();
+    return svcFullBean.<entity.lcFirstSimpleName>ById(id);
+}
+>>
+
+allHead(entity, dto) ::= <<
+@GET
+@Path("all")
+@Produces(MediaType.APPLICATION_XML)
+public List\<<dto.simpleName>\> <entity.lcFirstSimpleName>All()
+    throws EntityNotFoundException, AccessDeniedException, EntityInstantiationException, InvalidIdException, InvalidFieldException, QuerySyntaxException, NotYetImplementedException
+>>
+
+allBody(entity, dto) ::= <<
+{
+    nocache();
+    return svcFullBean.<entity.lcFirstSimpleName>List(new QuerySpec());
+}
+>>
+
+listHead(entity, dto) ::= <<
+@POST
+@Path("list")
+@Consumes(MediaType.APPLICATION_XML)
+@Produces(MediaType.APPLICATION_XML)
+public List\<<dto.simpleName>\> <entity.lcFirstSimpleName>List(String querySpecXml)
+    throws AccessDeniedException, InvalidFieldException, QuerySyntaxException, NotYetImplementedException
+>>
+
+listBody(entity, dto) ::= <<
+{
+    return svcFullBean.<entity.lcFirstSimpleName>ListByXML(querySpecXml);
+}
+>>
+
+storeHead(entity, dto) ::= <<
+@POST
+@Path("store")
+@Consumes(MediaType.APPLICATION_XML)
+@Produces(MediaType.APPLICATION_XML)
+public String <entity.lcFirstSimpleName>Store(<dto.simpleName> dto)
+    throws EntityNotFoundException, AccessDeniedException, EntityInstantiationException, InvalidIdException
+>>
+
+storeBody(entity, dto) ::= <<
+{    
+    return "\<result\>"+svcFullBean.<entity.lcFirstSimpleName>Store(dto)+"\</result\>";
+}
+>>
+
+updateHead(entity, dto) ::= <<
+@POST
+@Path("update")
+@Consumes(MediaType.APPLICATION_XML)
+public void <entity.lcFirstSimpleName>Update(<dto.simpleName> dto)
+    throws EntityNotFoundException, AccessDeniedException, EntityInstantiationException, InvalidIdException
+>>
+
+updateBody(entity, dto) ::= <<
+{    
+    svcFullBean.<entity.lcFirstSimpleName>Update(dto);
+}
+>>
+
+deleteHeadPp(entity, dto) ::= <<
+@GET
+@Path("deletePp/id={id}")
+@Produces(MediaType.APPLICATION_XML)
+public String <entity.lcFirstSimpleName>DeletePp(@PathParam(value="id") <dto.properties.idFieldType.simpleName> id)
+    throws EntityNotFoundException, AccessDeniedException, EntityInstantiationException, InvalidIdException
+>>
+
+deleteHead(entity, dto) ::= <<
+@GET
+@Path("delete")
+@Produces(MediaType.APPLICATION_XML)
+public String <entity.lcFirstSimpleName>Delete(@QueryParam(value="id") <dto.properties.idFieldType.simpleName> id)
+    throws EntityNotFoundException, AccessDeniedException, EntityInstantiationException, InvalidIdException
+>>
+
+deleteBody(entity, dto) ::= <<
+{    
+    nocache();
+    // in case of embedded IDs, the ID must be converted from the corresponding DTO
+    svcFullBean.<entity.lcFirstSimpleName>Delete(id);
+    return "\<result\>OK\</result\>"; // Can't return void for a GET request
+}
+>>

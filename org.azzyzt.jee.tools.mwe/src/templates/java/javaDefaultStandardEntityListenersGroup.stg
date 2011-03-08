@@ -1,0 +1,33 @@
+group javaDefaultStandardEntityListenersGroup : javaGroup;
+
+@javaClass.extra_methods() ::= <<
+private static Map\<Class\<?\>, Method\> createTimestampSetters = new HashMap\<Class\<?\>, Method\>();
+private static Map\<Class\<?\>, Method\> modifyTimestampSetters = new HashMap\<Class\<?\>, Method\>();
+private static Map\<Method, SimpleDateFormat\> stringDateFormats = new HashMap\<Method, SimpleDateFormat\>();
+private static Map\<Method, DateFieldType\> dateFieldTypes = new HashMap\<Method, DateFieldType\>();
+
+@Override
+protected Map\<Method, DateFieldType\> getDateFieldTypes() {
+    return dateFieldTypes;
+}
+
+@Override
+protected Map\<Method, SimpleDateFormat\> getStringDateFormats() {
+    return stringDateFormats;
+}
+
+@PrePersist
+public void prePersist(Object target) {
+    Class\<?\> clazz = target.getClass();
+    maintainDateField(target, clazz, createTimestampSetters);
+    maintainDateField(target, clazz, modifyTimestampSetters);
+}
+
+@PreUpdate
+public void preUpdate(Object target) {
+    Class\<?\> clazz = target.getClass();
+    maintainDateField(target, clazz, modifyTimestampSetters);
+}
+
+>>
+

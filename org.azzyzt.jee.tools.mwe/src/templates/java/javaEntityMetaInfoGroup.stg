@@ -1,0 +1,68 @@
+group javaEntityMetaInfoGroup : javaGroup;
+
+@javaClass.extra_constructors() ::= <<
+static {
+
+    Set\<String\> fields;
+    Map\<String, Class\<?\>\> types;
+    AssociationInfo associationInfo;
+    Map\<String, AssociationInfo\> associationInfos;
+    <mdt.fields:create_entity_field_info()>
+}
+
+>>
+
+@javaClass.extra_methods() ::= <<
+@EJB ValidAssociationPaths validAssociationPaths;
+
+@Override
+public ValidAssociactionPathsInterface getValidPaths() {
+    return validAssociationPaths;
+}
+
+>>
+
+create_entity_field_info() ::= <<
+
+///////////////////////////////////////////////////
+// <attr.fieldType.simpleName>
+fields = new HashSet\<String\>();
+fieldsByClass.put(<attr.fieldType.simpleName>.class, fields);
+
+<attr.fieldType.fields:add_entity_field()>
+types = new HashMap\<String, Class\<?\>\>();
+fieldsTypesByClassAndName.put(<attr.fieldType.simpleName>.class, types);
+
+<attr.fieldType.fields:add_entity_field_type()>
+associationInfos = new HashMap\<String, AssociationInfo\>();
+associationsByClassAndPath.put(<attr.fieldType.simpleName>.class, associationInfos);
+
+<attr.fieldType.fields:add_entity_association_info()>
+>>
+
+add_entity_field() ::= <<
+<if(attr.fieldType.implicitlyImported)>fields.add("<attr.name>");
+
+<endif>
+>>
+
+add_entity_field_type() ::= <<
+<if(attr.fieldType.implicitlyImported)>types.put("<attr.name>", <attr.fieldType.fqName>.class);
+
+<endif>
+>>
+
+add_entity_association_info() ::= <<
+<if(attr.associationEndpoint)>associationInfo = new AssociationInfo(
+        "<attr.name>", 
+        RequiredSelectionType.<attr.associationEndpoint.requiredSelectionType>, 
+        <attr.ownerMdt.simpleName>.class, 
+        <attr.associationEndpoint.targetEntity.simpleName>.class, 
+        JoinType.<attr.associationEndpoint.joinType>
+);
+associationInfos.put("<attr.name>", associationInfo);
+        
+
+<endif>
+>>
+

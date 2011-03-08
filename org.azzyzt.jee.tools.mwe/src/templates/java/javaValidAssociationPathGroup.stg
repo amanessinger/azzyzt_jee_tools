@@ -1,0 +1,22 @@
+group javaValidAssociationPathGroup : javaGroup;
+
+@javaClass.extra_methods() ::= <<
+    @Lock(LockType.READ)
+    @Override
+    public boolean contains(Class\<?\> clazz, String path) {
+        return super.contains(clazz, path);
+    }
+
+    @Lock(LockType.READ)
+    @Override
+    public AssociationPathInfo get(Class\<?\> clazz, String path) {
+        return super.get(clazz, path);
+    }
+    
+    @Lock(LockType.WRITE)
+    @Override
+    public void add(Class\<?\> clazz, String path, AssociationPathInfo api) {
+        super.add(clazz, path, api);
+    }
+
+>>

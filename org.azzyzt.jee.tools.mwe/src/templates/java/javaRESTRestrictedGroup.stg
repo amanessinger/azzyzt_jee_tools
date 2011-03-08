@@ -1,0 +1,73 @@
+group javaRESTRestrictedGroup : javaGroup;
+
+@javaClass.extra_class_annotations() ::= <<
+@Interceptors(RESTInterceptor.class)
+
+>>
+
+@javaClass.extra_methods() ::= <<
+<byIdHeadPp(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+<byIdBody(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+
+<byIdHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+<byIdBody(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+
+<allHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+<allBody(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+
+<listHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+<listBody(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+>>
+
+byIdHeadPp(entity, dto) ::= <<
+@GET
+@Path("byIdPp/id={id}")
+@Produces(MediaType.APPLICATION_XML)
+public <dto.simpleName> <entity.lcFirstSimpleName>ByIdPp(@PathParam(value="id") <dto.properties.idFieldType.simpleName> id)
+    throws EntityNotFoundException, AccessDeniedException, EntityInstantiationException, InvalidIdException
+>>
+
+byIdHead(entity, dto) ::= <<
+@GET
+@Path("byId")
+@Produces(MediaType.APPLICATION_XML)
+public <dto.simpleName> <entity.lcFirstSimpleName>ById(@QueryParam(value="id") <dto.properties.idFieldType.simpleName> id)
+    throws EntityNotFoundException, AccessDeniedException, EntityInstantiationException, InvalidIdException
+>>
+
+byIdBody(entity, dto) ::= <<
+{
+    nocache();
+    return svcRestrictedBean.<entity.lcFirstSimpleName>ById_r(id);
+}
+>>
+
+allHead(entity, dto) ::= <<
+@GET
+@Path("all")
+@Produces(MediaType.APPLICATION_XML)
+public List\<<dto.simpleName>\> <entity.lcFirstSimpleName>All()
+    throws EntityNotFoundException, AccessDeniedException, EntityInstantiationException, InvalidIdException, InvalidFieldException, QuerySyntaxException, NotYetImplementedException
+>>
+
+allBody(entity, dto) ::= <<
+{
+    nocache();
+    return svcRestrictedBean.<entity.lcFirstSimpleName>List_r(new QuerySpec());
+}
+>>
+
+listHead(entity, dto) ::= <<
+@POST
+@Path("list")
+@Consumes(MediaType.APPLICATION_XML)
+@Produces(MediaType.APPLICATION_XML)
+public List\<<dto.simpleName>\> <entity.lcFirstSimpleName>List(String querySpecXml)
+    throws AccessDeniedException, InvalidFieldException, QuerySyntaxException, NotYetImplementedException
+>>
+
+listBody(entity, dto) ::= <<
+{
+    return svcRestrictedBean.<entity.lcFirstSimpleName>ListByXML_r(querySpecXml);
+}
+>>

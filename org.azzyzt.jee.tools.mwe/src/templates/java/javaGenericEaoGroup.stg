@@ -1,0 +1,5 @@
+group javaGenericEaoGroup : javaGroup;
+
+@javaClass.extra_methods() ::= <<
+public EntityManager getEm() { return em; }
+>>

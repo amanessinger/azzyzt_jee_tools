@@ -1,0 +1,18 @@
+group javaRESTInterceptorGroup : javaGroup;
+
+@javaClass.extra_methods() ::= <<
+@EJB InvocationRegistry invocationRegistry;
+
+public RESTInterceptor() { }
+
+@AroundInvoke
+protected Object intercept(InvocationContext ctx) throws Exception {
+	
+	invocationRegistry.registerRESTInvocation(ctx);
+	
+	Object result = ctx.proceed();
+	
+	return result;
+}
+
+>>

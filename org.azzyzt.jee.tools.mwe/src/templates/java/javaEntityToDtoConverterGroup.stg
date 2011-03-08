@@ -1,0 +1,162 @@
+group javaEntityToDtoConverterGroup : javaGroup;
+
+javaClass(mdt, generator) ::= <<
+package <mdt.packageName>;
+
+<mdt:importDeclarations()>
+
+/**
+ * Generated class <mdt.fqName>
+ */
+<mdt:annotations()><mdt.modifiers> class <mdt.simpleName><extendsClasses(mdt)><implementsInterfaces(mdt)> {
+
+    private static final long serialVersionUID = 1L;
+
+    <mdt.fields:fieldDeclaration()>
+    <defaultConstructor(mdt)>
+    <fromEntity(mdt=mdt, entity=mdt.properties.entity, dto=mdt.properties.dto)>
+    <fromDto(mdt=mdt, entity=mdt.properties.entity, dto=mdt.properties.dto)>
+}
+>>
+
+
+
+fromEntity(mdt, entity, dto) ::= <<
+public <dto.simpleName> fromEntity(<entity.simpleName> in) {
+    <dto.simpleName> result = new <dto.simpleName>();
+    
+    <entity.fields:copyFieldE2D()>
+    return result;
+}
+
+>>
+
+copyFieldE2D() ::= <<
+<if(attr.internal)><else>
+<if(attr.holdingAssociationEndpoint)><copyFieldE2DIds(attr)><else><copyFieldE2DSimple(attr)><endif>
+<endif>
+>>
+
+copyFieldE2DSimple(field) ::= <<
+result.set<field.ucName>(in.get<field.ucName>());
+
+>>
+
+copyFieldE2DIds(field) ::= <<
+<if(field.holdingMultivaluedAssociationEndpoint)>
+<copyMultipleAssociationIds(field)>
+<else>
+<copySingleAssociationId(field)>
+<endif>
+
+>>
+
+copySingleAssociationId(field) ::= <<
+if (in.get<field.ucName>() != null) {
+    result.set<field.ucName>Id(in.get<field.ucName>().getId());
+}
+
+>>
+
+copyMultipleAssociationIds(field) ::= <<
+<if(field.associationEndpoint.fetchTypeEager)>
+for (<field.fieldType.entityMemberType.simpleName> entity : in.get<field.ucName>()<if(field.fieldType.map)>.values()<endif>) {
+    result.get<field.ucName>Ids().add(entity.getId());
+}
+
+<else>
+/*
+ * No IDs for LAZYly fetched association to <field.fieldType.entityMemberType.simpleName> are transported. 
+ * Access them via an extra service call if needed. Bomb out if client tries to use them.
+ */
+result.set<field.ucName>Ids(null);
+
+<endif>
+
+>>
+
+
+
+fromDto(mdt, entity, dto) ::= <<
+public <entity.simpleName> fromDto(<dto.simpleName> in) 
+throws EntityNotFoundException, EntityInstantiationException, InvalidIdException
+{
+    <entity.simpleName> result = eao.findOrCreate(<entity.simpleName>.class, in.getId());
+    
+    <entity.fields:copyFieldD2E()>
+    return result;
+}
+
+>>
+
+copyFieldD2E() ::= <<
+<if(attr.internal)><else>
+<if(attr.holdingAssociationEndpoint)><fetchAssociatedEntities(attr)><else><copyFieldD2ESimple(attr)><endif>
+<endif>
+>>
+
+copyFieldD2ESimple(field) ::= <<
+<if(field.idField)>if (EntityBase.couldBeIdValue(in.get<field.ucName>())) {
+    // may have been newly created, don't overwrite it with null or zero!
+    result.set<field.ucName>(in.get<field.ucName>());
+}
+
+<elseif(field.notAutomaticallySet)>
+result.set<field.ucName>(in.get<field.ucName>());
+
+<elseif(field.createUserField)>if (result.get<field.ucName>() != null) {
+    // only set if not already set!
+    result.set<field.ucName>(invocationRegistry.getMetaInfo().getAuthenticatedUserName());
+}
+
+<elseif(field.modificationUserField)>
+result.set<field.ucName>(invocationRegistry.getMetaInfo().getAuthenticatedUserName());
+
+<else>
+// a value for <field.name> is automatically set by the persistence system 
+
+<endif>
+
+>>
+
+fetchAssociatedEntities(field) ::= <<
+<if(field.holdingMultivaluedAssociationEndpoint)>
+<fetchMultipleAssociatedEntities(field)>
+<else>
+<fetchSingleAssociatedEntity(field)>
+<endif>
+
+>>
+
+fetchSingleAssociatedEntity(field) ::= <<
+if (in.get<field.ucName>Id() != null) {
+    <field.fieldType.SimpleName> entity = eao.findOrInvalidId(<field.fieldType.SimpleName>.class, in.get<field.ucName>Id());
+    result.set<field.ucName>(entity);
+}
+
+>>
+
+fetchMultipleAssociatedEntities(field) ::= <<
+List\<<field.fieldType.entityMemberType.idField.fieldType.simpleName>\> <field.name>Ids = in.get<field.ucName>Ids();
+<if(field.fieldType.list)><initializedList(type=field.fieldType.entityMemberType.simpleName, name={all<field.ucName>})><endif>
+<if(field.fieldType.set)><initializedSet(type=field.fieldType.entityMemberType.simpleName, name={all<field.ucName>})><endif>
+<if(field.fieldType.map)>
+<initializedMap(keytype=field.fieldType.entityMemberType.idField.fieldType.simpleName, 
+                valuetype=field.fieldType.entityMemberType.simpleName, 
+                name={all<field.ucName>})>
+<endif>
+
+<fetchEntitiesLoop(field=field, keytype=field.fieldType.entityMemberType.idField.fieldType.simpleName, valuetype=field.fieldType.entityMemberType.simpleName, idsName={<field.name>Ids}, entitiesName={all<field.ucName>})>
+
+>>
+
+fetchEntitiesLoop(field, keytype, valuetype, idsName, entitiesName) ::= <<
+for (<keytype> id : <idsName>) {
+    <valuetype> entity = eao.findOrInvalidId(<valuetype>.class, id);
+    <if(field.fieldType.map)>
+    <entitiesName>.put(id, entity)
+    <else>
+    <entitiesName>.add(entity)
+    <endif>;
+}
+>>
