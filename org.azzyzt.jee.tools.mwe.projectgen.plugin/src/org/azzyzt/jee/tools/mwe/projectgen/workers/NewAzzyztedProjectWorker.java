@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -28,6 +29,8 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jpt.core.JpaPlatform;
+import org.eclipse.jpt.core.JpaProject;
 import org.eclipse.jpt.core.JptCorePlugin;
 import org.eclipse.jst.common.project.facet.core.JavaFacet;
 import org.eclipse.jst.common.project.facet.core.JavaFacetInstallConfig;
@@ -118,7 +121,9 @@ public class NewAzzyztedProjectWorker {
 		Set<IProjectFacetVersion> jpaFacetVersions;
 		try {
 			jpaFacetVersions = jpaFacet.getVersions(JptCorePlugin.JPA_FACET_VERSION_2_0);
-			jpaFacetVersion = jpaFacetVersions.iterator().next(); // TODO make this configurable?
+			Iterator<IProjectFacetVersion> fvIterator = jpaFacetVersions.iterator();
+			 // we take the first we get, users can always change facet settings later
+			jpaFacetVersion = fvIterator.next();
 		} catch (CoreException e) {
 			errorStatus = e.getStatus();
 			return false;
@@ -417,6 +422,15 @@ public class NewAzzyztedProjectWorker {
 		IDataModel config = (IDataModel) createConfigObject(jpaFacetVersion);
 		
 		installFacet(fprj, jpaFacetVersion, config);
+
+		/*
+		 *  TODO make sure we get the highest EclipseLink 2.1 ???
+		 *  Sometimes we get it, sometimes we just get Generic 2.0. Find out why.
+		 */
+		IProject prj = fprj.getProject();
+		JpaProject jpaProject = JptCorePlugin.getJpaProject(prj);
+		//JptCorePlugin.setJpaPlatformId(prj, "eclipselink2_1");
+		//jpaProject.update();
 	}
 	
 
