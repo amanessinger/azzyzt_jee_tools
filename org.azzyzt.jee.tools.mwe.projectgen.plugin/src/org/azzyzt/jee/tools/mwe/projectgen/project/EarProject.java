@@ -32,7 +32,9 @@ import org.eclipse.wst.common.frameworks.datamodel.IDataModel;
 
 public class EarProject extends Project {
 
-	public static EarProject create(String name, Context context, Project...projects) throws CoreException {
+	public static EarProject create(String name, Context context, Project...projects) 
+	throws CoreException 
+	{
 		EarProject ear = new EarProject(name, context);
 		
 		ear.installEARFacet(projects);

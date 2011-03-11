@@ -1,14 +1,18 @@
 package org.azzyzt.jee.tools.mwe.projectgen.project;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jst.common.project.facet.core.JavaFacetInstallConfig;
 import org.eclipse.wst.common.project.facet.core.IActionDefinition;
 import org.eclipse.wst.common.project.facet.core.IFacetedProject;
 import org.eclipse.wst.common.project.facet.core.IProjectFacet;
@@ -84,6 +88,19 @@ public class Project {
 				config,
 				context.getSubMonitor()
 		);
+	}
+	
+	protected void installJavaFacet(String...sourceFolderNames)
+	throws CoreException 
+	{
+		JavaFacetInstallConfig config = (JavaFacetInstallConfig) Project.createConfigObject(context.getFacets().javaFacetVersion);
+		List<IPath> sourceFolderPaths = new ArrayList<IPath>();
+		for (String sourceFolderName : sourceFolderNames) {
+			sourceFolderPaths.add((IPath) new Path(sourceFolderName));
+		}
+		config.setSourceFolders(sourceFolderPaths);
+		
+		installFacet(context.getFacets().javaFacetVersion, config);
 	}
 	
 	protected void installGlassFishFacet() 

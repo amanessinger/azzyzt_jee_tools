@@ -145,6 +145,8 @@ public class NewAzzyztedProjectWorker {
 		
 		installJavaFacet(fprj, "src", GENERATED_SRC_FOLDER_NAME);
 		
+		// TODO move rest to DynamicWebProject
+		
 		installWebFacet(fprj);
 		
 		installServerSpecificFacets(fprj);
