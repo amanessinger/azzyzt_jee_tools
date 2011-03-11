@@ -1,14 +1,17 @@
 package org.azzyzt.jee.tools.mwe.projectgen.project;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.wst.common.project.facet.core.IActionDefinition;
 import org.eclipse.wst.common.project.facet.core.IFacetedProject;
-import org.eclipse.wst.common.project.facet.core.IFacetedProject.Action;
-import org.eclipse.wst.common.project.facet.core.IFacetedProject.Action.Type;
+import org.eclipse.wst.common.project.facet.core.IProjectFacet;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
 
@@ -22,6 +25,8 @@ public class Project {
 	public Project(String name, Context context)
 	throws CoreException 
 	{
+		this.context = context;
+		
 		p = context.getRoot().getProject(name);
 		IProjectDescription dsc = context.getWorkspace().newProjectDescription(name);
 
@@ -84,7 +89,13 @@ public class Project {
 	protected void installGlassFishFacet() 
 	throws CoreException 
 	{
-		installFacet(getContext().facets.sunFacetVersion, null);
+		installFacet(getContext().getFacets().sunFacetVersion, null);
+	}
+	
+	protected void fixFacets(IProjectFacet...facets) 
+	throws CoreException 
+	{
+		fp.setFixedProjectFacets(new HashSet<IProjectFacet>(Arrays.asList(facets)));
 	}
 	
 	public static Object createConfigObject(IProjectFacetVersion fv) 
@@ -96,4 +107,24 @@ public class Project {
 		);
 		return installAction.createConfigObject();
 	}
+
+	protected Path createFolderPathIfNeeded(String folderName)
+	throws CoreException 
+	{
+		Path path = new Path(folderName);
+		createFolderForPathIfNeeded(path);
+		return path;
+	}
+
+
+	protected IFolder createFolderForPathIfNeeded(Path path)
+	throws CoreException 
+	{
+		IFolder f = p.getFolder(path);
+		if (!f.exists()) {
+			f.create(true, true, context.getSubMonitor());
+		}
+		return f;
+	}
+
 }

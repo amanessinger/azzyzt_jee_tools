@@ -5,12 +5,13 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
 import org.azzyzt.jee.tools.mwe.projectgen.Activator;
 import org.azzyzt.jee.tools.mwe.projectgen.project.Context;
+import org.azzyzt.jee.tools.mwe.projectgen.project.EarProject;
+import org.azzyzt.jee.tools.mwe.projectgen.project.Facets;
 import org.azzyzt.jee.tools.mwe.projectgen.project.Project;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
@@ -23,30 +24,17 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jpt.core.JpaPlatform;
 import org.eclipse.jpt.core.JpaProject;
 import org.eclipse.jpt.core.JptCorePlugin;
 import org.eclipse.jst.common.project.facet.core.JavaFacetInstallConfig;
-import org.eclipse.jst.j2ee.earcreation.IEarFacetInstallDataModelProperties;
 import org.eclipse.jst.j2ee.ejb.project.operations.IEjbFacetInstallDataModelProperties;
-import org.eclipse.jst.j2ee.internal.project.facet.EARFacetProjectCreationDataModelProvider;
 import org.eclipse.jst.j2ee.project.facet.IJ2EEFacetConstants;
 import org.eclipse.jst.j2ee.project.facet.IJ2EEModuleFacetInstallDataModelProperties;
-import org.eclipse.wst.common.componentcore.ComponentCore;
-import org.eclipse.wst.common.componentcore.datamodel.FacetInstallDataModelProvider;
-import org.eclipse.wst.common.componentcore.datamodel.FacetProjectCreationDataModelProvider;
-import org.eclipse.wst.common.componentcore.datamodel.properties.IFacetDataModelProperties;
-import org.eclipse.wst.common.componentcore.datamodel.properties.IFacetProjectCreationDataModelProperties;
-import org.eclipse.wst.common.componentcore.internal.resources.VirtualArchiveComponent;
-import org.eclipse.wst.common.componentcore.resources.IVirtualComponent;
-import org.eclipse.wst.common.componentcore.resources.IVirtualReference;
-import org.eclipse.wst.common.frameworks.datamodel.DataModelFactory;
 import org.eclipse.wst.common.frameworks.datamodel.IDataModel;
 import org.eclipse.wst.common.project.facet.core.IFacetedProject;
 import org.eclipse.wst.common.project.facet.core.IProjectFacet;
@@ -67,9 +55,7 @@ public class NewAzzyztedProjectWorker {
 
 	private final Context context = new Context();
 
-	public NewAzzyztedProjectWorker() {
-		context.facets.isValid = context.successfullyInitialized(this);
-	}
+	public NewAzzyztedProjectWorker() { }
 
 	/**
 	 * The main workflow method. It creates all required projects and adds them to an EAR project
@@ -82,13 +68,13 @@ public class NewAzzyztedProjectWorker {
 	{
 		context.initializeRuntimeSpecificFacets(this);
 		
-		if (!context.facets.isValid) throw new CoreException(context.facets.errorStatus);
+		if (!context.isValid()) throw new CoreException(context.getFacets().errorStatus);
 		
 		context.getMonitor().beginTask("Generating EAR project "+context.getEarProjectName(), 100);
 		
 		try {
 			// We crash upon EAR facet creation if the EAR has been created implicitly. Do it now.
-			createEARProject();
+			EarProject.create(context.getEarProjectName(), context, (Project[])null);
 			
 			advanceProgress(10, "Create EJB project");
 			
@@ -125,7 +111,7 @@ public class NewAzzyztedProjectWorker {
 		
 		installServerSpecificFacets(fprj);
 	
-		fixFacets(fprj, context.facets.javaFacet, context.facets.ejbFacet);
+		fixFacets(fprj, context.getFacets().javaFacet, context.getFacets().ejbFacet);
 		
 		createSubpackages(prj, EJB_SRC_FOLDER_NAME, "entity", "service");
 		
@@ -163,69 +149,11 @@ public class NewAzzyztedProjectWorker {
 		
 		installServerSpecificFacets(fprj);
 	
-		fixFacets(fprj, context.facets.javaFacet, context.facets.webFacet);
+		fixFacets(fprj, context.getFacets().javaFacet, context.getFacets().webFacet);
 		
 		Util.appendProjectToClassPath(Util.getJavaProject(fprj.getProject()), Util.getJavaProject(ejbProject));
 		
 		return fprj.getProject();
-	}
-
-	private void createEARProject(IProject...projects) 
-	throws CoreException, InterruptedException 
-	{
-		IFacetedProject fprj = createFacetedProject(context.getEarProjectName());
-		
-		installEARFacet(fprj, projects);
-	
-		installServerSpecificFacets(fprj);
-		
-		fixFacets(fprj, IJ2EEFacetConstants.ENTERPRISE_APPLICATION_FACET);
-
-		installRuntimeLibsIntoEar(fprj);
-	}
-
-	private void installRuntimeLibsIntoEar(IFacetedProject fprj) 
-	throws CoreException 
-	{
-		IProject prj = fprj.getProject();
-		IFolder lib = createFolderForPathIfNeeded(prj, new Path("lib"));
-		
-		try {
-			copyFromUrlToFolder(lib, Activator.getJeeRuntimeJarUrl(), Activator.JEE_RUNTIME_JAR);
-			copyFromUrlToFolder(lib, Activator.getJeeRuntimeSiteJarUrl(), Activator.JEE_RUNTIME_SITE_JAR);
-		} catch (IOException e) {
-			throw Util.createCoreException("Can't install runtime libraries into EAR project", e);
-		}
-		IVirtualComponent earCmp = ComponentCore.createComponent(prj);
-		
-		// get current references
-		List<IVirtualReference> references = new ArrayList<IVirtualReference>();
-		IVirtualReference[] currentReferences = earCmp.getReferences();
-		for (IVirtualReference reference : currentReferences) {
-			references.add(reference);
-		}
-		
-		String handlePrfx;
-		IVirtualComponent jarCmp;
-		IVirtualReference jarRef;
-
-		handlePrfx = VirtualArchiveComponent.LIBARCHIVETYPE + IPath.SEPARATOR
-				+ prj.getName() + IPath.SEPARATOR + "lib" + IPath.SEPARATOR;
-		jarCmp = ComponentCore.createArchiveComponent(prj, handlePrfx + Activator.JEE_RUNTIME_JAR);
-		jarRef = ComponentCore.createReference(earCmp, jarCmp, new Path("/lib"));
-		if (!references.contains(jarRef)) {
-			references.add(jarRef);
-		}
-		
-		handlePrfx = VirtualArchiveComponent.LIBARCHIVETYPE + IPath.SEPARATOR
-				+ prj.getName() + IPath.SEPARATOR + "lib" + IPath.SEPARATOR;
-		jarCmp = ComponentCore.createArchiveComponent(prj, handlePrfx + Activator.JEE_RUNTIME_SITE_JAR);
-		jarRef = ComponentCore.createReference(earCmp, jarCmp, new Path("/lib"));
-		if (!references.contains(jarRef)) {
-			references.add(jarRef);
-		}
-
-		earCmp.setReferences(references.toArray(new IVirtualReference[references.size()]));
 	}
 
 	private void addAzzyztedNature(IFacetedProject fprj) 
@@ -247,21 +175,21 @@ public class NewAzzyztedProjectWorker {
 	private void installJavaFacet(IFacetedProject fprj, String...sourceFolderNames)
 	throws CoreException 
 	{
-		JavaFacetInstallConfig config = (JavaFacetInstallConfig) Project.createConfigObject(context.facets.javaFacetVersion);
+		JavaFacetInstallConfig config = (JavaFacetInstallConfig) Project.createConfigObject(context.getFacets().javaFacetVersion);
 		List<IPath> sourceFolderPaths = new ArrayList<IPath>();
 		for (String sourceFolderName : sourceFolderNames) {
 			sourceFolderPaths.add((IPath) new Path(sourceFolderName));
 		}
 		config.setSourceFolders(sourceFolderPaths);
 		
-		installFacet(fprj, context.facets.javaFacetVersion, config);
+		installFacet(fprj, context.getFacets().javaFacetVersion, config);
 	}
 	
 
 	private void installEJBFacet(IFacetedProject fprj) 
 	throws CoreException 
 	{
-		IDataModel config = (IDataModel) Project.createConfigObject(ejbFacetVersion);
+		IDataModel config = (IDataModel) Project.createConfigObject(Facets.ejbFacetVersion);
 		config.setBooleanProperty(
 				IJ2EEModuleFacetInstallDataModelProperties.ADD_TO_EAR,
 				Boolean.TRUE);
@@ -272,14 +200,14 @@ public class NewAzzyztedProjectWorker {
 				IEjbFacetInstallDataModelProperties.CREATE_CLIENT,
 				Boolean.TRUE);
 
-		installFacet(fprj, ejbFacetVersion, config);
+		installFacet(fprj, Facets.ejbFacetVersion, config);
 	}
 	
 
 	private void installUtilityFacet(IFacetedProject fprj) 
 	throws CoreException 
 	{
-		IDataModel config = (IDataModel) Project.createConfigObject(context.facets.utilityFacetVersion);
+		IDataModel config = (IDataModel) Project.createConfigObject(context.getFacets().utilityFacetVersion);
 		
 		config.setBooleanProperty(
 				IJ2EEModuleFacetInstallDataModelProperties.ADD_TO_EAR,
@@ -288,14 +216,14 @@ public class NewAzzyztedProjectWorker {
 				IJ2EEModuleFacetInstallDataModelProperties.EAR_PROJECT_NAME,
 				context.getEarProjectName());
 		
-		installFacet(fprj, context.facets.utilityFacetVersion, config);
+		installFacet(fprj, context.getFacets().utilityFacetVersion, config);
 	}
 	
 
 	private void installWebFacet(IFacetedProject fprj) 
 	throws CoreException 
 	{
-		IDataModel config = (IDataModel) Project.createConfigObject(context.facets.webFacetVersion);
+		IDataModel config = (IDataModel) Project.createConfigObject(context.getFacets().webFacetVersion);
 		
 		config.setBooleanProperty(
 				IJ2EEModuleFacetInstallDataModelProperties.ADD_TO_EAR,
@@ -304,14 +232,14 @@ public class NewAzzyztedProjectWorker {
 				IJ2EEModuleFacetInstallDataModelProperties.EAR_PROJECT_NAME,
 				context.getEarProjectName());
 		
-		installFacet(fprj, context.facets.webFacetVersion, config);
+		installFacet(fprj, context.getFacets().webFacetVersion, config);
 	}
 	
 
 	private void installServerSpecificFacets(IFacetedProject fprj)
 	throws CoreException 
 	{
-		if (context.getSelectedRuntime().supports(context.facets.sunFacet)) {
+		if (context.getSelectedRuntime().supports(context.getFacets().sunFacet)) {
 			installGlassFishFacet(fprj);
 		}
 	}
@@ -320,16 +248,16 @@ public class NewAzzyztedProjectWorker {
 	private void installGlassFishFacet(IFacetedProject fprj) 
 	throws CoreException 
 	{
-		installFacet(fprj, context.facets.sunFacetVersion, null);
+		installFacet(fprj, context.getFacets().sunFacetVersion, null);
 	}
 	
 
 	private void installJPAFacet(IFacetedProject fprj) 
 	throws CoreException 
 	{
-		IDataModel config = (IDataModel) Project.createConfigObject(context.facets.jpaFacetVersion);
+		IDataModel config = (IDataModel) Project.createConfigObject(context.getFacets().jpaFacetVersion);
 		
-		installFacet(fprj, context.facets.jpaFacetVersion, config);
+		installFacet(fprj, context.getFacets().jpaFacetVersion, config);
 
 		/*
 		 *  TODO make sure we get the highest EclipseLink 2.1 ???
@@ -339,55 +267,6 @@ public class NewAzzyztedProjectWorker {
 		JpaProject jpaProject = JptCorePlugin.getJpaProject(prj);
 		//JptCorePlugin.setJpaPlatformId(prj, "eclipselink2_1");
 		//jpaProject.update();
-	}
-	
-
-	private void installEARFacet(IFacetedProject fprj, IProject...projects)
-	throws CoreException 
-	{
-		IDataModel config = (IDataModel) Project.createConfigObject(IJ2EEFacetConstants.ENTERPRISE_APPLICATION_60);
-	
-		config.setProperty(
-				IEarFacetInstallDataModelProperties.J2EE_PROJECTS_LIST, 
-				Arrays.asList(projects)
-		);
-		config.setProperty(
-				IEarFacetInstallDataModelProperties.JAVA_PROJECT_LIST,
-				Collections.EMPTY_LIST
-		);
-		config.setBooleanProperty(
-				IFacetDataModelProperties.SHOULD_EXECUTE, Boolean.TRUE);
-	
-		IDataModel master = DataModelFactory.createDataModel(
-				new EARFacetProjectCreationDataModelProvider()
-		);
-		master.setStringProperty(
-				IFacetDataModelProperties.FACET_PROJECT_NAME,
-				config.getStringProperty(IFacetDataModelProperties.FACET_PROJECT_NAME)
-		);
-	
-		master.setProperty(
-				IFacetProjectCreationDataModelProperties.FACET_DM_MAP,
-				Collections.singletonMap(
-						IJ2EEFacetConstants.ENTERPRISE_APPLICATION,
-						config
-				)
-		);
-		master.setProperty(
-				IFacetProjectCreationDataModelProperties.FACET_ACTION_MAP,
-				Collections.EMPTY_MAP
-		);
-		master.setProperty(
-				FacetProjectCreationDataModelProvider.REQUIRED_FACETS_COLLECTION,
-				Collections.singletonList(IJ2EEFacetConstants.ENTERPRISE_APPLICATION_FACET)
-		);
-	
-		config.setProperty(
-				FacetInstallDataModelProvider.MASTER_PROJECT_DM, 
-				master
-		);
-	
-		installFacet(fprj, IJ2EEFacetConstants.ENTERPRISE_APPLICATION_60, config);
 	}
 	
 
@@ -560,11 +439,6 @@ public class NewAzzyztedProjectWorker {
 
 		Util.callExternalMainClass(jobTitle, classPathEntries, fqMainClassName, args);		
 	}
-
-	public boolean isValid() {
-		return context.facets.isValid;
-	}
-	
 
 	public Context getContext() {
 		return context;

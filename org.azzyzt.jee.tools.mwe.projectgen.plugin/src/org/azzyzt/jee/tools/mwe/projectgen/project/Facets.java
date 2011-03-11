@@ -1,4 +1,4 @@
-package org.azzyzt.jee.tools.mwe.projectgen.workers;
+package org.azzyzt.jee.tools.mwe.projectgen.project;
 
 import java.util.Iterator;
 import java.util.Set;
@@ -13,8 +13,9 @@ import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
 
 public class Facets {
+	public static final IProjectFacetVersion ejbFacetVersion = IJ2EEFacetConstants.EJB_31;
+	
 	public Set<IProjectFacetVersion> facetVersionsNeeded;
-	public boolean isValid;
 	public IProjectFacet javaFacet;
 	public IProjectFacetVersion javaFacetVersion;
 	public IProjectFacet ejbFacet;
@@ -30,16 +31,15 @@ public class Facets {
 	public IProjectFacetVersion sunFacetVersion;
 	public IStatus errorStatus;
 
-	public Facets(Set<IProjectFacetVersion> facetVersionsNeeded, boolean isValid) {
+	public Facets(Set<IProjectFacetVersion> facetVersionsNeeded) {
 		this.facetVersionsNeeded = facetVersionsNeeded;
-		this.isValid = isValid;
 	}
 
-	public boolean successfullyInitializedFacets(NewAzzyztedProjectWorker newAzzyztedProjectWorker) {
+	public boolean successfullyInitializedFacets() {
 		javaFacetVersion = JavaFacet.VERSION_1_6;
 		javaFacet = javaFacetVersion.getProjectFacet();
 		
-		ejbFacet = NewAzzyztedProjectWorker.ejbFacetVersion.getProjectFacet();
+		ejbFacet = ejbFacetVersion.getProjectFacet();
 		
 		jpaFacet = ProjectFacetsManager.getProjectFacet(JptCorePlugin.FACET_ID);
 		Set<IProjectFacetVersion> jpaFacetVersions;

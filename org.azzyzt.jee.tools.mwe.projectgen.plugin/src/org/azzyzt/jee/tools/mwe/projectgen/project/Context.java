@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.azzyzt.jee.tools.mwe.projectgen.workers.Facets;
 import org.azzyzt.jee.tools.mwe.projectgen.workers.NewAzzyztedProjectWorker;
 import org.azzyzt.jee.tools.mwe.projectgen.workers.Util;
 import org.eclipse.core.resources.IWorkspace;
@@ -37,11 +36,13 @@ public class Context {
 	private IWorkspace workspace;
 	private IWorkspaceRoot root;
 	private IProgressMonitor monitor = null;
-	public Facets facets = new Facets(new HashSet<IProjectFacetVersion>(), false);
+	private Facets facets = new Facets(new HashSet<IProjectFacetVersion>());
+	private boolean isValid = false;
 	
 	public Context() {
 		workspace = ResourcesPlugin.getWorkspace();
 		root = workspace.getRoot();
+		setValid(successfullyInitialized());
 	}
 
 	public void setProjectBaseName(String projectBaseName) {
@@ -137,6 +138,14 @@ public class Context {
 		this.selectedRuntime = selectedRuntime;
 	}
 
+	public void setFacets(Facets facets) {
+		this.facets = facets;
+	}
+
+	public Facets getFacets() {
+		return facets;
+	}
+
 	public IWorkspaceRoot getRoot() {
 		return root;
 	}
@@ -168,14 +177,14 @@ public class Context {
 		//return null; // TODO read http://www.eclipse.org/resources/resource.php?id=139 and do the right thing :) 
 	}
 
-	public boolean successfullyInitializedRuntimes(NewAzzyztedProjectWorker newAzzyztedProjectWorker) {
+	public boolean successfullyInitializedRuntimes() {
 		// We could be more specific, but the rest more or less follows automatically
-		facets.facetVersionsNeeded.add(NewAzzyztedProjectWorker.ejbFacetVersion);
-		facets.facetVersionsNeeded.add(facets.jpaFacetVersion);
+		getFacets().facetVersionsNeeded.add(getFacets().ejbFacetVersion);
+		getFacets().facetVersionsNeeded.add(getFacets().jpaFacetVersion);
 	
-		setTargetRuntimes(RuntimeManager.getRuntimes(facets.facetVersionsNeeded));
+		setTargetRuntimes(RuntimeManager.getRuntimes(getFacets().facetVersionsNeeded));
 		if (getTargetRuntimes().isEmpty()) {
-			facets.errorStatus = Util.createErrorStatus("No runtime supporting the needed facets available");
+			getFacets().errorStatus = Util.createErrorStatus("No runtime supporting the needed facets available");
 			return false;
 		}
 		
@@ -186,16 +195,24 @@ public class Context {
 	throws CoreException 
 	{
 		// TODO add support for other JEE 6+ servers
-		facets.sunFacet = ProjectFacetsManager.getProjectFacet("sun.facet");
-		facets.sunFacetVersion = facets.sunFacet.getLatestSupportedVersion(getSelectedRuntime());
+		getFacets().sunFacet = ProjectFacetsManager.getProjectFacet("sun.facet");
+		getFacets().sunFacetVersion = getFacets().sunFacet.getLatestSupportedVersion(getSelectedRuntime());
 	}
 
-	public boolean successfullyInitialized(NewAzzyztedProjectWorker newAzzyztedProjectWorker) {
+	public boolean successfullyInitialized() {
 		
-		if (!facets.successfullyInitializedFacets(newAzzyztedProjectWorker)) return false;
+		if (!getFacets().successfullyInitializedFacets()) return false;
 	
-		if (!successfullyInitializedRuntimes(newAzzyztedProjectWorker)) return false;
+		if (!successfullyInitializedRuntimes()) return false;
 	
 		return true;
+	}
+
+	public void setValid(boolean isValid) {
+		this.isValid = isValid;
+	}
+
+	public boolean isValid() {
+		return isValid;
 	}
 }
