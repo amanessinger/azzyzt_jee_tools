@@ -104,14 +104,6 @@ public class EarProject extends Project {
 		installFacet(IJ2EEFacetConstants.ENTERPRISE_APPLICATION_60, config);
 	}
 
-	private void installServerSpecificFacets()
-	throws CoreException 
-	{
-		if (getContext().getSelectedRuntime().supports(getContext().getFacets().sunFacet)) {
-			installGlassFishFacet();
-		}
-	}
-	
 	private void installRuntimeLibsIntoEar() 
 	throws CoreException 
 	{

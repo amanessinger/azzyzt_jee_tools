@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.azzyzt.jee.tools.mwe.projectgen.workers.NewAzzyztedProjectWorker;
 import org.azzyzt.jee.tools.mwe.projectgen.workers.Util;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -37,6 +36,7 @@ public class Context {
 	private IWorkspaceRoot root;
 	private IProgressMonitor monitor = null;
 	private Facets facets = new Facets(new HashSet<IProjectFacetVersion>());
+	private Boolean createEjbClient = true;
 	private boolean isValid = false;
 	
 	public Context() {
@@ -191,7 +191,7 @@ public class Context {
 		return true;
 	}
 
-	public void initializeRuntimeSpecificFacets(NewAzzyztedProjectWorker newAzzyztedProjectWorker) 
+	public void initializeRuntimeSpecificFacets() 
 	throws CoreException 
 	{
 		// TODO add support for other JEE 6+ servers
@@ -214,5 +214,13 @@ public class Context {
 
 	public boolean isValid() {
 		return isValid;
+	}
+
+	public void setCreateEjbClient(Boolean createEjbClient) {
+		this.createEjbClient = createEjbClient;
+	}
+
+	public Boolean getCreateEjbClient() {
+		return createEjbClient;
 	}
 }

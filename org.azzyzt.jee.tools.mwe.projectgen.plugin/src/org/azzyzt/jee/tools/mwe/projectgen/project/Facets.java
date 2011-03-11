@@ -13,12 +13,13 @@ import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
 
 public class Facets {
-	public static final IProjectFacetVersion ejbFacetVersion = IJ2EEFacetConstants.EJB_31;
+	public static final IProjectFacetVersion EJB_FACET_VERSION_WANTED = IJ2EEFacetConstants.EJB_31;
 	
 	public Set<IProjectFacetVersion> facetVersionsNeeded;
 	public IProjectFacet javaFacet;
 	public IProjectFacetVersion javaFacetVersion;
 	public IProjectFacet ejbFacet;
+	public IProjectFacetVersion ejbFacetVersion = EJB_FACET_VERSION_WANTED;
 	public IProjectFacet jpaFacet;
 	public IProjectFacetVersion jpaFacetVersion;
 	public IProjectFacet earFacet;

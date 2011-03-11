@@ -1,18 +1,15 @@
 package org.azzyzt.jee.tools.mwe.projectgen.project;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.jst.common.project.facet.core.JavaFacetInstallConfig;
 import org.eclipse.wst.common.project.facet.core.IActionDefinition;
 import org.eclipse.wst.common.project.facet.core.IFacetedProject;
 import org.eclipse.wst.common.project.facet.core.IProjectFacet;
@@ -25,16 +22,18 @@ public class Project {
 	private Context context;
 	private IProject p;
 	private IFacetedProject fp;
-
+	
+	protected Project() { }
+	
 	public Project(String name, Context context)
 	throws CoreException 
 	{
 		this.context = context;
 		
 		p = context.getRoot().getProject(name);
-		IProjectDescription dsc = context.getWorkspace().newProjectDescription(name);
 
 		if (!p.exists()) {
+			IProjectDescription dsc = context.getWorkspace().newProjectDescription(name);
 			p.create(dsc, context.getSubMonitor());
 		}
 		p.open(context.getSubMonitor());
@@ -44,38 +43,6 @@ public class Project {
 		// associate runtime, we need it for all project types
 		fp.setTargetedRuntimes(context.getTargetRuntimes(), null);
 		fp.setPrimaryRuntime(context.getSelectedRuntime(), null);
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public IProject getP() {
-		return p;
-	}
-
-	public void setP(IProject p) {
-		this.p = p;
-	}
-
-	public IFacetedProject getFp() {
-		return fp;
-	}
-
-	public void setFp(IFacetedProject fp) {
-		this.fp = fp;
-	}
-
-	public void setContext(Context context) {
-		this.context = context;
-	}
-
-	public Context getContext() {
-		return context;
 	}
 
 	protected void installFacet(
@@ -90,19 +57,6 @@ public class Project {
 		);
 	}
 	
-	protected void installJavaFacet(String...sourceFolderNames)
-	throws CoreException 
-	{
-		JavaFacetInstallConfig config = (JavaFacetInstallConfig) Project.createConfigObject(context.getFacets().javaFacetVersion);
-		List<IPath> sourceFolderPaths = new ArrayList<IPath>();
-		for (String sourceFolderName : sourceFolderNames) {
-			sourceFolderPaths.add((IPath) new Path(sourceFolderName));
-		}
-		config.setSourceFolders(sourceFolderPaths);
-		
-		installFacet(context.getFacets().javaFacetVersion, config);
-	}
-	
 	protected void installGlassFishFacet() 
 	throws CoreException 
 	{
@@ -115,6 +69,20 @@ public class Project {
 		fp.setFixedProjectFacets(new HashSet<IProjectFacet>(Arrays.asList(facets)));
 	}
 	
+	protected void addMarkerNature(String nature) 
+	throws CoreException 
+	{
+		if (p.hasNature(nature)) return;
+		
+		IProjectDescription projectDescription = p.getDescription();
+		String[] natureIds = projectDescription.getNatureIds();
+		String[] newNatureIds = new String[natureIds.length + 1];
+		System.arraycopy(natureIds, 0, newNatureIds, 1, natureIds.length);
+		newNatureIds[0] = nature;
+		projectDescription.setNatureIds(newNatureIds);
+		p.setDescription(projectDescription, context.getSubMonitor());
+	}
+
 	public static Object createConfigObject(IProjectFacetVersion fv) 
 	throws CoreException 
 	{
@@ -144,4 +112,48 @@ public class Project {
 		return f;
 	}
 
+	protected void installServerSpecificFacets() throws CoreException {
+		if (getContext().getSelectedRuntime().supports(getContext().getFacets().sunFacet)) {
+			installGlassFishFacet();
+		}
+	}
+
+	protected void refresh() 
+	throws CoreException 
+	{
+		p.refreshLocal(IResource.DEPTH_INFINITE, context.getSubMonitor());
+	}
+
+	public String getName() {
+		return name;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public IProject getP() {
+		return p;
+	}
+	
+	public void setP(IProject p) {
+		this.p = p;
+	}
+	
+	public IFacetedProject getFp() {
+		return fp;
+	}
+	
+	public void setFp(IFacetedProject fp) {
+		this.fp = fp;
+	}
+	
+	public void setContext(Context context) {
+		this.context = context;
+	}
+	
+	public Context getContext() {
+		return context;
+	}
 }
+
