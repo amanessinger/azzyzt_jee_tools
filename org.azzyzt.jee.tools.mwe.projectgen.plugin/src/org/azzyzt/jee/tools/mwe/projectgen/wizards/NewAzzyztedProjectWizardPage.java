@@ -3,7 +3,7 @@ package org.azzyzt.jee.tools.mwe.projectgen.wizards;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.azzyzt.jee.tools.mwe.projectgen.workers.AzzyztedProjectParameters;
+import org.azzyzt.jee.tools.mwe.projectgen.project.Context;
 import org.azzyzt.jee.tools.mwe.projectgen.workers.NewAzzyztedProjectWorker;
 import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.viewers.ISelection;
@@ -108,7 +108,7 @@ public class NewAzzyztedProjectWizardPage extends WizardPage {
 		worker = new NewAzzyztedProjectWorker();
 		projectBaseNameText.setText("");
 		packageText.setText("");
-		for (IRuntime r : worker.getParameters().getTargetRuntimes()) {
+		for (IRuntime r : worker.getContext().getTargetRuntimes()) {
 			runtimeMap.put(r.getLocalizedName(), r);
 		}
 		for (String name : runtimeMap.keySet()) {
@@ -122,14 +122,14 @@ public class NewAzzyztedProjectWizardPage extends WizardPage {
 	 * Ensures that parameters are valid
 	 */
 	private void dialogChanged() {
-		AzzyztedProjectParameters parameters = worker.getParameters();
-		parameters.setProjectBaseName(projectBaseNameText.getText());
-		parameters.setPackageName(packageText.getText());
+		Context context = worker.getContext();
+		context.setProjectBaseName(projectBaseNameText.getText());
+		context.setPackageName(packageText.getText());
 		int selectionIndex = runtimes.getSelectionIndex();
 		if (selectionIndex >= 0) {
-			parameters.setSelectedRuntime(runtimeMap.get(runtimes.getItem(selectionIndex)));
+			context.setSelectedRuntime(runtimeMap.get(runtimes.getItem(selectionIndex)));
 		}
-		String errorMsg = parameters.validate();
+		String errorMsg = context.validate();
 		updateStatus(errorMsg);
 	}
 

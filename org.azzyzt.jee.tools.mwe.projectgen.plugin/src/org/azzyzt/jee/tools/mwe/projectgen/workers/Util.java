@@ -60,7 +60,7 @@ public class Util {
 		return new URLClassLoader(items, Object.class.getClassLoader());
 	}
 
-	static Status createErrorStatus(String msg) {
+	public static Status createErrorStatus(String msg) {
 		return new Status(
 				IStatus.ERROR, 
 				Activator.PLUGIN_ID, 
@@ -68,7 +68,7 @@ public class Util {
 				);
 	}
 
-	static CoreException createCoreException(String msg, Throwable cause) {
+	public static CoreException createCoreException(String msg, Throwable cause) {
 		CoreException e = new CoreException(createErrorStatus(msg));
 		try {
 			e.initCause(cause);
@@ -78,12 +78,12 @@ public class Util {
 		return e;
 	}
 
-	static IJavaProject getJavaProject(IProject prj) throws CoreException {
+	public static IJavaProject getJavaProject(IProject prj) throws CoreException {
 		IJavaProject jprj = (IJavaProject)prj.getNature(JavaCore.NATURE_ID);
 		return jprj;
 	}
 
-	static List<URL> computeClassPathForProject(IJavaProject jprj) throws CoreException {
+	public static List<URL> computeClassPathForProject(IJavaProject jprj) throws CoreException {
 		String[] classPath = JavaRuntime.computeDefaultRuntimeClassPath(jprj);
 		
 		List<URL> classPathUrls = new ArrayList<URL>(classPath.length * 2);
@@ -99,12 +99,12 @@ public class Util {
 		return classPathUrls;
 	}
 
-	static List<URL> computeClassPathForProject(IProject prj) throws CoreException {
+	public static List<URL> computeClassPathForProject(IProject prj) throws CoreException {
 		IJavaProject jprj = getJavaProject(prj);
 		return computeClassPathForProject(jprj);
 	}
 
-	static URL[] classPathURLsForToolMainClass(IProject prj)
+	public static URL[] classPathURLsForToolMainClass(IProject prj)
 			throws CoreException {
 		List<URL> classPathUrls = computeClassPathForProject(prj);
 		classPathUrls.add(Activator.getJeeToolsMweJarUrl());
@@ -116,7 +116,7 @@ public class Util {
 		return classPathEntries;
 	}
 	
-	static void appendProjectToClassPath(IJavaProject jprj, IJavaProject jprjAdded) 
+	public static void appendProjectToClassPath(IJavaProject jprj, IJavaProject jprjAdded) 
 	throws CoreException 
 	{
 		try {

@@ -7,11 +7,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import org.azzyzt.jee.tools.mwe.projectgen.Activator;
+import org.azzyzt.jee.tools.mwe.projectgen.project.Context;
+import org.azzyzt.jee.tools.mwe.projectgen.project.Project;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -32,7 +32,6 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jpt.core.JpaPlatform;
 import org.eclipse.jpt.core.JpaProject;
 import org.eclipse.jpt.core.JptCorePlugin;
-import org.eclipse.jst.common.project.facet.core.JavaFacet;
 import org.eclipse.jst.common.project.facet.core.JavaFacetInstallConfig;
 import org.eclipse.jst.j2ee.earcreation.IEarFacetInstallDataModelProperties;
 import org.eclipse.jst.j2ee.ejb.project.operations.IEjbFacetInstallDataModelProperties;
@@ -49,12 +48,10 @@ import org.eclipse.wst.common.componentcore.resources.IVirtualComponent;
 import org.eclipse.wst.common.componentcore.resources.IVirtualReference;
 import org.eclipse.wst.common.frameworks.datamodel.DataModelFactory;
 import org.eclipse.wst.common.frameworks.datamodel.IDataModel;
-import org.eclipse.wst.common.project.facet.core.IActionDefinition;
 import org.eclipse.wst.common.project.facet.core.IFacetedProject;
 import org.eclipse.wst.common.project.facet.core.IProjectFacet;
 import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
 import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
-import org.eclipse.wst.common.project.facet.core.runtime.RuntimeManager;
 
 /**
  * @author advman
@@ -66,103 +63,14 @@ public class NewAzzyztedProjectWorker {
 	
 	private static final String GENERATED_SRC_FOLDER_NAME = "generated";
 
-	public Set<IProjectFacetVersion> facetVersionsNeeded = new HashSet<IProjectFacetVersion>();
-	
-	private static final IProjectFacetVersion ejbFacetVersion = IJ2EEFacetConstants.EJB_31;
+	public static final IProjectFacetVersion ejbFacetVersion = IJ2EEFacetConstants.EJB_31;
 
-	private boolean isValid = false;
-	
-	private IProgressMonitor monitor;
-		
-	private final AzzyztedProjectParameters parameters = new AzzyztedProjectParameters();
-
-	private IProjectFacet javaFacet;
-	private IProjectFacetVersion javaFacetVersion;
-
-	private IProjectFacet ejbFacet;
-	
-	private IProjectFacet jpaFacet;
-	private IProjectFacetVersion jpaFacetVersion;
-
-	private IProjectFacet earFacet;
-	private IProjectFacetVersion earFacetVersion;
-
-	private IProjectFacet utilityFacet;
-	private IProjectFacetVersion utilityFacetVersion;
-
-	private IProjectFacet webFacet;
-	private IProjectFacetVersion webFacetVersion;
-
-	private IProjectFacet sunFacet;
-	private IProjectFacetVersion sunFacetVersion;
-
-	private IStatus errorStatus;
+	private final Context context = new Context();
 
 	public NewAzzyztedProjectWorker() {
-		isValid = successfullyInitialized();
+		context.facets.isValid = context.successfullyInitialized(this);
 	}
 
-	private boolean successfullyInitialized() {
-		
-		if (!successfullyInitializedFacets()) return false;
-
-		if (!successfullyInitializedRuntimes()) return false;
-
-		return true;
-	}
-
-	private boolean successfullyInitializedFacets() {
-		javaFacetVersion = JavaFacet.VERSION_1_6;
-		javaFacet = javaFacetVersion.getProjectFacet();
-		
-		ejbFacet = ejbFacetVersion.getProjectFacet();
-		
-		jpaFacet = ProjectFacetsManager.getProjectFacet(JptCorePlugin.FACET_ID);
-		Set<IProjectFacetVersion> jpaFacetVersions;
-		try {
-			jpaFacetVersions = jpaFacet.getVersions(JptCorePlugin.JPA_FACET_VERSION_2_0);
-			Iterator<IProjectFacetVersion> fvIterator = jpaFacetVersions.iterator();
-			 // we take the first we get, users can always change facet settings later
-			jpaFacetVersion = fvIterator.next();
-		} catch (CoreException e) {
-			errorStatus = e.getStatus();
-			return false;
-		}
-		
-		earFacetVersion = IJ2EEFacetConstants.ENTERPRISE_APPLICATION_60;
-		earFacet = earFacetVersion.getProjectFacet();
-		
-		utilityFacetVersion = IJ2EEFacetConstants.UTILITY_FACET_10;
-		utilityFacet = utilityFacetVersion.getProjectFacet();
-		
-		webFacetVersion = IJ2EEFacetConstants.DYNAMIC_WEB_30;
-		webFacet = webFacetVersion.getProjectFacet();
-		
-		return true;
-	}
-
-	private boolean successfullyInitializedRuntimes() {
-		// We could be more specific, but the rest more or less follows automatically
-		facetVersionsNeeded.add(ejbFacetVersion);
-		facetVersionsNeeded.add(jpaFacetVersion);
-
-		parameters.setTargetRuntimes(RuntimeManager.getRuntimes(facetVersionsNeeded));
-		if (parameters.getTargetRuntimes().isEmpty()) {
-			errorStatus = Util.createErrorStatus("No runtime supporting the needed facets available");
-			return false;
-		}
-		
-		return true;
-	}
-
-	private void initializeRuntimeSpecificFacets() 
-	throws CoreException 
-	{
-		// TODO add support for other JEE 6+ servers
-		sunFacet = ProjectFacetsManager.getProjectFacet("sun.facet");
-		sunFacetVersion = sunFacet.getLatestSupportedVersion(parameters.getSelectedRuntime());
-	}
-	
 	/**
 	 * The main workflow method. It creates all required projects and adds them to an EAR project
 	 * 
@@ -172,11 +80,11 @@ public class NewAzzyztedProjectWorker {
 	public void generate() 
 	throws InterruptedException, CoreException 
 	{
-		initializeRuntimeSpecificFacets();
+		context.initializeRuntimeSpecificFacets(this);
 		
-		if (!isValid) throw new CoreException(errorStatus);
+		if (!context.facets.isValid) throw new CoreException(context.facets.errorStatus);
 		
-		monitor.beginTask("Generating EAR project "+parameters.getEarProjectName(), 100);
+		context.getMonitor().beginTask("Generating EAR project "+context.getEarProjectName(), 100);
 		
 		try {
 			// We crash upon EAR facet creation if the EAR has been created implicitly. Do it now.
@@ -188,20 +96,20 @@ public class NewAzzyztedProjectWorker {
 	
 			advanceProgress(65, "Fixing EJB client project configuration");
 			
-			createSourceFolderIfNeededAndAddToProject(parameters.getEjbClientProjectName(), GENERATED_SRC_FOLDER_NAME);
+			createSourceFolderIfNeededAndAddToProject(context.getEjbClientProjectName(), GENERATED_SRC_FOLDER_NAME);
 	
 			advanceProgress(70, "Creating servlet project");
 			
 			createServletProject(ejbProject);
 		} finally {
-			monitor.done();
+			context.getMonitor().done();
 		}
 	}
 
 	private IProject createEJBProject()
 	throws CoreException, InterruptedException 
 	{
-		IFacetedProject fprj = createFacetedProject(parameters.getEjbProjectName());
+		IFacetedProject fprj = createFacetedProject(context.getEjbProjectName());
 		
 		installJavaFacet(fprj, GENERATED_SRC_FOLDER_NAME);
 	
@@ -217,14 +125,14 @@ public class NewAzzyztedProjectWorker {
 		
 		installServerSpecificFacets(fprj);
 	
-		fixFacets(fprj, javaFacet, ejbFacet);
+		fixFacets(fprj, context.facets.javaFacet, context.facets.ejbFacet);
 		
 		createSubpackages(prj, EJB_SRC_FOLDER_NAME, "entity", "service");
 		
 		buildJavaClass(
 				prj, 
 				EJB_SRC_FOLDER_NAME, 
-				parameters.getPackageName()+".service", 
+				context.getPackageName()+".service", 
 				"org.azzyzt.jee.tools.mwe.builder.HelloServiceBeanBuilder", 
 				"Creating HelloServiceBean"
 		);
@@ -232,7 +140,7 @@ public class NewAzzyztedProjectWorker {
 		buildJavaClass(
 				prj, 
 				GENERATED_SRC_FOLDER_NAME, 
-				parameters.getPackageName()+".entity", 
+				context.getPackageName()+".entity", 
 				"org.azzyzt.jee.tools.mwe.builder.DefaultStandardEntityListenersBuilder", 
 				"Creating initial StandardEntityListeners"
 		);
@@ -247,7 +155,7 @@ public class NewAzzyztedProjectWorker {
 	private IProject createServletProject(IProject ejbProject)
 	throws CoreException, InterruptedException 
 	{
-		IFacetedProject fprj = createFacetedProject(parameters.getServletProjectName());
+		IFacetedProject fprj = createFacetedProject(context.getServletProjectName());
 		
 		installJavaFacet(fprj, "src", GENERATED_SRC_FOLDER_NAME);
 		
@@ -255,7 +163,7 @@ public class NewAzzyztedProjectWorker {
 		
 		installServerSpecificFacets(fprj);
 	
-		fixFacets(fprj, javaFacet, webFacet);
+		fixFacets(fprj, context.facets.javaFacet, context.facets.webFacet);
 		
 		Util.appendProjectToClassPath(Util.getJavaProject(fprj.getProject()), Util.getJavaProject(ejbProject));
 		
@@ -265,7 +173,7 @@ public class NewAzzyztedProjectWorker {
 	private void createEARProject(IProject...projects) 
 	throws CoreException, InterruptedException 
 	{
-		IFacetedProject fprj = createFacetedProject(parameters.getEarProjectName());
+		IFacetedProject fprj = createFacetedProject(context.getEarProjectName());
 		
 		installEARFacet(fprj, projects);
 	
@@ -333,33 +241,33 @@ public class NewAzzyztedProjectWorker {
 		System.arraycopy(natureIds, 0, newNatureIds, 1, natureIds.length);
 		newNatureIds[0] = Activator.AZZYZTED_NATURE_ID;
 		projectDescription.setNatureIds(newNatureIds);
-		prj.setDescription(projectDescription, getSubMonitor());
+		prj.setDescription(projectDescription, context.getSubMonitor());
 	}
 
 	private void installJavaFacet(IFacetedProject fprj, String...sourceFolderNames)
 	throws CoreException 
 	{
-		JavaFacetInstallConfig config = (JavaFacetInstallConfig) createConfigObject(javaFacetVersion);
+		JavaFacetInstallConfig config = (JavaFacetInstallConfig) Project.createConfigObject(context.facets.javaFacetVersion);
 		List<IPath> sourceFolderPaths = new ArrayList<IPath>();
 		for (String sourceFolderName : sourceFolderNames) {
 			sourceFolderPaths.add((IPath) new Path(sourceFolderName));
 		}
 		config.setSourceFolders(sourceFolderPaths);
 		
-		installFacet(fprj, javaFacetVersion, config);
+		installFacet(fprj, context.facets.javaFacetVersion, config);
 	}
 	
 
 	private void installEJBFacet(IFacetedProject fprj) 
 	throws CoreException 
 	{
-		IDataModel config = (IDataModel) createConfigObject(ejbFacetVersion);
+		IDataModel config = (IDataModel) Project.createConfigObject(ejbFacetVersion);
 		config.setBooleanProperty(
 				IJ2EEModuleFacetInstallDataModelProperties.ADD_TO_EAR,
 				Boolean.TRUE);
 		config.setStringProperty(
 				IJ2EEModuleFacetInstallDataModelProperties.EAR_PROJECT_NAME,
-				parameters.getEarProjectName());
+				context.getEarProjectName());
 		config.setBooleanProperty(
 				IEjbFacetInstallDataModelProperties.CREATE_CLIENT,
 				Boolean.TRUE);
@@ -371,39 +279,39 @@ public class NewAzzyztedProjectWorker {
 	private void installUtilityFacet(IFacetedProject fprj) 
 	throws CoreException 
 	{
-		IDataModel config = (IDataModel) createConfigObject(utilityFacetVersion);
+		IDataModel config = (IDataModel) Project.createConfigObject(context.facets.utilityFacetVersion);
 		
 		config.setBooleanProperty(
 				IJ2EEModuleFacetInstallDataModelProperties.ADD_TO_EAR,
 				Boolean.TRUE);
 		config.setStringProperty(
 				IJ2EEModuleFacetInstallDataModelProperties.EAR_PROJECT_NAME,
-				parameters.getEarProjectName());
+				context.getEarProjectName());
 		
-		installFacet(fprj, utilityFacetVersion, config);
+		installFacet(fprj, context.facets.utilityFacetVersion, config);
 	}
 	
 
 	private void installWebFacet(IFacetedProject fprj) 
 	throws CoreException 
 	{
-		IDataModel config = (IDataModel) createConfigObject(webFacetVersion);
+		IDataModel config = (IDataModel) Project.createConfigObject(context.facets.webFacetVersion);
 		
 		config.setBooleanProperty(
 				IJ2EEModuleFacetInstallDataModelProperties.ADD_TO_EAR,
 				Boolean.TRUE);
 		config.setStringProperty(
 				IJ2EEModuleFacetInstallDataModelProperties.EAR_PROJECT_NAME,
-				parameters.getEarProjectName());
+				context.getEarProjectName());
 		
-		installFacet(fprj, webFacetVersion, config);
+		installFacet(fprj, context.facets.webFacetVersion, config);
 	}
 	
 
 	private void installServerSpecificFacets(IFacetedProject fprj)
 	throws CoreException 
 	{
-		if (parameters.getSelectedRuntime().supports(sunFacet)) {
+		if (context.getSelectedRuntime().supports(context.facets.sunFacet)) {
 			installGlassFishFacet(fprj);
 		}
 	}
@@ -412,16 +320,16 @@ public class NewAzzyztedProjectWorker {
 	private void installGlassFishFacet(IFacetedProject fprj) 
 	throws CoreException 
 	{
-		installFacet(fprj, sunFacetVersion, null);
+		installFacet(fprj, context.facets.sunFacetVersion, null);
 	}
 	
 
 	private void installJPAFacet(IFacetedProject fprj) 
 	throws CoreException 
 	{
-		IDataModel config = (IDataModel) createConfigObject(jpaFacetVersion);
+		IDataModel config = (IDataModel) Project.createConfigObject(context.facets.jpaFacetVersion);
 		
-		installFacet(fprj, jpaFacetVersion, config);
+		installFacet(fprj, context.facets.jpaFacetVersion, config);
 
 		/*
 		 *  TODO make sure we get the highest EclipseLink 2.1 ???
@@ -437,7 +345,7 @@ public class NewAzzyztedProjectWorker {
 	private void installEARFacet(IFacetedProject fprj, IProject...projects)
 	throws CoreException 
 	{
-		IDataModel config = (IDataModel) createConfigObject(IJ2EEFacetConstants.ENTERPRISE_APPLICATION_60);
+		IDataModel config = (IDataModel) Project.createConfigObject(IJ2EEFacetConstants.ENTERPRISE_APPLICATION_60);
 	
 		config.setProperty(
 				IEarFacetInstallDataModelProperties.J2EE_PROJECTS_LIST, 
@@ -483,36 +391,25 @@ public class NewAzzyztedProjectWorker {
 	}
 	
 
-	private Object createConfigObject(IProjectFacetVersion fv) 
-	throws CoreException 
-	{
-		IActionDefinition installAction = fv.getActionDefinition(
-				Collections.singleton(fv),
-				IFacetedProject.Action.Type.INSTALL
-		);
-		return installAction.createConfigObject();
-	}
-	
-
 	private IFacetedProject createFacetedProject(String prjName)
 	throws CoreException 
 	{
-		IProject prj = parameters.getRoot().getProject(prjName);
-		IProjectDescription ejbProjectDescription = parameters.getWorkspace()
+		IProject prj = context.getRoot().getProject(prjName);
+		IProjectDescription projectDescription = context.getWorkspace()
 				.newProjectDescription(prj.getName());
 
 		if (!prj.exists()) {
 			// Contained projects will create the EAR project due to a forward reference
-			prj.create(ejbProjectDescription, getSubMonitor());
+			prj.create(projectDescription, context.getSubMonitor());
 		}
-		prj.open(getSubMonitor());
+		prj.open(context.getSubMonitor());
 
 		IFacetedProject factetedPrj = ProjectFacetsManager.create(prj, true,
-				getSubMonitor());
+				context.getSubMonitor());
 
 		// associate runtime, we need it for all project types
-		factetedPrj.setTargetedRuntimes(parameters.getTargetRuntimes(), null);
-		factetedPrj.setPrimaryRuntime(parameters.getSelectedRuntime(), null);
+		factetedPrj.setTargetedRuntimes(context.getTargetRuntimes(), null);
+		factetedPrj.setPrimaryRuntime(context.getSelectedRuntime(), null);
 
 		return factetedPrj;
 	}
@@ -527,23 +424,11 @@ public class NewAzzyztedProjectWorker {
 		fprj.installProjectFacet(
 				facetVersion, 
 				config,
-				getSubMonitor()
+				context.getSubMonitor()
 		);
 	}
 	
 	
-	private IProgressMonitor getSubMonitor() {
-		/*
-		 * TODO this constant actually does not make sense. Read it as "some".
-		 * Individually adjust it, depending upon the ticks of the main sub-tasks
-		 * and the number of invocations. Or live with the mess. Progress reporting
-		 * is a mess anyway. 
-		 */
-		return new SubProgressMonitor(monitor, 2);
-		//return null; // TODO read http://www.eclipse.org/resources/resource.php?id=139 and do the right thing :) 
-	}
-	
-
 	private void fixFacets(IFacetedProject fprj, IProjectFacet...facets) 
 	throws CoreException 
 	{
@@ -552,7 +437,7 @@ public class NewAzzyztedProjectWorker {
 	
 
 	private void refresh(IProject prj) throws CoreException {
-		prj.refreshLocal(IResource.DEPTH_INFINITE, getSubMonitor());
+		prj.refreshLocal(IResource.DEPTH_INFINITE, context.getSubMonitor());
 	}
 	
 
@@ -581,7 +466,7 @@ public class NewAzzyztedProjectWorker {
 		IClasspathEntry[] newClasspath = new IClasspathEntry[rawClasspath.length + 1];
 		newClasspath[0] = classpathEntry;
 		System.arraycopy(rawClasspath, 0, newClasspath, 1, rawClasspath.length);
-		jprj.setRawClasspath(newClasspath, getSubMonitor());
+		jprj.setRawClasspath(newClasspath, context.getSubMonitor());
 	}
 	
 
@@ -597,7 +482,7 @@ public class NewAzzyztedProjectWorker {
 			throws CoreException {
 		IFolder f = prj.getFolder(path);
 		if (!f.exists()) {
-			f.create(true, true, getSubMonitor());
+			f.create(true, true, context.getSubMonitor());
 		}
 		return f;
 	}
@@ -610,8 +495,8 @@ public class NewAzzyztedProjectWorker {
 		IPath absEjbSrcPath = prj.getFolder(srcFolderName).getFullPath();
 		IPackageFragmentRoot ejbPackageFragmentRoot = jprj.findPackageFragmentRoot(absEjbSrcPath);
 		for (String subPackage : Arrays.asList(pkgNames)) {
-			String pkgName = String.format("%s.%s", parameters.getPackageName(), subPackage);
-			ejbPackageFragmentRoot.createPackageFragment(pkgName, true, getSubMonitor());
+			String pkgName = String.format("%s.%s", context.getPackageName(), subPackage);
+			ejbPackageFragmentRoot.createPackageFragment(pkgName, true, context.getSubMonitor());
 		}
 	}
 	
@@ -620,14 +505,14 @@ public class NewAzzyztedProjectWorker {
 	throws IOException, CoreException 
 	{
 		InputStream in = content.openConnection().getInputStream();
-		iContainer.getFile(new Path(fileName)).create(in, true, getSubMonitor());
+		iContainer.getFile(new Path(fileName)).create(in, true, context.getSubMonitor());
 	}
 	
 
 	private IProject openExistingProject(String prjName) 
 	throws CoreException 
 	{
-		IProject prj = parameters.getRoot().getProject(prjName);
+		IProject prj = context.getRoot().getProject(prjName);
 		if (!prj.exists()) {
 			IStatus status = new Status(
 					IStatus.ERROR, 
@@ -636,7 +521,7 @@ public class NewAzzyztedProjectWorker {
 					);
 			throw new CoreException(status);
 		}
-		prj.open(getSubMonitor());
+		prj.open(context.getSubMonitor());
 		return prj;
 	}
 	
@@ -644,6 +529,7 @@ public class NewAzzyztedProjectWorker {
 	private void advanceProgress(int amountFinished, String nowBeginning) 
 	throws InterruptedException 
 	{
+		IProgressMonitor monitor = context.getMonitor();
 		if (monitor.isCanceled()) {
 			monitor.done();
 			throw new InterruptedException();
@@ -676,18 +562,12 @@ public class NewAzzyztedProjectWorker {
 	}
 
 	public boolean isValid() {
-		return isValid;
+		return context.facets.isValid;
 	}
 	
 
-	public AzzyztedProjectParameters getParameters() {
-		return parameters;
+	public Context getContext() {
+		return context;
 	}
-	
-
-	public void setMonitor(IProgressMonitor monitor) {
-		this.monitor = monitor;
-	}
-
 
 }

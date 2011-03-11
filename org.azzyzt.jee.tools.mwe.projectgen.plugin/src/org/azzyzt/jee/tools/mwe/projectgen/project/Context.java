@@ -1,15 +1,25 @@
-package org.azzyzt.jee.tools.mwe.projectgen.workers;
+package org.azzyzt.jee.tools.mwe.projectgen.project;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.azzyzt.jee.tools.mwe.projectgen.workers.Facets;
+import org.azzyzt.jee.tools.mwe.projectgen.workers.NewAzzyztedProjectWorker;
+import org.azzyzt.jee.tools.mwe.projectgen.workers.Util;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.wst.common.project.facet.core.IProjectFacetVersion;
+import org.eclipse.wst.common.project.facet.core.ProjectFacetsManager;
 import org.eclipse.wst.common.project.facet.core.runtime.IRuntime;
+import org.eclipse.wst.common.project.facet.core.runtime.RuntimeManager;
 
-public class AzzyztedProjectParameters {
+public class Context {
 	
 	public static final String PROJECT_SUFFIX_SERVLETS = "Servlets";
 	public static final String PROJECT_SUFFIX_EJB_CLIENT = "EJBClient";
@@ -26,8 +36,10 @@ public class AzzyztedProjectParameters {
 	private IRuntime selectedRuntime;
 	private IWorkspace workspace;
 	private IWorkspaceRoot root;
+	private IProgressMonitor monitor = null;
+	public Facets facets = new Facets(new HashSet<IProjectFacetVersion>(), false);
 	
-	public AzzyztedProjectParameters() {
+	public Context() {
 		workspace = ResourcesPlugin.getWorkspace();
 		root = workspace.getRoot();
 	}
@@ -135,5 +147,55 @@ public class AzzyztedProjectParameters {
 
 	public IWorkspace getWorkspace() {
 		return workspace;
+	}
+
+	public IProgressMonitor getMonitor() {
+		return monitor;
+	}
+
+	public void setMonitor(IProgressMonitor monitor) {
+		this.monitor = monitor;
+	}
+
+	public IProgressMonitor getSubMonitor() {
+		/*
+		 * TODO this constant actually does not make sense. Read it as "some".
+		 * Individually adjust it, depending upon the ticks of the main sub-tasks
+		 * and the number of invocations. Or live with the mess. Progress reporting
+		 * is a mess anyway. 
+		 */
+		return new SubProgressMonitor(monitor, 2);
+		//return null; // TODO read http://www.eclipse.org/resources/resource.php?id=139 and do the right thing :) 
+	}
+
+	public boolean successfullyInitializedRuntimes(NewAzzyztedProjectWorker newAzzyztedProjectWorker) {
+		// We could be more specific, but the rest more or less follows automatically
+		facets.facetVersionsNeeded.add(NewAzzyztedProjectWorker.ejbFacetVersion);
+		facets.facetVersionsNeeded.add(facets.jpaFacetVersion);
+	
+		setTargetRuntimes(RuntimeManager.getRuntimes(facets.facetVersionsNeeded));
+		if (getTargetRuntimes().isEmpty()) {
+			facets.errorStatus = Util.createErrorStatus("No runtime supporting the needed facets available");
+			return false;
+		}
+		
+		return true;
+	}
+
+	public void initializeRuntimeSpecificFacets(NewAzzyztedProjectWorker newAzzyztedProjectWorker) 
+	throws CoreException 
+	{
+		// TODO add support for other JEE 6+ servers
+		facets.sunFacet = ProjectFacetsManager.getProjectFacet("sun.facet");
+		facets.sunFacetVersion = facets.sunFacet.getLatestSupportedVersion(getSelectedRuntime());
+	}
+
+	public boolean successfullyInitialized(NewAzzyztedProjectWorker newAzzyztedProjectWorker) {
+		
+		if (!facets.successfullyInitializedFacets(newAzzyztedProjectWorker)) return false;
+	
+		if (!successfullyInitializedRuntimes(newAzzyztedProjectWorker)) return false;
+	
+		return true;
 	}
 }

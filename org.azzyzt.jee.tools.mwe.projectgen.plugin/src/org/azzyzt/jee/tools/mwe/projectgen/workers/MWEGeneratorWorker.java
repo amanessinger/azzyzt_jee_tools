@@ -2,6 +2,7 @@ package org.azzyzt.jee.tools.mwe.projectgen.workers;
 
 import java.net.URL;
 
+import org.azzyzt.jee.tools.mwe.projectgen.project.Context;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
@@ -26,7 +27,7 @@ public class MWEGeneratorWorker {
 			 * TODO fix this to use a plugin setting stored with the project
 			 */
 			String prjName = prj.getName();
-			String ejbSuffix = AzzyztedProjectParameters.PROJECT_SUFFIX_EJB;
+			String ejbSuffix = Context.PROJECT_SUFFIX_EJB;
 			if (!prjName.endsWith(ejbSuffix)) {
 				throw Util.createCoreException(
 						"The project name does not end with \""
@@ -35,8 +36,8 @@ public class MWEGeneratorWorker {
 				);
 			}
 			String stem = prjName.substring(0, prjName.length() - 3);
-			AzzyztedProjectParameters projectParameters = new AzzyztedProjectParameters();
-			projectParameters.setProjectBaseName(stem);
+			Context context = new Context();
+			context.setProjectBaseName(stem);
 			
 			URL[] classPathEntries = Util.classPathURLsForToolMainClass(prj);
 			String fqMainClassName = "org.azzyzt.jee.tools.mwe.StandardProjectStructureGenerator";
@@ -49,8 +50,8 @@ public class MWEGeneratorWorker {
 			Util.callExternalMainClass("Generate code from entities", classPathEntries, fqMainClassName, args);
 			monitor.worked(60);
 			
-			for (String name : projectParameters.allProjectNames()) {
-				IProject project = projectParameters.getRoot().getProject(name);
+			for (String name : context.allProjectNames()) {
+				IProject project = context.getRoot().getProject(name);
 				project.refreshLocal(IResource.DEPTH_INFINITE, new SubProgressMonitor(monitor, 10));
 			}
 		} finally {
