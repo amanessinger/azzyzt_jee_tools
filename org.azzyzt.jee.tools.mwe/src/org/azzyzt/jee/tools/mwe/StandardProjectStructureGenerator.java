@@ -39,10 +39,10 @@ public class StandardProjectStructureGenerator {
         }
         MetaModel entityModel = embf.build(parameters);
 		
-        SingleTargetsGeneratorFeature eaoGen = new SingleTargetsGeneratorFeature(entityModel);
-        parameters = eaoGen.getParameters();
+        SingleTargetsGeneratorFeature singleTargetsGen = new SingleTargetsGeneratorFeature(entityModel);
+        parameters = singleTargetsGen.getParameters();
         parameters.byName(SingleTargetsGeneratorFeature.SOURCE_FOLDER).setValue(ejbSourceFolder);
-		numberOfSourcesGenerated = eaoGen.generate(parameters);
+		numberOfSourcesGenerated = singleTargetsGen.generate(parameters);
 		logger.info(numberOfSourcesGenerated+" eao files generated");
 		
 		DtoGeneratorFeature dtoGen = new DtoGeneratorFeature(entityModel);

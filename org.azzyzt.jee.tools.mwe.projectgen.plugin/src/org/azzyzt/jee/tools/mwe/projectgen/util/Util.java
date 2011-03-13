@@ -1,4 +1,4 @@
-package org.azzyzt.jee.tools.mwe.projectgen.workers;
+package org.azzyzt.jee.tools.mwe.projectgen.util;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -22,7 +22,7 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.launching.JavaRuntime;
 
 public class Util {
-
+	
 	public static void callExternalMainClass(
 			String jobTitle,
 			final URL[] classPathEntries, 
