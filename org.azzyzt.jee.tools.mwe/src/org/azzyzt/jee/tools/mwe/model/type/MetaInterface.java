@@ -19,7 +19,7 @@ public class MetaInterface extends MetaDeclaredType {
 			String packageName, String simpleName) {
 		MetaType metaType = MetaTypeRegistry.metaTypeForName(createFqName(packageName, simpleName));
 		MetaInterface result = (MetaInterface)metaType;
-		if (result == null || !(result instanceof MetaInterface)) {
+		if (result == null) {
 			result = new MetaInterface(clazz, packageName, simpleName);
 			result.postConstructionAnalysis();
 		}

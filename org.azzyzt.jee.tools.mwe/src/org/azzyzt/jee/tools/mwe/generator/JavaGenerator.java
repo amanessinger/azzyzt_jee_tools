@@ -9,7 +9,6 @@ import org.antlr.stringtemplate.CommonGroupLoader;
 import org.antlr.stringtemplate.StringTemplate;
 import org.antlr.stringtemplate.StringTemplateGroup;
 import org.antlr.stringtemplate.StringTemplateGroupLoader;
-
 import org.azzyzt.jee.tools.mwe.exception.ToolError;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
 import org.azzyzt.jee.tools.mwe.model.type.MetaClass;
@@ -32,7 +31,6 @@ public class JavaGenerator extends SourceGenerator {
     public int generate() {
 		int numberOfSourcesGenerated = 0;
         for (MetaDeclaredType mdt : getModel().getTargetMetaDeclaredTypes()) {
-        	getProgress().advance(mdt);
         	String dtSource = null;
         	if (mdt instanceof MetaClass) {
 				dtSource = generateSourceFileContent(mdt, "class");
@@ -74,7 +72,7 @@ public class JavaGenerator extends SourceGenerator {
 		}
 		FileWriter writer = null;
 		try {
-			targetFile.createNewFile();
+			targetFile.createNewFile(); // FindBugs RV_RETURN_VALUE_IGNORED_BAD_PRACTICE OK
 			writer = new FileWriter(targetFile);
 			writer.write(content);
 			writer.close();

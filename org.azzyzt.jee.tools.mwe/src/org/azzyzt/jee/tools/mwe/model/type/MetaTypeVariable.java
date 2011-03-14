@@ -4,7 +4,7 @@ public class MetaTypeVariable extends MetaType {
 
 	public static MetaTypeVariable forName(String name) {
 		MetaTypeVariable result = (MetaTypeVariable)MetaTypeRegistry.metaTypeForName(name);
-		if (result == null || !(result instanceof MetaTypeVariable)) {
+		if (result == null) {
 			result = new MetaTypeVariable(name);
 		}
 		return result;

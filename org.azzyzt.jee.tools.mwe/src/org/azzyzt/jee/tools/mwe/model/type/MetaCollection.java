@@ -33,7 +33,7 @@ public class MetaCollection extends MetaAssemblage {
 		String shortTypeParameters = shortArguments.toString();
 		String theFqName = MetaDeclaredType.createFqName(packageName, simpleName+typeParameters);
 		MetaCollection result = (MetaCollection)MetaTypeRegistry.metaTypeForName(theFqName);
-		if (result == null || !(result instanceof MetaCollection)) {
+		if (result == null) {
 			result = new MetaCollection(packageName, simpleName, metaRawtype, typeParameters, shortTypeParameters, argumentTypes);
 		}
 		return result;

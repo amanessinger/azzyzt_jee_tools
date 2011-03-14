@@ -10,7 +10,6 @@ public abstract class SourceGenerator {
 
 	private MetaModel model;
 	private String sourceFolder;
-	private ProgressIndicator progress;
 	private File absoluteSourceFolder;
 	protected String stringTemplateGroup;
 	protected Log logger;
@@ -19,7 +18,6 @@ public abstract class SourceGenerator {
 		this.model = model;
 		this.stringTemplateGroup = stringTemplateGroup;
 		this.logger = logger;
-		this.progress = new ProgressIndicator(model); // TODO pass progress indicator in via constructor
 		setSourceFolder(sourceFolder);
 	}
 	
@@ -42,10 +40,6 @@ public abstract class SourceGenerator {
 
 	protected String getSourceFolder() {
 		return sourceFolder;
-	}
-
-	protected ProgressIndicator getProgress() {
-		return progress;
 	}
 
 	public void setAbsoluteSourceFolder(File absoluteSourceFolder) {

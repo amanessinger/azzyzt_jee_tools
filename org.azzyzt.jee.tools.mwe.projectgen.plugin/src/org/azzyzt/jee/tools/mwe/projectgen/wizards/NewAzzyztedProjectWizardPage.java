@@ -37,6 +37,7 @@ public class NewAzzyztedProjectWizardPage extends WizardPage {
 	
 	private SortedMap<String, IRuntime> runtimeMap = new TreeMap<String, IRuntime>();
 
+	@SuppressWarnings("unused")
 	private ISelection selection;
 
 	/**
@@ -48,7 +49,7 @@ public class NewAzzyztedProjectWizardPage extends WizardPage {
 		super("wizardPage");
 		setTitle("Structured JEE Project");
 		setDescription("This wizard creates a new structured JEE project consisting of EAR, EJB, EJB client and WAR.");
-		this.selection = selection;
+		this.selection = selection; // FindBugs unused warning OK
 	}
 
 	/**

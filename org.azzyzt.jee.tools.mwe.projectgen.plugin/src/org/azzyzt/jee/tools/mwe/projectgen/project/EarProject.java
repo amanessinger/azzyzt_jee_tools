@@ -24,13 +24,18 @@ import org.eclipse.wst.common.componentcore.datamodel.FacetInstallDataModelProvi
 import org.eclipse.wst.common.componentcore.datamodel.FacetProjectCreationDataModelProvider;
 import org.eclipse.wst.common.componentcore.datamodel.properties.IFacetDataModelProperties;
 import org.eclipse.wst.common.componentcore.datamodel.properties.IFacetProjectCreationDataModelProperties;
-import org.eclipse.wst.common.componentcore.internal.resources.VirtualArchiveComponent;
 import org.eclipse.wst.common.componentcore.resources.IVirtualComponent;
 import org.eclipse.wst.common.componentcore.resources.IVirtualReference;
 import org.eclipse.wst.common.frameworks.datamodel.DataModelFactory;
 import org.eclipse.wst.common.frameworks.datamodel.IDataModel;
 
 public class EarProject extends Project {
+
+	/*
+	 *  defined but not accessible in 
+	 *  org.eclipse.wst.common.componentcore.internal.resources.VirtualArchiveComponent.LIBARCHIVETYPE
+	 */
+	private static final String LIBARCHIVETYPE = "lib";
 
 	public static EarProject create(String name, Context context, Project...projects) 
 	throws CoreException 
@@ -128,7 +133,7 @@ public class EarProject extends Project {
 		IVirtualComponent jarCmp;
 		IVirtualReference jarRef;
 
-		handlePrfx = VirtualArchiveComponent.LIBARCHIVETYPE + IPath.SEPARATOR
+		handlePrfx = LIBARCHIVETYPE + IPath.SEPARATOR
 				+ getP().getName() + IPath.SEPARATOR + "lib" + IPath.SEPARATOR;
 		jarCmp = ComponentCore.createArchiveComponent(getP(), handlePrfx + Activator.JEE_RUNTIME_JAR);
 		jarRef = ComponentCore.createReference(earCmp, jarCmp, new Path("/lib"));
@@ -136,7 +141,7 @@ public class EarProject extends Project {
 			references.add(jarRef);
 		}
 		
-		handlePrfx = VirtualArchiveComponent.LIBARCHIVETYPE + IPath.SEPARATOR
+		handlePrfx = LIBARCHIVETYPE + IPath.SEPARATOR
 				+ getP().getName() + IPath.SEPARATOR + "lib" + IPath.SEPARATOR;
 		jarCmp = ComponentCore.createArchiveComponent(getP(), handlePrfx + Activator.JEE_RUNTIME_SITE_JAR);
 		jarRef = ComponentCore.createReference(earCmp, jarCmp, new Path("/lib"));

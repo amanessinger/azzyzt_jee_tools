@@ -1,9 +1,12 @@
 package org.azzyzt.jee.tools.mwe.projectgen.util;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.security.AccessController;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.security.PrivilegedAction;
 
 class MainRunner implements Runnable {
 	
@@ -35,12 +38,26 @@ class MainRunner implements Runnable {
 			params[0] = args;
 			params[1] = log;
 			main.invoke(null, params);
-		} catch (Exception e) {
-			// TODO do something
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
 		}
 	}
 	
-	public static ClassLoader createClassLoader(URL[] items) {
-		return new URLClassLoader(items, Object.class.getClassLoader());
+	public static ClassLoader createClassLoader(final URL[] items) {
+		return AccessController.doPrivileged(new PrivilegedAction<URLClassLoader>() {
+			public URLClassLoader run() {
+				return new URLClassLoader(items, Object.class.getClassLoader());
+			}
+		});
 	}
 }

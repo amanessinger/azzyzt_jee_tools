@@ -8,7 +8,7 @@ public class MetaClassClass extends MetaType {
 	public static MetaClassClass forMetaType(MetaType argumentType) {
 		String name = "Class<"+argumentType.getName()+">";
 		MetaClassClass result = (MetaClassClass)MetaTypeRegistry.metaTypeForName(name);
-		if (result == null || !(result instanceof MetaClassClass)) {
+		if (result == null) {
 			String shortTypeParameter = argumentType.getShortName();
 			result = new MetaClassClass(name, shortTypeParameter);
 		}

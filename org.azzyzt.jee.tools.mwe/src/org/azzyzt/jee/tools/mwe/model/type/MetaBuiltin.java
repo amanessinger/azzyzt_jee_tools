@@ -6,7 +6,7 @@ public class MetaBuiltin extends MetaType {
 	
 	public static MetaBuiltin forName(String name) {
 		MetaBuiltin result = (MetaBuiltin)MetaTypeRegistry.metaTypeForName(name);
-		if (result == null || !(result instanceof MetaBuiltin)) {
+		if (result == null) {
 			result = new MetaBuiltin(name);
 		}
 		return result;

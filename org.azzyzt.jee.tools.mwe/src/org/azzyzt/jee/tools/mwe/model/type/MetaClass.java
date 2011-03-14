@@ -40,7 +40,7 @@ public class MetaClass extends MetaDeclaredType {
 	protected static MetaClass getOrConstruct(Class<?> clazz, String packageName,
 			String simpleName) {
 		MetaClass result = (MetaClass)MetaTypeRegistry.metaTypeForName(createFqName(packageName, simpleName));
-		if (result == null || !(result instanceof MetaClass)) {
+		if (result == null) {
 			result = new MetaClass(clazz, packageName, simpleName);
 			result.postConstructionAnalysis();
 		}

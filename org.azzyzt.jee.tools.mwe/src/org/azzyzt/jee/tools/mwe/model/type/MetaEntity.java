@@ -46,7 +46,7 @@ public class MetaEntity extends MetaClass {
 	protected static MetaEntity getOrConstruct(Class<?> clazz,
 			String packageName, String simpleName) {
 		MetaEntity result = (MetaEntity)MetaTypeRegistry.metaTypeForName(createFqName(packageName, simpleName));
-		if (result == null || !(result instanceof MetaEntity)) {
+		if (result == null) {
 			result = new MetaEntity(clazz, packageName, simpleName);
 			result.postConstructionAnalysis();
 		}

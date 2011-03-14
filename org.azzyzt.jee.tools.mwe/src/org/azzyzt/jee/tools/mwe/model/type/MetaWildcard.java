@@ -12,7 +12,7 @@ public class MetaWildcard extends MetaType {
 
 	public static MetaWildcard forName(String name) {
 		MetaWildcard result = (MetaWildcard)MetaTypeRegistry.metaTypeForName(name);
-		if (result == null || !(result instanceof MetaWildcard)) {
+		if (result == null) {
 			result = new MetaWildcard(name);
 		}
 		return result;

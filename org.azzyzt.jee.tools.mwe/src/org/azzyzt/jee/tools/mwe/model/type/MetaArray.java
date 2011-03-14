@@ -4,7 +4,7 @@ public class MetaArray extends MetaAssemblage {
 
 	public static MetaArray forName(String name) {
 		MetaArray result = (MetaArray)MetaTypeRegistry.metaTypeForName(name);
-		if (result == null || !(result instanceof MetaArray)) {
+		if (result == null) {
 			result = new MetaArray(name);
 		}
 		return result;

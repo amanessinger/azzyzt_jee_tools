@@ -28,7 +28,7 @@ public class MetaEnum extends MetaClass {
 	protected static MetaEnum getOrConstruct(Class<?> clazz,
 			String packageName, String simpleName) {
 		MetaEnum result = (MetaEnum)MetaTypeRegistry.metaTypeForName(createFqName(packageName, simpleName));
-		if (result == null || !(result instanceof MetaEnum)) {
+		if (result == null) {
 			result = new MetaEnum(clazz, packageName, simpleName);
 			result.postConstructionAnalysis();
 		}

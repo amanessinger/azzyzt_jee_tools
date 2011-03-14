@@ -103,7 +103,7 @@ public class MetaAnnotation extends MetaDeclaredType {
 			String packageName, String simpleName) {
 		MetaType metaType = MetaTypeRegistry.metaTypeForName(createFqName(packageName, simpleName));
 		MetaAnnotation result = (MetaAnnotation)metaType;
-		if (result == null || !(result instanceof MetaAnnotation)) {
+		if (result == null) {
 			result = new MetaAnnotation(clazz, packageName, simpleName);
 			result.postConstructionAnalysis();
 		}
