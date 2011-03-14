@@ -1,12 +1,11 @@
 package org.azzyzt.jee.tools.mwe.projectgen.util;
 
 import java.io.File;
-import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.azzyzt.jee.tools.mwe.projectgen.Activator;
 import org.eclipse.core.resources.IProject;
@@ -23,6 +22,8 @@ import org.eclipse.jdt.launching.JavaRuntime;
 
 public class Util {
 	
+	protected static final long POLL_FEEDBACK_INTERVAL_MILLIS = 100;
+
 	public static void callExternalMainClass(
 			String jobTitle,
 			final URL[] classPathEntries, 
@@ -35,29 +36,42 @@ public class Util {
 			
 			@Override
 			public IStatus run(IProgressMonitor monitor) {
-				ClassLoader newLoader = createClassLoader(classPathEntries);
-				
 				try {
-					Class<?> clazz = Class.forName(fqMainClassName, true, newLoader);
-					Method main = clazz.getMethod("main", String[].class);
-					Object[] params = new Object[1];
-					params[0] = args;
-					main.invoke(null, params);
+					ConcurrentLinkedQueue<String> log = new ConcurrentLinkedQueue<String>();
+					MainRunner r = new MainRunner(classPathEntries, fqMainClassName, args, log);
+					Thread t = new Thread(r);
+					t.start();
+					while (t.getState() != Thread.State.TERMINATED) {
+						Thread.sleep(POLL_FEEDBACK_INTERVAL_MILLIS);
+						reportQueuedMessages(monitor, log);
+					}
+					reportQueuedMessages(monitor, log);
+					
 				} catch (Exception e) {
 					return new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Call to "+fqMainClassName+" failed", e);
 				}
 
 				return Status.OK_STATUS;
 			}
+
+			protected void reportQueuedMessages(
+					IProgressMonitor monitor,
+					ConcurrentLinkedQueue<String> log) 
+			{
+				String msg;
+				while ((msg = log.poll()) != null) {
+					monitor.worked(1);
+					monitor.subTask(msg);
+					if (msg.startsWith("!!")) {
+						System.err.println("WARNING: "+msg);
+					}
+				}
+			}
 			
 		};
 		job.setUser(false);
 		job.schedule();
 		job.join();
-	}
-
-	public static ClassLoader createClassLoader(URL[] items) {
-		return new URLClassLoader(items, Object.class.getClassLoader());
 	}
 
 	public static Status createErrorStatus(String msg) {

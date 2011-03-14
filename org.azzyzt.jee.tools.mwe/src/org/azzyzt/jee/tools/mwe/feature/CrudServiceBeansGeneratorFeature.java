@@ -6,14 +6,15 @@ import org.azzyzt.jee.tools.mwe.builder.CrudServiceRestrictedBeansModelBuilder;
 import org.azzyzt.jee.tools.mwe.builder.CrudServiceRestrictedInterfaceModelBuilder;
 import org.azzyzt.jee.tools.mwe.generator.JavaGenerator;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
+import org.azzyzt.jee.tools.mwe.util.Log;
 
 public class CrudServiceBeansGeneratorFeature extends GeneratorFeature {
 
 	public static final String SOURCE_FOLDER_EJB_PROJECT = "Source Folder (EJB Project)";
 	public static final String SOURCE_FOLDER_CLIENT_PROJECT = "Source Folder (Client Project)";
 
-	public CrudServiceBeansGeneratorFeature(MetaModel entityModel) {
-		super(entityModel);
+	public CrudServiceBeansGeneratorFeature(MetaModel entityModel, Log logger) {
+		super(entityModel, logger);
 	}
 
 	@Override
@@ -32,22 +33,22 @@ public class CrudServiceBeansGeneratorFeature extends GeneratorFeature {
 		sourceFolder = (String)parameters.byName(SOURCE_FOLDER_CLIENT_PROJECT).getValue();
 		
 		MetaModel targetModel = new CrudServiceFullInterfaceModelBuilder(getModel(), null).build();
-		JavaGenerator targetGen = new JavaGenerator(targetModel, sourceFolder, "javaCrudServiceFullGroup");
+		JavaGenerator targetGen = new JavaGenerator(targetModel, sourceFolder, "javaCrudServiceFullGroup", logger);
 		numberOfSourcesGenerated = targetGen.generate();
 		
 		targetModel = new CrudServiceRestrictedInterfaceModelBuilder(getModel(), null).build();
-		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaCrudServiceRestrictedGroup");
+		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaCrudServiceRestrictedGroup", logger);
 		numberOfSourcesGenerated += targetGen.generate();
 		
 		sourceFolder = (String)parameters.byName(SOURCE_FOLDER_EJB_PROJECT).getValue();
 		
 		targetModel = new CrudServiceFullBeansModelBuilder(getModel(), null).build();
-		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaCrudServiceFullGroup");
+		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaCrudServiceFullGroup", logger);
 		targetGen.setGenerateGettersSetters(false);
 		numberOfSourcesGenerated += targetGen.generate();
 		
 		targetModel = new CrudServiceRestrictedBeansModelBuilder(getModel(), null).build();
-		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaCrudServiceRestrictedGroup");
+		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaCrudServiceRestrictedGroup", logger);
 		targetGen.setGenerateGettersSetters(false);
 		numberOfSourcesGenerated += targetGen.generate();
 		

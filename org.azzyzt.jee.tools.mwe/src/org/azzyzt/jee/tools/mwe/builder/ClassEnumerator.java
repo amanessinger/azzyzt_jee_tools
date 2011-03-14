@@ -6,7 +6,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -14,16 +13,13 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
+import org.azzyzt.jee.tools.mwe.exception.ToolError;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import org.azzyzt.jee.tools.mwe.exception.ToolError;
-
 public class ClassEnumerator {
 
-	private static Logger logger = Logger.getLogger(ClassEnumerator.class.getPackage().getName());
-	
     public static final String PERSISTENCE_UNIT_WILDCARD = "*";
 
     private String persistenceUnitName = PERSISTENCE_UNIT_WILDCARD;
@@ -59,7 +55,6 @@ public class ClassEnumerator {
                 NodeList nodes = (NodeList) xpath.evaluate(
                         expr, doc,
                         XPathConstants.NODESET);
-                logger.info("Found " + nodes.getLength() + " classes");
 
                 for (int i = 0; i < nodes.getLength(); i++) {
                     classes.add(nodes.item(i).getNodeValue());

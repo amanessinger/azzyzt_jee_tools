@@ -3,13 +3,14 @@ package org.azzyzt.jee.tools.mwe.feature;
 import org.azzyzt.jee.tools.mwe.builder.EntityDtoConverterModelBuilder;
 import org.azzyzt.jee.tools.mwe.generator.JavaGenerator;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
+import org.azzyzt.jee.tools.mwe.util.Log;
 
 public class EntityDtoConverterGeneratorFeature extends GeneratorFeature {
 
 	public static final String SOURCE_FOLDER = "Source Folder";
 
-	public EntityDtoConverterGeneratorFeature(MetaModel entityModel) {
-		super(entityModel);
+	public EntityDtoConverterGeneratorFeature(MetaModel entityModel, Log logger) {
+		super(entityModel, logger);
 	}
 
 	@Override
@@ -27,7 +28,7 @@ public class EntityDtoConverterGeneratorFeature extends GeneratorFeature {
 		sourceFolder = (String)parameters.byName(SOURCE_FOLDER).getValue();
 		
 		MetaModel targetModel = new EntityDtoConverterModelBuilder(getModel(), null).build();
-		JavaGenerator targetGen = new JavaGenerator(targetModel, sourceFolder, "javaEntityToDtoConverterGroup");
+		JavaGenerator targetGen = new JavaGenerator(targetModel, sourceFolder, "javaEntityToDtoConverterGroup", logger);
 		targetGen.setGenerateGettersSetters(false);
 		numberOfSourcesGenerated = targetGen.generate();
 		

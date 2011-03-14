@@ -10,14 +10,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
-import java.util.logging.Logger;
 
 import org.azzyzt.jee.tools.mwe.exception.ToolError;
 import org.azzyzt.jee.tools.mwe.model.annotation.MetaAnnotation;
 
 public abstract class MetaType {
-
-	public static Logger logger = Logger.getLogger(MetaType.class.getPackage().getName());
 
 	private static final MetaStandardDefs standardTypes = new MetaStandardDefs();
 	
@@ -30,9 +27,6 @@ public abstract class MetaType {
 	private Set<MetaType> subtypes = new HashSet<MetaType>();
 
 	public static MetaType forType(Type type) {
-		logger.fine("getting MetaType for type "+type);
-		
-		MetaType result = null;
 		
 		// types come in various guises, thus we instantiate them later
 		boolean isBuiltin = false;
@@ -51,21 +45,16 @@ public abstract class MetaType {
 		
 		MetaType arrayComponentMetaType = null;
 		
-		logger.finest("type = " + type);
-		
 		if (type instanceof GenericArrayType) {
 			// this is a special kind of array holding parametrized types like List<String> or Class<?>
-			logger.finest(type+" is GenericArrayType");
 			isArray = true;
 			GenericArrayType gat = (GenericArrayType)type;
 			Type componentType = gat.getGenericComponentType();
 			arrayComponentMetaType = forType(componentType);
 			simpleName = type.toString();
 		} else if (type instanceof TypeVariable<?>) {
-			logger.finest(type+" is TypeVariable<?>");
 			return MetaTypeVariable.forName(type.toString());
 		} else if (type instanceof Class<?>) {
-			logger.finest(type+" is Class<?>");
 			Class<?> clazz = (Class<?>)type;
 			Package itsPackage = clazz.getPackage();
 			simpleName = clazz.getSimpleName();
@@ -81,37 +70,28 @@ public abstract class MetaType {
 			} else if (clazz.isInterface()) {
 				isInterface = true;
 			} else if (MetaEntity.isEntity(clazz)) {
-				logger.finest(clazz+" is an entity class");
 				isEntity = true;
 			} else if (packageName == null && !isArray) {
-				logger.finest(clazz+" is a builtin");
 				isBuiltin = true;
 			} else if (clazz.isEnum()) {
-				logger.finest(clazz+" is an enum");
 				isEnum = true;
 			} else {
-				logger.finest(type+" is normal class "
-						+packageName+"."+simpleName);
 				isClass = true;
 			}
 		} else if (type instanceof WildcardType) {
-			logger.finest(type+" is WildcardType");
 			WildcardType wct = (WildcardType)type;
 			simpleName = wct.toString();
 			MetaWildcard metaWildcard = new MetaWildcard(simpleName);
 			for (Type ub : wct.getUpperBounds()) {
-				logger.finest("    "+ub+" is upper bound");
 				MetaType metaUb = forType(ub);
 				metaWildcard.addUpperBound(metaUb);
 			}
 			for (Type lb : wct.getLowerBounds()) {
-				logger.finest("    "+lb+" is lower bound");
 				MetaType metaLb = forType(lb);
 				metaWildcard.addLowerBound(metaLb);
 			}
 			return metaWildcard;
 		} else if (type instanceof ParameterizedType) {
-			logger.finest(type+" is ParameterizedType");
 			ParameterizedType pt = (ParameterizedType) type;
 			Type rawType = pt.getRawType();
 			rawTypeClass = (Class<?>)rawType;
@@ -120,19 +100,14 @@ public abstract class MetaType {
 			if (itsPackage != null) {
 				packageName = itsPackage.getName();
 			}
-			logger.finest("raw type: " + rawType);
-			logger.finest("owner type: " + pt.getOwnerType());
-			logger.finest("actual type args:");
 			Type[] actualTypeArguments = pt.getActualTypeArguments();
 			
 			// special-case Class<?>
 			if (rawType.equals(java.lang.Class.class)) {
-				logger.finest(type+" is Class<?>");
 				if (actualTypeArguments.length > 1) {
 					throw new ToolError(type+" should be Class<?> and can't have more than one type argument, can it?");
 				}
 				Type t = actualTypeArguments[0];
-				logger.finest("    " + t);
 				MetaType metaArgumentType = forType(t);
 				MetaClassClass metaClassClass = MetaClassClass.forMetaType(metaArgumentType);
 				return metaClassClass;
@@ -140,7 +115,6 @@ public abstract class MetaType {
 
 			// get type parameters
 			for (Type t : actualTypeArguments) {
-				logger.finest("    " + t);
 				MetaType metaArgumentType = forType(t);
 				metaArgumentTypes.add(metaArgumentType);
 			}
@@ -150,7 +124,6 @@ public abstract class MetaType {
 					|| java.util.Collection.class.isAssignableFrom(rawTypeClass) 
 					|| java.util.Map.class.isAssignableFrom(rawTypeClass)
 			) {
-				logger.finest(type+" is Collection");
 				MetaDeclaredType metaRawtype = (MetaDeclaredType)forType(rawTypeClass);
 				MetaCollection metaCollection = MetaCollection.forNameAndMetaTypes(
 						packageName, simpleName, metaRawtype, metaArgumentTypes
@@ -162,13 +135,10 @@ public abstract class MetaType {
 			if (rawTypeClass.isAnnotation()) {
 				throw new ToolError("This can't happen: an annotation cannot be parametrized");
 			} else if (rawTypeClass.isInterface()) {
-				logger.finest(type+" is a parametrized interface");
 				isInterface = true;
 			} else if (MetaEntity.isEntity(rawTypeClass)) {
-				logger.finest(type+" is a parametrized entity class");
 				isEntity = true;
 			} else {
-				logger.finest(type+" is a parametrized normal class");
 				isClass = true;
 			}
 		}
@@ -178,7 +148,6 @@ public abstract class MetaType {
 			return metaBuiltin;
 		} else if (isEntity) {
 			Class<?> typeToUse = (rawTypeClass != null ? rawTypeClass : (Class<?>)type);
-			logger.info("entity typeToUse = "+typeToUse);
 			MetaDeclaredType metaEntity = MetaEntity.getOrConstruct(typeToUse, packageName, simpleName);
 			metaEntity.setMetaArgumentTypes(metaArgumentTypes);
 			return metaEntity;
@@ -204,12 +173,9 @@ public abstract class MetaType {
 			MetaArray metaArray = MetaArray.forName(arrayComponentMetaType.getName()+"[]");
 			metaArray.addMemberType(arrayComponentMetaType);
 			return metaArray;
+		} else {
+			throw new ToolError("MetaType for type "+type+" not yet implemented");
 		}
-		
-		if (result == null) {
-			logger.warning("MetaType for type "+type+" not yet implemented");
-		}
-		return result;
 	}
 	
 	protected MetaType(String name) {

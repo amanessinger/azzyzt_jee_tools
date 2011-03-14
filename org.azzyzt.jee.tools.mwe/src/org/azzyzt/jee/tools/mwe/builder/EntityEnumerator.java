@@ -8,7 +8,6 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -16,16 +15,13 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
+import org.azzyzt.jee.tools.mwe.exception.ToolError;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import org.azzyzt.jee.tools.mwe.exception.ToolError;
-
 public class EntityEnumerator implements TargetEnumerator {
 
-	private static Logger logger = Logger.getLogger(EntityEnumerator.class.getPackage().getName());
-	
     public static final String PERSISTENCE_UNIT_WILDCARD = "*";
 
     private String persistenceUnitName = PERSISTENCE_UNIT_WILDCARD;
@@ -60,7 +56,6 @@ public class EntityEnumerator implements TargetEnumerator {
         		NodeList nodes = (NodeList) xpath.evaluate(
         				expr, doc,
         				XPathConstants.NODESET);
-        		logger.info("Found " + nodes.getLength() + " classes");
         		
         		for (int i = 0; i < nodes.getLength(); i++) {
         			fullyQualifiedTargetNames.add(nodes.item(i).getNodeValue());

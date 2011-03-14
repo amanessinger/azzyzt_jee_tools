@@ -1,14 +1,11 @@
 package org.azzyzt.jee.tools.mwe.builder;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
 
 public class EntityModelBuilder {
 
-	public static Logger logger = Logger.getLogger(EntityModelBuilder.class.getPackage().getName());
-	
 	private TargetEnumerator enumerator;
 
     public EntityModelBuilder() {

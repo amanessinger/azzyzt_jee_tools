@@ -10,7 +10,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Logger;
 
 import org.azzyzt.jee.tools.mwe.exception.ToolError;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
@@ -18,8 +17,6 @@ import org.azzyzt.jee.tools.mwe.model.MetaModel;
 
 public class MetaClass extends MetaDeclaredType {
 	
-	public static Logger logger = Logger.getLogger(MetaClass.class.getPackage().getName());
-
 	private boolean isSerialVersionNeeded = false;
 	
 	private boolean isImplicitlyImported = false;
@@ -80,7 +77,6 @@ public class MetaClass extends MetaDeclaredType {
 	}
 	
 	private void analyzeInterfaces(Class<?> clazz) {
-		logger.info("analyzing interfaces that class "+getFqName()+" implements");
 		Type[] types = clazz.getGenericInterfaces();
 		for (Type t : types) {
 			MetaInterface metaInterface = (MetaInterface)MetaInterface.forType(t);
@@ -90,12 +86,10 @@ public class MetaClass extends MetaDeclaredType {
 	}
 	
 	public void analyzeFields(Class<?> clazz) {
-		logger.info("analyzing fields of class "+getFqName());
 		Field[] fields = clazz.getDeclaredFields();
 		for (Field fld : fields) {
 			if (Modifier.isStatic(fld.getModifiers()) 
 					&& ! MetaModel.getCurrentModel().isIncludingStaticFields()) {
-				logger.info("skipping static field "+fld);
 				continue;
 			}
 			analyzeField(fld);
@@ -104,7 +98,6 @@ public class MetaClass extends MetaDeclaredType {
 
 	public MetaField analyzeField(Field fld) {
 		String fieldName = fld.getName();
-		logger.fine("analyzing field " + fieldName);
 		
 		MetaField mf = newMetaField(fieldName);
 		Type type = fld.getGenericType();
@@ -113,7 +106,6 @@ public class MetaClass extends MetaDeclaredType {
 		
 		int mod = fld.getModifiers();
 		mf.setModifiers(mod);
-		logger.finest("modifiers = " + mf.getModifiers().toString());
 	
 		mf.processAnnotations(fld);
 		return mf;

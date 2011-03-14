@@ -2,7 +2,6 @@ package org.azzyzt.jee.tools.mwe.model.type;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.persistence.Entity;
 
@@ -11,8 +10,6 @@ import org.azzyzt.jee.tools.mwe.model.association.MetaAssociationEndpoint;
 
 public class MetaEntity extends MetaClass {
 
-	public static Logger logger = Logger.getLogger(MetaEntity.class.getPackage().getName());
-	
 	private List<MetaAssociationEndpoint> associationEndpoints;
 	private MetaField idField;
 	private MetaEntityField createUserField;

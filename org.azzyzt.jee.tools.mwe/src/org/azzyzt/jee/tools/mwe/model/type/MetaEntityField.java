@@ -2,7 +2,6 @@ package org.azzyzt.jee.tools.mwe.model.type;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.util.logging.Logger;
 
 import javax.persistence.EmbeddedId;
 import javax.persistence.Id;
@@ -25,8 +24,6 @@ import org.azzyzt.jee.tools.mwe.model.association.MetaOneToOne;
 
 public class MetaEntityField extends MetaField {
 
-	public static Logger logger = Logger.getLogger(MetaEntityField.class.getPackage().getName());
-	
 	private boolean isIdField = false;
 	private boolean isInternal = false;
 	private boolean isCreateUserField = false;
@@ -84,7 +81,6 @@ public class MetaEntityField extends MetaField {
 		super.processAnnotations(fld);
 		for (Annotation fa : fld.getAnnotations()) {
 			// We could use the already constructed MetaAnnotationInstances, but this is easier
-			logger.finest(fa.toString());
 			MetaEntity metaEntity = (MetaEntity)getOwnerMdt();
 			if (fa.annotationType().equals(Internal.class)) {
 				setInternal(true);
@@ -92,7 +88,6 @@ public class MetaEntityField extends MetaField {
 				// we need this to be a String
 				if (! isStringField() ) {
 					String msg = "Field attributed with @CreateUser must be a string";
-					logger.warning(msg);
 					throw new ToolError(msg);
 				}
 				metaEntity.setCreateUserField(this);
@@ -102,7 +97,6 @@ public class MetaEntityField extends MetaField {
 				// we need this to be a String
 				if (! isStringField() ) {
 					String msg = "Field attributed with @ModificationUser must be a string";
-					logger.warning(msg);
 					throw new ToolError(msg);
 				}
 				metaEntity.setModificationUserField(this);
@@ -116,7 +110,6 @@ public class MetaEntityField extends MetaField {
 					createTimestampFormat = tst.format();
 					if (createTimestampFormat == null || createTimestampFormat.isEmpty()) {
 						String msg = "Field attributed with @CreateTimestamp needs timestamp format";
-						logger.warning(msg);
 						throw new ToolError(msg);
 					}
 				} else if (isDateField() || isCalendarField()) 
@@ -124,7 +117,6 @@ public class MetaEntityField extends MetaField {
 					// nothing to do
 				} else {
 					String msg = "Field attributed with @CreateTimestamp must be a String, Date or Calendar";
-					logger.warning(msg);
 					throw new ToolError(msg);
 				}
 				metaEntity.setCreateTimestampField(this);
@@ -137,7 +129,6 @@ public class MetaEntityField extends MetaField {
 					modificationTimestampFormat = tst.format();
 					if (modificationTimestampFormat == null || modificationTimestampFormat.isEmpty()) {
 						String msg = "Field attributed with @ModificationTimestamp needs timestamp format";
-						logger.warning(msg);
 						throw new ToolError(msg);
 					}
 				} else if (isDateField() || isCalendarField()) 
@@ -145,7 +136,6 @@ public class MetaEntityField extends MetaField {
 					// nothing to do
 				} else {
 					String msg = "Field attributed with @ModificationTimestamp must be a String, Date or Calendar";
-					logger.warning(msg);
 					throw new ToolError(msg);
 				}
 				metaEntity.setModificationTimestampField(this);
@@ -175,8 +165,6 @@ public class MetaEntityField extends MetaField {
 		    }
 		    if (associationEndpoint != null) {
 		    	metaEntity.addAssociationEndpoint(associationEndpoint);
-		    	logger.info(metaEntity.getShortName()+" is associated with "+associationEndpoint.getTargetEntity().getShortName()
-		    			+" via "+associationEndpoint.getClass().getSimpleName());
 		    }
 		}
 	}

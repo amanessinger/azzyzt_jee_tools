@@ -15,6 +15,7 @@ import org.azzyzt.jee.tools.mwe.model.MetaModel;
 import org.azzyzt.jee.tools.mwe.model.type.MetaClass;
 import org.azzyzt.jee.tools.mwe.model.type.MetaDeclaredType;
 import org.azzyzt.jee.tools.mwe.model.type.MetaInterface;
+import org.azzyzt.jee.tools.mwe.util.Log;
 import org.azzyzt.jee.tools.mwe.util.StringUtils;
 
 public class JavaGenerator extends SourceGenerator {
@@ -23,8 +24,8 @@ public class JavaGenerator extends SourceGenerator {
 	private boolean generateGettersSetters = true;
 	private boolean generateDefaultConstructor = true;
 	
-	public JavaGenerator(MetaModel model, String sourceFolder, String stringTemplateGroup) {
-        super(model, sourceFolder, stringTemplateGroup);
+	public JavaGenerator(MetaModel model, String sourceFolder, String stringTemplateGroup, Log logger) {
+        super(model, sourceFolder, stringTemplateGroup, logger);
     }
 
 	@Override
@@ -41,10 +42,6 @@ public class JavaGenerator extends SourceGenerator {
         	}
         	
         	writeTargetFile(mdt, dtSource);
-        	
-        	System.out.println("--8<--------------------------------------------------------------------------------------");
-        	System.out.println(dtSource);
-        	System.out.println("--8<--------------------------------------------------------------------------------------\n\n");
         	
         	numberOfSourcesGenerated++;
         }
@@ -65,7 +62,7 @@ public class JavaGenerator extends SourceGenerator {
 				if (!dir.mkdir()) {
 					throw new ToolError("Can't create directory "+dir.getAbsolutePath());
 				}
-				logger.info("created directory "+dir.getAbsolutePath());
+				logger.log("created directory "+dir.getAbsolutePath());
 			}
 		}
 		File targetFile = new File(dir.getAbsolutePath()+"/"+filePart);
@@ -73,7 +70,7 @@ public class JavaGenerator extends SourceGenerator {
 			if (!targetFile.delete()) {
 				throw new ToolError("Can't delete old file "+targetFile.getAbsolutePath());
 			}
-			logger.info("deleted old file "+targetFile.getAbsolutePath());
+			logger.log("deleted old file "+targetFile.getAbsolutePath());
 		}
 		FileWriter writer = null;
 		try {
@@ -81,7 +78,7 @@ public class JavaGenerator extends SourceGenerator {
 			writer = new FileWriter(targetFile);
 			writer.write(content);
 			writer.close();
-			logger.info("wrote target file "+targetFile.getAbsolutePath());
+			logger.log("wrote target file "+targetFile.getAbsolutePath());
 		} catch (IOException e) {
 			throw new ToolError(e);
 		}

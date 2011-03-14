@@ -48,7 +48,6 @@ public class StartMWEGeneratorAction implements IObjectActionDelegate {
 		}
 		TreeSelection ts = (TreeSelection)selection;
 		Object element = ts.getFirstElement();
-		System.err.println(element.getClass().getCanonicalName());
 		IProject prj = (IProject)element;
 		try {
 			if (prj.hasNature(Activator.AZZYZTED_NATURE_ID)) {
@@ -92,7 +91,6 @@ public class StartMWEGeneratorAction implements IObjectActionDelegate {
 	 */
 	public void selectionChanged(IAction action, ISelection selection) {
 		this.selection = selection;
-		System.err.println("Selection is on "+selection.toString());
 	}
 
 }

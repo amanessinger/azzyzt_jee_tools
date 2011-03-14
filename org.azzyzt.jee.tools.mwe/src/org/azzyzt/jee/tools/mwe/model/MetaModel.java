@@ -6,17 +6,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
-import java.util.logging.Logger;
 
 import org.azzyzt.jee.tools.mwe.exception.ToolError;
-import org.azzyzt.jee.tools.mwe.model.type.MetaClass;
 import org.azzyzt.jee.tools.mwe.model.type.MetaDeclaredType;
 import org.azzyzt.jee.tools.mwe.model.type.MetaEntity;
 import org.azzyzt.jee.tools.mwe.model.type.MetaType;
 
 public class MetaModel {
-	
-	public static Logger logger = Logger.getLogger(MetaClass.class.getPackage().getName());
 	
 	private static MetaModel currentModel = null;
 	

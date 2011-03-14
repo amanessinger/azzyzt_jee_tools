@@ -154,7 +154,6 @@ public abstract class MetaDeclaredType extends MetaType implements Comparable<Me
 	}
 
 	protected void analyzeMethods(Class<?> clazz) {
-		logger.info("analyzing methods of "+getFqName());
 		Method[] methods = clazz.getDeclaredMethods();
 		for (Method mth : methods) {
 			analyzeMethod(mth);
@@ -163,7 +162,6 @@ public abstract class MetaDeclaredType extends MetaType implements Comparable<Me
 
 	private void analyzeMethod(Method mth) {
 		String methodName = mth.getName();
-		logger.fine("analyzing method " + methodName);
 		MetaMethod mm = newMetaMethod(methodName);
 		Type returnType = mth.getGenericReturnType();
 		MetaType returnMetaType = MetaType.forType(returnType);
