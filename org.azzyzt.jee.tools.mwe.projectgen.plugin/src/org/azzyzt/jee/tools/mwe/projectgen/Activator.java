@@ -61,7 +61,11 @@ public class Activator extends AbstractUIPlugin {
 		 * plugin.xml. Delete the structured project, create anew and it works. 
 		 * 
 		 */
-		JptCorePlugin.getJpaProjectManager();
+		try {
+			JptCorePlugin.getJpaProjectManager();
+		} catch (NoSuchMethodError e) {
+			// TODO check if we need this in Eclipse < Helios
+		}
 		
 		if (!successfullyInitializedLibraryJarUrls()) {
 			throw new Exception("Couldn't initialize library JAR URLs"); // TODO any better idea?
