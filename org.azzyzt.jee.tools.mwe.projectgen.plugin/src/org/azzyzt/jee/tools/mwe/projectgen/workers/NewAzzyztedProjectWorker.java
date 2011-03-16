@@ -34,7 +34,7 @@ public class NewAzzyztedProjectWorker {
 		context.initializeRuntimeSpecificFacets();
 		context.setCreateEjbClient(true);
 		
-		if (!context.isValid()) throw new CoreException(context.getFacets().errorStatus);
+		if (!context.isValid()) throw new CoreException(context.getErrorStatus());
 		
 		context.getMonitor().beginTask("Generating EAR project "+context.getEarProjectName(), 100);
 		

@@ -113,7 +113,7 @@ public class Project {
 	}
 
 	protected void installServerSpecificFacets() throws CoreException {
-		if (getContext().getSelectedRuntime().supports(getContext().getFacets().sunFacet)) {
+		if (getContext().getFacets().sunFacetVersion != null) {
 			installGlassFishFacet();
 		}
 	}

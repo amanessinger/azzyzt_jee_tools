@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.azzyzt.jee.mwe.magwien.feature_1.0.0.201103141127.jar" id="org.azzyzt.jee.mwe.magwien.feature" version="1.0.0.201103141127"/>
+   <feature url="features/org.azzyzt.jee.mwe.magwien.feature_1.0.0.201103161528.jar" id="org.azzyzt.jee.mwe.magwien.feature" version="1.0.0.201103161528">
+      <category name="org.azzyzt.jee.tools.mwe"/>
+   </feature>
+   <category-def name="org.azzyzt.jee.tools.mwe" label="Azzyzt">
+      <description>
+         Tools for creating azzyzted projects and generating code from JPA entity classes.
+      </description>
+   </category-def>
 </site>

@@ -64,7 +64,7 @@ public class EarProject extends Project {
 				iProjects[i] = projects[i].getP();
 			}
 		}
-		IDataModel config = (IDataModel) createConfigObject(IJ2EEFacetConstants.ENTERPRISE_APPLICATION_60);
+		IDataModel config = (IDataModel) createConfigObject(getContext().getFacets().earFacetVersion);
 		
 		config.setProperty(
 				IEarFacetInstallDataModelProperties.J2EE_PROJECTS_LIST, 
@@ -106,7 +106,7 @@ public class EarProject extends Project {
 				master
 		);
 	
-		installFacet(IJ2EEFacetConstants.ENTERPRISE_APPLICATION_60, config);
+		installFacet(getContext().getFacets().earFacetVersion, config);
 	}
 
 	private void installRuntimeLibsIntoEar() 
