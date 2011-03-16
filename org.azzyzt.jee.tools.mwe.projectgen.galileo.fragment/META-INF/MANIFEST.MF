@@ -1,8 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Azzyzt JEE facets for Galileo
-Bundle-SymbolicName: org.azzyzt.jee.tools.mwe.projectgen.galileo.fragment
-Bundle-Version: 1.0.0.qualifier
-Fragment-Host: org.azzyzt.jee.tools.mwe.projectgen.plugin;bundle-version="1.0.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Bundle-ClassPath: lib/org.azzyzt.jee.tools.mwe.projectgen.eclipse.dependent.jar
