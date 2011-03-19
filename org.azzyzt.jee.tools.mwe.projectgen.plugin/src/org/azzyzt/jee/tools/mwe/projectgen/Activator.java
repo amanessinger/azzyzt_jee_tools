@@ -1,12 +1,14 @@
 package org.azzyzt.jee.tools.mwe.projectgen;
 
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jpt.core.JptCorePlugin;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -61,10 +63,23 @@ public class Activator extends AbstractUIPlugin {
 		 * plugin.xml. Delete the structured project, create anew and it works. 
 		 * 
 		 */
+		Class<?> jpaPlugin = null;
+		for (String name : Arrays.asList(
+				"org.eclipse.jpt.jpa.core.JptJpaCorePlugin", // introduced with Indigo
+				"org.eclipse.jpt.core.JptCorePlugin"         // Galileo and Helios
+				)) {
+			try {
+				jpaPlugin = Class.forName(name);
+				break;
+			} catch (ClassNotFoundException ex) {
+				continue;
+			}
+		}
 		try {
-			JptCorePlugin.getJpaProjectManager();
-		} catch (NoSuchMethodError e) {
-			// TODO check if we need this in Eclipse < Helios
+			Method m = jpaPlugin.getMethod("getJpaProjectManager", (Class<?>[])null);
+			m.invoke(null, (Object[])null);
+		} catch (NoSuchMethodException e) {
+			// Galileo does not have this method at all, but does not need the call either 
 		}
 		
 		if (!successfullyInitializedLibraryJarUrls()) {
@@ -90,6 +105,14 @@ public class Activator extends AbstractUIPlugin {
 		return plugin;
 	}
 
+	public void log(String msg) {
+		log(msg, null);
+	}
+	
+	public void log(String msg, Exception e) {
+		getLog().log(new Status(Status.INFO, PLUGIN_ID, Status.OK, msg, e));
+	}
+	   
 	/**
 	 * Returns an image descriptor for the image file at the given
 	 * plug-in relative path

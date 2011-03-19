@@ -62,9 +62,7 @@ public class Util {
 				while ((msg = log.poll()) != null) {
 					monitor.worked(1);
 					monitor.subTask(msg);
-					if (msg.startsWith("!!")) {
-						System.err.println("WARNING: "+msg);
-					}
+					Activator.getDefault().log(msg);
 				}
 			}
 			

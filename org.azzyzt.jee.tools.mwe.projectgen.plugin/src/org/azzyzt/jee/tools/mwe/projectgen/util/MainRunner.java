@@ -8,6 +8,8 @@ import java.security.AccessController;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.security.PrivilegedAction;
 
+import org.azzyzt.jee.tools.mwe.projectgen.Activator;
+
 class MainRunner implements Runnable {
 	
 	private ConcurrentLinkedQueue<String> log;
@@ -31,6 +33,7 @@ class MainRunner implements Runnable {
 	public void run() {
 		ClassLoader newLoader = createClassLoader(classPathEntries);
 		
+		String errMsg = "Invoking sideEntrance on class "+fqMainClassName+" failed";
 		try {
 			Class<?> clazz = Class.forName(fqMainClassName, true, newLoader);
 			Method main = clazz.getMethod("sideEntrance", String[].class, ConcurrentLinkedQueue.class);
@@ -39,17 +42,17 @@ class MainRunner implements Runnable {
 			params[1] = log;
 			main.invoke(null, params);
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			Activator.getDefault().log(errMsg, e);
 		} catch (SecurityException e) {
-			e.printStackTrace();
+			Activator.getDefault().log(errMsg, e);
 		} catch (NoSuchMethodException e) {
-			e.printStackTrace();
+			Activator.getDefault().log(errMsg, e);
 		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
+			Activator.getDefault().log(errMsg, e);
 		} catch (IllegalAccessException e) {
-			e.printStackTrace();
+			Activator.getDefault().log(errMsg, e);
 		} catch (InvocationTargetException e) {
-			e.printStackTrace();
+			Activator.getDefault().log(errMsg, e);
 		}
 	}
 	

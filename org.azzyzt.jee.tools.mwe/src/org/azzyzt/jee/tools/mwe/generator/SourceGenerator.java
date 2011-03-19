@@ -31,7 +31,6 @@ public abstract class SourceGenerator {
         File sourceFolderDir = new File(sourceFolder);
         if (sourceFolderDir.isDirectory()) {
         	setAbsoluteSourceFolder(sourceFolderDir.getAbsoluteFile());
-        	logger.log("Generating in "+getAbsoluteSourceFolder());
         } else {
         	throw new ToolError("Source folder "+sourceFolder+" is no directory");
         }

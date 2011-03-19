@@ -1,7 +1,8 @@
 package org.azzyzt.jee.tools.mwe.projectgen.project;
 
+import java.lang.reflect.Field;
+
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jpt.core.JptCorePlugin;
 import org.eclipse.jst.common.project.facet.core.JavaFacet;
 import org.eclipse.jst.j2ee.project.facet.IJ2EEFacetConstants;
 import org.eclipse.wst.common.project.facet.core.IProjectFacet;
@@ -24,7 +25,7 @@ public class Facets {
 	public IProjectFacet ejbFacet = IJ2EEFacetConstants.EJB_FACET;
 	public IProjectFacetVersion ejbFacetVersion = EJB_MINIMUM_FACET_VERSION_WANTED;
 	
-	public IProjectFacet jpaFacet = ProjectFacetsManager.getProjectFacet(JptCorePlugin.FACET_ID);
+	public IProjectFacet jpaFacet;
 	public IProjectFacetVersion jpaFacetVersion;
 	
 	public IProjectFacet earFacet = IJ2EEFacetConstants.ENTERPRISE_APPLICATION_FACET;
@@ -46,12 +47,29 @@ public class Facets {
 	{
 		javaFacetVersion = javaFacet.getLatestSupportedVersion(selectedRuntime);
 		ejbFacetVersion = ejbFacet.getLatestSupportedVersion(selectedRuntime);
+
+		Class<?> jpaPlugin = null;
+		try {
+			jpaPlugin = Class.forName("org.eclipse.jpt.jpa.core.JpaFacet"); // introduced with Indigo
+			Field f = jpaPlugin.getField("FACET");
+			jpaFacet = (IProjectFacet) f.get(null);
+		} catch (Exception ex) { }
+		if (jpaFacet == null) {
+			try {
+				jpaPlugin = Class.forName("org.eclipse.jpt.core.JptCorePlugin"); // introduced with Indigo
+				Field f = jpaPlugin.getField("FACET_ID");
+				String facetId = (String) f.get(null);
+				jpaFacet = ProjectFacetsManager.getProjectFacet(facetId);
+			} catch (Exception ex) { }
+		}
 		jpaFacetVersion = jpaFacet.getLatestSupportedVersion(selectedRuntime);
+		
 		earFacetVersion = earFacet.getLatestSupportedVersion(selectedRuntime);		
 		utilityFacetVersion = utilityFacet.getLatestSupportedVersion(selectedRuntime);
 		webFacetVersion = webFacet.getLatestSupportedVersion(selectedRuntime);
 		
 		try {
+
 			// TODO add support for other JEE 6+ servers
 			sunFacet = ProjectFacetsManager.getProjectFacet("sun.facet");
 			if (selectedRuntime.supports(sunFacet)) {

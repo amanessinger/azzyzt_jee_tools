@@ -79,7 +79,7 @@ public class StandardProjectStructureGenerator {
 		parameters = restGen.getParameters();
         parameters.byName(CrudServiceRESTGeneratorFeature.SOURCE_FOLDER).setValue(restSourceFolder);
         numberOfSourcesGenerated = restGen.generate(parameters);
-        logger.log(numberOfSourcesGenerated+" REST wrapper");
+        logger.log(numberOfSourcesGenerated+" REST wrapper files generated");
 	}
 
 }

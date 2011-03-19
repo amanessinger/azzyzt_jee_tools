@@ -60,7 +60,6 @@ public class JavaGenerator extends SourceGenerator {
 				if (!dir.mkdir()) {
 					throw new ToolError("Can't create directory "+dir.getAbsolutePath());
 				}
-				logger.log("created directory "+dir.getAbsolutePath());
 			}
 		}
 		File targetFile = new File(dir.getAbsolutePath()+"/"+filePart);
@@ -68,7 +67,6 @@ public class JavaGenerator extends SourceGenerator {
 			if (!targetFile.delete()) {
 				throw new ToolError("Can't delete old file "+targetFile.getAbsolutePath());
 			}
-			logger.log("deleted old file "+targetFile.getAbsolutePath());
 		}
 		FileWriter writer = null;
 		try {
@@ -76,7 +74,6 @@ public class JavaGenerator extends SourceGenerator {
 			writer = new FileWriter(targetFile);
 			writer.write(content);
 			writer.close();
-			logger.log("wrote target file "+targetFile.getAbsolutePath());
 		} catch (IOException e) {
 			throw new ToolError(e);
 		}
