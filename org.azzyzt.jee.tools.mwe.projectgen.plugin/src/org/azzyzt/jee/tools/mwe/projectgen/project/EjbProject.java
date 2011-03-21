@@ -28,6 +28,7 @@ public class EjbProject extends JavaProject {
 		installEJBFacet(ear);
 		installJpaFacet();
 		installServerSpecificFacets();
+		moveJreToEndOfClassPath();
 		fixFacets(context.getFacets().javaFacet, context.getFacets().ejbFacet);
 		createSubpackages(EJB_SRC_FOLDER_NAME, "entity", "service");
 		
@@ -78,6 +79,7 @@ public class EjbProject extends JavaProject {
 			client = JavaProject.asJavaProject(cp);
 			client.createFolderPathIfNeeded(GENERATED_SRC_FOLDER_NAME);
 			client.addFolderToClassPath(createFolderPathIfNeeded(GENERATED_SRC_FOLDER_NAME));
+			client.moveJreToEndOfClassPath();
 		}
 	}
 	

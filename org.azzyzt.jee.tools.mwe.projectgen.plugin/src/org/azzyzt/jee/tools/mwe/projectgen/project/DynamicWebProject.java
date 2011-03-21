@@ -22,6 +22,7 @@ public class DynamicWebProject extends JavaProject {
 		installWebFacet(ear);
 		installServerSpecificFacets();
 		fixFacets(context.getFacets().javaFacet, context.getFacets().webFacet);
+		moveJreToEndOfClassPath();
 	}
 	
 	private void installWebFacet(EarProject ear) 

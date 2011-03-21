@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.azzyzt.jee.tools.mwe.projectgen.Activator;
 import org.azzyzt.jee.tools.mwe.projectgen.util.Util;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
@@ -101,6 +102,31 @@ public class JavaProject extends Project {
 		jp.setRawClasspath(newClasspath, getContext().getSubMonitor());
 	}
 
+	protected void moveJreToEndOfClassPath() 
+	throws JavaModelException 
+	{
+		IClasspathEntry[] rawClasspath = jp.getRawClasspath();
+		IClasspathEntry[] newRawClassPath = new IClasspathEntry[rawClasspath.length];
+		for (int i = 0, offset = 0; i < rawClasspath.length; i++) {
+			IClasspathEntry cpe = rawClasspath[i];
+			if (cpe.getEntryKind() == IClasspathEntry.CPE_CONTAINER
+					&& cpe.getPath().toString().startsWith("org.eclipse.jdt.launching.JRE_CONTAINER")) {
+				if (newRawClassPath[rawClasspath.length - 1] == null) {
+					newRawClassPath[rawClasspath.length - 1] = cpe;
+					offset = 1;
+				} else {
+					Activator.getDefault().log(
+							"Project "+getP().getName()+" has more than one JRE class path entry!!"
+					);
+					newRawClassPath[i - offset] = cpe;
+				}
+			} else {
+				newRawClassPath[i - offset] = cpe;
+			}
+		}
+		jp.setRawClasspath(newRawClassPath, null);
+	}
+	
 	protected void createSourceFolderIfNeededAndAddToProject(String folderName) 
 	throws CoreException, JavaModelException 
 	{
