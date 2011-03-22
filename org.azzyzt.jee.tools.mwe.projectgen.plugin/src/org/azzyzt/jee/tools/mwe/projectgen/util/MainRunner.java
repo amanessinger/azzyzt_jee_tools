@@ -36,10 +36,18 @@ class MainRunner implements Runnable {
 		String errMsg = "Invoking sideEntrance on class "+fqMainClassName+" failed";
 		try {
 			Class<?> clazz = Class.forName(fqMainClassName, true, newLoader);
-			Method main = clazz.getMethod("sideEntrance", String[].class, ConcurrentLinkedQueue.class);
-			Object[] params = new Object[2];
-			params[0] = args;
-			params[1] = log;
+			Method main = null;
+			Object[] params;
+			try {
+				main = clazz.getMethod("sideEntrance", String[].class, ConcurrentLinkedQueue.class);
+				params = new Object[2];
+				params[0] = args;
+				params[1] = log;
+			} catch (NoSuchMethodException nsm) {
+				main = clazz.getMethod("main", String[].class);
+				params = new Object[1];
+				params[0] = args;
+			}
 			main.invoke(null, params);
 		} catch (ClassNotFoundException e) {
 			Activator.getDefault().log(errMsg, e);

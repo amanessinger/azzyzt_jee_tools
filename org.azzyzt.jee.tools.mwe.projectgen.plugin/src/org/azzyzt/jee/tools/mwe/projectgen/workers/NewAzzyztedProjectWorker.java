@@ -36,9 +36,11 @@ public class NewAzzyztedProjectWorker {
 		
 		if (!context.isValid()) throw new CoreException(context.getErrorStatus());
 		
-		context.getMonitor().beginTask("Generating EAR project "+context.getEarProjectName(), 100);
+		context.getMonitor().beginTask("Generating azzyzted project "+context.getEarProjectName(), 100);
 		
 		try {
+			advanceProgress(0, "Create EAR project");
+			
 			// We crash upon EAR facet creation if the EAR has been created implicitly. Do it now.
 			EarProject ear = EarProject.create(context.getEarProjectName(), context, (Project[])null);
 			

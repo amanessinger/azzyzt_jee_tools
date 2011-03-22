@@ -47,8 +47,8 @@ public class NewAzzyztedProjectWizardPage extends WizardPage {
 	 */
 	public NewAzzyztedProjectWizardPage(ISelection selection) {
 		super("wizardPage");
-		setTitle("Structured JEE Project");
-		setDescription("This wizard creates a new structured JEE project consisting of EAR, EJB, EJB client and WAR.");
+		setTitle("Azzyzted JEE Project");
+		setDescription("This wizard creates a new azzyzted JEE project consisting of EAR, EJB, EJB client and WAR.");
 		this.selection = selection; // FindBugs unused warning OK
 	}
 
