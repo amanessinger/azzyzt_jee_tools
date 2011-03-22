@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.azzyzt.jee.tools.common.Util;
 import org.azzyzt.jee.tools.mwe.projectgen.Activator;
-import org.azzyzt.jee.tools.mwe.projectgen.util.Util;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;

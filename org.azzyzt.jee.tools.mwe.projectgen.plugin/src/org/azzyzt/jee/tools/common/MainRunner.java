@@ -1,4 +1,4 @@
-package org.azzyzt.jee.tools.mwe.projectgen.util;
+package org.azzyzt.jee.tools.common;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
