@@ -87,7 +87,7 @@ public class JavaProject extends Project {
 		if (projectsOnBuildPath == null) return;
 		
 		for (JavaProject p : projectsOnBuildPath) {
-			Util.appendProjectToClassPath(jp, p.getJp());
+			ProjectUtil.appendProjectToClassPath(jp, p.getJp());
 		}
 	}
 
@@ -154,7 +154,7 @@ public class JavaProject extends Project {
 		IFolder srcFolder = getP().getFolder(srcFolderName);
 		IPath srcFolderPath = srcFolder.getLocation();
 		
-		URL[] classPathEntries = Util.classPathURLsForToolMainClass(getP());
+		URL[] classPathEntries = ProjectUtil.classPathURLsForToolMainClass(getP());
 		String fqMainClassName = "org.azzyzt.jee.tools.mwe.GenericGenerator";
 		String[] args = {
 				srcFolderPath.toString(), 
