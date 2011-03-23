@@ -8,12 +8,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.azzyzt.jee.tools.mwe.projectgen.ProjectGen;
-import org.azzyzt.jee.tools.mwe.projectgen.project.Context;
-import org.azzyzt.jee.tools.mwe.projectgen.project.DynamicWebProject;
-import org.azzyzt.jee.tools.mwe.projectgen.project.EarProject;
-import org.azzyzt.jee.tools.mwe.projectgen.project.EjbProject;
-import org.azzyzt.jee.tools.mwe.projectgen.project.JavaProject;
-import org.azzyzt.jee.tools.mwe.projectgen.project.Project;
+import org.azzyzt.jee.tools.project.Context;
+import org.azzyzt.jee.tools.project.DynamicWebProject;
+import org.azzyzt.jee.tools.project.EarProject;
+import org.azzyzt.jee.tools.project.EjbProject;
+import org.azzyzt.jee.tools.project.JavaProject;
+import org.azzyzt.jee.tools.project.Project;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 

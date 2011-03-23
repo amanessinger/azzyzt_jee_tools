@@ -1,4 +1,4 @@
-package org.azzyzt.jee.tools.mwe.projectgen.project;
+package org.azzyzt.jee.tools.project;
 
 import java.net.URL;
 import java.util.ArrayList;

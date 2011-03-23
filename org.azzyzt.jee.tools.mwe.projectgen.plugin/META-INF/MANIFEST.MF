@@ -8,21 +8,11 @@ Bundle-Vendor: azzyzt.org
 Require-Bundle: org.eclipse.ui;bundle-version="3.5.1",
  org.eclipse.core.runtime;bundle-version="3.5.0",
  org.eclipse.core.resources;bundle-version="3.5.1",
- org.eclipse.jdt.core;bundle-version="3.5.1",
- org.eclipse.jdt.launching;bundle-version="3.5.0",
  org.eclipse.wst.common.project.facet.core;bundle-version="1.4.1",
- org.eclipse.wst.common.modulecore;bundle-version="1.1.301",
- org.eclipse.wst.common.emfworkbench.integration;bundle-version="1.1.301",
- org.eclipse.jem.util;bundle-version="2.0.200",
- org.eclipse.jst.j2ee;bundle-version="1.1.301",
- org.eclipse.jst.common.project.facet.core;bundle-version="1.4.1",
- org.eclipse.jst.j2ee.ejb;bundle-version="1.1.300",
- org.eclipse.wst.common.frameworks;bundle-version="1.1.300",
  org.eclipse.jpt.core;bundle-version="2.2.1";resolution:=optional,
  org.eclipse.jpt.jpa.core;bundle-version="3.0.0";resolution:=optional,
- org.eclipse.ui.ide;bundle-version="3.5.1",
- org.eclipse.debug.core;bundle-version="3.5.0",
- org.azzyzt.jee.tools.common.plugin;bundle-version="1.0.0"
+ org.azzyzt.jee.tools.common.plugin;bundle-version="1.0.0",
+ org.azzyzt.jee.tools.project;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.eclipse.core.filesystem
 Bundle-ActivationPolicy: lazy

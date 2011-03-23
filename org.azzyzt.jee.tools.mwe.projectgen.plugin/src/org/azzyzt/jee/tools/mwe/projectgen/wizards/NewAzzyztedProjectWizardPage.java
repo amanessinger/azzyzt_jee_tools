@@ -3,8 +3,8 @@ package org.azzyzt.jee.tools.mwe.projectgen.wizards;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.azzyzt.jee.tools.mwe.projectgen.project.Context;
 import org.azzyzt.jee.tools.mwe.projectgen.workers.NewAzzyztedProjectWorker;
+import org.azzyzt.jee.tools.project.Context;
 import org.eclipse.jface.dialogs.IDialogPage;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardPage;
