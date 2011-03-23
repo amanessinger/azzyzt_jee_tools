@@ -3,6 +3,7 @@ package org.azzyzt.jee.tools.mwe.projectgen.workers;
 import java.net.URL;
 
 import org.azzyzt.jee.tools.common.Util;
+import org.azzyzt.jee.tools.mwe.projectgen.ProjectGen;
 import org.azzyzt.jee.tools.mwe.projectgen.project.Context;
 import org.azzyzt.jee.tools.mwe.projectgen.project.ProjectUtil;
 import org.eclipse.core.resources.IProject;
@@ -41,7 +42,7 @@ public class MWEGeneratorWorker {
 			Context context = new Context();
 			context.setProjectBaseName(stem);
 			
-			URL[] classPathEntries = ProjectUtil.classPathURLsForToolMainClass(prj);
+			URL[] classPathEntries = ProjectUtil.classPathURLsForToolMainClass(prj, ProjectGen.extraURLsForToolMainClass());
 			String fqMainClassName = "org.azzyzt.jee.tools.mwe.StandardProjectStructureGenerator";
 			IWorkspace workspace = ResourcesPlugin.getWorkspace();
 			IWorkspaceRoot root = workspace.getRoot();

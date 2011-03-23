@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.azzyzt.jee.tools.common.Common;
 import org.azzyzt.jee.tools.common.Util;
-import org.azzyzt.jee.tools.mwe.projectgen.Activator;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -149,13 +148,14 @@ public class JavaProject extends Project {
 			String srcFolderName, 
 			String pkgName, 
 			String fqBuilder, 
-			String jobTitle) 
+			String jobTitle,
+			List<URL> extraUrls) 
 	throws InterruptedException, CoreException 
 	{
 		IFolder srcFolder = getP().getFolder(srcFolderName);
 		IPath srcFolderPath = srcFolder.getLocation();
 		
-		URL[] classPathEntries = ProjectUtil.classPathURLsForToolMainClass(getP());
+		URL[] classPathEntries = ProjectUtil.classPathURLsForToolMainClass(getP(), extraUrls);
 		String fqMainClassName = "org.azzyzt.jee.tools.mwe.GenericGenerator";
 		String[] args = {
 				srcFolderPath.toString(), 

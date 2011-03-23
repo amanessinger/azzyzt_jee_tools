@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.azzyzt.jee.tools.common.Util;
-import org.azzyzt.jee.tools.mwe.projectgen.Activator;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IClasspathEntry;
@@ -44,13 +43,10 @@ public class ProjectUtil {
 		return computeClassPathForProject(jprj);
 	}
 
-	public static URL[] classPathURLsForToolMainClass(IProject prj)
+	public static URL[] classPathURLsForToolMainClass(IProject prj, List<URL> extraUrls)
 			throws CoreException {
 		List<URL> classPathUrls = computeClassPathForProject(prj);
-		classPathUrls.add(Activator.getJeeToolsMweJarUrl());
-		classPathUrls.add(Activator.getJeeRuntimeJarUrl());
-		classPathUrls.add(Activator.getJeeRuntimeSiteJarUrl());
-		classPathUrls.addAll(Activator.getToolsLibJarUrls());
+		classPathUrls.addAll(extraUrls);
 	
 		URL[] classPathEntries = classPathUrls.toArray(new URL[0]);
 		return classPathEntries;

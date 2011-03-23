@@ -1,8 +1,13 @@
 package org.azzyzt.jee.tools.mwe.projectgen.workers;
 
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.azzyzt.jee.tools.mwe.projectgen.ProjectGen;
 import org.azzyzt.jee.tools.mwe.projectgen.project.Context;
 import org.azzyzt.jee.tools.mwe.projectgen.project.DynamicWebProject;
 import org.azzyzt.jee.tools.mwe.projectgen.project.EarProject;
@@ -42,7 +47,12 @@ public class NewAzzyztedProjectWorker {
 			advanceProgress(0, "Create EAR project");
 			
 			// We crash upon EAR facet creation if the EAR has been created implicitly. Do it now.
-			EarProject ear = EarProject.create(context.getEarProjectName(), context, (Project[])null);
+
+			Map<String, URL> runtimeJars = new HashMap<String, URL>();
+			runtimeJars.put(ProjectGen.JEE_RUNTIME_JAR, ProjectGen.getJeeRuntimeJarUrl());
+			runtimeJars.put(ProjectGen.JEE_RUNTIME_SITE_JAR, ProjectGen.getJeeRuntimeSiteJarUrl());
+			
+			EarProject ear = EarProject.create(context.getEarProjectName(), context, runtimeJars, (Project[])null);
 			
 			advanceProgress(10, "Create EJB project");
 			
@@ -50,7 +60,9 @@ public class NewAzzyztedProjectWorker {
 				new EjbProject(
 						context.getEjbProjectName(), context, 
 						ear, 
-						new ArrayList<JavaProject>()
+						new ArrayList<JavaProject>(),
+						Arrays.asList(ProjectGen.AZZYZTED_NATURE_ID),
+						ProjectGen.extraURLsForToolMainClass()
 				);
 	
 			advanceProgress(70, "Creating servlet project");

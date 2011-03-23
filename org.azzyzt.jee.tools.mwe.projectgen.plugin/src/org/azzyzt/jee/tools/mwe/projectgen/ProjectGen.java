@@ -15,7 +15,7 @@ import org.osgi.framework.BundleContext;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class Activator extends AbstractUIPlugin {
+public class ProjectGen extends AbstractUIPlugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.azzyzt.jee.tools.mwe.projectgen"; //$NON-NLS-1$
@@ -29,7 +29,7 @@ public class Activator extends AbstractUIPlugin {
 	public static final String JEE_TOOLS_MWE_JAR = "org.azzyzt.jee.tools.mwe.jar";
 
 	// The shared instance
-	private static Activator plugin;
+	private static ProjectGen plugin;
 	
 	// Data shared between extensions
 	private static URL jeeRuntimeJarUrl = null;
@@ -40,7 +40,7 @@ public class Activator extends AbstractUIPlugin {
 	/**
 	 * The constructor
 	 */
-	public Activator() {
+	public ProjectGen() {
 	}
 
 	/*
@@ -100,7 +100,7 @@ public class Activator extends AbstractUIPlugin {
 	 *
 	 * @return the shared instance
 	 */
-	public static Activator getDefault() {
+	public static ProjectGen getDefault() {
 		return plugin;
 	}
 
@@ -116,7 +116,7 @@ public class Activator extends AbstractUIPlugin {
 	}
 
 	private boolean successfullyInitializedLibraryJarUrls() {
-		Bundle bundle = Activator.getDefault().getBundle();
+		Bundle bundle = ProjectGen.getDefault().getBundle();
 		boolean recurse = true;
 		@SuppressWarnings("unchecked")
 		Enumeration<URL> jars = (Enumeration<URL>)bundle.findEntries("lib", "*.jar", recurse);
@@ -161,4 +161,13 @@ public class Activator extends AbstractUIPlugin {
 		return toolsLibJarUrls;
 	}
 
+	public static List<URL> extraURLsForToolMainClass() {
+		List<URL> extraUrls = new ArrayList<URL>();
+		extraUrls.add(getJeeToolsMweJarUrl());
+		extraUrls.add(getJeeRuntimeJarUrl());
+		extraUrls.add(getJeeRuntimeSiteJarUrl());
+		extraUrls.addAll(getToolsLibJarUrls());
+		return extraUrls;
+	}
+	
 }

@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.azzyzt.jee.tools.common.Util;
-import org.azzyzt.jee.tools.mwe.projectgen.Activator;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -37,7 +37,7 @@ public class EarProject extends Project {
 	 */
 	private static final String LIBARCHIVETYPE = "lib";
 
-	public static EarProject create(String name, Context context, Project...projects) 
+	public static EarProject create(String name, Context context, Map<String, URL> runtimeJars, Project...projects) 
 	throws CoreException 
 	{
 		EarProject ear = new EarProject(name, context);
@@ -45,7 +45,7 @@ public class EarProject extends Project {
 		ear.installEARFacet(projects);
 		ear.installServerSpecificFacets();
 		ear.fixFacets(IJ2EEFacetConstants.ENTERPRISE_APPLICATION_FACET);
-		ear.installRuntimeLibsIntoEar();
+		ear.installRuntimeLibsIntoEar(runtimeJars);
 		
 		return ear;
 	}
@@ -109,17 +109,11 @@ public class EarProject extends Project {
 		installFacet(getContext().getFacets().earFacetVersion, config);
 	}
 
-	private void installRuntimeLibsIntoEar() 
+	private void installRuntimeLibsIntoEar(Map<String, URL> runtimeJars) 
 	throws CoreException 
 	{
 		IFolder lib = createFolderForPathIfNeeded(new Path("lib"));
 		
-		try {
-			copyFromUrlToFolder(lib, Activator.getJeeRuntimeJarUrl(), Activator.JEE_RUNTIME_JAR);
-			copyFromUrlToFolder(lib, Activator.getJeeRuntimeSiteJarUrl(), Activator.JEE_RUNTIME_SITE_JAR);
-		} catch (IOException e) {
-			throw Util.createCoreException("Can't install runtime libraries into EAR project", e);
-		}
 		IVirtualComponent earCmp = ComponentCore.createComponent(getP());
 		
 		// get current references
@@ -133,20 +127,20 @@ public class EarProject extends Project {
 		IVirtualComponent jarCmp;
 		IVirtualReference jarRef;
 
-		handlePrfx = LIBARCHIVETYPE + IPath.SEPARATOR
-				+ getP().getName() + IPath.SEPARATOR + "lib" + IPath.SEPARATOR;
-		jarCmp = ComponentCore.createArchiveComponent(getP(), handlePrfx + Activator.JEE_RUNTIME_JAR);
-		jarRef = ComponentCore.createReference(earCmp, jarCmp, new Path("/lib"));
-		if (!references.contains(jarRef)) {
-			references.add(jarRef);
-		}
-		
-		handlePrfx = LIBARCHIVETYPE + IPath.SEPARATOR
-				+ getP().getName() + IPath.SEPARATOR + "lib" + IPath.SEPARATOR;
-		jarCmp = ComponentCore.createArchiveComponent(getP(), handlePrfx + Activator.JEE_RUNTIME_SITE_JAR);
-		jarRef = ComponentCore.createReference(earCmp, jarCmp, new Path("/lib"));
-		if (!references.contains(jarRef)) {
-			references.add(jarRef);
+		for (String fileName : runtimeJars.keySet()) {
+			URL jarUrl = runtimeJars.get(fileName);
+			try {
+				copyFromUrlToFolder(lib, jarUrl, fileName);
+			} catch (IOException e) {
+				throw Util.createCoreException("Can't install runtime libraries into EAR project", e);
+			}
+			handlePrfx = LIBARCHIVETYPE + IPath.SEPARATOR
+					+ getP().getName() + IPath.SEPARATOR + "lib" + IPath.SEPARATOR;
+			jarCmp = ComponentCore.createArchiveComponent(getP(), handlePrfx + fileName);
+			jarRef = ComponentCore.createReference(earCmp, jarCmp, new Path("/lib"));
+			if (!references.contains(jarRef)) {
+				references.add(jarRef);
+			}
 		}
 
 		earCmp.setReferences(references.toArray(new IVirtualReference[references.size()]));
