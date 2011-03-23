@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.azzyzt.jee.tools.common.Common;
 import org.azzyzt.jee.tools.common.Util;
 import org.azzyzt.jee.tools.mwe.projectgen.Activator;
 import org.eclipse.core.resources.IFolder;
@@ -115,7 +116,7 @@ public class JavaProject extends Project {
 					newRawClassPath[rawClasspath.length - 1] = cpe;
 					offset = 1;
 				} else {
-					Activator.getDefault().log(
+					Common.getDefault().log(
 							"Project "+getP().getName()+" has more than one JRE class path entry!!"
 					);
 					newRawClassPath[i - offset] = cpe;

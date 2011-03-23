@@ -3,7 +3,6 @@ package org.azzyzt.jee.tools.common;
 import java.net.URL;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import org.azzyzt.jee.tools.mwe.projectgen.Activator;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -38,7 +37,7 @@ public class Util {
 					reportQueuedMessages(monitor, log);
 					
 				} catch (Exception e) {
-					return new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Call to "+fqMainClassName+" failed", e);
+					return new Status(IStatus.ERROR, Common.PLUGIN_ID, "Call to "+fqMainClassName+" failed", e);
 				}
 
 				return Status.OK_STATUS;
@@ -52,7 +51,7 @@ public class Util {
 				while ((msg = log.poll()) != null) {
 					monitor.worked(1);
 					monitor.subTask(msg);
-					Activator.getDefault().log(msg);
+					Common.getDefault().log(msg);
 				}
 			}
 			
@@ -65,7 +64,7 @@ public class Util {
 	public static Status createErrorStatus(String msg) {
 		return new Status(
 				IStatus.ERROR, 
-				Activator.PLUGIN_ID, 
+				Common.PLUGIN_ID, 
 				msg
 				);
 	}

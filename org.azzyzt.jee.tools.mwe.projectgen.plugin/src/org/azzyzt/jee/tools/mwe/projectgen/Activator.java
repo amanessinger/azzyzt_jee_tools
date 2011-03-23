@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.Bundle;
@@ -105,14 +104,6 @@ public class Activator extends AbstractUIPlugin {
 		return plugin;
 	}
 
-	public void log(String msg) {
-		log(msg, null);
-	}
-	
-	public void log(String msg, Exception e) {
-		getLog().log(new Status(Status.INFO, PLUGIN_ID, Status.OK, msg, e));
-	}
-	   
 	/**
 	 * Returns an image descriptor for the image file at the given
 	 * plug-in relative path
