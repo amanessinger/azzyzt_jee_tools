@@ -1,4 +1,4 @@
-package org.azzyzt.jee.tools.mwe.projectgen.util;
+package org.azzyzt.jee.tools.common;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -7,8 +7,6 @@ import java.net.URLClassLoader;
 import java.security.AccessController;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.security.PrivilegedAction;
-
-import org.azzyzt.jee.tools.mwe.projectgen.Activator;
 
 class MainRunner implements Runnable {
 	
@@ -36,23 +34,31 @@ class MainRunner implements Runnable {
 		String errMsg = "Invoking sideEntrance on class "+fqMainClassName+" failed";
 		try {
 			Class<?> clazz = Class.forName(fqMainClassName, true, newLoader);
-			Method main = clazz.getMethod("sideEntrance", String[].class, ConcurrentLinkedQueue.class);
-			Object[] params = new Object[2];
-			params[0] = args;
-			params[1] = log;
+			Method main = null;
+			Object[] params;
+			try {
+				main = clazz.getMethod("sideEntrance", String[].class, ConcurrentLinkedQueue.class);
+				params = new Object[2];
+				params[0] = args;
+				params[1] = log;
+			} catch (NoSuchMethodException nsm) {
+				main = clazz.getMethod("main", String[].class);
+				params = new Object[1];
+				params[0] = args;
+			}
 			main.invoke(null, params);
 		} catch (ClassNotFoundException e) {
-			Activator.getDefault().log(errMsg, e);
+			Common.getDefault().log(errMsg, e);
 		} catch (SecurityException e) {
-			Activator.getDefault().log(errMsg, e);
+			Common.getDefault().log(errMsg, e);
 		} catch (NoSuchMethodException e) {
-			Activator.getDefault().log(errMsg, e);
+			Common.getDefault().log(errMsg, e);
 		} catch (IllegalArgumentException e) {
-			Activator.getDefault().log(errMsg, e);
+			Common.getDefault().log(errMsg, e);
 		} catch (IllegalAccessException e) {
-			Activator.getDefault().log(errMsg, e);
+			Common.getDefault().log(errMsg, e);
 		} catch (InvocationTargetException e) {
-			Activator.getDefault().log(errMsg, e);
+			Common.getDefault().log(errMsg, e);
 		}
 	}
 	
