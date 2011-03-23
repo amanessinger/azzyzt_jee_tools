@@ -1,4 +1,4 @@
-package org.azzyzt.jee.tools.mwe.projectgen.util;
+package org.azzyzt.jee.tools.common;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -7,8 +7,6 @@ import java.net.URLClassLoader;
 import java.security.AccessController;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.security.PrivilegedAction;
-
-import org.azzyzt.jee.tools.mwe.projectgen.Activator;
 
 class MainRunner implements Runnable {
 	
@@ -50,17 +48,17 @@ class MainRunner implements Runnable {
 			}
 			main.invoke(null, params);
 		} catch (ClassNotFoundException e) {
-			Activator.getDefault().log(errMsg, e);
+			Common.getDefault().log(errMsg, e);
 		} catch (SecurityException e) {
-			Activator.getDefault().log(errMsg, e);
+			Common.getDefault().log(errMsg, e);
 		} catch (NoSuchMethodException e) {
-			Activator.getDefault().log(errMsg, e);
+			Common.getDefault().log(errMsg, e);
 		} catch (IllegalArgumentException e) {
-			Activator.getDefault().log(errMsg, e);
+			Common.getDefault().log(errMsg, e);
 		} catch (IllegalAccessException e) {
-			Activator.getDefault().log(errMsg, e);
+			Common.getDefault().log(errMsg, e);
 		} catch (InvocationTargetException e) {
-			Activator.getDefault().log(errMsg, e);
+			Common.getDefault().log(errMsg, e);
 		}
 	}
 	

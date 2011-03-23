@@ -2,9 +2,9 @@ package org.azzyzt.jee.tools.mwe.projectgen.workers;
 
 import java.net.URL;
 
+import org.azzyzt.jee.tools.common.Util;
 import org.azzyzt.jee.tools.mwe.projectgen.project.Context;
 import org.azzyzt.jee.tools.mwe.projectgen.project.ProjectUtil;
-import org.azzyzt.jee.tools.mwe.projectgen.util.Util;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
