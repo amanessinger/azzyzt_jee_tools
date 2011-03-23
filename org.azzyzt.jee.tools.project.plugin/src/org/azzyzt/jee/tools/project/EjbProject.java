@@ -1,9 +1,9 @@
-package org.azzyzt.jee.tools.mwe.projectgen.project;
+package org.azzyzt.jee.tools.project;
 
+import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 
-import org.azzyzt.jee.tools.mwe.projectgen.Activator;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jst.j2ee.ejb.project.operations.IEjbFacetInstallDataModelProperties;
 import org.eclipse.jst.j2ee.project.facet.IJ2EEModuleFacetInstallDataModelProperties;
@@ -19,7 +19,9 @@ public class EjbProject extends JavaProject {
 			String name, 
 			Context context, 
 			EarProject ear,
-			List<JavaProject> projectsOnBuildPath) 
+			List<JavaProject> projectsOnBuildPath,
+			List<String> markerNatures,
+			List<URL> extraUrls) 
 	throws CoreException, InterruptedException 
 	{
 		super(name, context, Arrays.asList(EJB_SRC_FOLDER_NAME, GENERATED_SRC_FOLDER_NAME));
@@ -36,17 +38,19 @@ public class EjbProject extends JavaProject {
 				EJB_SRC_FOLDER_NAME, 
 				context.getPackageName()+".service", 
 				"org.azzyzt.jee.tools.mwe.builder.HelloServiceBeanBuilder", 
-				"Creating HelloServiceBean"
+				"Creating HelloServiceBean", extraUrls
 		);
 		
 		buildJavaClass(
 				GENERATED_SRC_FOLDER_NAME, 
 				context.getPackageName()+".entity", 
 				"org.azzyzt.jee.tools.mwe.builder.DefaultStandardEntityListenersBuilder", 
-				"Creating initial StandardEntityListeners"
+				"Creating initial StandardEntityListeners", extraUrls
 		);
 		
-		addMarkerNature(Activator.AZZYZTED_NATURE_ID);
+		for (String nature : markerNatures) {
+			addMarkerNature(nature);
+		}
 		
 		refresh();
 	}

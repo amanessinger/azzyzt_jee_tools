@@ -2,7 +2,7 @@ package org.azzyzt.jee.tools.mwe.projectgen.popup.actions;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.azzyzt.jee.tools.mwe.projectgen.Activator;
+import org.azzyzt.jee.tools.mwe.projectgen.ProjectGen;
 import org.azzyzt.jee.tools.mwe.projectgen.workers.MWEGeneratorWorker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -50,7 +50,7 @@ public class StartMWEGeneratorAction implements IObjectActionDelegate {
 		Object element = ts.getFirstElement();
 		IProject prj = (IProject)element;
 		try {
-			if (prj.hasNature(Activator.AZZYZTED_NATURE_ID)) {
+			if (prj.hasNature(ProjectGen.AZZYZTED_NATURE_ID)) {
 				performGenerate(prj);
 			}
 		} catch (CoreException e) {
