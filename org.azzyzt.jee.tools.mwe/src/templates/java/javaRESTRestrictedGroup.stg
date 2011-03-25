@@ -26,7 +26,8 @@
  !>
 
 <!
- * Code generation makes use of StringTemplate, which is
+ * Code generation makes use of and bundles a copy of StringTemplate, 
+ * which is
  * 
  * Copyright (c) 2008, Terence Parr
  * All rights reserved.
