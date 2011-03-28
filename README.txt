@@ -121,9 +121,9 @@ projects were created using Eclipse Helios, and all development on
 Azzyzt JEE Tools is done with Eclipse.
 
 The recommended way to build Azzyzt JEE Tools, is to fork the project
-from GitHub [TODO add URL] and use the resulting working directory as
-an Eclipse workspace. Doing so, you will end up with the following
-structure:
+from GitHub (https://github.com/amanessinger/azzyzt_jee_tools) 
+and use the resulting working directory as an Eclipse workspace. 
+Doing so, you will end up with the following structure:
 
 .git/                                          # local Git repository
 .gitignore                                     # list of ignored files
