@@ -1,9 +1,17 @@
 Azzyzt JEE Tools
-----------------
+################
 
- Copyright (c) 2011, Municipiality of Vienna, Austria
+Azzyzt JEE Tools is a collection of software tools dedicated to
+assisting software developers creating software using Java Enterprise
+Edition 6. It is designed to be integrated into popular Java IDEs.
 
- Licensed under the EUPL, Version 1.1 or – as soon they
+Copyright (c) 2011, Municipiality of Vienna, Austria
+
+
+Licenses
+--------
+
+ Licensed under the EUPL, Version 1.1 or as soon they
  will be approved by the European Commission - subsequent
  versions of the EUPL (the "Licence");
  You may not use this work except in compliance with the
@@ -26,8 +34,10 @@ Azzyzt JEE Tools
  See the Licence for the specific language governing
  permissions and limitations under the Licence.
 
-For the purpose of generating code, Azzyzt JEE Tools make use of 
-and bundles a copy of StringTemplate, which is
+
+For the purpose of generating code, Azzyzt JEE Tools make use of and
+bundles a copy of StringTemplate (http://www.stringtemplate.org/),
+which is
  
  Copyright (c) 2008, Terence Parr
  All rights reserved.
@@ -60,9 +70,8 @@ and bundles a copy of StringTemplate, which is
  POSSIBILITY OF SUCH DAMAGE.
 
 
-Azzyzt JEE Tools is a collection of software tools dedicated to
-assisting software developers creating software using Java Enterprise
-Edition 6. It is designed to be integrated into popular Java IDEs.
+Current status
+--------------
 
 As of 25-MAR-2011, Azzyzt JEE Tools consists of three main parts:
 
@@ -97,24 +106,44 @@ project structure like that created by #1, #2 could be called from any
 IDE and can even be used without an IDE, because it can be called as a
 command line utility.
 
-It is expected though, that a contributor can be found, who wraps
-Azzyzt JEE Tools for NetBeans or for IDEA, the other two popular Java
-IDEs. 
+Azzyzt JEE Tools are known to work with the runtimes of
+
+ * GlassFish v3
+ * GlassFish v3.01
+ * GlassFish v3.1
+
+and Eclipse versions
+
+ * Galileo SR1, SR2
+ * Helios SR1, SR2
+
+The plugins compile on Indigo M4, but currently no plugin for
+GlassFish is available for Indigo, thus the configuration has not been
+tested. 
+
+Using JBOSS AS 6.0 as a runtime, generated code mostly compiles,
+@Remote annotations on generated service bean interfaces have to be
+removed though, because JBOSS AS 6.0 only supports the JEE 6 web
+profile. No further testing with JBOSS AS 6.0 has been done yet.
+
+The project generator (#1) already runs with Apache Geronimo v3.0-M1,
+but due to lacking support for REST, generated applications do not
+compile. 
 
 Future extensions will provide generators for additional patterns
 commonly used in Java EE applications.
 
 Contributions to Azzyzt JEE Tools are welcome. Possible areas include
-support for additional Java IDEs, additional patterns, etc. Of course
-bug fixes are welcome as well.
+support for additional Java IDEs, additional patterns, additional
+runtimes, etc. Of course bug fixes are welcome as well.
 
 Azzyzt JEE Tools were developed by Andreas Manessinger for the
 Municipal Department 14 - Automated Data Processing, Information and
 Communications Technology (MA 14) of the City of Vienna, Austria
 
 
-Building the software
----------------------
+Directory layout
+----------------
 
 Azzyzt JEE Tools are organized as a collection of Java projects. The
 projects were created using Eclipse Helios, and all development on
@@ -130,6 +159,7 @@ Doing so, you will end up with the following structure:
 README.txt                                     # this file
 LICENCE.txt                                    # text version of EUPL
 azzyzt_magwien/                                # update site project for Municipality of Vienna
+azzyzt_generic/                                # generic update site project
 org.azzyzt.jee.mwe.generic.feature/            # Eclipse feature (generic)
 org.azzyzt.jee.mwe.magwien.feature/            # Eclipse feature for Municipality of Vienna
 org.azzyzt.jee.runtime/                        # runtime libs for generated apps
@@ -144,4 +174,18 @@ org.azzyzt.jee.tools.project.plugin/           # Eclipse plugin with code for cr
 
 Additionally you may find a directory named ".metadata" in case
 you actually use the working directory as an Eclipse workspace.
+
+If you don't work for the Municipality of Vienna, you can safely
+ignore everything with "magwien" in its name.
+
+
+Building the software
+---------------------
+
+Start Eclipse and open the new workspace. Don't import the projects
+yet. In order to compile the source, you need a Java EE 6 runtime, for
+instance GlassFish v3.1.
+
+
+
 
