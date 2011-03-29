@@ -98,6 +98,14 @@ All announcements of new versions will be published on
     http://www.azzyzt.org
 
 
+Getting the source
+------------------
+
+Azzyzt JEE Tools have their home on GitHub under 
+
+    https://github.com/amanessinger/azzyzt_jee_tools
+
+
 Directory layout
 ----------------
 
