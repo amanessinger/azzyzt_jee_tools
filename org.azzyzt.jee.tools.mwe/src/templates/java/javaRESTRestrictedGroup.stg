@@ -6,9 +6,6 @@ group javaRESTRestrictedGroup : javaGroup;
 >>
 
 @javaClass.extra_methods() ::= <<
-<byIdHeadPp(entity=mdt.properties.entity, dto=mdt.properties.dto)>
-<byIdBody(entity=mdt.properties.entity, dto=mdt.properties.dto)>
-
 <byIdHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>
 <byIdBody(entity=mdt.properties.entity, dto=mdt.properties.dto)>
 
@@ -17,14 +14,6 @@ group javaRESTRestrictedGroup : javaGroup;
 
 <listHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>
 <listBody(entity=mdt.properties.entity, dto=mdt.properties.dto)>
->>
-
-byIdHeadPp(entity, dto) ::= <<
-@GET
-@Path("byIdPp/id={id}")
-@Produces(MediaType.APPLICATION_XML)
-public <dto.simpleName> <entity.lcFirstSimpleName>ByIdPp(@PathParam(value="id") <dto.properties.idFieldType.simpleName> id)
-    throws EntityNotFoundException, AccessDeniedException, EntityInstantiationException, InvalidIdException
 >>
 
 byIdHead(entity, dto) ::= <<
