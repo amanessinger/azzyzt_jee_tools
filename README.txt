@@ -1,9 +1,9 @@
 Azzyzt JEE Tools
 ################
 
-Azzyzt JEE Tools is a collection of software tools dedicated to
-assisting software developers creating software using Java Enterprise
-Edition 6. It is designed to be integrated into popular Java IDEs.
+Azzyzt JEE Tools is a collection of software tools designed to assist
+software developers creating software using Java Enterprise Edition
+6. It is designed to be integrated into popular Java IDEs.
 
 Copyright (c) 2011, Municipiality of Vienna, Austria
 
@@ -142,6 +142,23 @@ Municipal Department 14 - Automated Data Processing, Information and
 Communications Technology (MA 14) of the City of Vienna, Austria
 
 
+Using the software
+------------------
+
+If you just want to use Azzyzt JEE Tools (as opposed to modify and
+build them), the recommended way to install the software is via
+an Eclipse update site. As of 29-MAR-2011, there are two update site
+URLs, one for the edition used by the Municipiality of Vienna,
+Austria, the other a generic version. The URLs are
+
+    http://azzyzt.manessinger.com/azzyzt_generic/
+    http://azzyzt.manessinger.com/azzyzt_magwien/
+
+All announcements of new versions will be published on 
+
+    http://www.azzyzt.org
+
+
 Directory layout
 ----------------
 
@@ -186,6 +203,6 @@ Start Eclipse and open the new workspace. Don't import the projects
 yet. In order to compile the source, you need a Java EE 6 runtime, for
 instance GlassFish v3.1.
 
-
+[to be continued]
 
 
