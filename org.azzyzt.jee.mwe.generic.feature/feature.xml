@@ -5,16 +5,78 @@
       version="1.0.0.qualifier"
       provider-name="azzyzt.org">
 
-   <description url="http://www.example.com/description">
-      [Enter Feature Description here.]
+   <description url="http://www.azzyzt.org">
+      Azzyzt JEE Tools (generic) is a collection of software tools
+designed to assist software developers creating software using
+Java Enterprise Edition 6. It is designed to be integrated into
+popular Java IDEs.
    </description>
 
-   <copyright url="http://www.example.com/copyright">
-      [Enter Copyright Description here.]
+   <copyright url="http://www.wien.gv.at/english/">
+      Copyright (c) 2011, Municipiality of Vienna, Austria
    </copyright>
 
-   <license url="http://www.example.com/license">
-      [Enter License Description here.]
+   <license url="http://www.osor.eu/eupl">
+      Licenses
+--------
+
+ Licensed under the EUPL, Version 1.1 or as soon they
+ will be approved by the European Commission - subsequent
+ versions of the EUPL (the &quot;Licence&quot;);
+ You may not use this work except in compliance with the
+ Licence.
+ 
+ For convenience a plain text copy of the English version 
+ of the Licence can be found in the file LICENCE.txt in
+ the top-level directory of this software distribution.
+ 
+ You may obtain a copy of the Licence in any of 22 European
+ Languages at:
+
+ http://www.osor.eu/eupl
+
+ Unless required by applicable law or agreed to in
+ writing, software distributed under the Licence is
+ distributed on an &quot;AS IS&quot; basis,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ express or implied.
+ See the Licence for the specific language governing
+ permissions and limitations under the Licence.
+
+
+For the purpose of generating code, Azzyzt JEE Tools make use of and
+bundles a copy of StringTemplate (http://www.stringtemplate.org/),
+which is
+ 
+ Copyright (c) 2008, Terence Parr
+ All rights reserved.
+ Redistribution and use in source and binary forms, with or 
+ without modification, are permitted provided that the 
+ following conditions are met:
+ 
+ Redistributions of source code must retain the above copyright 
+ notice, this list of conditions and the following disclaimer.
+ 
+ Redistributions in binary form must reproduce the above copyright 
+ notice, this list of conditions and the following disclaimer in 
+ the documentation and/or other materials provided with the distribution.
+ 
+ Neither the name of the author nor the names of its contributors 
+ may be used to endorse or promote products derived from this software 
+ without specific prior written permission.
+ 
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
+ &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS 
+ FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE 
+ COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, 
+ INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
+ BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; 
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT 
+ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN 
+ ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
+ POSSIBILITY OF SUCH DAMAGE.
    </license>
 
    <plugin
