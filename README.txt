@@ -10,7 +10,7 @@ Licensed under the EUPL, Version 1.1 or highersubsequent versions
 
 
 Current status
---------------
+==============
 
 As of 25-MAR-2011, Azzyzt JEE Tools consists of three main parts:
 
@@ -56,6 +56,10 @@ and Eclipse versions
  * Galileo SR1, SR2
  * Helios SR1, SR2
 
+Eclipse is always understood as the generic bundle "Eclipse IDE for
+Java EE Developers". Otehr distributions may contain the required
+plugins and may work, but they were not tested.
+
 The plugins compile on Indigo M4, but currently no plugin for
 GlassFish is available for Indigo, thus the configuration has not been
 tested. 
@@ -82,7 +86,10 @@ Communications Technology (MA 14) of the City of Vienna, Austria
 
 
 Using the software
-------------------
+==================
+
+Preparing the prerequisites
+---------------------------
 
 If you just want to use Azzyzt JEE Tools (as opposed to modify and
 build them), the recommended way to install the software is via
@@ -97,6 +104,191 @@ All announcements of new versions will be published on
 
     http://www.azzyzt.org
 
+When you don't see any features available from the update site, try
+unticking "Group items by category". There actually is a category
+called "Azzyzt", but you may see "There are no categorized items"
+anyway. I believe this to be a bug in Eclipse p2.
+
+Once the feature is installed, make sure to have a Java EE 6 server
+instance configured. The server does not need to be running, but it
+must be configured, in order to make the runtime available.
+
+
+Creating an azzyzted project
+----------------------------
+
+Make sure you are in the "Java EE" perspective. There are three ways
+to get to the "New Azzyzted JEE Project" wizard:
+
+* File / New / Other / Java EE / New Azzyzted JEE Project
+* [Project Explorer] / New / Other / Java EE / New Azzyzted JEE Project
+* Ctrl+N / Java EE / New Azzyzted JEE Project
+
+I normally use the keyboard shortcut, as this is the shortest path.
+
+In the wizard dialog enter a project base name, a package name, and
+choose the target runtime.
+
+The project base name is a prefix that will be used for the four
+projects that together make up an azzyzted project. 
+
+The package name is actually a prefix as well. All generated Java
+packages will be below this prefix.
+
+The target runtime is a list of all runtimes used in defined server
+instances. Thus if you have two servers running, one for GlassFish
+3.01, one for 3.1, you will see a list of two runtimes. Choose one of
+them.
+
+If the list of target runtimes is empty, then you have not yet defined
+a server. Do so from the Servers view with "New / Server".
+
+If for example the project base name is "cookbook", you will end up
+with the following four projects:
+
+* cookbookEAR
+* cookbookEJB
+* cookbookEJBClient
+* cookbookServlets
+
+The EAR project is an Enterprise Application Project, basically a
+wrapper around the three Java projects. The artifact of an EAR project
+is an enterprise archive, for instance "cookbook.ear", and this is the
+deployable application.
+
+"cookbookEJB" is where we put all application functionality,
+"cookbookEJBClient" is the EJB client project, its artifact could be
+distributed in order to allow clients to call EJB functionality via
+CORBA. All datatypes used as parameters or return values of EJB
+service methods must be definied in the client project.
+
+"cookbookServlets" is a Dynamic Web Project. It is used for the REST
+wrappers around service methods contained in
+"cookbookEJB". Additionally it can be used to add any kind and number
+of servlets. Keep in mind though, that you need to put your logic into
+the EJB project, in order to have the most options for accessing
+it. If you stick to that pattern, you can access services via CORBA,
+SOAP and REST. Accesses via CORBA and SOAP can even partake in
+distributed transactions.
+
+The three Java projects will have two source folders each. One of them
+is always named "generated", that's where generated code goes. For the
+EJB and EJBClient projects the other source folder is "ejbModule", for
+the Servlets project it is "src". These source folders are for
+manually written code.
+
+If for example the package name was "com.manessinger.cookbook", the
+following directories and files will be generated initially:
+
+cookbookEJB
+ |-- ejbModule
+ |   |-- com
+ |   |   `-- manessinger
+ |   |       `-- cookbook
+ |   |           |-- entity
+ |   |           `-- service
+ |   |               `-- HelloTestBean.java
+ |   `-- META-INF
+ |       |-- ejb-jar.xml
+ |       |-- MANIFEST.MF
+ |       |-- persistence.xml
+ |       `-- sun-ejb-jar.xml
+ `-- generated
+     `-- com
+         `-- manessinger
+             `-- cookbook
+                 `-- entity
+                     `-- StandardEntityListeners.java
+cookbookEJBClient
+ |-- ejbModule
+ |   `-- META-INF
+ |       `-- MANIFEST.MF
+ `-- generated
+
+cookbookServlets
+ |-- generated
+ |-- src
+ `-- WebContent
+     |-- index.jsp
+     |-- META-INF
+     |   `-- MANIFEST.MF
+     `-- WEB-INF
+         |-- lib
+         `-- sun-web.xml
+
+"com.manessinger.cookbook.service.HelloTestBean" is the only generated
+class that will ever be generated into a source folder meant to hold
+manually written code. You can keep it or throw it away. It is only
+generated upon project creation and is meant to make the project
+instantly deployable.
+
+The bean has one (predictable) method 
+
+    @LocalBean
+    @Stateless
+    @WebService
+    public class HelloTestBean {
+
+        public String hello(String s) {
+            return "Hello "+s;
+        }
+    }
+
+Start the server, deploy the EAR ("Add and Remove" from the context
+menu of the server) and try it via the service test client built into
+the GlassFish Administration Console.
+
+
+Modeling With Entities
+----------------------
+
+Upon project creation, a package "com.manessinger.cookbook.entity"
+(given the example) was generated under "cookbookEJB/ejbModule". Use
+this package to define your entities.
+
+Entities have to extend "org.azzyzt.jee.runtime.entity.EntityBase<ID>",
+where ID is the class of the table's primary key.
+
+There are two ways to create entities:
+
+* For a first cut you can choose to let Eclipse generate
+  entities. Dalí, the mapping tool, comes with a wizard that lets you
+  choose a connection (defined in the Datasource Explorer view with
+  "Database Connections / New"), and it then analyzes tables defined
+  in the corresponding database schema. Start the wizard via 
+
+    "JPA Tools / Generate Entities from Tables"
+
+  from the EJB project's context menu.
+
+  In this graphical tool you can choose the tables to be mapped,
+  create associations and/or choose from those automatically
+  discovered, set defaults for the mapping of all tables, and finally
+  specify the mappings on a per-table basis.
+
+  This is the preferred way if the database already exists. The only
+  problem is, that the wizard can't properly cope with @ManyToMany
+  associations. It should, but errors in the code lead to errors in
+  the generated entities. Still, for medium to large databases, this
+  saves a lot of work. Just insert the @ManyToMany associations
+  manually. 
+
+* If the database does not already exist, it can be generated from
+  manually written entities. Just write your entities and then
+  generate the database schema with
+
+    "JPA Tools / Generate Tables from Entities"
+
+  again from the EJB project's context menu. Make sure that the EJB
+  project is already associated with a database connection. If not, open
+  the properties of the EJB project and choose a connection under 
+
+    "Java Persistence / Connection"
+
+
+
+Developing or modifying Azzyzt JEE Tools
+========================================
 
 Getting the source
 ------------------
@@ -148,13 +340,21 @@ Building the software
 
 Start Eclipse and open the new workspace. Don't import the projects
 yet. In order to compile the source, you need a Java EE 6 runtime, for
-instance GlassFish v3.1.
+instance GlassFish v3.1, the current version as of Spring 2011.
+
+Install the Oracle GlassFish plugin if you have not done so, download
+and install GlassFish if you have not done so, and then create a new
+server instance ("[Servers View] / New / server").
+
+At this point the build will likely fail. Look at the libraries in the
+build path. The server runtime will likely be unbound. Bind it to the
+runtime of your newly created server instance.
 
 [to be continued]
 
 
 Licenses
---------
+========
 
  Licensed under the EUPL, Version 1.1 or as soon they
  will be approved by the European Commission - subsequent
