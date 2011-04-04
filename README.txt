@@ -8,6 +8,96 @@ software developers creating software using Java Enterprise Edition
 Copyright (c) 2011, Municipiality of Vienna, Austria
 
 
+Current status
+--------------
+
+As of 25-MAR-2011, Azzyzt JEE Tools consists of three main parts:
+
+1) a generator that creates so-called azzyzted projects. An azzyzted
+   project is a collection of four projects, an Enterprise Application
+   Project (EAR project), an Enterprise Java Beans project (EJB
+   project), its client project (EJB client project) and a Dynamic Web
+   Project (servlet project). The EJB project contains all business
+   code, the servlet project contains REST wrappers around business
+   methods, the EJB client project contains all data types visible to
+   SOAP or REST clients. These three are called member projects. The
+   EAR project is a container for the member projects.
+
+   The code generator uses a project base name, a package prefix and
+   an Eclipse runtime specification capable of supporting EJB
+   3.1, and from that it creates the four projects. The EJB project is
+   marked with a special "azzyzted nature".
+
+2) a generator that analyzes JPA entities in azzyzted projects, and
+   uses that information to create a base application. This
+   application is a set of service beans exposed as SOAP and REST
+   services. They offer access to the database as it is commonly used
+   by CRUD applications. All generated code is in dedicated source
+   folders. The generated application can be extended and the
+   extensions may use generated code like DTOs as building blocks.
+
+3) a runtime library of code used by generated applications.
+
+Although Azzyzt JEE Tools come as a set of extensions to the Eclipse
+IDE, large portions of the code are independent of Eclipse. Given a
+project structure like that created by #1, #2 could be called from any
+IDE and can even be used without an IDE, due to the fact that it also
+works as a command line utility.
+
+Azzyzt JEE Tools are known to work with the runtimes of
+
+ * GlassFish v3
+ * GlassFish v3.01
+ * GlassFish v3.1
+
+and Eclipse versions
+
+ * Galileo SR1, SR2
+ * Helios SR1, SR2
+
+The plugins compile on Indigo M4, but currently no GlassFish plugin is
+available for Indigo, thus the configuration has not been tested.
+
+Using JBOSS AS 6.0 as a runtime, generated code mostly compiles,
+@Remote annotations on generated service bean interfaces have to be
+removed though, because JBOSS AS 6.0 only supports the JEE 6 web
+profile. No further testing with JBOSS AS 6.0 has been done yet.
+
+The project generator (#1) already runs with Apache Geronimo v3.0-M1,
+but due to lacking support for REST, generated applications do not
+compile. 
+
+Future extensions will provide generators for additional patterns
+commonly used in Java EE applications.
+
+Contributions to Azzyzt JEE Tools are welcome. Possible areas include
+support for additional Java IDEs, additional patterns, additional
+runtimes, etc. Of course bug fixes are welcome as well.
+
+Azzyzt JEE Tools were developed by Andreas Manessinger for the
+Municipal Department 14 - Automated Data Processing, Information and
+Communications Technology (MA 14) of the City of Vienna, Austria
+
+
+Using the software
+------------------
+
+If you just want to use Azzyzt JEE Tools (as opposed to modify and
+build them), the recommended way to install the software is via
+an Eclipse update site. As of 29-MAR-2011, there are two update site
+URLs, one for the edition used by the Municipiality of Vienna,
+Austria, the other a generic version. The URLs are
+
+    http://azzyzt.manessinger.com/azzyzt_generic/
+    http://azzyzt.manessinger.com/azzyzt_magwien/
+
+All announcements of new versions will be published on 
+
+    http://www.azzyzt.org
+
+
+
+
 Licenses
 --------
 
@@ -70,94 +160,9 @@ which is
  POSSIBILITY OF SUCH DAMAGE.
 
 
-Current status
---------------
 
-As of 25-MAR-2011, Azzyzt JEE Tools consists of three main parts:
-
-1) a generator that creates so-called azzyzted projects. An azzyzted
-   project is a collection of four projects, an Enterprise Application
-   Project (EAR project), an Enterprise Java Beans project (EJB
-   project), its client project (EJB client project) and a Dynamic Web
-   Project (servlet project). The EJB project contains all business
-   code, the servlet project contains REST wrappers around business
-   methods, the EJB client project contains all data types visible to
-   SOAP or REST clients. These three are called member projects. The
-   EAR project is a container for the member projects.
-
-   The code generator uses a project base name, a package prefix and
-   an Eclipse runtime specification capable of supporting EJB
-   3.1, and from that it creates the four projects. The EJB project is
-   marked with a special "azzyzted nature".
-
-2) a generator that analyzes JPA entities in azzyzted projects, and
-   uses that information to create a base application. This
-   application is a set of service beans exposed as SOAP and REST
-   services. They offer access to the database as it is commonly used
-   by CRUD applications. All generated code is in dedicated source
-   folders. The generated application can be extended and the
-   extensions may use generated code like DTOs as building blocks.
-
-3) a runtime library of code used by generated applications.
-
-Although Azzyzt JEE Tools come as a set of extensions to the Eclipse
-IDE, large portions of the code are independent of Eclipse. Given a
-project structure like that created by #1, #2 could be called from any
-IDE and can even be used without an IDE, because it can be called as a
-command line utility.
-
-Azzyzt JEE Tools are known to work with the runtimes of
-
- * GlassFish v3
- * GlassFish v3.01
- * GlassFish v3.1
-
-and Eclipse versions
-
- * Galileo SR1, SR2
- * Helios SR1, SR2
-
-The plugins compile on Indigo M4, but currently no plugin for
-GlassFish is available for Indigo, thus the configuration has not been
-tested. 
-
-Using JBOSS AS 6.0 as a runtime, generated code mostly compiles,
-@Remote annotations on generated service bean interfaces have to be
-removed though, because JBOSS AS 6.0 only supports the JEE 6 web
-profile. No further testing with JBOSS AS 6.0 has been done yet.
-
-The project generator (#1) already runs with Apache Geronimo v3.0-M1,
-but due to lacking support for REST, generated applications do not
-compile. 
-
-Future extensions will provide generators for additional patterns
-commonly used in Java EE applications.
-
-Contributions to Azzyzt JEE Tools are welcome. Possible areas include
-support for additional Java IDEs, additional patterns, additional
-runtimes, etc. Of course bug fixes are welcome as well.
-
-Azzyzt JEE Tools were developed by Andreas Manessinger for the
-Municipal Department 14 - Automated Data Processing, Information and
-Communications Technology (MA 14) of the City of Vienna, Austria
-
-
-Using the software
-------------------
-
-If you just want to use Azzyzt JEE Tools (as opposed to modify and
-build them), the recommended way to install the software is via
-an Eclipse update site. As of 29-MAR-2011, there are two update site
-URLs, one for the edition used by the Municipiality of Vienna,
-Austria, the other a generic version. The URLs are
-
-    http://azzyzt.manessinger.com/azzyzt_generic/
-    http://azzyzt.manessinger.com/azzyzt_magwien/
-
-All announcements of new versions will be published on 
-
-    http://www.azzyzt.org
-
+Developing Azzyzt JEE Tools
+===========================
 
 Directory layout
 ----------------
@@ -201,8 +206,12 @@ Building the software
 
 Start Eclipse and open the new workspace. Don't import the projects
 yet. In order to compile the source, you need a Java EE 6 runtime, for
-instance GlassFish v3.1.
+instance GlassFish v3.1. 
+
+Download GlassFish, unzip it. Install the Eclipse plugin for GlassFish
+and use it to define a server. Now you can import the projects. They
+may still not compile, and if so, the reason is most likely that your
+server runtime has a different name. Just set your server runtime as
+the target runtime for all Java projects and you should be fine.
 
 [to be continued]
-
-
