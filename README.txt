@@ -12,7 +12,7 @@ Licensed under the EUPL, Version 1.1 or highersubsequent versions
 Current status
 ==============
 
-As of 25-MAR-2011, Azzyzt JEE Tools consists of three main parts:
+As of release 1.0.0, Azzyzt JEE Tools consists of three main parts:
 
 1) a generator that creates so-called azzyzted projects. An azzyzted
    project is a collection of four projects, an Enterprise Application
@@ -38,6 +38,15 @@ As of 25-MAR-2011, Azzyzt JEE Tools consists of three main parts:
    extensions may use generated code like DTOs as building blocks.
 
 3) a runtime library of code used by generated applications.
+
+The structure of azzyzted projects and the structure of generated code
+evolved from the work on
+
+  Eclipse / GlassFish / Java EE 6 Tutorial
+    http://programming.manessinger.com/tutorials/an-eclipse-glassfish-java-ee-6-tutorial/
+
+and on usage of that tutorial in a subsequent internal training class
+for developers at the Municipiality of Vienna, Austria.
 
 Although Azzyzt JEE Tools come as a set of extensions to the Eclipse
 IDE, large portions of the code are independent of Eclipse. Given a
@@ -284,6 +293,347 @@ There are two ways to create entities:
   the properties of the EJB project and choose a connection under 
 
     "Java Persistence / Connection"
+
+Note please, that Azzyzt Modeling With Entities only supports mapping
+annotations on fields, not on accessor methods. This is not a deeply
+rooted design decision but just a matter of how it was
+implemented. Though it would be principally possible to support
+annotations of accessor methods, I currently see no reason to do
+so. The general consensus among experts seems to be, that none of the
+two methods has substantial advantages over the other. 
+
+Personally I feel that annotating the fields makes it easier to get an
+overview, and besides it does not tempt the developer to introduce
+side effects into getters/setters.
+
+
+Azzyzt-specific annotations
+---------------------------
+
+Azzyzt introduces the following extra annotations, that can be used on
+entity fields:
+
+  @Internal
+      marks a field as internal. It is mapped, but not exposed to
+      service clients.
+
+  @CreateTimestamp
+  @ModifyTimestamp
+      marks a field as create/modify timestamp. Field types can be
+      Calendar, Date or String. In case it is a string, the
+      annotations need an attribute "format", and that string has 
+      to be a valid format for java.text.SimpleDateFormat 
+
+  @CreateUser
+  @ModificationUser
+      marks a string field as user name. Determining a user name is by
+      definition a highly site-specific thing, thus we rely on some
+      "InvocationMetaInfo" being generated at the entry point into the 
+      service, and being passed on via the standard
+      javax.transaction.TransactionSynchronizationRegistry
+
+      As of release 1.0.0 this is only partially implemented. It works
+      for REST but not for SOAP and CORBA, and from a service accessed
+      via REST, it currently wouldn't be passed on to backend services
+      accessed via REST or CORBA. The crucial knowledge about how to
+      extract user information from a
+      javax.interceptor.InvocationContext is left to a standalone EJB
+      that I call a SiteAdapter. Azzyzt comes with a site adapter that
+      uses information supplied in an HTTP header called
+      "x-authenticate-userid", thus it relies on some authenticating
+      portal or gateway in front of the application server.
+
+
+Generating a base application
+-----------------------------
+
+Once you have entities, you can generate code. In order to do this,
+use "Azzyzt / Start code generator" from the context menu of the EJB
+project. That's it :)
+
+
+Structure of the generated code
+-------------------------------
+
+In this example we have created three entity classes under
+"cookbookEJB/ejbModule". They correspond to the database tables CITY,
+COUNTRY and ZIP. The result of code generation looks like this:
+
+
+cookbookEAR
+ |-- EarContent
+ `-- lib
+     |-- org.azzyzt.jee.runtime.jar
+     `-- org.azzyzt.jee.runtime.site.jar
+
+cookbookEJB
+ |-- ejbModule
+ |   |-- com
+ |   |   `-- manessinger
+ |   |       `-- cookbook
+ |   |           |-- entity
+ |   |           |   |-- City.java
+ |   |           |   |-- Country.java
+ |   |           |   `-- Zip.java
+ |   |           `-- service
+ |   |               `-- HelloTestBean.java
+ |   `-- META-INF
+ |       |-- ejb-jar.xml
+ |       |-- MANIFEST.MF
+ |       |-- persistence.xml
+ |       `-- sun-ejb-jar.xml
+ `-- generated
+     `-- com
+         `-- manessinger
+             `-- cookbook
+                 |-- conv
+                 |   |-- CityConv.java
+                 |   |-- CountryConv.java
+                 |   `-- ZipConv.java
+                 |-- eao
+                 |   `-- GenericEao.java
+                 |-- entity
+                 |   `-- StandardEntityListeners.java
+                 |-- meta
+                 |   |-- EntityMetaInfo.java
+                 |   |-- InvocationRegistry.java
+                 |   |-- SiteAdapter.java
+                 |   `-- ValidAssociationPaths.java
+                 `-- service
+                     |-- CityFullBean.java
+                     |-- CityRestrictedBean.java
+                     |-- CountryFullBean.java
+                     |-- CountryRestrictedBean.java
+                     |-- ZipFullBean.java
+                     `-- ZipRestrictedBean.java
+
+ cookbookEJBClient
+ |-- ejbModule
+ |   `-- META-INF
+ |       `-- MANIFEST.MF
+ `-- generated
+     `-- com
+         `-- manessinger
+             `-- cookbook
+                 |-- dto
+                 |   |-- CityDto.java
+                 |   |-- CountryDto.java
+                 |   `-- ZipDto.java
+                 `-- service
+                     |-- CityFullInterface.java
+                     |-- CityRestrictedInterface.java
+                     |-- CountryFullInterface.java
+                     |-- CountryRestrictedInterface.java
+                     |-- ZipFullInterface.java
+                     `-- ZipRestrictedInterface.java
+
+cookbookServlets
+ |-- generated
+ |   `-- com
+ |       `-- manessinger
+ |           `-- cookbook
+ |               `-- service
+ |                   |-- CityFullDelegator.java
+ |                   |-- CityRestrictedDelegator.java
+ |                   |-- CountryFullDelegator.java
+ |                   |-- CountryRestrictedDelegator.java
+ |                   |-- RESTExceptionMapper.java
+ |                   |-- RESTInterceptor.java
+ |                   |-- RESTServlet.java
+ |                   |-- ZipFullDelegator.java
+ |                   `-- ZipRestrictedDelegator.java
+ |-- src
+ `-- WebContent
+     |-- index.jsp
+     |-- META-INF
+     |   `-- MANIFEST.MF
+     `-- WEB-INF
+         |-- lib
+         `-- sun-web.xml
+
+
+Using the generated code
+------------------------
+
+The first step is to deploy the EAR project. Note please, that you
+have to modify persistence.xml to refer to a "jta-data-source", and
+that this data source must be defined in the application server. The
+"Eclipse / GlassFish / Java EE 6 Tutorial" under
+
+  http://programming.manessinger.com/tutorials/an-eclipse-glassfish-java-ee-6-tutorial/
+
+has a section titled "Specifying the database, testing, SQL log", that
+shows how to do this in GlassFish.
+
+Now that the application is deployed, you can call the services.
+
+For each table/entity we get a DTO (EJBClient), two EJBs, one for full
+(rw) and one for restricted (r) access, corresponding remote
+interfaces in the EJBClient project, corresponding REST wrappers
+around the beans (Servlet project). Here are some URLs, assuming
+GlassFish runs on port 8080. Try for yourself, for instance with
+soapUI (http://www.soapui.org):
+
+  http://localhost:8080/CityFullBeanService/CityFullBean?wsdl
+  http://localhost:8080/CityRestrictedBeanService/CityRestrictedBean?wsdl
+
+  http://localhost:8080/CountryFullBeanService/CountryFullBean?wsdl
+  http://localhost:8080/CountryRestrictedBeanService/CountryRestrictedBean?wsdl
+
+  http://localhost:8080/ZipFullBeanService/ZipFullBean?wsdl
+  http://localhost:8080/ZipRestrictedBeanService/ZipRestrictedBean?wsdl
+
+Get the WADL description of the REST services under
+
+  http://localhost:8080/cookbookServlets/REST/application.wadl
+
+
+Examples for REST:
+------------------
+
+Get a list of all countries by issuing the GET request
+
+  http://localhost:8080/cookbookServlets/REST/city/all
+
+
+Get the city with the ID 1 by issuing the GET request
+
+  http://localhost:8080/cookbookServlets/REST/city/byId?id=1
+
+
+POST the following XML document
+
+  <query_spec>
+     <orderBy>
+         <fieldName>country.id</fieldName>
+         <ascending>true</ascending>
+     </orderBy>
+     <orderBy>
+         <fieldName>name</fieldName>
+         <ascending>false</ascending>
+     </orderBy>
+  </query_spec>
+
+into 
+
+  http://localhost:8080/cookbookServlets/REST/city/list
+
+to get a list of all cities, but now sorted by the ID of their country
+ascending, and then alphabetically by their name descending.
+
+
+POST the following XML document
+
+  <query_spec>
+     <expr type="AND">
+         <cond type="STRING" op="EQ" caseSensitive="true">
+            <fieldName>country.name</fieldName>
+            <value>Italy</value>
+         </cond>
+         <cond type="STRING" op="LIKE" negated="true" caseSensitive="false">
+            <fieldName>name</fieldName>
+            <value>r%</value>
+         </cond>
+         <cond type="LONG" op="EQ" negated="true">
+            <fieldName>id</fieldName>
+            <value>8</value>
+         </cond>
+     </expr>
+     <orderBy>
+         <fieldName>name</fieldName>
+         <ascending>true</ascending>
+     </orderBy>
+  </query_spec>
+
+into
+
+  http://localhost:8080/cookbookServlets/REST/city/list
+
+to get a list of all cities, where the country name equals "Italy" and
+the city's name does not begin with "r" (regardless case), but not the
+city with the ID 8.
+
+The XML-based query language currently supports the unary
+expression of type "NOT", as well as the n-ary expressions of type
+"AND" and "OR".
+
+n-ary expressions may contain any number of expressions and conditions
+freely mixed. There is no limit to the level of nesting of
+expressions.
+
+Conditions have a type and an operator. Supported types are
+
+  STRING, SHORT, INTEGER, LONG, FLOAT, DOUBLE
+
+Supported operators are 
+
+  LIKE, EQ, LT, LE, GT, GE
+
+where "LIKE" is only supported for type "STRING".
+
+Field names in conditions or order by clauses can be cross-table
+references in the same dotted style as they are used in the Java
+Persistence Query Language (JPQL). Only references along mapped
+associations are valid. "City" has a field
+
+  @ManyToOne
+  private Country country;
+
+and thus you can follow the association with "country.name".
+
+
+An example of a query specification with nested expressions is this:
+
+  <query_spec>
+     <expr type="OR">
+         <cond type="STRING" op="EQ" caseSensitive="true">
+            <fieldName>country.name</fieldName>
+            <value>Italy</value>
+         </cond>
+         <expr type="AND">
+             <cond type="STRING" op="LIKE" caseSensitive="false">
+                <fieldName>name</fieldName>
+                <value>l%</value>
+             </cond>
+             <cond type="LONG" op="EQ" negated="true">
+                <fieldName>id</fieldName>
+                <value>2</value>
+             </cond>
+         </expr>
+     </expr>
+     <orderBy>
+         <fieldName>name</fieldName>
+         <ascending>true</ascending>
+     </orderBy>
+  </query_spec>
+
+Post it into 
+
+  http://localhost:8080/cookbookServlets/REST/city/list
+
+to get a list of all cities in Italy and all other cities beginning
+with "l" (regardless case), but not the one with ID 2.
+
+
+POST the following XML
+
+  <city>
+     <countryId>2</countryId>
+     <id>7</id>
+     <name>Rome</name>
+  </city>
+
+into
+
+  http://localhost:8080/cookbookServlets/REST/city/update
+
+to rename "Roma" to "Rome"
+
+
+Other ways to access the services
+---------------------------------
+
+REST is just one way to access the services. The 
 
 
 
