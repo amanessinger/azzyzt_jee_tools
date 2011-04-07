@@ -104,7 +104,6 @@ storeBody(entity, dto) ::= <<
 {    
     <entity.simpleName> e = converter.fromDto(dto);
 
-    // in case of embedded IDs, this must be the corresponding DTO
     <dto.properties.idFieldType.simpleName> id = e.getId();
     
     return id;
@@ -129,7 +128,6 @@ public void <entity.lcFirstSimpleName>Delete(<dto.properties.idFieldType.simpleN
 
 deleteBody(entity, dto) ::= <<
 {    
-    // in case of embedded IDs, the ID must be converted from the corresponding DTO
     eao.delete(<entity.simpleName>.class, id);
 }
 >>
