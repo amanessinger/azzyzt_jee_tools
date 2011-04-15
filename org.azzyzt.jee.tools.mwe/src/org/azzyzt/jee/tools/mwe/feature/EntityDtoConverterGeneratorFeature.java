@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -30,14 +30,13 @@ package org.azzyzt.jee.tools.mwe.feature;
 import org.azzyzt.jee.tools.mwe.builder.EntityDtoConverterModelBuilder;
 import org.azzyzt.jee.tools.mwe.generator.JavaGenerator;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
-import org.azzyzt.jee.tools.mwe.util.Log;
 
 public class EntityDtoConverterGeneratorFeature extends GeneratorFeature {
 
 	public static final String SOURCE_FOLDER = "Source Folder";
 
-	public EntityDtoConverterGeneratorFeature(MetaModel entityModel, Log logger) {
-		super(entityModel, logger);
+	public EntityDtoConverterGeneratorFeature(MetaModel entityModel) {
+		super(entityModel);
 	}
 
 	@Override
@@ -55,7 +54,7 @@ public class EntityDtoConverterGeneratorFeature extends GeneratorFeature {
 		sourceFolder = (String)parameters.byName(SOURCE_FOLDER).getValue();
 		
 		MetaModel targetModel = new EntityDtoConverterModelBuilder(getModel(), null).build();
-		JavaGenerator targetGen = new JavaGenerator(targetModel, sourceFolder, "javaEntityToDtoConverterGroup", logger);
+		JavaGenerator targetGen = new JavaGenerator(targetModel, sourceFolder, "javaEntityToDtoConverterGroup");
 		targetGen.setGenerateGettersSetters(false);
 		numberOfSourcesGenerated = targetGen.generate();
 		

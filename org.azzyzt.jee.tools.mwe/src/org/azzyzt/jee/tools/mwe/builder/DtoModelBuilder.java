@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -58,10 +58,12 @@ public class DtoModelBuilder extends DerivedModelBuilder implements Builder {
 	 */
 	public MetaModel build() {
 		
+		MetaClass dtoBase = (MetaClass)masterModel.getProperty("dtoBase");
+		
 		for (MetaEntity me : masterModel.getTargetEntities()) {
 
 			// create MetaClass
-			String packageName = derivePackageNameFromEntity(me, "dto");
+			String packageName = derivePackageNameFromEntityAndFollowPackage(me, "dto");
 			String simpleName = me.getSimpleName();
 			simpleName += "Dto";
 			MetaClass target = MetaClass.forName(packageName, simpleName);
@@ -70,6 +72,7 @@ public class DtoModelBuilder extends DerivedModelBuilder implements Builder {
 			mai.setElement("name", me.getSimpleName().toLowerCase());
 			target.addMetaAnnotationInstance(mai);
 			target.setModifiers(std.mod_public);
+			target.setSuperMetaClass(dtoBase);
 			target.addInterface(std.javaIoSerializable);
 			target.setSerialVersion(true);
 			target.addReferencedForeignType(std.javaIoSerializable);

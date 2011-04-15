@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -38,6 +38,7 @@ import org.azzyzt.jee.tools.mwe.exception.ToolError;
 import org.azzyzt.jee.tools.mwe.model.type.MetaDeclaredType;
 import org.azzyzt.jee.tools.mwe.model.type.MetaEntity;
 import org.azzyzt.jee.tools.mwe.model.type.MetaType;
+import org.azzyzt.jee.tools.mwe.util.Log;
 
 public class MetaModel {
 	
@@ -50,6 +51,7 @@ public class MetaModel {
 	private boolean isIncludingMethods = true;
 	private boolean isIncludingStaticFields = true;
 	private Properties properties = new Properties(); // may be set by a synthesizing builder
+	private Log logger;
 
 
     /**
@@ -57,7 +59,8 @@ public class MetaModel {
      * to create a model, build it or add to it manually, and then to generate it,
      * before the next model is created.
      */
-    public MetaModel() {
+    public MetaModel(Log logger) {
+    	this.logger = logger;
     	MetaModel.setCurrentModel(this);
     }
     
@@ -91,6 +94,7 @@ public class MetaModel {
     }
     
     private void addTargetMetaDeclaredType(MetaDeclaredType mdt) {
+    	logger.debug(mdt.getFqName()+" is target");
     	targetMetaDeclaredTypes.add(mdt);
     	if (mdt instanceof MetaEntity) {
     		targetEntities.add((MetaEntity)mdt);
@@ -155,6 +159,10 @@ public class MetaModel {
 
 	public Properties getProperties() {
 		return properties;
+	}
+
+	public Log getLogger() {
+		return logger;
 	}
 
 }

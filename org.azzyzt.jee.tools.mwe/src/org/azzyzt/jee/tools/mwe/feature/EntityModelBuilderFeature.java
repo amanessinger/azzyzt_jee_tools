@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -29,10 +29,17 @@ package org.azzyzt.jee.tools.mwe.feature;
 
 import org.azzyzt.jee.tools.mwe.builder.EntityModelBuilder;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
+import org.azzyzt.jee.tools.mwe.util.Log;
 
 public class EntityModelBuilderFeature extends ModelBuilderFeature {
 	
 	public static final String PERSISTENCE_UNIT_NAME = "Persistence Unit Name";
+
+	private Log logger;
+
+	public EntityModelBuilderFeature(Log logger) {
+		this.logger = logger;
+	}
 
 	@Override
 	public Parameters getParameters() {
@@ -49,9 +56,9 @@ public class EntityModelBuilderFeature extends ModelBuilderFeature {
 
         EntityModelBuilder emb;
         if (persistenceUnitName != null) {
-            emb = new EntityModelBuilder(persistenceUnitName);
+            emb = new EntityModelBuilder(persistenceUnitName, logger);
         } else {
-            emb = new EntityModelBuilder();
+            emb = new EntityModelBuilder(logger);
         }
 		MetaModel entityModel = emb.build();
 		return entityModel;

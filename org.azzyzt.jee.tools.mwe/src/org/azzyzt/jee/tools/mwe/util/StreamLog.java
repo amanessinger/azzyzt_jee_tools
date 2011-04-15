@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -27,16 +27,15 @@
 
 package org.azzyzt.jee.tools.mwe.util;
 
-public class StreamLog implements Log {
+public class StreamLog extends LeveledLog implements Log {
 
-	@Override
-	public void log(String msg) {
-		System.err.println(msg);
+	public StreamLog() {
+		super(Verbosity.INFO);
 	}
 
 	@Override
-	public void warn(String msg) {
-		System.err.println("WARNING: "+msg);
+	protected void loggit(String msg) {
+		System.err.println(msg);
 	}
 
 }

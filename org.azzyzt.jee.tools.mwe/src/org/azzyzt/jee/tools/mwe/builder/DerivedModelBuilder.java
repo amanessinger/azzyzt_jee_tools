@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -46,10 +46,16 @@ public class DerivedModelBuilder {
 		super();
 		this.targetPackageName = targetPackageName;
 		this.masterModel = masterModel;
-		this.targetModel = new MetaModel();
+		this.targetModel = new MetaModel(masterModel.getLogger());
 		this.std = new MetaStandardDefs();
 	}
 	
+	protected String derivePackageNameFromEntityAndFollowPackage(MetaEntity me, String suffix) {
+		String packageName = derivePackageNameFromEntity(me, suffix);
+		targetModel.follow(packageName);
+		return packageName;
+	}
+
 	protected String derivePackageNameFromEntity(MetaEntity me, String suffix) {
 		String packageName;
 		if (targetPackageName == null) {
@@ -64,7 +70,6 @@ public class DerivedModelBuilder {
 			// TODO write a test case for a package name set via constructor
 			packageName = targetPackageName;
 		}
-		targetModel.follow(packageName);
 		return packageName;
 	}
 

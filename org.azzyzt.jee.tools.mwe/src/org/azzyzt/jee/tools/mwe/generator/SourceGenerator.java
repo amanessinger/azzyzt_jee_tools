@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -31,7 +31,6 @@ import java.io.File;
 
 import org.azzyzt.jee.tools.mwe.exception.ToolError;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
-import org.azzyzt.jee.tools.mwe.util.Log;
 
 public abstract class SourceGenerator {
 
@@ -39,12 +38,10 @@ public abstract class SourceGenerator {
 	private String sourceFolder;
 	private File absoluteSourceFolder;
 	protected String stringTemplateGroup;
-	protected Log logger;
 
-	public SourceGenerator(MetaModel model, String sourceFolder, String stringTemplateGroup, Log logger) {
+	public SourceGenerator(MetaModel model, String sourceFolder, String stringTemplateGroup) {
 		this.model = model;
 		this.stringTemplateGroup = stringTemplateGroup;
-		this.logger = logger;
 		setSourceFolder(sourceFolder);
 	}
 	

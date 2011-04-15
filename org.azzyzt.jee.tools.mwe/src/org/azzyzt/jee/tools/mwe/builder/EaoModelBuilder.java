@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -53,7 +53,7 @@ public class EaoModelBuilder extends DerivedModelBuilder implements Builder {
 			throw new ToolError("Entity model has no target entities, can't determine target package");
 		}
 		MetaEntity me = targetEntities.iterator().next();
-		String packageName = derivePackageNameFromEntity(me, "eao");
+		String packageName = derivePackageNameFromEntityAndFollowPackage(me, "eao");
 		String simpleName = "GenericEao";
 		MetaClass target = MetaClass.forName(packageName, simpleName);
 		target.setModifiers(std.mod_public);

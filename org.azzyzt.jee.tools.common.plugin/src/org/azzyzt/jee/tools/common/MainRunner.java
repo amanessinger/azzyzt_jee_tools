@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -50,7 +50,14 @@ class MainRunner implements Runnable {
 	{
 		this.classPathEntries = classPathEntries;
 		this.fqMainClassName = fqMainClassName;
-		this.args = args;
+		String logLevel = System.getenv("AZZYZT_LOG_LEVEL");
+		if (logLevel != null && logLevel.matches("^(error|info|debug)$")) {
+			this.args = new String[args.length + 1];
+			this.args[0] = "--"+logLevel;
+			System.arraycopy(args, 0, this.args, 1, args.length);
+		} else {
+			this.args = args;
+		}
 		this.log = log;
 	}
 	

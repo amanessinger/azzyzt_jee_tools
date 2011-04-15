@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -28,17 +28,14 @@
 package org.azzyzt.jee.tools.mwe.feature;
 
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
-import org.azzyzt.jee.tools.mwe.util.Log;
 
 
 public abstract class GeneratorFeature extends Feature {
 	
 	private MetaModel model;
-	protected Log logger;
 
-	public GeneratorFeature(MetaModel model, Log logger) {
+	public GeneratorFeature(MetaModel model) {
 		this.model = model;
-		this.logger = logger;
 	}
 
 	public abstract int generate(Parameters parameters);

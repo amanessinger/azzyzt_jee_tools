@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -44,7 +44,7 @@ public class InvocationRegistryModelBuilder extends DerivedModelBuilder implemen
 		for (MetaEntity me : masterModel.getTargetEntities()) {
 
 			// create MetaClass
-			String packageName = derivePackageNameFromEntity(me, "meta");
+			String packageName = derivePackageNameFromEntityAndFollowPackage(me, "meta");
 			
 			// upon first entity create MetaClass
 			String simpleName = "InvocationRegistry";

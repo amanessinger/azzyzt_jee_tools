@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -30,21 +30,25 @@ package org.azzyzt.jee.tools.mwe.builder;
 import java.util.List;
 
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
+import org.azzyzt.jee.tools.mwe.util.Log;
 
 public class EntityModelBuilder {
 
+	private Log logger;
 	private TargetEnumerator enumerator;
 
-    public EntityModelBuilder() {
+    public EntityModelBuilder(Log logger) {
+    	this.logger = logger;
         enumerator = new EntityEnumerator(EntityEnumerator.PERSISTENCE_UNIT_WILDCARD);
     }
 
-    public EntityModelBuilder(String persistenceUnitName) {
+    public EntityModelBuilder(String persistenceUnitName, Log logger) {
+    	this.logger = logger;
         enumerator = new EntityEnumerator(persistenceUnitName);
     }
 
     public MetaModel build() {
-        MetaModel entityModel = new MetaModel();
+        MetaModel entityModel = new MetaModel(logger);
         entityModel.excludeMethodsFromModel();
         entityModel.excludeStaticFieldsFromModel();
         for (String targetPackage : enumerator.getTargetPackageNames()) {

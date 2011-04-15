@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -30,6 +30,7 @@ package org.azzyzt.jee.tools.mwe.builder;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
 import org.azzyzt.jee.tools.mwe.model.type.MetaClass;
 import org.azzyzt.jee.tools.mwe.model.type.MetaStandardDefs;
+import org.azzyzt.jee.tools.mwe.util.Log;
 
 public class DefaultStandardEntityListenersBuilder implements GenericBuilder {
 	
@@ -42,10 +43,10 @@ public class DefaultStandardEntityListenersBuilder implements GenericBuilder {
 	private MetaModel targetModel;
 	private MetaStandardDefs std;
 
-	public DefaultStandardEntityListenersBuilder(String packageName) {
+	public DefaultStandardEntityListenersBuilder(String packageName, Log logger) {
 		this.packageName = packageName;
 		this.simpleName = CLASS_NAME;
-		this.targetModel = new MetaModel();
+		this.targetModel = new MetaModel(logger);
 		this.std = new MetaStandardDefs();
 	}
 	

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -27,6 +27,8 @@
 
 package org.azzyzt.jee.tools.mwe;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.azzyzt.jee.tools.mwe.feature.CrudServiceBeansGeneratorFeature;
@@ -38,6 +40,7 @@ import org.azzyzt.jee.tools.mwe.feature.Parameters;
 import org.azzyzt.jee.tools.mwe.feature.SingleTargetsGeneratorFeature;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
 import org.azzyzt.jee.tools.mwe.util.Log;
+import org.azzyzt.jee.tools.mwe.util.Log.Verbosity;
 import org.azzyzt.jee.tools.mwe.util.QueueLog;
 import org.azzyzt.jee.tools.mwe.util.StreamLog;
 
@@ -55,12 +58,22 @@ public class StandardProjectStructureGenerator {
 	}
 
 	protected static void doWork(String[] args, Log logger) {
-		if (args.length < 1) {
-			logger.log("usage: StandardProjectStructureGenerator <project_prefix> [<persistence_unit_name>]");
+		List<String> arguments = new ArrayList<String>();
+		for (String arg : args) {
+			if (arg.startsWith("-")) {
+				if (arg.equals("--debug")) {
+					logger.setVerbosity(Verbosity.DEBUG);
+				}
+			} else {
+				arguments.add(arg);
+			}
+		}
+		if (arguments.size() < 1) {
+			logger.error("usage: StandardProjectStructureGenerator <project_prefix> [<persistence_unit_name>]");
             return;
         }
 
-        String projectPrefix = args[0];
+        String projectPrefix = arguments.get(0);
         String ejbSourceFolder = projectPrefix+"EJB/generated";
         String ejbClientSourceFolder = projectPrefix+"EJBClient/generated";
         String restSourceFolder = projectPrefix+"Servlets/generated";
@@ -68,45 +81,45 @@ public class StandardProjectStructureGenerator {
         Parameters parameters;
         int numberOfSourcesGenerated;
         
-        EntityModelBuilderFeature embf = new EntityModelBuilderFeature();
+        EntityModelBuilderFeature embf = new EntityModelBuilderFeature(logger);
         
-        // TODO id fields of entities currently must be called id (EntityBase!!!) 
 		parameters = embf.getParameters();
-        if (2 == args.length) {
-            parameters.byName(EntityModelBuilderFeature.PERSISTENCE_UNIT_NAME).setValue(args[1]);
+        if (2 == arguments.size()) {
+            parameters.byName(EntityModelBuilderFeature.PERSISTENCE_UNIT_NAME).setValue(arguments.get(1));
         }
         MetaModel entityModel = embf.build(parameters);
 
-        SingleTargetsGeneratorFeature singleTargetsGen = new SingleTargetsGeneratorFeature(entityModel, logger);
+        SingleTargetsGeneratorFeature singleTargetsGen = new SingleTargetsGeneratorFeature(entityModel);
         parameters = singleTargetsGen.getParameters();
-        parameters.byName(SingleTargetsGeneratorFeature.SOURCE_FOLDER).setValue(ejbSourceFolder);
+        parameters.byName(SingleTargetsGeneratorFeature.SOURCE_FOLDER_CLIENT_PROJECT).setValue(ejbClientSourceFolder);
+        parameters.byName(SingleTargetsGeneratorFeature.SOURCE_FOLDER_EJB_PROJECT).setValue(ejbSourceFolder);
 		numberOfSourcesGenerated = singleTargetsGen.generate(parameters);
-		logger.log(numberOfSourcesGenerated+" eao files generated");
+		logger.info(numberOfSourcesGenerated+" eao files generated");
 		
-		DtoGeneratorFeature dtoGen = new DtoGeneratorFeature(entityModel, logger);
+		DtoGeneratorFeature dtoGen = new DtoGeneratorFeature(entityModel);
         parameters = dtoGen.getParameters();
         parameters.byName(DtoGeneratorFeature.SOURCE_FOLDER).setValue(ejbClientSourceFolder);
         numberOfSourcesGenerated = dtoGen.generate(parameters);
-        logger.log(numberOfSourcesGenerated+" dto files generated");
+        logger.info(numberOfSourcesGenerated+" dto files generated");
         
-        EntityDtoConverterGeneratorFeature convGen = new EntityDtoConverterGeneratorFeature(entityModel, logger);
+        EntityDtoConverterGeneratorFeature convGen = new EntityDtoConverterGeneratorFeature(entityModel);
         parameters = convGen.getParameters();
         parameters.byName(EntityDtoConverterGeneratorFeature.SOURCE_FOLDER).setValue(ejbSourceFolder);
         numberOfSourcesGenerated = convGen.generate(parameters);
-		logger.log(numberOfSourcesGenerated+" converter files generated");
+		logger.info(numberOfSourcesGenerated+" converter files generated");
 		
-		CrudServiceBeansGeneratorFeature svcGen = new CrudServiceBeansGeneratorFeature(entityModel, logger);
+		CrudServiceBeansGeneratorFeature svcGen = new CrudServiceBeansGeneratorFeature(entityModel);
 		parameters = svcGen.getParameters();
         parameters.byName(CrudServiceBeansGeneratorFeature.SOURCE_FOLDER_CLIENT_PROJECT).setValue(ejbClientSourceFolder);
         parameters.byName(CrudServiceBeansGeneratorFeature.SOURCE_FOLDER_EJB_PROJECT).setValue(ejbSourceFolder);
         numberOfSourcesGenerated = svcGen.generate(parameters);
-        logger.log(numberOfSourcesGenerated+" service beans and service interfaces generated");
+        logger.info(numberOfSourcesGenerated+" service beans and service interfaces generated");
 		
-		CrudServiceRESTGeneratorFeature restGen = new CrudServiceRESTGeneratorFeature(entityModel, logger);
+		CrudServiceRESTGeneratorFeature restGen = new CrudServiceRESTGeneratorFeature(entityModel);
 		parameters = restGen.getParameters();
         parameters.byName(CrudServiceRESTGeneratorFeature.SOURCE_FOLDER).setValue(restSourceFolder);
         numberOfSourcesGenerated = restGen.generate(parameters);
-        logger.log(numberOfSourcesGenerated+" REST wrapper files generated");
+        logger.info(numberOfSourcesGenerated+" REST wrapper files generated");
 	}
 
 }

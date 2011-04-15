@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -76,7 +76,6 @@ import org.azzyzt.jee.tools.mwe.model.MetaModel;
 import org.azzyzt.jee.tools.mwe.model.type.MetaClass;
 import org.azzyzt.jee.tools.mwe.model.type.MetaDeclaredType;
 import org.azzyzt.jee.tools.mwe.model.type.MetaInterface;
-import org.azzyzt.jee.tools.mwe.util.Log;
 import org.azzyzt.jee.tools.mwe.util.StringUtils;
 
 public class JavaGenerator extends SourceGenerator {
@@ -85,8 +84,8 @@ public class JavaGenerator extends SourceGenerator {
 	private boolean generateGettersSetters = true;
 	private boolean generateDefaultConstructor = true;
 	
-	public JavaGenerator(MetaModel model, String sourceFolder, String stringTemplateGroup, Log logger) {
-        super(model, sourceFolder, stringTemplateGroup, logger);
+	public JavaGenerator(MetaModel model, String sourceFolder, String stringTemplateGroup) {
+        super(model, sourceFolder, stringTemplateGroup);
     }
 
 	@Override

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="WINDOWS-1252" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <jardesc>
     <jar path="org.azzyzt.jee.tools.mwe.projectgen.plugin/lib/org.azzyzt.jee.tools.mwe.jar"/>
     <options buildIfNeeded="true" compress="true" descriptionLocation="/org.azzyzt.jee.tools.mwe/export.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="true" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
@@ -11,8 +11,10 @@
         </sealing>
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="true" exportOutputFolder="false">
-        <file path="/org.azzyzt.jee.tools.mwe/.classpath"/>
-        <javaElement handleIdentifier="=org.azzyzt.jee.tools.mwe/src"/>
+        <file path="/org.azzyzt.jee.tools.mwe/.gitignore"/>
         <file path="/org.azzyzt.jee.tools.mwe/.project"/>
+        <javaElement handleIdentifier="=org.azzyzt.jee.tools.mwe/src"/>
+        <file path="/org.azzyzt.jee.tools.mwe/export.jardesc"/>
+        <file path="/org.azzyzt.jee.tools.mwe/.classpath"/>
     </selectedElements>
 </jardesc>
