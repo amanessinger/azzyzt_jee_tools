@@ -117,15 +117,15 @@ public class DerivedModelBuilder {
 		target.setProperty("validAssociationPaths", validAssociationPaths);
 	}
 
-	protected void addEntityMetaInfoField(MetaClass target) {
-		MetaDeclaredType emi = (MetaDeclaredType)masterModel.getProperty("entityMetaInfo");
-		MetaField emiField = new MetaField(target, "emi");
-		emiField.setFieldType(emi);
-		emiField.setModifiers(std.mod_private);
-		emiField.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxEjbEJB, target));
-		target.addField(emiField);
-		target.addReferencedForeignType(emi);
-		target.setProperty("emi", emi);
+	protected void addTypeMetaInfoField(MetaClass target) {
+		MetaDeclaredType tmi = (MetaDeclaredType)masterModel.getProperty("typeMetaInfo");
+		MetaField tmiField = new MetaField(target, "tmi");
+		tmiField.setFieldType(tmi);
+		tmiField.setModifiers(std.mod_private);
+		tmiField.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxEjbEJB, target));
+		target.addField(tmiField);
+		target.addReferencedForeignType(tmi);
+		target.setProperty("tmi", tmi);
 	}
 
 	protected void addFullServiceBeanField(MetaClass target, MetaClass entity) {

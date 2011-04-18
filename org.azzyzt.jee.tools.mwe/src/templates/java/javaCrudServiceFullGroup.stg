@@ -63,7 +63,7 @@ public List\<<dto.simpleName>\> <entity.lcFirstSimpleName>List(QuerySpec qs)
 listBody(entity, dto) ::= <<
 {
     List\<<dto.simpleName>\> result = new ArrayList\<<dto.simpleName>\>();
-    List\<<entity.simpleName>\> entities = eao.list(qs, <entity.simpleName>.class, emi);
+    List\<<entity.simpleName>\> entities = eao.list(qs, <entity.simpleName>.class, tmi);
     
     for (<entity.simpleName> e : entities) {
         <dto.simpleName> dto = converter.fromEntity(e);
@@ -84,7 +84,7 @@ listXmlBody(entity, dto) ::= <<
     QuerySpec qs = QuerySpec.fromXML(querySpecXml);
     
     List\<<dto.simpleName>\> result = new ArrayList\<<dto.simpleName>\>();
-    List\<<entity.simpleName>\> entities = eao.list(qs, <entity.simpleName>.class, emi);
+    List\<<entity.simpleName>\> entities = eao.list(qs, <entity.simpleName>.class, tmi);
     
     for (<entity.simpleName> e : entities) {
         <dto.simpleName> dto = converter.fromEntity(e);

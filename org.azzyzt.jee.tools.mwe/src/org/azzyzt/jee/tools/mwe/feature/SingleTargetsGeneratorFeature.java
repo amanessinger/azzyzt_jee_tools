@@ -29,7 +29,7 @@ package org.azzyzt.jee.tools.mwe.feature;
 
 import org.azzyzt.jee.tools.mwe.builder.DtoBaseModelBuilder;
 import org.azzyzt.jee.tools.mwe.builder.EaoModelBuilder;
-import org.azzyzt.jee.tools.mwe.builder.EntityMetaInfoModelBuilder;
+import org.azzyzt.jee.tools.mwe.builder.TypeMetaInfoModelBuilder;
 import org.azzyzt.jee.tools.mwe.builder.InvocationRegistryModelBuilder;
 import org.azzyzt.jee.tools.mwe.builder.SiteAdapterModelBuilder;
 import org.azzyzt.jee.tools.mwe.builder.StandardEntityListenerModelBuilder;
@@ -71,8 +71,19 @@ public class SingleTargetsGeneratorFeature extends GeneratorFeature {
 		targetGen.setGenerateGettersSetters(false);
 		numberOfSourcesGenerated = targetGen.generate();
 
-		targetModel = new EntityMetaInfoModelBuilder(getModel(), null).build();
-		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaEntityMetaInfoGroup");
+		sourceFolder = (String)parameters.byName(SOURCE_FOLDER_CLIENT_PROJECT).getValue();
+
+		targetModel = new DtoBaseModelBuilder(getModel(), null).build();
+		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaDtoBaseGroup");
+		targetGen.setGenerateFields(false);
+		targetGen.setGenerateDefaultConstructor(false);
+		targetGen.setGenerateGettersSetters(false);
+		numberOfSourcesGenerated += targetGen.generate();
+
+		sourceFolder = (String)parameters.byName(SOURCE_FOLDER_EJB_PROJECT).getValue();
+		
+		targetModel = new TypeMetaInfoModelBuilder(getModel(), null).build();
+		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaTypeMetaInfoGroup");
 		targetGen.setGenerateFields(false);
 		targetGen.setGenerateDefaultConstructor(false);
 		targetGen.setGenerateGettersSetters(false);
@@ -99,15 +110,6 @@ public class SingleTargetsGeneratorFeature extends GeneratorFeature {
 		
 		targetModel = new SiteAdapterModelBuilder(getModel(), null).build();
 		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaSiteAdapterGroup");
-		targetGen.setGenerateFields(false);
-		targetGen.setGenerateDefaultConstructor(false);
-		targetGen.setGenerateGettersSetters(false);
-		numberOfSourcesGenerated += targetGen.generate();
-
-		sourceFolder = (String)parameters.byName(SOURCE_FOLDER_CLIENT_PROJECT).getValue();
-
-		targetModel = new DtoBaseModelBuilder(getModel(), null).build();
-		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaDtoBaseGroup");
 		targetGen.setGenerateFields(false);
 		targetGen.setGenerateDefaultConstructor(false);
 		targetGen.setGenerateGettersSetters(false);

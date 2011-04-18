@@ -1,4 +1,4 @@
-group javaEntityMetaInfoGroup : javaGroup;
+group javaTypeMetaInfoGroup : javaGroup;
 
 @javaClass.extra_constructors() ::= <<
 static {

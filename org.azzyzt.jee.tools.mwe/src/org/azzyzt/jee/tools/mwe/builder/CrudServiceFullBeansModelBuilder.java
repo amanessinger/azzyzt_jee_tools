@@ -42,7 +42,7 @@ public class CrudServiceFullBeansModelBuilder extends DerivedModelBuilder implem
 	@Override
 	public MetaModel build() {
 		
-		MetaClass entityMetaInfo = (MetaClass)masterModel.getProperty("entityMetaInfo");
+		MetaClass typeMetaInfo = (MetaClass)masterModel.getProperty("typeMetaInfo");
 				
 		for (MetaEntity me : masterModel.getTargetEntities()) {
 			MetaClass dto = (MetaClass) me.getProperty("dto");
@@ -70,7 +70,7 @@ public class CrudServiceFullBeansModelBuilder extends DerivedModelBuilder implem
 			target.addReferencedForeignType(std.notYetImplementedException);
 			target.addReferencedForeignType(std.javaUtilList);
 			target.addReferencedForeignType(std.javaUtilArrayList);
-			target.addReferencedForeignType(entityMetaInfo);
+			target.addReferencedForeignType(typeMetaInfo);
 			target.addReferencedForeignType(std.querySpec);
 
 			if (me.isCombinedId()) {
@@ -79,7 +79,7 @@ public class CrudServiceFullBeansModelBuilder extends DerivedModelBuilder implem
 
 			addGenericEaoField(target);
 			addConverterField(target, me);
-			addEntityMetaInfoField(target);
+			addTypeMetaInfoField(target);
 			
 			target.setProperty("entity", me);
 			target.setProperty("dto", dto);

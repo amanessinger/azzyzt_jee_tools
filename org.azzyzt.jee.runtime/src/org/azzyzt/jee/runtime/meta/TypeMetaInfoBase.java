@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -37,7 +37,7 @@ import org.azzyzt.jee.runtime.exception.AccessDeniedException;
 import org.azzyzt.jee.runtime.exception.InvalidFieldException;
 import org.azzyzt.jee.runtime.exception.ThisCantHappen;
 
-public abstract class EntityMetaInfoBase {
+public abstract class TypeMetaInfoBase {
 
 	protected static Map<Class<?>, Set<String>> fieldsByClass = new HashMap<Class<?>, Set<String>>();
 	protected static Map<Class<?>, Map<String, Class<?>>> fieldsTypesByClassAndName = new HashMap<Class<?>, Map<String, Class<?>>>();
@@ -46,7 +46,7 @@ public abstract class EntityMetaInfoBase {
 	protected static Map<Class<?>, String> createUserFieldByClass = new HashMap<Class<?>, String>();
 	protected static Map<Class<?>, String> modificationUserFieldByClass = new HashMap<Class<?>, String>();
 	
-	public EntityMetaInfoBase() {
+	public TypeMetaInfoBase() {
 		super();
 	}
 

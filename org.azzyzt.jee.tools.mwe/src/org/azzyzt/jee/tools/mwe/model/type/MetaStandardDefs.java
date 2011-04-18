@@ -153,7 +153,7 @@ public class MetaStandardDefs {
 	public final MetaClass restDelegatorBase;
 	public final MetaClass orderByClause;
 	public final MetaInterface typeMetaInfo;
-	public final MetaClass entityMetaInfoBase;
+	public final MetaClass typeMetaInfoBase;
 	public final MetaClass querySpec;
 	public final MetaClass associationInfo;
 	public final MetaClass associationPathInfo;
@@ -317,8 +317,8 @@ public class MetaStandardDefs {
 		notYetImplementedException = MetaClass.forType(org.azzyzt.jee.runtime.exception.NotYetImplementedException.class);
 		restDelegatorBase = MetaClass.forType(org.azzyzt.jee.runtime.service.RESTDelegatorBase.class);
 		orderByClause = MetaClass.forType(org.azzyzt.jee.runtime.dto.query.OrderByClause.class);
-		typeMetaInfo = MetaInterface.forType(org.azzyzt.jee.runtime.util.TypeMetaInfo.class);
-		entityMetaInfoBase = MetaClass.forType(org.azzyzt.jee.runtime.meta.EntityMetaInfoBase.class);
+		typeMetaInfo = MetaInterface.forType(org.azzyzt.jee.runtime.meta.TypeMetaInfoInterface.class);
+		typeMetaInfoBase = MetaClass.forType(org.azzyzt.jee.runtime.meta.TypeMetaInfoBase.class);
 		querySpec = MetaClass.forType(org.azzyzt.jee.runtime.dto.query.QuerySpec.class);
 		associationInfo = MetaClass.forType(org.azzyzt.jee.runtime.meta.AssociationInfo.class);
 		associationPathInfo = MetaClass.forType(org.azzyzt.jee.runtime.meta.AssociationPathInfo.class);

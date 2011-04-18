@@ -36,9 +36,9 @@ import org.azzyzt.jee.tools.mwe.model.type.MetaEntity;
 import org.azzyzt.jee.tools.mwe.model.type.MetaField;
 import org.azzyzt.jee.tools.mwe.model.type.MetaType;
 
-public class EntityMetaInfoModelBuilder extends DerivedModelBuilder implements Builder {
+public class TypeMetaInfoModelBuilder extends DerivedModelBuilder implements Builder {
 
-	public EntityMetaInfoModelBuilder(MetaModel entityModel, String targetPackageName) {
+	public TypeMetaInfoModelBuilder(MetaModel entityModel, String targetPackageName) {
 		super(entityModel, targetPackageName);
 	}
 
@@ -64,11 +64,11 @@ public class EntityMetaInfoModelBuilder extends DerivedModelBuilder implements B
 				// create MetaClass
 				String packageName = derivePackageNameFromEntityAndFollowPackage(me, "meta");
 				
-				// upon first entity create the EntityMetaInfo class
-				String simpleName = "EntityMetaInfo";
+				// upon first entity create the TypeMetaInfo class
+				String simpleName = "TypeMetaInfo";
 				target = MetaClass.forName(packageName, simpleName);
 				target.setModifiers(std.mod_public);
-				target.setSuperMetaClass(std.entityMetaInfoBase);
+				target.setSuperMetaClass(std.typeMetaInfoBase);
 				target.addInterface(std.typeMetaInfo);
 				target.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxEjbLocalBean, target));
 				target.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxEjbStateless, target));
@@ -85,7 +85,7 @@ public class EntityMetaInfoModelBuilder extends DerivedModelBuilder implements B
 				addValidAssociationPaths(target);
 				target.addReferencedForeignType(std.validAssociationPathsInterface);
 				
-				masterModel.setProperty("entityMetaInfo", target);
+				masterModel.setProperty("typeMetaInfo", target);
 			}
 			
 			// add a pseudo-field that we can use in the template
