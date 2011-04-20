@@ -28,9 +28,6 @@ group javaCrudServiceFullGroup : javaGroup;
 
 @javaInterface.extra_methods() ::= <<
 <byIdHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>;
-<if(mdt.properties.entity.properties.isNamed)>
-
-<byNameHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>;<endif>
 
 <listHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>;
 

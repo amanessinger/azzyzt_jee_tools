@@ -27,6 +27,7 @@
 
 package org.azzyzt.jee.tools.mwe.builder;
 
+import org.azzyzt.jee.tools.mwe.identifiers.PackageTails;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
 import org.azzyzt.jee.tools.mwe.model.annotation.MetaAnnotationInstance;
 import org.azzyzt.jee.tools.mwe.model.type.MetaClass;
@@ -35,6 +36,8 @@ import org.azzyzt.jee.tools.mwe.model.type.MetaInterface;
 
 public class CrudServiceFullBeansModelBuilder extends DerivedModelBuilder implements Builder {
 
+	public static final String CLASS_SUFFIX = "FullBean";
+	
 	public CrudServiceFullBeansModelBuilder(MetaModel entityModel, String targetPackageName) {
 		super(entityModel, targetPackageName);
 	}
@@ -48,9 +51,9 @@ public class CrudServiceFullBeansModelBuilder extends DerivedModelBuilder implem
 			MetaClass dto = (MetaClass) me.getProperty("dto");
 
 			// create MetaClass
-			String packageName = derivePackageNameFromEntityAndFollowPackage(me, "service");
+			String packageName = derivePackageNameFromEntityAndFollowPackage(me, PackageTails.SERVICE);
 			String simpleName = me.getSimpleName();
-			simpleName += "FullBean";
+			simpleName += CLASS_SUFFIX;
 			MetaClass target = MetaClass.forName(packageName, simpleName);
 			target.addInterface((MetaInterface)me.getProperty("svcFullInterface"));
 			me.setProperty("svcFullBean", target);

@@ -8,6 +8,10 @@ static {
     AssociationInfo associationInfo;
     Map\<String, AssociationInfo\> associationInfos;
     <mdt.fields:create_entity_field_info()>
+    
+    ///////////////////////////////////////////////////
+    // fill DTO/converter map
+    <mdt.fields:add_to_dto_converter_map()>
 }
 
 >>
@@ -38,6 +42,7 @@ associationInfos = new HashMap\<String, AssociationInfo\>();
 associationsByClassAndPath.put(<attr.fieldType.simpleName>.class, associationInfos);
 
 <attr.fieldType.fields:add_entity_association_info()>
+
 >>
 
 add_entity_field() ::= <<
@@ -66,3 +71,10 @@ associationInfos.put("<attr.name>", associationInfo);
 <endif>
 >>
 
+add_to_dto_converter_map() ::= <<
+<if(attr.fieldType.properties.dtoFQName)>
+converterByDto.put(<attr.fieldType.properties.dtoFQName>.class, <attr.fieldType.properties.convFQName>.class);
+<endif>
+
+
+>>

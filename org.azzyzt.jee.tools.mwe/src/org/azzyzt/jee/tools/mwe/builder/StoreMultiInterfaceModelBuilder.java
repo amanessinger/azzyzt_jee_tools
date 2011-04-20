@@ -27,6 +27,7 @@
 
 package org.azzyzt.jee.tools.mwe.builder;
 
+import org.azzyzt.jee.tools.mwe.identifiers.ModelProperties;
 import org.azzyzt.jee.tools.mwe.identifiers.PackageTails;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
 import org.azzyzt.jee.tools.mwe.model.annotation.MetaAnnotationInstance;
@@ -34,11 +35,11 @@ import org.azzyzt.jee.tools.mwe.model.type.MetaClass;
 import org.azzyzt.jee.tools.mwe.model.type.MetaEntity;
 import org.azzyzt.jee.tools.mwe.model.type.MetaInterface;
 
-public class CrudServiceFullInterfaceModelBuilder extends DerivedModelBuilder implements Builder {
+public class StoreMultiInterfaceModelBuilder extends DerivedModelBuilder implements Builder {
 
-	public static final String CLASS_SUFFIX = "FullInterface";
+	public static final String CLASS_NAME = "StoreMultiInterface";
 
-	public CrudServiceFullInterfaceModelBuilder(MetaModel entityModel, String targetPackageName) {
+	public StoreMultiInterfaceModelBuilder(MetaModel entityModel, String targetPackageName) {
 		super(entityModel, targetPackageName);
 	}
 
@@ -46,34 +47,27 @@ public class CrudServiceFullInterfaceModelBuilder extends DerivedModelBuilder im
 	public MetaModel build() {
 		
 		for (MetaEntity me : masterModel.getTargetEntities()) {
-			MetaClass dto = (MetaClass) me.getProperty("dto");
+			MetaClass dtoBase = (MetaClass) masterModel.getProperty(ModelProperties.DTO_BASE);
 
 			// create MetaInterface
 			String packageName = derivePackageNameFromEntityAndFollowPackage(me, PackageTails.SERVICE);
-			String simpleName = me.getSimpleName();
-			simpleName += CLASS_SUFFIX;
+			String simpleName = CLASS_NAME;
 			MetaInterface target = MetaInterface.forName(packageName, simpleName);
-			me.setProperty("svcFullInterface", target);
 			target.setModifiers(std.mod_public);
 			target.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxEjbRemote, target));
 			
-			target.addReferencedForeignType(dto);
+			target.addReferencedForeignType(dtoBase);
 			target.addReferencedForeignType(std.accessDeniedException);
-			target.addReferencedForeignType(std.entityNotFoundException);
 			target.addReferencedForeignType(std.entityInstantiationException);
+			target.addReferencedForeignType(std.entityNotFoundException);
+			target.addReferencedForeignType(std.invalidArgumentException);
 			target.addReferencedForeignType(std.invalidIdException);
-			target.addReferencedForeignType(std.invalidFieldException);
-			target.addReferencedForeignType(std.querySyntaxException);
-			target.addReferencedForeignType(std.notYetImplementedException);
 			target.addReferencedForeignType(std.javaUtilList);
-			target.addReferencedForeignType(std.querySpec);
 			
-			if (me.isCombinedId()) {
-				target.addReferencedForeignType(me.getCombinedIdType());
-			}
-
-			target.setProperty("entity", me);
-			target.setProperty("dto", dto);
+			masterModel.setProperty(ModelProperties.STORE_MULTI_INTERFACE, target);
+			
+			// now break out
+			break;
 		}
 		return targetModel;
 	}

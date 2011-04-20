@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.azzyzt.jee.tools.mwe.exception.ToolError;
+import org.azzyzt.jee.tools.mwe.identifiers.PackageTails;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
 import org.azzyzt.jee.tools.mwe.model.annotation.MetaAnnotatable;
 import org.azzyzt.jee.tools.mwe.model.annotation.MetaAnnotationInstance;
@@ -49,6 +50,8 @@ import org.azzyzt.jee.tools.mwe.model.type.MetaType;
 
 public class DtoModelBuilder extends DerivedModelBuilder implements Builder {
 
+	public static final String CLASS_SUFFIX = "Dto";
+	
 	public DtoModelBuilder(MetaModel entityModel, String targetPackageName) {
 		super(entityModel, targetPackageName);
 	}
@@ -63,11 +66,11 @@ public class DtoModelBuilder extends DerivedModelBuilder implements Builder {
 		for (MetaEntity me : masterModel.getTargetEntities()) {
 
 			// create MetaClass
-			String packageName = derivePackageNameFromEntityAndFollowPackage(me, "dto");
+			String packageName = derivePackageNameFromEntityAndFollowPackage(me, PackageTails.DTO);
 			String simpleName = me.getSimpleName();
-			simpleName += "Dto";
+			simpleName += CLASS_SUFFIX;
 			MetaClass target = MetaClass.forName(packageName, simpleName);
-			me.setProperty("dto", target);
+			me.setProperty(PackageTails.DTO, target);
 			MetaAnnotationInstance mai = new MetaAnnotationInstance(std.javaxXmlBindAnnotationXmlRootElement, target);
 			mai.setElement("name", me.getSimpleName().toLowerCase());
 			target.addMetaAnnotationInstance(mai);

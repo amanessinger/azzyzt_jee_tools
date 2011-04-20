@@ -27,6 +27,7 @@
 
 package org.azzyzt.jee.tools.mwe.builder;
 
+import org.azzyzt.jee.tools.mwe.identifiers.PackageTails;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
 import org.azzyzt.jee.tools.mwe.model.annotation.MetaAnnotationInstance;
 import org.azzyzt.jee.tools.mwe.model.type.MetaClass;
@@ -44,7 +45,7 @@ public class RESTServletModelBuilder extends DerivedModelBuilder implements Buil
 		for (MetaEntity me : masterModel.getTargetEntities()) {
 
 			// create MetaClass
-			String packageName = derivePackageNameFromEntityAndFollowPackage(me, "service");
+			String packageName = derivePackageNameFromEntityAndFollowPackage(me, PackageTails.SERVICE);
 			
 			// upon first entity create the REST servlet 
 			String simpleName = "RESTServlet";

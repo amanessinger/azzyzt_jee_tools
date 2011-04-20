@@ -27,6 +27,7 @@
 
 package org.azzyzt.jee.tools.mwe.builder;
 
+import org.azzyzt.jee.tools.mwe.identifiers.PackageTails;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
 import org.azzyzt.jee.tools.mwe.model.annotation.MetaAnnotationInstance;
 import org.azzyzt.jee.tools.mwe.model.type.MetaClass;
@@ -44,12 +45,13 @@ public class InvocationRegistryModelBuilder extends DerivedModelBuilder implemen
 		for (MetaEntity me : masterModel.getTargetEntities()) {
 
 			// create MetaClass
-			String packageName = derivePackageNameFromEntityAndFollowPackage(me, "meta");
+			String packageName = derivePackageNameFromEntityAndFollowPackage(me, PackageTails.META);
 			
 			// upon first entity create MetaClass
 			String simpleName = "InvocationRegistry";
 			MetaClass target = MetaClass.forName(packageName, simpleName);
 			target.setSuperMetaClass(std.InvocationRegistryBase);
+			target.addInterface(std.invocationRegistryInterface);
 			targetModel.follow(packageName);
 			target.setModifiers(std.mod_public);
 			

@@ -28,6 +28,8 @@
 package org.azzyzt.jee.tools.mwe.builder;
 
 import org.azzyzt.jee.tools.mwe.exception.ToolError;
+import org.azzyzt.jee.tools.mwe.identifiers.ModelProperties;
+import org.azzyzt.jee.tools.mwe.identifiers.PackageTails;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
 import org.azzyzt.jee.tools.mwe.model.annotation.MetaAnnotationInstance;
 import org.azzyzt.jee.tools.mwe.model.association.MetaAssociationEndpoint;
@@ -37,6 +39,8 @@ import org.azzyzt.jee.tools.mwe.model.type.MetaField;
 import org.azzyzt.jee.tools.mwe.model.type.MetaType;
 
 public class TypeMetaInfoModelBuilder extends DerivedModelBuilder implements Builder {
+
+	private static final String CLASS_NAME = "TypeMetaInfo";
 
 	public TypeMetaInfoModelBuilder(MetaModel entityModel, String targetPackageName) {
 		super(entityModel, targetPackageName);
@@ -62,10 +66,10 @@ public class TypeMetaInfoModelBuilder extends DerivedModelBuilder implements Bui
 
 			if (target == null) {
 				// create MetaClass
-				String packageName = derivePackageNameFromEntityAndFollowPackage(me, "meta");
+				String packageName = derivePackageNameFromEntityAndFollowPackage(me, PackageTails.META);
 				
 				// upon first entity create the TypeMetaInfo class
-				String simpleName = "TypeMetaInfo";
+				String simpleName = CLASS_NAME;
 				target = MetaClass.forName(packageName, simpleName);
 				target.setModifiers(std.mod_public);
 				target.setSuperMetaClass(std.typeMetaInfoBase);
@@ -85,7 +89,7 @@ public class TypeMetaInfoModelBuilder extends DerivedModelBuilder implements Bui
 				addValidAssociationPaths(target);
 				target.addReferencedForeignType(std.validAssociationPathsInterface);
 				
-				masterModel.setProperty("typeMetaInfo", target);
+				masterModel.setProperty(ModelProperties.TYPE_META_INFO, target);
 			}
 			
 			// add a pseudo-field that we can use in the template

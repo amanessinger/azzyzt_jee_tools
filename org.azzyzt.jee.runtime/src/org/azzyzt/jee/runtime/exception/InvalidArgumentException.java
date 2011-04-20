@@ -25,24 +25,25 @@
  * permissions and limitations under the Licence.
  */
 
-package org.azzyzt.jee.runtime.meta;
+package org.azzyzt.jee.runtime.exception;
 
-import org.azzyzt.jee.runtime.exception.AccessDeniedException;
-import org.azzyzt.jee.runtime.exception.InvalidArgumentException;
-import org.azzyzt.jee.runtime.exception.InvalidFieldException;
+public class InvalidArgumentException extends TranslatableException {
 
-public interface TypeMetaInfoInterface {
-	
-	public ValidAssociactionPathsInterface getValidPaths();
-	
-	public boolean isAssociationPath(String name);
-	
-	public void fieldVerification(Class<?> clazz, String name)
-		throws InvalidFieldException, AccessDeniedException;
+	private static final long serialVersionUID = 1L;
 
-	public Class<?> getFieldType(Class<?> clazz, String name) 
-    	throws InvalidFieldException, AccessDeniedException;
+	private String invalidArgumentValue;
 	
-	public Class<?> getConverterForDto(Class<?> clazz)
-		throws InvalidArgumentException;
+	public InvalidArgumentException(String invalidArgumentValue) {
+		super("Access error",
+		  	  "Key is invalid");
+		this.setInvalidArgumentValue(invalidArgumentValue);
+	}
+
+	public String getInvalidArgumentValue() {
+		return invalidArgumentValue;
+	}
+
+	public void setInvalidArgumentValue(String invalidArgumentValue) {
+		this.invalidArgumentValue = invalidArgumentValue;
+	}
 }

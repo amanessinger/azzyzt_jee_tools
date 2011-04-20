@@ -140,12 +140,16 @@ public class MetaStandardDefs {
 	public final MetaClass eaoBase;
 	public final MetaClass entityBase;
 	public final MetaClass entityListenerBase;
+	public final MetaInterface invocationRegistryInterface;
 	public final MetaClass InvocationRegistryBase;
 	public final MetaInterface javaxTransactionTransactionSynchronizationRegistry;
+	public final MetaClass multiObjectSaver;
+	public final MetaInterface converterRawInterface;
 	
 	public final MetaClass accessDeniedException;
 	public final MetaClass entityNotFoundException;
 	public final MetaClass entityInstantiationException;
+	public final MetaClass invalidArgumentException;
 	public final MetaClass invalidIdException;
 	public final MetaClass invalidFieldException;
 	public final MetaClass querySyntaxException;
@@ -305,12 +309,16 @@ public class MetaStandardDefs {
 		eaoBase = MetaClass.forType(org.azzyzt.jee.runtime.eao.EaoBase.class);
 		entityBase = MetaClass.forType(org.azzyzt.jee.runtime.entity.EntityBase.class);
 		entityListenerBase = MetaClass.forType(org.azzyzt.jee.runtime.entity.EntityListenerBase.class);
+		invocationRegistryInterface = MetaInterface.forType(org.azzyzt.jee.runtime.meta.InvocationRegistryInterface.class);
 		InvocationRegistryBase = MetaClass.forType(org.azzyzt.jee.runtime.meta.InvocationRegistryBase.class);
 		javaxTransactionTransactionSynchronizationRegistry = MetaInterface.forType(javax.transaction.TransactionSynchronizationRegistry.class);
+		multiObjectSaver = MetaClass.forType(org.azzyzt.jee.runtime.eao.MultiObjectSaver.class);
+		converterRawInterface = MetaInterface.forType(org.azzyzt.jee.runtime.conv.ConverterRawInterface.class);
 		
 		accessDeniedException = MetaClass.forType(org.azzyzt.jee.runtime.exception.AccessDeniedException.class);
 		entityNotFoundException = MetaClass.forType(org.azzyzt.jee.runtime.exception.EntityNotFoundException.class);
 		entityInstantiationException = MetaClass.forType(org.azzyzt.jee.runtime.exception.EntityInstantiationException.class);
+		invalidArgumentException = MetaClass.forType(org.azzyzt.jee.runtime.exception.InvalidArgumentException.class);
 		invalidIdException = MetaClass.forType(org.azzyzt.jee.runtime.exception.InvalidIdException.class);
 		invalidFieldException = MetaClass.forType(org.azzyzt.jee.runtime.exception.InvalidFieldException.class);
 		querySyntaxException = MetaClass.forType(org.azzyzt.jee.runtime.exception.QuerySyntaxException.class);

@@ -141,14 +141,19 @@ public class JavaGenerator extends SourceGenerator {
 	}
 
 	public String generateSourceFileContent(MetaDeclaredType mdt, String artifactType) {
-    	String templateDirs = "templates/java";
-    	StringTemplateGroupLoader loader = new CommonGroupLoader(templateDirs.toString(), null);
-    	StringTemplateGroup.registerGroupLoader(loader);
-    	StringTemplateGroup javaGroup = StringTemplateGroup.loadGroup(getStringTemplateGroup());
-    	StringTemplate st = javaGroup.getInstanceOf("java"+StringUtils.ucFirst(artifactType));
-    	st.setAttribute("mdt", mdt);
-    	st.setAttribute("generator", this);
-    	return st.toString();
+		try {
+	    	String templateDirs = "templates/java";
+	    	StringTemplateGroupLoader loader = new CommonGroupLoader(templateDirs.toString(), null);
+	    	StringTemplateGroup.registerGroupLoader(loader);
+	    	StringTemplateGroup javaGroup = StringTemplateGroup.loadGroup(getStringTemplateGroup());
+	    	StringTemplate st = javaGroup.getInstanceOf("java"+StringUtils.ucFirst(artifactType));
+	    	st.setAttribute("mdt", mdt);
+	    	st.setAttribute("generator", this);
+	    	return st.toString();
+		} catch (Exception e) {
+			getModel().getLogger().error("Caught exception: "+e.getMessage());
+			throw new ToolError(e);
+		}
     }
 
 	public String getStringTemplateGroup() {

@@ -27,6 +27,7 @@
 
 package org.azzyzt.jee.tools.mwe.builder;
 
+import org.azzyzt.jee.tools.mwe.identifiers.PackageTails;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
 import org.azzyzt.jee.tools.mwe.model.annotation.MetaAnnotationInstance;
 import org.azzyzt.jee.tools.mwe.model.type.MetaClass;
@@ -34,6 +35,8 @@ import org.azzyzt.jee.tools.mwe.model.type.MetaEntity;
 import org.azzyzt.jee.tools.mwe.model.type.MetaInterface;
 
 public class CrudServiceRestrictedInterfaceModelBuilder extends DerivedModelBuilder implements Builder {
+
+	public static final String CLASS_SUFFIX = "RestrictedInterface";
 
 	public CrudServiceRestrictedInterfaceModelBuilder(MetaModel entityModel, String targetPackageName) {
 		super(entityModel, targetPackageName);
@@ -46,9 +49,9 @@ public class CrudServiceRestrictedInterfaceModelBuilder extends DerivedModelBuil
 			MetaClass dto = (MetaClass) me.getProperty("dto");
 
 			// create MetaInterface
-			String packageName = derivePackageNameFromEntityAndFollowPackage(me, "service");
+			String packageName = derivePackageNameFromEntityAndFollowPackage(me, PackageTails.SERVICE);
 			String simpleName = me.getSimpleName();
-			simpleName += "RestrictedInterface";
+			simpleName += CLASS_SUFFIX;
 			MetaInterface target = MetaInterface.forName(packageName, simpleName);
 			me.setProperty("svcRestrictedInterface", target);
 			target.setModifiers(std.mod_public);

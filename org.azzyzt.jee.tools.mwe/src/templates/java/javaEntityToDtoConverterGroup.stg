@@ -14,11 +14,25 @@ package <mdt.packageName>;
 
     <mdt.fields:fieldDeclaration()>
     <defaultConstructor(mdt)>
+    <injectionConstructor(mdt)>
     <fromEntity(mdt=mdt, entity=mdt.properties.entity, dto=mdt.properties.dto)>
     <fromDto(mdt=mdt, entity=mdt.properties.entity, dto=mdt.properties.dto)>
 }
 >>
 
+
+injectionConstructor(mdt) ::= <<
+// avoid mass-injection in case of storeMulti
+public <mdt.simpleName>(EaoBase eao, InvocationRegistryInterface invocationRegistry) {
+    super();
+    this.eao = (GenericEao)eao;
+    <if(mdt.properties.entity.needingInvocationRegistry)>
+    this.invocationRegistry = (InvocationRegistry)invocationRegistry;
+    <endif>
+}
+
+
+>>
 
 
 fromEntity(mdt, entity, dto) ::= <<
@@ -78,6 +92,13 @@ result.set<field.ucName>Ids(null);
 
 
 fromDto(mdt, entity, dto) ::= <<
+@SuppressWarnings("rawtypes")
+public EntityBase fromRawDto(Object in) 
+throws EntityNotFoundException, EntityInstantiationException, InvalidIdException
+{
+    return fromDto((<dto.simpleName>) in);
+}
+
 public <entity.simpleName> fromDto(<dto.simpleName> in) 
 throws EntityNotFoundException, EntityInstantiationException, InvalidIdException
 {

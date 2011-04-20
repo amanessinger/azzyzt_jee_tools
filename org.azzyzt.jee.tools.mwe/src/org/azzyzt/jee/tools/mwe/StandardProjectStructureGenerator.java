@@ -38,6 +38,7 @@ import org.azzyzt.jee.tools.mwe.feature.EntityDtoConverterGeneratorFeature;
 import org.azzyzt.jee.tools.mwe.feature.EntityModelBuilderFeature;
 import org.azzyzt.jee.tools.mwe.feature.Parameters;
 import org.azzyzt.jee.tools.mwe.feature.SingleTargetsGeneratorFeature;
+import org.azzyzt.jee.tools.mwe.feature.StoreMultiGeneratorFeature;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
 import org.azzyzt.jee.tools.mwe.util.Log;
 import org.azzyzt.jee.tools.mwe.util.Log.Verbosity;
@@ -114,6 +115,13 @@ public class StandardProjectStructureGenerator {
         parameters.byName(CrudServiceBeansGeneratorFeature.SOURCE_FOLDER_EJB_PROJECT).setValue(ejbSourceFolder);
         numberOfSourcesGenerated = svcGen.generate(parameters);
         logger.info(numberOfSourcesGenerated+" service beans and service interfaces generated");
+		
+        StoreMultiGeneratorFeature smGen = new StoreMultiGeneratorFeature(entityModel);
+		parameters = smGen.getParameters();
+        parameters.byName(CrudServiceBeansGeneratorFeature.SOURCE_FOLDER_CLIENT_PROJECT).setValue(ejbClientSourceFolder);
+        parameters.byName(CrudServiceBeansGeneratorFeature.SOURCE_FOLDER_EJB_PROJECT).setValue(ejbSourceFolder);
+        numberOfSourcesGenerated = smGen.generate(parameters);
+        logger.info(numberOfSourcesGenerated+" store multi support files generated");
 		
 		CrudServiceRESTGeneratorFeature restGen = new CrudServiceRESTGeneratorFeature(entityModel);
 		parameters = restGen.getParameters();

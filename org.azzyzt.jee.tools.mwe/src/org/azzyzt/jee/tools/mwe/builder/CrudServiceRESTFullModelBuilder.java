@@ -27,12 +27,15 @@
 
 package org.azzyzt.jee.tools.mwe.builder;
 
+import org.azzyzt.jee.tools.mwe.identifiers.PackageTails;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
 import org.azzyzt.jee.tools.mwe.model.annotation.MetaAnnotationInstance;
 import org.azzyzt.jee.tools.mwe.model.type.MetaClass;
 import org.azzyzt.jee.tools.mwe.model.type.MetaEntity;
 
 public class CrudServiceRESTFullModelBuilder extends DerivedModelBuilder implements Builder {
+
+	public static final String CLASS_SUFFIX = "FullDelegator";
 
 	public CrudServiceRESTFullModelBuilder(MetaModel entityModel, String targetPackageName) {
 		super(entityModel, targetPackageName);
@@ -47,10 +50,10 @@ public class CrudServiceRESTFullModelBuilder extends DerivedModelBuilder impleme
 			MetaClass restInterceptor = (MetaClass) masterModel.getProperty("rest_interceptor");
 
 			// create MetaClass
-			String packageName = derivePackageNameFromEntityAndFollowPackage(me, "service");
+			String packageName = derivePackageNameFromEntityAndFollowPackage(me, PackageTails.SERVICE);
 			String simpleName = me.getSimpleName();
 			String pathString = simpleName.toLowerCase();
-			simpleName += "FullDelegator";
+			simpleName += CLASS_SUFFIX;
 			MetaClass target = MetaClass.forName(packageName, simpleName);
 			me.setProperty("RESTFullDelegator", target);
 			target.setModifiers(std.mod_public);

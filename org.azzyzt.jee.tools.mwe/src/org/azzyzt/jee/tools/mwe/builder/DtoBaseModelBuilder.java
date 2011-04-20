@@ -30,6 +30,7 @@ package org.azzyzt.jee.tools.mwe.builder;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.azzyzt.jee.tools.mwe.identifiers.PackageTails;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
 import org.azzyzt.jee.tools.mwe.model.type.MetaClass;
 import org.azzyzt.jee.tools.mwe.model.type.MetaEntity;
@@ -51,15 +52,24 @@ public class DtoBaseModelBuilder extends DerivedModelBuilder implements Builder 
 		for (MetaEntity me : masterModel.getTargetEntities()) {
 
 			// create MetaClass
-			String packageName = derivePackageNameFromEntity(me, "dto");
+			String packageName = derivePackageNameFromEntity(me, PackageTails.DTO);
 			String simpleName = me.getSimpleName();
-			simpleName += "Dto";
+			simpleName += DtoModelBuilder.CLASS_SUFFIX;
 			if (dtoBase == null) {
 				dtoBase = MetaClass.forName(packageName, "DtoBase");
 				dtoBase.setModifiers(std.mod_public);
 				masterModel.setProperty("dtoBase", dtoBase);
 			}
-			dtoFQNames.add(packageName+"."+simpleName);
+			String dtoFQName = packageName+"."+simpleName;
+			dtoFQNames.add(dtoFQName);
+			
+			String convPackageName = derivePackageNameFromEntity(me, PackageTails.CONV);
+			String simpleConvName = me.getSimpleName();
+			simpleConvName += EntityDtoConverterModelBuilder.CLASS_SUFFIX;
+			String convFQName = convPackageName+"."+simpleConvName;
+			
+			me.setProperty("convFQName", convFQName);
+			me.setProperty("dtoFQName", dtoFQName);
 		}
 		
 		/*
