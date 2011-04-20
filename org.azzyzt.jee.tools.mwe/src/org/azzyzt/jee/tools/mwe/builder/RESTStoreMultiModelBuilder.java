@@ -34,11 +34,11 @@ import org.azzyzt.jee.tools.mwe.model.annotation.MetaAnnotationInstance;
 import org.azzyzt.jee.tools.mwe.model.type.MetaClass;
 import org.azzyzt.jee.tools.mwe.model.type.MetaEntity;
 
-public class CrudServiceRESTFullModelBuilder extends DerivedModelBuilder implements Builder {
+public class RESTStoreMultiModelBuilder extends DerivedModelBuilder implements Builder {
 
-	public static final String CLASS_SUFFIX = "FullDelegator";
+	public static final String CLASS_NAME = "StoreMultiDelegator";
 
-	public CrudServiceRESTFullModelBuilder(MetaModel entityModel, String targetPackageName) {
+	public RESTStoreMultiModelBuilder(MetaModel entityModel, String targetPackageName) {
 		super(entityModel, targetPackageName);
 	}
 
@@ -46,17 +46,16 @@ public class CrudServiceRESTFullModelBuilder extends DerivedModelBuilder impleme
 	public MetaModel build() {
 		
 		for (MetaEntity me : masterModel.getTargetEntities()) {
-			MetaClass dto = (MetaClass) me.getProperty(ModelProperties.DTO);
-			MetaClass svcBean = (MetaClass) me.getProperty(ModelProperties.SVC_FULL_BEAN);
+			MetaClass dtoBase = (MetaClass) masterModel.getProperty(ModelProperties.DTO_BASE);
+			MetaClass svcBean = (MetaClass) masterModel.getProperty(ModelProperties.STORE_MULTI_BEAN);
 			MetaClass restInterceptor = (MetaClass) masterModel.getProperty(ModelProperties.REST_INTERCEPTOR);
 
 			// create MetaClass
 			String packageName = derivePackageNameFromEntityAndFollowPackage(me, PackageTails.SERVICE);
-			String simpleName = me.getSimpleName();
-			String pathString = simpleName.toLowerCase();
-			simpleName += CLASS_SUFFIX;
+			String simpleName = CLASS_NAME;
+			String pathString = "storeMulti";
 			MetaClass target = MetaClass.forName(packageName, simpleName);
-			me.setProperty(ModelProperties.REST_FULL_DELEGATOR, target);
+			masterModel.setProperty(ModelProperties.REST_STORE_MULTI_DELEGATOR, target);
 			target.setModifiers(std.mod_public);
 			target.setSuperMetaClass(std.restDelegatorBase);
 			target.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxEjbStateless, target));
@@ -64,34 +63,28 @@ public class CrudServiceRESTFullModelBuilder extends DerivedModelBuilder impleme
 			path.setElement("value", pathString);
 			target.addMetaAnnotationInstance(path);
 			
-			target.addReferencedForeignType(dto);
+			target.addReferencedForeignType(dtoBase);
 			target.addReferencedForeignType(restInterceptor);
 			target.addReferencedForeignType(std.javaxInterceptorInterceptors);
 			target.addReferencedForeignType(std.javaUtilList);
 			target.addReferencedForeignType(std.accessDeniedException);
 			target.addReferencedForeignType(std.entityNotFoundException);
 			target.addReferencedForeignType(std.entityInstantiationException);
+			target.addReferencedForeignType(std.invalidArgumentException);
 			target.addReferencedForeignType(std.invalidIdException);
-			target.addReferencedForeignType(std.invalidFieldException);
-			target.addReferencedForeignType(std.notYetImplementedException);
-			target.addReferencedForeignType(std.querySyntaxException);
-			target.addReferencedForeignType(std.javaxWsRsGET);
 			target.addReferencedForeignType(std.javaxWsRsPOST);
 			target.addReferencedForeignType(std.javaxWsRsProduces);
 			target.addReferencedForeignType(std.javaxWsRsConsumes);
-			target.addReferencedForeignType(std.javaxWsRsQueryParam);
 			target.addReferencedForeignType(std.javaxWsRsCoreMediaType);
-			target.addReferencedForeignType(std.querySpec);
+			target.addReferencedForeignType(std.stringListWrapper);
 
-			if (me.isCombinedId()) {
-				target.addReferencedForeignType(me.getCombinedIdType());
-			}
-
-			addFullServiceBeanField(target, me);
+			addStoreMultiBeanField(target);
 			
 			target.setProperty(ModelProperties.SVC_BEAN, svcBean);
-			target.setProperty(ModelProperties.ENTITY, me);
-			target.setProperty(ModelProperties.DTO, dto);
+			target.setProperty(ModelProperties.DTO_BASE, dtoBase);
+			
+			// now break out
+			break;
 		}
 		
 		

@@ -48,7 +48,7 @@ public class EntityModelBuilder {
     }
 
     public MetaModel build() {
-        MetaModel entityModel = new MetaModel(logger);
+        MetaModel entityModel = new MetaModel(this.getClass().getSimpleName(), logger);
         entityModel.excludeMethodsFromModel();
         entityModel.excludeStaticFieldsFromModel();
         for (String targetPackage : enumerator.getTargetPackageNames()) {

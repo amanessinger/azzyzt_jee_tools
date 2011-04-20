@@ -27,6 +27,7 @@
 
 package org.azzyzt.jee.tools.mwe.feature;
 
+import org.azzyzt.jee.tools.mwe.builder.RESTStoreMultiModelBuilder;
 import org.azzyzt.jee.tools.mwe.builder.StoreMultiBeanModelBuilder;
 import org.azzyzt.jee.tools.mwe.builder.StoreMultiInterfaceModelBuilder;
 import org.azzyzt.jee.tools.mwe.generator.JavaGenerator;
@@ -36,6 +37,7 @@ public class StoreMultiGeneratorFeature extends GeneratorFeature {
 
 	public static final String SOURCE_FOLDER_EJB_PROJECT = "Source Folder (EJB Project)";
 	public static final String SOURCE_FOLDER_CLIENT_PROJECT = "Source Folder (Client Project)";
+	public static final String SOURCE_FOLDER_SERVLET_PROJECT = "Source Folder (Servlet Project)";
 
 	public StoreMultiGeneratorFeature(MetaModel entityModel) {
 		super(entityModel);
@@ -46,6 +48,7 @@ public class StoreMultiGeneratorFeature extends GeneratorFeature {
 		Parameters parameters = new Parameters();
 		parameters.add(new Parameter(SOURCE_FOLDER_EJB_PROJECT, ParameterType.SourceFolder, Parameter.IS_MANDATORY));
 		parameters.add(new Parameter(SOURCE_FOLDER_CLIENT_PROJECT, ParameterType.SourceFolder, Parameter.IS_MANDATORY));
+		parameters.add(new Parameter(SOURCE_FOLDER_SERVLET_PROJECT, ParameterType.SourceFolder, Parameter.IS_MANDATORY));
 		return parameters;
 	}
 	
@@ -64,6 +67,13 @@ public class StoreMultiGeneratorFeature extends GeneratorFeature {
 		
 		targetModel = new StoreMultiBeanModelBuilder(getModel(), null).build();
 		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaStoreMultiGroup");
+		targetGen.setGenerateGettersSetters(false);
+		numberOfSourcesGenerated += targetGen.generate();
+				
+		sourceFolder = (String)parameters.byName(SOURCE_FOLDER_SERVLET_PROJECT).getValue();
+		
+		targetModel = new RESTStoreMultiModelBuilder(getModel(), null).build();
+		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaRESTStoreMultiGroup");
 		targetGen.setGenerateGettersSetters(false);
 		numberOfSourcesGenerated += targetGen.generate();
 				

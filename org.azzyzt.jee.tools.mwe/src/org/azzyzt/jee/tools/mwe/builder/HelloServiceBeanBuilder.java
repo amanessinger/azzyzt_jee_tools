@@ -47,7 +47,7 @@ public class HelloServiceBeanBuilder implements GenericBuilder {
 	public HelloServiceBeanBuilder(String packageName, Log logger) {
 		this.packageName = packageName;
 		this.simpleName = HELLO_BEAN_NAME;
-		this.targetModel = new MetaModel(logger);
+		this.targetModel = new MetaModel(this.getClass().getSimpleName(), logger);
 		this.std = new MetaStandardDefs();
 	}
 	

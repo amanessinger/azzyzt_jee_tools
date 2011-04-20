@@ -30,6 +30,7 @@ package org.azzyzt.jee.tools.mwe.builder;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.azzyzt.jee.tools.mwe.identifiers.ModelProperties;
 import org.azzyzt.jee.tools.mwe.identifiers.PackageTails;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
 import org.azzyzt.jee.tools.mwe.model.type.MetaClass;
@@ -76,11 +77,13 @@ public class DtoBaseModelBuilder extends DerivedModelBuilder implements Builder 
 		 * Just make sure it's included. The actual annotation is added textually via a property.
 		 */
 		dtoBase.addReferencedForeignType(std.javaxXmlBindAnnotationXmlSeeAlso);
+		dtoBase.addReferencedForeignType(std.javaxXmlBindAnnotationXmlRootElement);
 		
 		/*
 		 * Construct text for the property. This is dirty but easy.
 		 */
 		StringBuilder sb = new StringBuilder();
+		sb.append("@XmlRootElement(name=\"dto\")\n");
 		sb.append("@XmlSeeAlso({");
 		String separator = "\n\t";
 		for (String dtoFQName : dtoFQNames) {
@@ -90,8 +93,8 @@ public class DtoBaseModelBuilder extends DerivedModelBuilder implements Builder 
 			sb.append(dtoFQName);
 			sb.append(".class");
 		}
-		sb.append("})");
-		dtoBase.setProperty("xmlSeeAlsoInstance", sb.toString());
+		sb.append("\n})");
+		dtoBase.setProperty(ModelProperties.CLASS_ANNOTATIONS, sb.toString());
 		
 		targetModel.follow(dtoBase.getPackageName());
 		targetModel.addMetaDeclaredTypeIfTarget(dtoBase);

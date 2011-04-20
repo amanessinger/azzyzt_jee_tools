@@ -27,6 +27,7 @@
 
 package org.azzyzt.jee.tools.mwe.builder;
 
+import org.azzyzt.jee.tools.mwe.identifiers.ModelProperties;
 import org.azzyzt.jee.tools.mwe.identifiers.PackageTails;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
 import org.azzyzt.jee.tools.mwe.model.annotation.MetaAnnotationInstance;
@@ -67,8 +68,7 @@ public class RESTInterceptorModelBuilder extends DerivedModelBuilder implements 
 			
 			addInvocationRegistryField(target);
 			
-			// TODO this implies order. We have to make sure that we call modifying builders in the right order. Dependencies?
-			masterModel.setProperty("rest_interceptor", target);
+			masterModel.setProperty(ModelProperties.REST_INTERCEPTOR, target);
 			
 			// now break out
 			break;

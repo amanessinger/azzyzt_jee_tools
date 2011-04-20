@@ -88,46 +88,47 @@ public class StandardProjectStructureGenerator {
         if (2 == arguments.size()) {
             parameters.byName(EntityModelBuilderFeature.PERSISTENCE_UNIT_NAME).setValue(arguments.get(1));
         }
-        MetaModel entityModel = embf.build(parameters);
+        MetaModel masterModel = embf.build(parameters);
 
-        SingleTargetsGeneratorFeature singleTargetsGen = new SingleTargetsGeneratorFeature(entityModel);
+        SingleTargetsGeneratorFeature singleTargetsGen = new SingleTargetsGeneratorFeature(masterModel);
         parameters = singleTargetsGen.getParameters();
         parameters.byName(SingleTargetsGeneratorFeature.SOURCE_FOLDER_CLIENT_PROJECT).setValue(ejbClientSourceFolder);
         parameters.byName(SingleTargetsGeneratorFeature.SOURCE_FOLDER_EJB_PROJECT).setValue(ejbSourceFolder);
 		numberOfSourcesGenerated = singleTargetsGen.generate(parameters);
 		logger.info(numberOfSourcesGenerated+" eao files generated");
 		
-		DtoGeneratorFeature dtoGen = new DtoGeneratorFeature(entityModel);
+		DtoGeneratorFeature dtoGen = new DtoGeneratorFeature(masterModel);
         parameters = dtoGen.getParameters();
         parameters.byName(DtoGeneratorFeature.SOURCE_FOLDER).setValue(ejbClientSourceFolder);
         numberOfSourcesGenerated = dtoGen.generate(parameters);
         logger.info(numberOfSourcesGenerated+" dto files generated");
         
-        EntityDtoConverterGeneratorFeature convGen = new EntityDtoConverterGeneratorFeature(entityModel);
+        EntityDtoConverterGeneratorFeature convGen = new EntityDtoConverterGeneratorFeature(masterModel);
         parameters = convGen.getParameters();
         parameters.byName(EntityDtoConverterGeneratorFeature.SOURCE_FOLDER).setValue(ejbSourceFolder);
         numberOfSourcesGenerated = convGen.generate(parameters);
 		logger.info(numberOfSourcesGenerated+" converter files generated");
 		
-		CrudServiceBeansGeneratorFeature svcGen = new CrudServiceBeansGeneratorFeature(entityModel);
+		CrudServiceBeansGeneratorFeature svcGen = new CrudServiceBeansGeneratorFeature(masterModel);
 		parameters = svcGen.getParameters();
         parameters.byName(CrudServiceBeansGeneratorFeature.SOURCE_FOLDER_CLIENT_PROJECT).setValue(ejbClientSourceFolder);
         parameters.byName(CrudServiceBeansGeneratorFeature.SOURCE_FOLDER_EJB_PROJECT).setValue(ejbSourceFolder);
         numberOfSourcesGenerated = svcGen.generate(parameters);
         logger.info(numberOfSourcesGenerated+" service beans and service interfaces generated");
 		
-        StoreMultiGeneratorFeature smGen = new StoreMultiGeneratorFeature(entityModel);
-		parameters = smGen.getParameters();
-        parameters.byName(CrudServiceBeansGeneratorFeature.SOURCE_FOLDER_CLIENT_PROJECT).setValue(ejbClientSourceFolder);
-        parameters.byName(CrudServiceBeansGeneratorFeature.SOURCE_FOLDER_EJB_PROJECT).setValue(ejbSourceFolder);
-        numberOfSourcesGenerated = smGen.generate(parameters);
-        logger.info(numberOfSourcesGenerated+" store multi support files generated");
-		
-		CrudServiceRESTGeneratorFeature restGen = new CrudServiceRESTGeneratorFeature(entityModel);
+		CrudServiceRESTGeneratorFeature restGen = new CrudServiceRESTGeneratorFeature(masterModel);
 		parameters = restGen.getParameters();
         parameters.byName(CrudServiceRESTGeneratorFeature.SOURCE_FOLDER).setValue(restSourceFolder);
         numberOfSourcesGenerated = restGen.generate(parameters);
         logger.info(numberOfSourcesGenerated+" REST wrapper files generated");
+        
+        StoreMultiGeneratorFeature smGen = new StoreMultiGeneratorFeature(masterModel);
+        parameters = smGen.getParameters();
+        parameters.byName(StoreMultiGeneratorFeature.SOURCE_FOLDER_CLIENT_PROJECT).setValue(ejbClientSourceFolder);
+        parameters.byName(StoreMultiGeneratorFeature.SOURCE_FOLDER_EJB_PROJECT).setValue(ejbSourceFolder);
+        parameters.byName(StoreMultiGeneratorFeature.SOURCE_FOLDER_SERVLET_PROJECT).setValue(restSourceFolder);
+        numberOfSourcesGenerated = smGen.generate(parameters);
+        logger.info(numberOfSourcesGenerated+" store multi support files generated");
 	}
 
 }

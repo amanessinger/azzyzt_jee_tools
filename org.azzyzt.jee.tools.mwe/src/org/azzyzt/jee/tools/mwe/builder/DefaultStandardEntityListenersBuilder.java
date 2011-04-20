@@ -46,7 +46,7 @@ public class DefaultStandardEntityListenersBuilder implements GenericBuilder {
 	public DefaultStandardEntityListenersBuilder(String packageName, Log logger) {
 		this.packageName = packageName;
 		this.simpleName = CLASS_NAME;
-		this.targetModel = new MetaModel(logger);
+		this.targetModel = new MetaModel(this.getClass().getSimpleName(), logger);
 		this.std = new MetaStandardDefs();
 	}
 	

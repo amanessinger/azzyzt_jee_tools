@@ -27,6 +27,7 @@
 
 package org.azzyzt.jee.tools.mwe.builder;
 
+import org.azzyzt.jee.tools.mwe.identifiers.ModelProperties;
 import org.azzyzt.jee.tools.mwe.identifiers.PackageTails;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
 import org.azzyzt.jee.tools.mwe.model.annotation.MetaAnnotationInstance;
@@ -69,7 +70,7 @@ public class InvocationRegistryModelBuilder extends DerivedModelBuilder implemen
 			target.addReferencedForeignType(std.siteAdapterInterface);
 			
 			// TODO this implies order. We have to make sure that we call modifying builders in the right order. Dependencies?
-			masterModel.setProperty("invocation_registry", target);
+			masterModel.setProperty(ModelProperties.INVOCATION_REGISTRY, target);
 			
 			// now break out
 			break;

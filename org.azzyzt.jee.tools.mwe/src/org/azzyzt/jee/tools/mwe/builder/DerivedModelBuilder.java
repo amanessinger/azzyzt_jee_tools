@@ -27,6 +27,8 @@
 
 package org.azzyzt.jee.tools.mwe.builder;
 
+import org.azzyzt.jee.tools.mwe.identifiers.FieldNames;
+import org.azzyzt.jee.tools.mwe.identifiers.ModelProperties;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
 import org.azzyzt.jee.tools.mwe.model.annotation.MetaAnnotationInstance;
 import org.azzyzt.jee.tools.mwe.model.type.MetaClass;
@@ -46,7 +48,7 @@ public class DerivedModelBuilder {
 		super();
 		this.targetPackageName = targetPackageName;
 		this.masterModel = masterModel;
-		this.targetModel = new MetaModel(masterModel.getLogger());
+		this.targetModel = new MetaModel(this.getClass().getSimpleName(), masterModel.getLogger());
 		this.std = new MetaStandardDefs();
 	}
 	
@@ -74,87 +76,99 @@ public class DerivedModelBuilder {
 	}
 
 	protected void addGenericEaoField(MetaClass target) {
-		MetaDeclaredType genericEao = (MetaDeclaredType)masterModel.getProperty("generic_eao");
-		MetaField genericEaoField = new MetaField(target, "eao");
+		MetaDeclaredType genericEao = (MetaDeclaredType)masterModel.getProperty(ModelProperties.GENERIC_EAO);
+		MetaField genericEaoField = new MetaField(target, FieldNames.EAO);
 		genericEaoField.setFieldType(genericEao);
 		genericEaoField.setModifiers(std.mod_private);
 		genericEaoField.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxEjbEJB, target));
 		target.addField(genericEaoField);
 		target.addReferencedForeignType(genericEao);
-		target.setProperty("eao", genericEao);
+		target.setProperty(ModelProperties.GENERIC_EAO, genericEao);
 	}
 
 	protected void addInvocationRegistryField(MetaClass target) {
-		MetaDeclaredType invocationRegistry = (MetaDeclaredType)masterModel.getProperty("invocation_registry");
-		MetaField invocationRegistryField = new MetaField(target, "invocationRegistry");
+		MetaDeclaredType invocationRegistry = (MetaDeclaredType)masterModel.getProperty(ModelProperties.INVOCATION_REGISTRY);
+		MetaField invocationRegistryField = new MetaField(target, FieldNames.INVOCATION_REGISTRY);
 		invocationRegistryField.setFieldType(invocationRegistry);
 		invocationRegistryField.setModifiers(std.mod_private);
 		invocationRegistryField.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxEjbEJB, target));
 		target.addField(invocationRegistryField);
 		target.addReferencedForeignType(invocationRegistry);
-		target.setProperty("invocationRegistry", invocationRegistry);
+		target.setProperty(ModelProperties.INVOCATION_REGISTRY, invocationRegistry);
 	}
 
 	protected void addConverterField(MetaClass target, MetaClass entity) {
-		MetaDeclaredType converter = (MetaDeclaredType)entity.getProperty("conv");
-		MetaField converterField = new MetaField(target, "converter");
+		MetaDeclaredType converter = (MetaDeclaredType)entity.getProperty(ModelProperties.CONVERTER);
+		MetaField converterField = new MetaField(target, FieldNames.CONVERTER);
 		converterField.setFieldType(converter);
 		converterField.setModifiers(std.mod_private);
 		converterField.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxEjbEJB, target));
 		target.addField(converterField);
 		target.addReferencedForeignType(converter);
-		target.setProperty("converter", converter);
+		target.setProperty(ModelProperties.CONVERTER, converter);
 	}
 
 	protected void addValidAssociationPaths(MetaClass target) {
-		MetaDeclaredType validAssociationPaths = (MetaDeclaredType)masterModel.getProperty("validAssociationPaths");
-		MetaField validAssociationPathsField = new MetaField(target, "validAssociationPaths");
+		MetaDeclaredType validAssociationPaths = (MetaDeclaredType)masterModel.getProperty(ModelProperties.VALID_ASSOCIATION_PATHS);
+		MetaField validAssociationPathsField = new MetaField(target, FieldNames.VALID_ASSOCIATION_PATHS);
 		validAssociationPathsField.setFieldType(validAssociationPaths);
 		validAssociationPathsField.setModifiers(std.mod_private);
 		validAssociationPathsField.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxEjbEJB, target));
 		target.addField(validAssociationPathsField);
 		target.addReferencedForeignType(validAssociationPaths);
-		target.setProperty("validAssociationPaths", validAssociationPaths);
+		target.setProperty(ModelProperties.VALID_ASSOCIATION_PATHS, validAssociationPaths);
 	}
 
 	protected void addTypeMetaInfoField(MetaClass target) {
-		MetaDeclaredType tmi = (MetaDeclaredType)masterModel.getProperty("typeMetaInfo");
-		MetaField tmiField = new MetaField(target, "tmi");
+		MetaDeclaredType tmi = (MetaDeclaredType)masterModel.getProperty(ModelProperties.TYPE_META_INFO);
+		MetaField tmiField = new MetaField(target, FieldNames.TYPE_META_INFO);
 		tmiField.setFieldType(tmi);
 		tmiField.setModifiers(std.mod_private);
 		tmiField.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxEjbEJB, target));
 		target.addField(tmiField);
 		target.addReferencedForeignType(tmi);
-		target.setProperty("tmi", tmi);
+		target.setProperty(ModelProperties.TYPE_META_INFO, tmi);
 	}
 
 	protected void addFullServiceBeanField(MetaClass target, MetaClass entity) {
-		MetaDeclaredType svcBean = (MetaDeclaredType)entity.getProperty("svcFullBean");
-		MetaField svcBeanField = new MetaField(target, "svcFullBean");
+		MetaDeclaredType svcBean = (MetaDeclaredType)entity.getProperty(ModelProperties.SVC_FULL_BEAN);
+		MetaField svcBeanField = new MetaField(target, FieldNames.SVC_FULL_BEAN);
 		svcBeanField.setFieldType(svcBean);
 		svcBeanField.setModifiers(std.mod_private);
 		svcBeanField.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxEjbEJB, target));
 		target.addField(svcBeanField);
 		target.addReferencedForeignType(svcBean);
-		target.setProperty("svcFullBean", svcBean);
+		target.setProperty(ModelProperties.SVC_FULL_BEAN, svcBean);
 	}
 
 	protected void addRestrictedServiceBeanField(MetaClass target, MetaClass entity) {
-		MetaDeclaredType svcBean = (MetaDeclaredType)entity.getProperty("svcRestrictedBean");
-		MetaField svcBeanField = new MetaField(target, "svcRestrictedBean");
+		MetaDeclaredType svcBean = (MetaDeclaredType)entity.getProperty(ModelProperties.SVC_RESTRICTED_BEAN);
+		MetaField svcBeanField = new MetaField(target, FieldNames.SVC_RESTRICTED_BEAN);
 		svcBeanField.setFieldType(svcBean);
 		svcBeanField.setModifiers(std.mod_private);
 		svcBeanField.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxEjbEJB, target));
 		target.addField(svcBeanField);
 		target.addReferencedForeignType(svcBean);
-		target.setProperty("svcRestrictedBean", svcBean);
+		target.setProperty(ModelProperties.SVC_RESTRICTED_BEAN, svcBean);
 	}
 
 	protected void addHttpServletResponseField(MetaClass target) {
-		MetaField httpServletresponseField = new MetaField(target, "httpServletResponse");
+		MetaField httpServletresponseField = new MetaField(target, FieldNames.HTTP_SERVLET_RESPONSE);
 		httpServletresponseField.setFieldType(std.javaxServletHttpHttpServletResponse);
 		httpServletresponseField.setModifiers(std.mod_private);
 		httpServletresponseField.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxWsRsCoreContext, target));
 		target.addField(httpServletresponseField);
 	}
+
+	protected void addStoreMultiBeanField(MetaClass target) {
+		MetaDeclaredType svcBean = (MetaDeclaredType)masterModel.getProperty(ModelProperties.STORE_MULTI_BEAN);
+		MetaField svcBeanField = new MetaField(target, FieldNames.SVC_BEAN);
+		svcBeanField.setFieldType(svcBean);
+		svcBeanField.setModifiers(std.mod_private);
+		svcBeanField.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxEjbEJB, target));
+		target.addField(svcBeanField);
+		target.addReferencedForeignType(svcBean);
+		target.setProperty(ModelProperties.STORE_MULTI_BEAN, svcBean);
+	}
+
 }

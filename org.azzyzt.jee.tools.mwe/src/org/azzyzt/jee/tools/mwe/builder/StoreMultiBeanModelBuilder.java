@@ -76,7 +76,7 @@ public class StoreMultiBeanModelBuilder extends DerivedModelBuilder implements B
 			addTypeMetaInfoField(target);
 			addInvocationRegistryField(target);
 			
-			targetModel.setProperty(ModelProperties.STORE_MULTI_BEAN, target);
+			masterModel.setProperty(ModelProperties.STORE_MULTI_BEAN, target);
 			
 			// now break out
 			break;

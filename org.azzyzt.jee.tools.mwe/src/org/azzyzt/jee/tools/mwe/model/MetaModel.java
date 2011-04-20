@@ -52,6 +52,7 @@ public class MetaModel {
 	private boolean isIncludingStaticFields = true;
 	private Properties properties = new Properties(); // may be set by a synthesizing builder
 	private Log logger;
+	private String name;
 
 
     /**
@@ -59,8 +60,11 @@ public class MetaModel {
      * to create a model, build it or add to it manually, and then to generate it,
      * before the next model is created.
      */
-    public MetaModel(Log logger) {
+    public MetaModel(String name, Log logger) {
+    	// We feed class names of the builders creating the models; clean up
+    	this.name = name.replaceAll("ModelBuilder$", "Model").replaceAll("Builder$", "Model");
     	this.logger = logger;
+    	logger.debug("Creating model "+this.name);
     	MetaModel.setCurrentModel(this);
     }
     
@@ -154,7 +158,13 @@ public class MetaModel {
 	}
 
 	public Object getProperty(Object key) {
-		return properties.get(key);
+		Object value = properties.get(key);
+		if (value == null) {
+			String msg = this.getName()+": property "+key+" has no value";
+			logger.error(msg);
+			throw new ToolError(msg);
+		}
+		return value;
 	}
 
 	public Properties getProperties() {
@@ -163,6 +173,10 @@ public class MetaModel {
 
 	public Log getLogger() {
 		return logger;
+	}
+
+	public String getName() {
+		return name;
 	}
 
 }

@@ -131,6 +131,7 @@ public class MetaStandardDefs {
 	public final MetaAnnotation javaxWsRsPathParam;
 	public final MetaAnnotation javaxWsRsQueryParam;
 	public final MetaAnnotation javaxWsRsCoreProvider;
+	public final MetaClass stringListWrapper;
 	
 	public final MetaInterface javaxServletHttpHttpServletResponse;
 	public final MetaAnnotation javaxWsRsCoreContext;
@@ -305,6 +306,7 @@ public class MetaStandardDefs {
 		List<MetaType> metaArgumentTypes = new ArrayList<MetaType>();
 		metaArgumentTypes.add(meta_Throwable);
 		javaxWsRsExtExceptionMapperThrowable.setMetaArgumentTypes(metaArgumentTypes);
+		stringListWrapper = MetaClass.forType(org.azzyzt.jee.runtime.dto.StringListWrapper.class);
 		
 		eaoBase = MetaClass.forType(org.azzyzt.jee.runtime.eao.EaoBase.class);
 		entityBase = MetaClass.forType(org.azzyzt.jee.runtime.entity.EntityBase.class);

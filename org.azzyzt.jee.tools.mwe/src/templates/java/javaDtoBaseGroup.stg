@@ -1,7 +1,7 @@
 group javaDtoBaseGroup : javaGroup;
 
 @javaClass.extra_class_annotations() ::= <<
-<mdt.properties.xmlSeeAlsoInstance>
+<mdt.properties.classAnnotations>
 
 >>
 
