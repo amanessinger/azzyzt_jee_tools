@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -34,14 +34,13 @@ import org.azzyzt.jee.tools.mwe.builder.RESTInterceptorModelBuilder;
 import org.azzyzt.jee.tools.mwe.builder.RESTServletModelBuilder;
 import org.azzyzt.jee.tools.mwe.generator.JavaGenerator;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
-import org.azzyzt.jee.tools.mwe.util.Log;
 
 public class CrudServiceRESTGeneratorFeature extends GeneratorFeature {
 
 	public static final String SOURCE_FOLDER = "Source Folder";
 
-	public CrudServiceRESTGeneratorFeature(MetaModel entityModel, Log logger) {
-		super(entityModel, logger);
+	public CrudServiceRESTGeneratorFeature(MetaModel entityModel) {
+		super(entityModel);
 	}
 
 	@Override
@@ -58,30 +57,30 @@ public class CrudServiceRESTGeneratorFeature extends GeneratorFeature {
 		
 		sourceFolder = (String)parameters.byName(SOURCE_FOLDER).getValue();
 		
-		MetaModel targetModel = new CrudServiceRESTFullModelBuilder(getModel(), null).build();
-		JavaGenerator targetGen = new JavaGenerator(targetModel, sourceFolder, "javaRESTFullGroup", logger);
+		MetaModel targetModel = new RESTInterceptorModelBuilder(getModel(), null).build();
+		JavaGenerator targetGen = new JavaGenerator(targetModel, sourceFolder, "javaRESTInterceptorGroup");
+		targetGen.setGenerateFields(false);
+		targetGen.setGenerateDefaultConstructor(false);
 		targetGen.setGenerateGettersSetters(false);
 		numberOfSourcesGenerated = targetGen.generate();
 		
+		targetModel = new CrudServiceRESTFullModelBuilder(getModel(), null).build();
+		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaRESTFullGroup");
+		targetGen.setGenerateGettersSetters(false);
+		numberOfSourcesGenerated += targetGen.generate();
+		
 		targetModel = new CrudServiceRESTRestrictedModelBuilder(getModel(), null).build();
-		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaRESTRestrictedGroup", logger);
+		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaRESTRestrictedGroup");
 		targetGen.setGenerateGettersSetters(false);
 		numberOfSourcesGenerated += targetGen.generate();
 		
 		targetModel = new RESTServletModelBuilder(getModel(), null).build();
-		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaGroup", logger);
+		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaGroup");
 		targetGen.setGenerateGettersSetters(false);
 		numberOfSourcesGenerated += targetGen.generate();
 		
 		targetModel = new RESTExceptionMapperModelBuilder(getModel(), null).build();
-		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaGroup", logger);
-		targetGen.setGenerateGettersSetters(false);
-		numberOfSourcesGenerated += targetGen.generate();
-		
-		targetModel = new RESTInterceptorModelBuilder(getModel(), null).build();
-		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaRESTInterceptorGroup", logger);
-		targetGen.setGenerateFields(false);
-		targetGen.setGenerateDefaultConstructor(false);
+		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaGroup");
 		targetGen.setGenerateGettersSetters(false);
 		numberOfSourcesGenerated += targetGen.generate();
 		

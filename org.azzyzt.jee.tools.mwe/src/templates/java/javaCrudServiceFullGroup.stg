@@ -28,9 +28,6 @@ group javaCrudServiceFullGroup : javaGroup;
 
 @javaInterface.extra_methods() ::= <<
 <byIdHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>;
-<if(mdt.properties.entity.properties.isNamed)>
-
-<byNameHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>;<endif>
 
 <listHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>;
 
@@ -63,7 +60,7 @@ public List\<<dto.simpleName>\> <entity.lcFirstSimpleName>List(QuerySpec qs)
 listBody(entity, dto) ::= <<
 {
     List\<<dto.simpleName>\> result = new ArrayList\<<dto.simpleName>\>();
-    List\<<entity.simpleName>\> entities = eao.list(qs, <entity.simpleName>.class, emi);
+    List\<<entity.simpleName>\> entities = eao.list(qs, <entity.simpleName>.class, tmi);
     
     for (<entity.simpleName> e : entities) {
         <dto.simpleName> dto = converter.fromEntity(e);
@@ -84,7 +81,7 @@ listXmlBody(entity, dto) ::= <<
     QuerySpec qs = QuerySpec.fromXML(querySpecXml);
     
     List\<<dto.simpleName>\> result = new ArrayList\<<dto.simpleName>\>();
-    List\<<entity.simpleName>\> entities = eao.list(qs, <entity.simpleName>.class, emi);
+    List\<<entity.simpleName>\> entities = eao.list(qs, <entity.simpleName>.class, tmi);
     
     for (<entity.simpleName> e : entities) {
         <dto.simpleName> dto = converter.fromEntity(e);
@@ -104,7 +101,6 @@ storeBody(entity, dto) ::= <<
 {    
     <entity.simpleName> e = converter.fromDto(dto);
 
-    // in case of embedded IDs, this must be the corresponding DTO
     <dto.properties.idFieldType.simpleName> id = e.getId();
     
     return id;
@@ -129,7 +125,6 @@ public void <entity.lcFirstSimpleName>Delete(<dto.properties.idFieldType.simpleN
 
 deleteBody(entity, dto) ::= <<
 {    
-    // in case of embedded IDs, the ID must be converted from the corresponding DTO
     eao.delete(<entity.simpleName>.class, id);
 }
 >>

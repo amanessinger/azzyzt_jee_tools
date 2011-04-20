@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -28,6 +28,8 @@
 package org.azzyzt.jee.tools.mwe.builder;
 
 import org.azzyzt.jee.tools.mwe.exception.ToolError;
+import org.azzyzt.jee.tools.mwe.identifiers.ModelProperties;
+import org.azzyzt.jee.tools.mwe.identifiers.PackageTails;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
 import org.azzyzt.jee.tools.mwe.model.annotation.MetaAnnotationInstance;
 import org.azzyzt.jee.tools.mwe.model.association.MetaAssociationEndpoint;
@@ -36,9 +38,11 @@ import org.azzyzt.jee.tools.mwe.model.type.MetaEntity;
 import org.azzyzt.jee.tools.mwe.model.type.MetaField;
 import org.azzyzt.jee.tools.mwe.model.type.MetaType;
 
-public class EntityMetaInfoModelBuilder extends DerivedModelBuilder implements Builder {
+public class TypeMetaInfoModelBuilder extends DerivedModelBuilder implements Builder {
 
-	public EntityMetaInfoModelBuilder(MetaModel entityModel, String targetPackageName) {
+	private static final String CLASS_NAME = "TypeMetaInfo";
+
+	public TypeMetaInfoModelBuilder(MetaModel entityModel, String targetPackageName) {
 		super(entityModel, targetPackageName);
 	}
 
@@ -62,13 +66,13 @@ public class EntityMetaInfoModelBuilder extends DerivedModelBuilder implements B
 
 			if (target == null) {
 				// create MetaClass
-				String packageName = derivePackageNameFromEntity(me, "meta");
+				String packageName = derivePackageNameFromEntityAndFollowPackage(me, PackageTails.META);
 				
-				// upon first entity create the EntityMetaInfo class
-				String simpleName = "EntityMetaInfo";
+				// upon first entity create the TypeMetaInfo class
+				String simpleName = CLASS_NAME;
 				target = MetaClass.forName(packageName, simpleName);
 				target.setModifiers(std.mod_public);
-				target.setSuperMetaClass(std.entityMetaInfoBase);
+				target.setSuperMetaClass(std.typeMetaInfoBase);
 				target.addInterface(std.typeMetaInfo);
 				target.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxEjbLocalBean, target));
 				target.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxEjbStateless, target));
@@ -85,7 +89,7 @@ public class EntityMetaInfoModelBuilder extends DerivedModelBuilder implements B
 				addValidAssociationPaths(target);
 				target.addReferencedForeignType(std.validAssociationPathsInterface);
 				
-				masterModel.setProperty("entityMetaInfo", target);
+				masterModel.setProperty(ModelProperties.TYPE_META_INFO, target);
 			}
 			
 			// add a pseudo-field that we can use in the template

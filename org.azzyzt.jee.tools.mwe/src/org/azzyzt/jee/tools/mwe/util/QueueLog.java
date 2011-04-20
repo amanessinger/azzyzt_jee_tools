@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -29,26 +29,22 @@ package org.azzyzt.jee.tools.mwe.util;
 
 import java.util.Queue;
 
-public class QueueLog implements Log {
+public class QueueLog extends LeveledLog implements Log {
 	
 	Queue<String> logQueue;
-
+	
 	public QueueLog(Queue<String> logQueue) {
+		super(Verbosity.INFO);
 		this.logQueue = logQueue;
 	}
 	
 	@Override
-	public void log(String msg) {
+	protected void loggit(String msg) {
         try {
         	logQueue.add(msg);
         } catch (Exception e) {
         	e.printStackTrace();
         }
-	}
-
-	@Override
-	public void warn(String msg) {
-		logQueue.add(Log.WARNING_MARKER+msg);
 	}
 
 }

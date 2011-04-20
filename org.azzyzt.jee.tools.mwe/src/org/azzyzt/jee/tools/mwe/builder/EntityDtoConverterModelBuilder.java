@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -29,6 +29,7 @@ package org.azzyzt.jee.tools.mwe.builder;
 
 import java.util.List;
 
+import org.azzyzt.jee.tools.mwe.identifiers.PackageTails;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
 import org.azzyzt.jee.tools.mwe.model.annotation.MetaAnnotationInstance;
 import org.azzyzt.jee.tools.mwe.model.association.MetaAssociationEndpoint;
@@ -41,6 +42,8 @@ import org.azzyzt.jee.tools.mwe.model.type.MetaField;
 
 public class EntityDtoConverterModelBuilder extends DerivedModelBuilder implements Builder {
 
+	public static final String CLASS_SUFFIX = "Conv";
+	
 	public EntityDtoConverterModelBuilder(MetaModel entityModel, String targetPackageName) {
 		super(entityModel, targetPackageName);
 	}
@@ -52,24 +55,30 @@ public class EntityDtoConverterModelBuilder extends DerivedModelBuilder implemen
 			MetaClass dto = (MetaClass) me.getProperty("dto");
 
 			// create MetaClass
-			String packageName = derivePackageNameFromEntity(me, "conv");
+			String packageName = derivePackageNameFromEntityAndFollowPackage(me, PackageTails.CONV);
 			String simpleName = me.getSimpleName();
-			simpleName += "Conv";
+			simpleName += CLASS_SUFFIX;
 			MetaClass target = MetaClass.forName(packageName, simpleName);
-			me.setProperty("conv", target);
+			me.setProperty(PackageTails.CONV, target);
 			target.setModifiers(std.mod_public);
 			target.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxEjbLocalBean, target));
 			target.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxEjbStateless, target));
+			target.addInterface(std.converterRawInterface);
 
 			target.addReferencedForeignType(std.entityNotFoundException);
 			target.addReferencedForeignType(std.entityInstantiationException);
 			target.addReferencedForeignType(std.invalidIdException);
 			target.addReferencedForeignType(me);
 			target.addReferencedForeignType(dto);
+			target.addReferencedForeignType(std.eaoBase);
 			target.addReferencedForeignType(std.entityBase);
 			
 			addGenericEaoField(target);
+			
+			// interface always needed for constructor
+			target.addReferencedForeignType(std.invocationRegistryInterface);
 			if (me.isUsingCreateUserField() || me.isUsingModificationUserField()) {
+				// inject only when used
 				addInvocationRegistryField(target);
 			}
 			

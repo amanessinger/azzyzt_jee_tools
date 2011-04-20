@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -119,6 +119,7 @@ public class MetaStandardDefs {
 	public final MetaAnnotation javaxXmlBindAnnotationXmlRootElement;
 	public final MetaAnnotation javaxXmlBindAnnotationXmlElementWrapper;
 	public final MetaAnnotation javaxXmlBindAnnotationXmlElement;
+	public final MetaAnnotation javaxXmlBindAnnotationXmlSeeAlso;
 	
 	public final MetaClass javaxWsRsCoreApplication;
 	public final MetaAnnotation javaxWsRsApplicationPath;
@@ -130,6 +131,7 @@ public class MetaStandardDefs {
 	public final MetaAnnotation javaxWsRsPathParam;
 	public final MetaAnnotation javaxWsRsQueryParam;
 	public final MetaAnnotation javaxWsRsCoreProvider;
+	public final MetaClass stringListWrapper;
 	
 	public final MetaInterface javaxServletHttpHttpServletResponse;
 	public final MetaAnnotation javaxWsRsCoreContext;
@@ -139,12 +141,16 @@ public class MetaStandardDefs {
 	public final MetaClass eaoBase;
 	public final MetaClass entityBase;
 	public final MetaClass entityListenerBase;
+	public final MetaInterface invocationRegistryInterface;
 	public final MetaClass InvocationRegistryBase;
 	public final MetaInterface javaxTransactionTransactionSynchronizationRegistry;
+	public final MetaClass multiObjectSaver;
+	public final MetaInterface converterRawInterface;
 	
 	public final MetaClass accessDeniedException;
 	public final MetaClass entityNotFoundException;
 	public final MetaClass entityInstantiationException;
+	public final MetaClass invalidArgumentException;
 	public final MetaClass invalidIdException;
 	public final MetaClass invalidFieldException;
 	public final MetaClass querySyntaxException;
@@ -152,7 +158,7 @@ public class MetaStandardDefs {
 	public final MetaClass restDelegatorBase;
 	public final MetaClass orderByClause;
 	public final MetaInterface typeMetaInfo;
-	public final MetaClass entityMetaInfoBase;
+	public final MetaClass typeMetaInfoBase;
 	public final MetaClass querySpec;
 	public final MetaClass associationInfo;
 	public final MetaClass associationPathInfo;
@@ -281,6 +287,7 @@ public class MetaStandardDefs {
 		javaxXmlBindAnnotationXmlRootElement = MetaAnnotation.forType(javax.xml.bind.annotation.XmlRootElement.class);
 		javaxXmlBindAnnotationXmlElementWrapper = MetaAnnotation.forType(javax.xml.bind.annotation.XmlElementWrapper.class);
 		javaxXmlBindAnnotationXmlElement = MetaAnnotation.forType(javax.xml.bind.annotation.XmlElement.class);
+		javaxXmlBindAnnotationXmlSeeAlso = MetaAnnotation.forType(javax.xml.bind.annotation.XmlSeeAlso.class);
 		
 		javaxWsRsCoreApplication = MetaClass.forType(javax.ws.rs.core.Application.class);
 		javaxWsRsApplicationPath = MetaAnnotation.forType(javax.ws.rs.ApplicationPath.class);
@@ -299,24 +306,29 @@ public class MetaStandardDefs {
 		List<MetaType> metaArgumentTypes = new ArrayList<MetaType>();
 		metaArgumentTypes.add(meta_Throwable);
 		javaxWsRsExtExceptionMapperThrowable.setMetaArgumentTypes(metaArgumentTypes);
+		stringListWrapper = MetaClass.forType(org.azzyzt.jee.runtime.dto.StringListWrapper.class);
 		
 		eaoBase = MetaClass.forType(org.azzyzt.jee.runtime.eao.EaoBase.class);
 		entityBase = MetaClass.forType(org.azzyzt.jee.runtime.entity.EntityBase.class);
 		entityListenerBase = MetaClass.forType(org.azzyzt.jee.runtime.entity.EntityListenerBase.class);
+		invocationRegistryInterface = MetaInterface.forType(org.azzyzt.jee.runtime.meta.InvocationRegistryInterface.class);
 		InvocationRegistryBase = MetaClass.forType(org.azzyzt.jee.runtime.meta.InvocationRegistryBase.class);
 		javaxTransactionTransactionSynchronizationRegistry = MetaInterface.forType(javax.transaction.TransactionSynchronizationRegistry.class);
+		multiObjectSaver = MetaClass.forType(org.azzyzt.jee.runtime.eao.MultiObjectSaver.class);
+		converterRawInterface = MetaInterface.forType(org.azzyzt.jee.runtime.conv.ConverterRawInterface.class);
 		
 		accessDeniedException = MetaClass.forType(org.azzyzt.jee.runtime.exception.AccessDeniedException.class);
 		entityNotFoundException = MetaClass.forType(org.azzyzt.jee.runtime.exception.EntityNotFoundException.class);
 		entityInstantiationException = MetaClass.forType(org.azzyzt.jee.runtime.exception.EntityInstantiationException.class);
+		invalidArgumentException = MetaClass.forType(org.azzyzt.jee.runtime.exception.InvalidArgumentException.class);
 		invalidIdException = MetaClass.forType(org.azzyzt.jee.runtime.exception.InvalidIdException.class);
 		invalidFieldException = MetaClass.forType(org.azzyzt.jee.runtime.exception.InvalidFieldException.class);
 		querySyntaxException = MetaClass.forType(org.azzyzt.jee.runtime.exception.QuerySyntaxException.class);
 		notYetImplementedException = MetaClass.forType(org.azzyzt.jee.runtime.exception.NotYetImplementedException.class);
 		restDelegatorBase = MetaClass.forType(org.azzyzt.jee.runtime.service.RESTDelegatorBase.class);
 		orderByClause = MetaClass.forType(org.azzyzt.jee.runtime.dto.query.OrderByClause.class);
-		typeMetaInfo = MetaInterface.forType(org.azzyzt.jee.runtime.util.TypeMetaInfo.class);
-		entityMetaInfoBase = MetaClass.forType(org.azzyzt.jee.runtime.meta.EntityMetaInfoBase.class);
+		typeMetaInfo = MetaInterface.forType(org.azzyzt.jee.runtime.meta.TypeMetaInfoInterface.class);
+		typeMetaInfoBase = MetaClass.forType(org.azzyzt.jee.runtime.meta.TypeMetaInfoBase.class);
 		querySpec = MetaClass.forType(org.azzyzt.jee.runtime.dto.query.QuerySpec.class);
 		associationInfo = MetaClass.forType(org.azzyzt.jee.runtime.meta.AssociationInfo.class);
 		associationPathInfo = MetaClass.forType(org.azzyzt.jee.runtime.meta.AssociationPathInfo.class);

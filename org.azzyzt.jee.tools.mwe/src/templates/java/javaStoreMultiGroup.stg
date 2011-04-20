@@ -1,0 +1,28 @@
+group javaStoreMultiGroup : javaGroup;
+
+@javaClass.extra_methods() ::= <<
+@Override
+<storeMultiHead()>
+<storeMultiBody()>
+>>
+
+@javaInterface.extra_methods() ::= <<
+<storeMultiHead()>;
+>>
+
+storeMultiHead() ::= <<
+public List\<String\> storeMulti(List\<DtoBase\> dtos)
+    throws EntityNotFoundException, AccessDeniedException, InvalidArgumentException, InvalidIdException, EntityInstantiationException
+>>
+
+storeMultiBody() ::= <<
+{
+    @SuppressWarnings("rawtypes")
+    List\<String\> result = new MultiObjectSaver().store(
+        eao, invocationRegistry, tmi, 
+        (List) dtos
+    );
+    
+    return result;
+}
+>>
