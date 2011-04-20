@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -28,6 +28,8 @@
 package org.azzyzt.jee.tools.mwe;
 
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.azzyzt.jee.tools.mwe.builder.GenericBuilder;
@@ -36,6 +38,7 @@ import org.azzyzt.jee.tools.mwe.model.MetaModel;
 import org.azzyzt.jee.tools.mwe.util.Log;
 import org.azzyzt.jee.tools.mwe.util.QueueLog;
 import org.azzyzt.jee.tools.mwe.util.StreamLog;
+import org.azzyzt.jee.tools.mwe.util.Log.Verbosity;
 
 public class GenericGenerator {
 
@@ -54,36 +57,45 @@ public class GenericGenerator {
 	private static void doWork(String[] args, Log logger)
 	{
 		try {
-			if (args.length != 3) {
-				logger.log("usage: GenericGenerator <absolute-sourcefolder> <package-name> <builder-class>");
+			List<String> arguments = new ArrayList<String>();
+			for (String arg : args) {
+				if (arg.startsWith("-")) {
+					if (arg.equals("--debug")) {
+						logger.setVerbosity(Verbosity.DEBUG);
+					}
+				} else {
+					arguments.add(arg);
+				}
+			}
+			if (arguments.size() != 3) {
+				logger.info("usage: GenericGenerator <absolute-sourcefolder> <package-name> <builder-class>");
 	            return;
 	        }
-	        String sourceFolder = args[0];
-	        String packageName = args[1];
-	        String builderClazzName = args[2];
+	        String sourceFolder = arguments.get(0);
+	        String packageName = arguments.get(1);
+	        String builderClazzName = arguments.get(2);
 	        
 	        Class<?> builderClazz = Class.forName(builderClazzName);
-	        Constructor<?> constructor = builderClazz.getConstructor(String.class);
-	        Object o = constructor.newInstance(packageName);
+	        Constructor<?> constructor = builderClazz.getConstructor(String.class, Log.class);
+	        Object o = constructor.newInstance(packageName, logger);
 	        if (!(o instanceof GenericBuilder)) {
-	        	logger.log("Class "+builderClazzName+" is not a GenericBuilder");
+	        	logger.info("Class "+builderClazzName+" is not a GenericBuilder");
 	            return;
 	        }
 	        GenericBuilder b = (GenericBuilder)o;
 	        
 	        MetaModel targetModel = b.build();
 	        JavaGenerator targetGen = new JavaGenerator(
-	        		targetModel, sourceFolder, b.getTemplateGroup(),
-	        		logger);
+	        		targetModel, sourceFolder, b.getTemplateGroup());
 			targetGen.setGenerateFields(b.getGenerateFields());
 			targetGen.setGenerateDefaultConstructor(b.getGenerateDefaultConstructor());
 			targetGen.setGenerateGettersSetters(b.getGenerateGettersSetters());
 			int numberGenerated = targetGen.generate();
 	        
-			logger.log("Generated "+numberGenerated+" sources");
+			logger.info("Generated "+numberGenerated+" sources");
 		} catch (Exception e) {
 			e.printStackTrace();
-			logger.log(""+e.getMessage());
+			logger.info(""+e.getMessage());
 		}
 	}
 

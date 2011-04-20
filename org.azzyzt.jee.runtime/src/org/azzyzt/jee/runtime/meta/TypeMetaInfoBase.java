@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -34,10 +34,11 @@ import java.util.Map;
 import java.util.Set;
 
 import org.azzyzt.jee.runtime.exception.AccessDeniedException;
+import org.azzyzt.jee.runtime.exception.InvalidArgumentException;
 import org.azzyzt.jee.runtime.exception.InvalidFieldException;
 import org.azzyzt.jee.runtime.exception.ThisCantHappen;
 
-public abstract class EntityMetaInfoBase {
+public abstract class TypeMetaInfoBase implements TypeMetaInfoInterface {
 
 	protected static Map<Class<?>, Set<String>> fieldsByClass = new HashMap<Class<?>, Set<String>>();
 	protected static Map<Class<?>, Map<String, Class<?>>> fieldsTypesByClassAndName = new HashMap<Class<?>, Map<String, Class<?>>>();
@@ -46,14 +47,18 @@ public abstract class EntityMetaInfoBase {
 	protected static Map<Class<?>, String> createUserFieldByClass = new HashMap<Class<?>, String>();
 	protected static Map<Class<?>, String> modificationUserFieldByClass = new HashMap<Class<?>, String>();
 	
-	public EntityMetaInfoBase() {
+	protected static Map<Class<?>, Class<?>> converterByDto = new HashMap<Class<?>, Class<?>>(); 
+	
+	public TypeMetaInfoBase() {
 		super();
 	}
 
+	@Override
 	public abstract ValidAssociactionPathsInterface getValidPaths();
 	
+	@Override
 	public void fieldVerification(Class<?> clazz, String name)
-		throws InvalidFieldException, AccessDeniedException 
+	throws InvalidFieldException, AccessDeniedException 
 	{
 		if (fieldsByClass.get(clazz) == null) {
 			throw new AccessDeniedException();
@@ -67,12 +72,13 @@ public abstract class EntityMetaInfoBase {
 	    }
 	}
 
+	@Override
 	public boolean isAssociationPath(String name) {
 		return name.contains(".");
 	}
 	
 	private void verifyAssociationPath(Class<?> clazz, String name) 
-		throws InvalidFieldException 
+	throws InvalidFieldException 
 	{
 		List<String> pathFragments = new ArrayList<String>();
 		String fieldSelector;
@@ -118,8 +124,9 @@ public abstract class EntityMetaInfoBase {
 	 * @throws InvalidFieldException
 	 * @throws AccessDeniedException
 	 */
+	@Override
 	public Class<?> getFieldType(Class<?> clazz, String name)
-		throws InvalidFieldException, AccessDeniedException 
+	throws InvalidFieldException, AccessDeniedException 
 	{
 	    if (fieldsByClass.get(clazz) == null) {
 	        throw new AccessDeniedException();
@@ -132,7 +139,7 @@ public abstract class EntityMetaInfoBase {
 	}
 
 	private TargetFieldSelector resolveAssociations(TargetFieldSelector tfs)
-		throws InvalidFieldException 
+	throws InvalidFieldException 
 	{
 		Class<?> targetEntity = tfs.getTargetEntity();
 	    String fieldSelector = tfs.getFieldSelector();
@@ -153,6 +160,19 @@ public abstract class EntityMetaInfoBase {
 	    }
 	    tfs = new TargetFieldSelector(targetEntity, fieldSelector);
 		return tfs;
+	}
+
+	@Override
+	public Class<?> getConverterForDto(Class<?> clazz) 
+	throws InvalidArgumentException {
+		if (converterByDto.containsKey(clazz)) {
+			return converterByDto.get(clazz);
+		}
+		String val = "<null>";
+		if (clazz != null) {
+			val = clazz.getName();
+		}
+		throw new InvalidArgumentException(val);
 	}
 
 }

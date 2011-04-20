@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -43,8 +43,8 @@ import org.azzyzt.jee.runtime.exception.InvalidFieldException;
 import org.azzyzt.jee.runtime.exception.InvalidIdException;
 import org.azzyzt.jee.runtime.exception.NotYetImplementedException;
 import org.azzyzt.jee.runtime.exception.QuerySyntaxException;
+import org.azzyzt.jee.runtime.meta.TypeMetaInfoInterface;
 import org.azzyzt.jee.runtime.util.QueryBuilder;
-import org.azzyzt.jee.runtime.util.TypeMetaInfo;
 
 
 public abstract class EaoBase {
@@ -138,7 +138,7 @@ public abstract class EaoBase {
 		return result;
 	}
 	
-	public <I, T extends EntityBase<I>> List<T> list(QuerySpec qs, Class<T> clazz, TypeMetaInfo tmi) 
+	public <I, T extends EntityBase<I>> List<T> list(QuerySpec qs, Class<T> clazz, TypeMetaInfoInterface tmi) 
 	    throws InvalidFieldException, AccessDeniedException, QuerySyntaxException, NotYetImplementedException 
 	{
 		QueryBuilder<I, T> qb = new QueryBuilder<I, T>(getEm(), qs, clazz, tmi);

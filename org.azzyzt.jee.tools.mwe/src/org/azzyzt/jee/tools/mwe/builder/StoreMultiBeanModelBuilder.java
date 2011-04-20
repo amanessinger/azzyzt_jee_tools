@@ -27,6 +27,7 @@
 
 package org.azzyzt.jee.tools.mwe.builder;
 
+import org.azzyzt.jee.tools.mwe.identifiers.ModelProperties;
 import org.azzyzt.jee.tools.mwe.identifiers.PackageTails;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
 import org.azzyzt.jee.tools.mwe.model.annotation.MetaAnnotationInstance;
@@ -34,46 +35,51 @@ import org.azzyzt.jee.tools.mwe.model.type.MetaClass;
 import org.azzyzt.jee.tools.mwe.model.type.MetaEntity;
 import org.azzyzt.jee.tools.mwe.model.type.MetaInterface;
 
-public class CrudServiceFullInterfaceModelBuilder extends DerivedModelBuilder implements Builder {
+public class StoreMultiBeanModelBuilder extends DerivedModelBuilder implements Builder {
 
-	public static final String CLASS_SUFFIX = "FullInterface";
-
-	public CrudServiceFullInterfaceModelBuilder(MetaModel entityModel, String targetPackageName) {
+	public static final String CLASS_NAME = "StoreMultiBean";
+	
+	public StoreMultiBeanModelBuilder(MetaModel entityModel, String targetPackageName) {
 		super(entityModel, targetPackageName);
 	}
 
 	@Override
 	public MetaModel build() {
 		
+		MetaClass typeMetaInfo = (MetaClass)masterModel.getProperty(ModelProperties.TYPE_META_INFO);
+		MetaInterface storeMultiInterface = (MetaInterface)masterModel.getProperty(ModelProperties.STORE_MULTI_INTERFACE);
+				
 		for (MetaEntity me : masterModel.getTargetEntities()) {
-			MetaClass dto = (MetaClass) me.getProperty("dto");
+			MetaClass dtoBase = (MetaClass) masterModel.getProperty(ModelProperties.DTO_BASE);
 
-			// create MetaInterface
+			// create MetaClass
 			String packageName = derivePackageNameFromEntityAndFollowPackage(me, PackageTails.SERVICE);
-			String simpleName = me.getSimpleName();
-			simpleName += CLASS_SUFFIX;
-			MetaInterface target = MetaInterface.forName(packageName, simpleName);
-			me.setProperty("svcFullInterface", target);
+			String simpleName = CLASS_NAME;
+			MetaClass target = MetaClass.forName(packageName, simpleName);
+			target.addInterface(storeMultiInterface);
 			target.setModifiers(std.mod_public);
-			target.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxEjbRemote, target));
+			target.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxEjbLocalBean, target));
+			target.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxEjbStateless, target));
+			target.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxJwsWebService, target));
 			
-			target.addReferencedForeignType(dto);
+			target.addReferencedForeignType(dtoBase);
 			target.addReferencedForeignType(std.accessDeniedException);
-			target.addReferencedForeignType(std.entityNotFoundException);
 			target.addReferencedForeignType(std.entityInstantiationException);
+			target.addReferencedForeignType(std.entityNotFoundException);
+			target.addReferencedForeignType(std.invalidArgumentException);
 			target.addReferencedForeignType(std.invalidIdException);
-			target.addReferencedForeignType(std.invalidFieldException);
-			target.addReferencedForeignType(std.querySyntaxException);
-			target.addReferencedForeignType(std.notYetImplementedException);
 			target.addReferencedForeignType(std.javaUtilList);
-			target.addReferencedForeignType(std.querySpec);
-			
-			if (me.isCombinedId()) {
-				target.addReferencedForeignType(me.getCombinedIdType());
-			}
+			target.addReferencedForeignType(std.multiObjectSaver);
+			target.addReferencedForeignType(typeMetaInfo);
 
-			target.setProperty("entity", me);
-			target.setProperty("dto", dto);
+			addGenericEaoField(target);
+			addTypeMetaInfoField(target);
+			addInvocationRegistryField(target);
+			
+			masterModel.setProperty(ModelProperties.STORE_MULTI_BEAN, target);
+			
+			// now break out
+			break;
 		}
 		return targetModel;
 	}

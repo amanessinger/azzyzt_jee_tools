@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -27,6 +27,8 @@
 
 package org.azzyzt.jee.tools.mwe.builder;
 
+import org.azzyzt.jee.tools.mwe.identifiers.ModelProperties;
+import org.azzyzt.jee.tools.mwe.identifiers.PackageTails;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
 import org.azzyzt.jee.tools.mwe.model.annotation.MetaAnnotationInstance;
 import org.azzyzt.jee.tools.mwe.model.type.MetaClass;
@@ -44,7 +46,7 @@ public class RESTInterceptorModelBuilder extends DerivedModelBuilder implements 
 		for (MetaEntity me : masterModel.getTargetEntities()) {
 
 			// create MetaClass
-			String packageName = derivePackageNameFromEntity(me, "service");
+			String packageName = derivePackageNameFromEntityAndFollowPackage(me, PackageTails.SERVICE);
 			
 			// upon first entity create MetaClass
 			String simpleName = "RESTInterceptor";
@@ -66,8 +68,7 @@ public class RESTInterceptorModelBuilder extends DerivedModelBuilder implements 
 			
 			addInvocationRegistryField(target);
 			
-			// TODO this implies order. We have to make sure that we call modifying builders in the right order. Dependencies?
-			masterModel.setProperty("rest_interceptor", target);
+			masterModel.setProperty(ModelProperties.REST_INTERCEPTOR, target);
 			
 			// now break out
 			break;

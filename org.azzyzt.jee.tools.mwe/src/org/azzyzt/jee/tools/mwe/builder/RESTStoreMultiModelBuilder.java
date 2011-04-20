@@ -27,66 +27,67 @@
 
 package org.azzyzt.jee.tools.mwe.builder;
 
+import org.azzyzt.jee.tools.mwe.identifiers.ModelProperties;
 import org.azzyzt.jee.tools.mwe.identifiers.PackageTails;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
 import org.azzyzt.jee.tools.mwe.model.annotation.MetaAnnotationInstance;
 import org.azzyzt.jee.tools.mwe.model.type.MetaClass;
 import org.azzyzt.jee.tools.mwe.model.type.MetaEntity;
-import org.azzyzt.jee.tools.mwe.model.type.MetaInterface;
 
-public class CrudServiceFullBeansModelBuilder extends DerivedModelBuilder implements Builder {
+public class RESTStoreMultiModelBuilder extends DerivedModelBuilder implements Builder {
 
-	public static final String CLASS_SUFFIX = "FullBean";
-	
-	public CrudServiceFullBeansModelBuilder(MetaModel entityModel, String targetPackageName) {
+	public static final String CLASS_NAME = "StoreMultiDelegator";
+
+	public RESTStoreMultiModelBuilder(MetaModel entityModel, String targetPackageName) {
 		super(entityModel, targetPackageName);
 	}
 
 	@Override
 	public MetaModel build() {
 		
-		MetaClass typeMetaInfo = (MetaClass)masterModel.getProperty("typeMetaInfo");
-				
 		for (MetaEntity me : masterModel.getTargetEntities()) {
-			MetaClass dto = (MetaClass) me.getProperty("dto");
+			MetaClass dtoBase = (MetaClass) masterModel.getProperty(ModelProperties.DTO_BASE);
+			MetaClass svcBean = (MetaClass) masterModel.getProperty(ModelProperties.STORE_MULTI_BEAN);
+			MetaClass restInterceptor = (MetaClass) masterModel.getProperty(ModelProperties.REST_INTERCEPTOR);
 
 			// create MetaClass
 			String packageName = derivePackageNameFromEntityAndFollowPackage(me, PackageTails.SERVICE);
-			String simpleName = me.getSimpleName();
-			simpleName += CLASS_SUFFIX;
+			String simpleName = CLASS_NAME;
+			String pathString = "storeMulti";
 			MetaClass target = MetaClass.forName(packageName, simpleName);
-			target.addInterface((MetaInterface)me.getProperty("svcFullInterface"));
-			me.setProperty("svcFullBean", target);
+			masterModel.setProperty(ModelProperties.REST_STORE_MULTI_DELEGATOR, target);
 			target.setModifiers(std.mod_public);
-			target.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxEjbLocalBean, target));
+			target.setSuperMetaClass(std.restDelegatorBase);
 			target.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxEjbStateless, target));
-			target.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxJwsWebService, target));
+			MetaAnnotationInstance path = new MetaAnnotationInstance(std.javaxWsRsPath, target);
+			path.setElement("value", pathString);
+			target.addMetaAnnotationInstance(path);
 			
-			target.addReferencedForeignType(dto);
-			target.addReferencedForeignType(me);
+			target.addReferencedForeignType(dtoBase);
+			target.addReferencedForeignType(restInterceptor);
+			target.addReferencedForeignType(std.javaxInterceptorInterceptors);
+			target.addReferencedForeignType(std.javaUtilList);
 			target.addReferencedForeignType(std.accessDeniedException);
 			target.addReferencedForeignType(std.entityNotFoundException);
 			target.addReferencedForeignType(std.entityInstantiationException);
+			target.addReferencedForeignType(std.invalidArgumentException);
 			target.addReferencedForeignType(std.invalidIdException);
-			target.addReferencedForeignType(std.invalidFieldException);
-			target.addReferencedForeignType(std.querySyntaxException);
-			target.addReferencedForeignType(std.notYetImplementedException);
-			target.addReferencedForeignType(std.javaUtilList);
-			target.addReferencedForeignType(std.javaUtilArrayList);
-			target.addReferencedForeignType(typeMetaInfo);
-			target.addReferencedForeignType(std.querySpec);
+			target.addReferencedForeignType(std.javaxWsRsPOST);
+			target.addReferencedForeignType(std.javaxWsRsProduces);
+			target.addReferencedForeignType(std.javaxWsRsConsumes);
+			target.addReferencedForeignType(std.javaxWsRsCoreMediaType);
+			target.addReferencedForeignType(std.stringListWrapper);
 
-			if (me.isCombinedId()) {
-				target.addReferencedForeignType(me.getCombinedIdType());
-			}
-
-			addGenericEaoField(target);
-			addConverterField(target, me);
-			addTypeMetaInfoField(target);
+			addStoreMultiBeanField(target);
 			
-			target.setProperty("entity", me);
-			target.setProperty("dto", dto);
+			target.setProperty(ModelProperties.SVC_BEAN, svcBean);
+			target.setProperty(ModelProperties.DTO_BASE, dtoBase);
+			
+			// now break out
+			break;
 		}
+		
+		
 		return targetModel;
 	}
 }

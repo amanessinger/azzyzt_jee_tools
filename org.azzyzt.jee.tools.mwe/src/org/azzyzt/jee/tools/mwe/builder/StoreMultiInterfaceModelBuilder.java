@@ -33,10 +33,13 @@ import org.azzyzt.jee.tools.mwe.model.MetaModel;
 import org.azzyzt.jee.tools.mwe.model.annotation.MetaAnnotationInstance;
 import org.azzyzt.jee.tools.mwe.model.type.MetaClass;
 import org.azzyzt.jee.tools.mwe.model.type.MetaEntity;
+import org.azzyzt.jee.tools.mwe.model.type.MetaInterface;
 
-public class InvocationRegistryModelBuilder extends DerivedModelBuilder implements Builder {
+public class StoreMultiInterfaceModelBuilder extends DerivedModelBuilder implements Builder {
 
-	public InvocationRegistryModelBuilder(MetaModel entityModel, String targetPackageName) {
+	public static final String CLASS_NAME = "StoreMultiInterface";
+
+	public StoreMultiInterfaceModelBuilder(MetaModel entityModel, String targetPackageName) {
 		super(entityModel, targetPackageName);
 	}
 
@@ -44,38 +47,28 @@ public class InvocationRegistryModelBuilder extends DerivedModelBuilder implemen
 	public MetaModel build() {
 		
 		for (MetaEntity me : masterModel.getTargetEntities()) {
+			MetaClass dtoBase = (MetaClass) masterModel.getProperty(ModelProperties.DTO_BASE);
 
-			// create MetaClass
-			String packageName = derivePackageNameFromEntityAndFollowPackage(me, PackageTails.META);
-			
-			// upon first entity create MetaClass
-			String simpleName = "InvocationRegistry";
-			MetaClass target = MetaClass.forName(packageName, simpleName);
-			target.setSuperMetaClass(std.InvocationRegistryBase);
-			target.addInterface(std.invocationRegistryInterface);
-			targetModel.follow(packageName);
+			// create MetaInterface
+			String packageName = derivePackageNameFromEntityAndFollowPackage(me, PackageTails.SERVICE);
+			String simpleName = CLASS_NAME;
+			MetaInterface target = MetaInterface.forName(packageName, simpleName);
 			target.setModifiers(std.mod_public);
+			target.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxEjbRemote, target));
 			
-			MetaAnnotationInstance mai;
-			mai = new MetaAnnotationInstance(std.javaxEjbLocalBean, target);
-			target.addMetaAnnotationInstance(mai);
-			mai = new MetaAnnotationInstance(std.javaxEjbStateless, target);
-			target.addMetaAnnotationInstance(mai);
-			mai = new MetaAnnotationInstance(std.javaxInterceptorInterceptor, target);
-			target.addMetaAnnotationInstance(mai);
+			target.addReferencedForeignType(dtoBase);
+			target.addReferencedForeignType(std.accessDeniedException);
+			target.addReferencedForeignType(std.entityInstantiationException);
+			target.addReferencedForeignType(std.entityNotFoundException);
+			target.addReferencedForeignType(std.invalidArgumentException);
+			target.addReferencedForeignType(std.invalidIdException);
+			target.addReferencedForeignType(std.javaUtilList);
 			
-			target.addReferencedForeignType(std.javaxEjbEJB);
-			target.addReferencedForeignType(std.javaxAnnotationResource);
-			target.addReferencedForeignType(std.javaxTransactionTransactionSynchronizationRegistry);
-			target.addReferencedForeignType(std.siteAdapterInterface);
-			
-			// TODO this implies order. We have to make sure that we call modifying builders in the right order. Dependencies?
-			masterModel.setProperty(ModelProperties.INVOCATION_REGISTRY, target);
+			masterModel.setProperty(ModelProperties.STORE_MULTI_INTERFACE, target);
 			
 			// now break out
 			break;
 		}
-
 		return targetModel;
 	}
 }

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -47,9 +47,9 @@ public class DummyMain {
 	}
 
 	private static void doWork(String[] args, Log logger) {
-		logger.log("Inside of DummyMain.main()");
+		logger.info("Inside of DummyMain.main()");
 		for (String arg : args) {
-			logger.log("  -> "+arg);
+			logger.info("  -> "+arg);
 		}
 	}
 

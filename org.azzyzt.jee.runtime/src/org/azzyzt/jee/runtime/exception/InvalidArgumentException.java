@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -25,17 +25,25 @@
  * permissions and limitations under the Licence.
  */
 
-package org.azzyzt.jee.runtime.dto;
+package org.azzyzt.jee.runtime.exception;
 
-import org.azzyzt.jee.runtime.entity.EntityBase;
+public class InvalidArgumentException extends TranslatableException {
 
-public abstract class DtoBase<ID> {
+	private static final long serialVersionUID = 1L;
 
-    public boolean hasId() {
-        return EntityBase.couldBeIdValue(getId());
-    }
- 
-	public abstract ID getId();
+	private String invalidArgumentValue;
+	
+	public InvalidArgumentException(String invalidArgumentValue) {
+		super("Access error",
+		  	  "Key is invalid");
+		this.setInvalidArgumentValue(invalidArgumentValue);
+	}
 
-	public abstract void setId(ID id);
+	public String getInvalidArgumentValue() {
+		return invalidArgumentValue;
+	}
+
+	public void setInvalidArgumentValue(String invalidArgumentValue) {
+		this.invalidArgumentValue = invalidArgumentValue;
+	}
 }

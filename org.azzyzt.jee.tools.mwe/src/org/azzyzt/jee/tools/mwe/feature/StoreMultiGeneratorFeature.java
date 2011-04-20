@@ -27,19 +27,19 @@
 
 package org.azzyzt.jee.tools.mwe.feature;
 
-import org.azzyzt.jee.tools.mwe.builder.CrudServiceFullBeansModelBuilder;
-import org.azzyzt.jee.tools.mwe.builder.CrudServiceFullInterfaceModelBuilder;
-import org.azzyzt.jee.tools.mwe.builder.CrudServiceRestrictedBeansModelBuilder;
-import org.azzyzt.jee.tools.mwe.builder.CrudServiceRestrictedInterfaceModelBuilder;
+import org.azzyzt.jee.tools.mwe.builder.RESTStoreMultiModelBuilder;
+import org.azzyzt.jee.tools.mwe.builder.StoreMultiBeanModelBuilder;
+import org.azzyzt.jee.tools.mwe.builder.StoreMultiInterfaceModelBuilder;
 import org.azzyzt.jee.tools.mwe.generator.JavaGenerator;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
 
-public class CrudServiceBeansGeneratorFeature extends GeneratorFeature {
+public class StoreMultiGeneratorFeature extends GeneratorFeature {
 
 	public static final String SOURCE_FOLDER_EJB_PROJECT = "Source Folder (EJB Project)";
 	public static final String SOURCE_FOLDER_CLIENT_PROJECT = "Source Folder (Client Project)";
+	public static final String SOURCE_FOLDER_SERVLET_PROJECT = "Source Folder (Servlet Project)";
 
-	public CrudServiceBeansGeneratorFeature(MetaModel entityModel) {
+	public StoreMultiGeneratorFeature(MetaModel entityModel) {
 		super(entityModel);
 	}
 
@@ -48,6 +48,7 @@ public class CrudServiceBeansGeneratorFeature extends GeneratorFeature {
 		Parameters parameters = new Parameters();
 		parameters.add(new Parameter(SOURCE_FOLDER_EJB_PROJECT, ParameterType.SourceFolder, Parameter.IS_MANDATORY));
 		parameters.add(new Parameter(SOURCE_FOLDER_CLIENT_PROJECT, ParameterType.SourceFolder, Parameter.IS_MANDATORY));
+		parameters.add(new Parameter(SOURCE_FOLDER_SERVLET_PROJECT, ParameterType.SourceFolder, Parameter.IS_MANDATORY));
 		return parameters;
 	}
 	
@@ -58,26 +59,24 @@ public class CrudServiceBeansGeneratorFeature extends GeneratorFeature {
 		
 		sourceFolder = (String)parameters.byName(SOURCE_FOLDER_CLIENT_PROJECT).getValue();
 		
-		MetaModel targetModel = new CrudServiceFullInterfaceModelBuilder(getModel(), null).build();
-		JavaGenerator targetGen = new JavaGenerator(targetModel, sourceFolder, "javaCrudServiceFullGroup");
+		MetaModel targetModel = new StoreMultiInterfaceModelBuilder(getModel(), null).build();
+		JavaGenerator targetGen = new JavaGenerator(targetModel, sourceFolder, "javaStoreMultiGroup");
 		numberOfSourcesGenerated = targetGen.generate();
-		
-		targetModel = new CrudServiceRestrictedInterfaceModelBuilder(getModel(), null).build();
-		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaCrudServiceRestrictedGroup");
-		numberOfSourcesGenerated += targetGen.generate();
 		
 		sourceFolder = (String)parameters.byName(SOURCE_FOLDER_EJB_PROJECT).getValue();
 		
-		targetModel = new CrudServiceFullBeansModelBuilder(getModel(), null).build();
-		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaCrudServiceFullGroup");
+		targetModel = new StoreMultiBeanModelBuilder(getModel(), null).build();
+		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaStoreMultiGroup");
 		targetGen.setGenerateGettersSetters(false);
 		numberOfSourcesGenerated += targetGen.generate();
+				
+		sourceFolder = (String)parameters.byName(SOURCE_FOLDER_SERVLET_PROJECT).getValue();
 		
-		targetModel = new CrudServiceRestrictedBeansModelBuilder(getModel(), null).build();
-		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaCrudServiceRestrictedGroup");
+		targetModel = new RESTStoreMultiModelBuilder(getModel(), null).build();
+		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaRESTStoreMultiGroup");
 		targetGen.setGenerateGettersSetters(false);
 		numberOfSourcesGenerated += targetGen.generate();
-		
+				
 		return numberOfSourcesGenerated;
 	}
 

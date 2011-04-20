@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -29,9 +29,20 @@ package org.azzyzt.jee.tools.mwe.util;
 
 public interface Log {
 	
+	public enum Verbosity {
+		DEBUG(5), INFO(3), ERROR(1);
+		private final int value;
+		Verbosity(int value) { this.value = value; }
+		public int getValue() { return value; }
+	}
+	
 	public static final String WARNING_MARKER = "!!";
 
-	public void log(String msg);
+	public void debug(String msg);
+
+	public void info(String msg);
+
+	public void error(String msg);
 	
-	public void warn(String msg);
+	public void setVerbosity(Verbosity level);
 }
