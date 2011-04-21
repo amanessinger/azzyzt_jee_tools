@@ -36,6 +36,11 @@ public <mdt.simpleName>(EaoBase eao, InvocationRegistryInterface invocationRegis
 
 
 fromEntity(mdt, entity, dto) ::= <<
+@Override
+public Object fromEntityBase(@SuppressWarnings("rawtypes") EntityBase in) {
+    return fromEntity((<entity.simpleName>)in);
+}
+
 public <dto.simpleName> fromEntity(<entity.simpleName> in) {
     <dto.simpleName> result = new <dto.simpleName>();
     
@@ -92,6 +97,7 @@ result.set<field.ucName>Ids(null);
 
 
 fromDto(mdt, entity, dto) ::= <<
+@Override
 @SuppressWarnings("rawtypes")
 public EntityBase fromRawDto(Object in) 
 throws EntityNotFoundException, EntityInstantiationException, InvalidIdException
