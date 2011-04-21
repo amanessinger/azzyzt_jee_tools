@@ -18,9 +18,6 @@ group javaRESTFullGroup : javaGroup;
 <storeHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>
 <storeBody(entity=mdt.properties.entity, dto=mdt.properties.dto)>
 
-<updateHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>
-<updateBody(entity=mdt.properties.entity, dto=mdt.properties.dto)>
-
 <deleteHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>
 <deleteBody(entity=mdt.properties.entity, dto=mdt.properties.dto)>
 >>
@@ -75,27 +72,13 @@ storeHead(entity, dto) ::= <<
 @Path("store")
 @Consumes(MediaType.APPLICATION_XML)
 @Produces(MediaType.APPLICATION_XML)
-public String <entity.lcFirstSimpleName>Store(<dto.simpleName> dto)
+public <dto.simpleName> <entity.lcFirstSimpleName>Store(<dto.simpleName> dto)
     throws EntityNotFoundException, AccessDeniedException, EntityInstantiationException, InvalidIdException
 >>
 
 storeBody(entity, dto) ::= <<
 {    
-    return "\<result\>"+svcFullBean.<entity.lcFirstSimpleName>Store(dto)+"\</result\>";
-}
->>
-
-updateHead(entity, dto) ::= <<
-@POST
-@Path("update")
-@Consumes(MediaType.APPLICATION_XML)
-public void <entity.lcFirstSimpleName>Update(<dto.simpleName> dto)
-    throws EntityNotFoundException, AccessDeniedException, EntityInstantiationException, InvalidIdException
->>
-
-updateBody(entity, dto) ::= <<
-{    
-    svcFullBean.<entity.lcFirstSimpleName>Update(dto);
+    return svcFullBean.<entity.lcFirstSimpleName>Store(dto);
 }
 >>
 

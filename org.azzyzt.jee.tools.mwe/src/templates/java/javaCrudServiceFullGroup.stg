@@ -18,10 +18,6 @@ group javaCrudServiceFullGroup : javaGroup;
 <storeBody(entity=mdt.properties.entity, dto=mdt.properties.dto)>
 
 @Override
-<updateHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>
-<updateBody(entity=mdt.properties.entity, dto=mdt.properties.dto)>
-
-@Override
 <deleteHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>
 <deleteBody(entity=mdt.properties.entity, dto=mdt.properties.dto)>
 >>
@@ -34,8 +30,6 @@ group javaCrudServiceFullGroup : javaGroup;
 <listXmlHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>;
 
 <storeHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>;
-
-<updateHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>;
 
 <deleteHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>;
 >>
@@ -93,7 +87,7 @@ listXmlBody(entity, dto) ::= <<
 >>
 
 storeHead(entity, dto) ::= <<
-public <dto.properties.idFieldType.simpleName> <entity.lcFirstSimpleName>Store(<dto.simpleName> dto)
+public <dto.simpleName> <entity.lcFirstSimpleName>Store(<dto.simpleName> dto)
     throws EntityNotFoundException, AccessDeniedException, EntityInstantiationException, InvalidIdException
 >>
 
@@ -101,20 +95,9 @@ storeBody(entity, dto) ::= <<
 {    
     <entity.simpleName> e = converter.fromDto(dto);
 
-    <dto.properties.idFieldType.simpleName> id = e.getId();
+    <dto.simpleName> result = converter.fromEntity(e);
     
-    return id;
-}
->>
-
-updateHead(entity, dto) ::= <<
-public void <entity.lcFirstSimpleName>Update(<dto.simpleName> dto)
-    throws EntityNotFoundException, AccessDeniedException, EntityInstantiationException, InvalidIdException
->>
-
-updateBody(entity, dto) ::= <<
-{    
-    <entity.lcFirstSimpleName>Store(dto);
+    return result;
 }
 >>
 

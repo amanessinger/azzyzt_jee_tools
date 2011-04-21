@@ -11,4 +11,6 @@ public interface ConverterRawInterface {
 	public EntityBase fromRawDto(Object in)
 		throws EntityNotFoundException, EntityInstantiationException, InvalidIdException;
 	
+	public Object fromEntityBase(@SuppressWarnings("rawtypes") EntityBase in);
+	
 }
