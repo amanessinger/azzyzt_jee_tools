@@ -72,13 +72,13 @@ storeHead(entity, dto) ::= <<
 @Path("store")
 @Consumes(MediaType.APPLICATION_XML)
 @Produces(MediaType.APPLICATION_XML)
-public String <entity.lcFirstSimpleName>Store(<dto.simpleName> dto)
+public <dto.simpleName> <entity.lcFirstSimpleName>Store(<dto.simpleName> dto)
     throws EntityNotFoundException, AccessDeniedException, EntityInstantiationException, InvalidIdException
 >>
 
 storeBody(entity, dto) ::= <<
 {    
-    return "\<result\>"+svcFullBean.<entity.lcFirstSimpleName>Store(dto)+"\</result\>";
+    return svcFullBean.<entity.lcFirstSimpleName>Store(dto);
 }
 >>
 

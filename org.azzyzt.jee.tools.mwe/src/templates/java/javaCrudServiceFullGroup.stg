@@ -87,7 +87,7 @@ listXmlBody(entity, dto) ::= <<
 >>
 
 storeHead(entity, dto) ::= <<
-public <dto.properties.idFieldType.simpleName> <entity.lcFirstSimpleName>Store(<dto.simpleName> dto)
+public <dto.simpleName> <entity.lcFirstSimpleName>Store(<dto.simpleName> dto)
     throws EntityNotFoundException, AccessDeniedException, EntityInstantiationException, InvalidIdException
 >>
 
@@ -95,9 +95,9 @@ storeBody(entity, dto) ::= <<
 {    
     <entity.simpleName> e = converter.fromDto(dto);
 
-    <dto.properties.idFieldType.simpleName> id = e.getId();
+    <dto.simpleName> result = converter.fromEntity(e);
     
-    return id;
+    return result;
 }
 >>
 
