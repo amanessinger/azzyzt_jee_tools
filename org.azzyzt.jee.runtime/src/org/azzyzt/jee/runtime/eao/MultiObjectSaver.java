@@ -2,7 +2,6 @@ package org.azzyzt.jee.runtime.eao;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +21,7 @@ public class MultiObjectSaver {
 	
 	private Map<Class<?>, ConverterRawInterface> converterForDto = new HashMap<Class<?>, ConverterRawInterface>();
 	
-	public List<String> store(
+	public Object[] store(
 			EaoBase eao, 
 			InvocationRegistryInterface invocationRegistry, 
 			TypeMetaInfoInterface tmi, 
@@ -31,13 +30,14 @@ public class MultiObjectSaver {
 	throws EntityNotFoundException, AccessDeniedException, InvalidArgumentException, 
 		   InvalidIdException, EntityInstantiationException
 	{
-		List<String> result = new ArrayList<String>();
+		Object[] result = new Object[dtos.size()];
 		
-		for (Object dto : dtos) {
+		for (int i = 0; i < dtos.size(); i++) {
+			Object dto = dtos.get(i);
 			ConverterRawInterface conv = converterFromDto(eao, invocationRegistry, tmi, dto);
 			@SuppressWarnings("rawtypes")
 			EntityBase e = conv.fromRawDto(dto);
-			result.add(e.getId().toString());
+			result[i] = conv.fromEntityBase(e);
 		}
 		
 		return result;

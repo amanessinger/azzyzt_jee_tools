@@ -11,18 +11,20 @@ group javaStoreMultiGroup : javaGroup;
 >>
 
 storeMultiHead() ::= <<
-public List\<String\> storeMulti(List\<DtoBase\> dtos)
+public List\<Dto\> storeMulti(List\<Dto\> dtos)
     throws EntityNotFoundException, AccessDeniedException, InvalidArgumentException, InvalidIdException, EntityInstantiationException
 >>
 
 storeMultiBody() ::= <<
 {
     @SuppressWarnings("rawtypes")
-    List\<String\> result = new MultiObjectSaver().store(
+    Object[] resultArray = new MultiObjectSaver().store(
         eao, invocationRegistry, tmi, 
         (List) dtos
     );
-    
-    return result;
+    for (int i = 0; i \< dtos.size(); i++) {
+        dtos.set(i, (Dto)resultArray[i]);
+    }
+    return dtos;
 }
 >>
