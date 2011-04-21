@@ -11,7 +11,7 @@ group javaStoreMultiGroup : javaGroup;
 >>
 
 storeMultiHead() ::= <<
-public List\<DtoBase\> storeMulti(List\<DtoBase\> dtos)
+public List\<Dto\> storeMulti(List\<Dto\> dtos)
     throws EntityNotFoundException, AccessDeniedException, InvalidArgumentException, InvalidIdException, EntityInstantiationException
 >>
 
@@ -23,7 +23,7 @@ storeMultiBody() ::= <<
         (List) dtos
     );
     for (int i = 0; i \< dtos.size(); i++) {
-        dtos.set(i, (DtoBase)resultArray[i]);
+        dtos.set(i, (Dto)resultArray[i]);
     }
     return dtos;
 }

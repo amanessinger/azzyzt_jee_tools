@@ -15,7 +15,7 @@ storeMultiHead() ::= <<
 @Path("storeMulti")
 @Consumes(MediaType.APPLICATION_XML)
 @Produces(MediaType.APPLICATION_XML)
-public List\<DtoBase\> storeMulti(List\<DtoBase\> dtos)
+public List\<Dto\> storeMulti(List\<Dto\> dtos)
     throws EntityNotFoundException, AccessDeniedException, EntityInstantiationException, InvalidIdException, InvalidArgumentException
 >>
 
