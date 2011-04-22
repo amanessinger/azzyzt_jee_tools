@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -27,6 +27,7 @@
 
 package org.azzyzt.jee.tools.mwe.builder;
 
+import org.azzyzt.jee.tools.mwe.identifiers.PackageTails;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
 import org.azzyzt.jee.tools.mwe.model.annotation.MetaAnnotationInstance;
 import org.azzyzt.jee.tools.mwe.model.type.MetaClass;
@@ -34,6 +35,8 @@ import org.azzyzt.jee.tools.mwe.model.type.MetaEntity;
 import org.azzyzt.jee.tools.mwe.model.type.MetaInterface;
 
 public class CrudServiceFullInterfaceModelBuilder extends DerivedModelBuilder implements Builder {
+
+	public static final String CLASS_SUFFIX = "FullInterface";
 
 	public CrudServiceFullInterfaceModelBuilder(MetaModel entityModel, String targetPackageName) {
 		super(entityModel, targetPackageName);
@@ -46,9 +49,9 @@ public class CrudServiceFullInterfaceModelBuilder extends DerivedModelBuilder im
 			MetaClass dto = (MetaClass) me.getProperty("dto");
 
 			// create MetaInterface
-			String packageName = derivePackageNameFromEntity(me, "service");
+			String packageName = derivePackageNameFromEntityAndFollowPackage(me, PackageTails.SERVICE);
 			String simpleName = me.getSimpleName();
-			simpleName += "FullInterface";
+			simpleName += CLASS_SUFFIX;
 			MetaInterface target = MetaInterface.forName(packageName, simpleName);
 			me.setProperty("svcFullInterface", target);
 			target.setModifiers(std.mod_public);

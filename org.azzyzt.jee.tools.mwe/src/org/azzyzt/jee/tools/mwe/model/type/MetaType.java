@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -39,6 +39,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.azzyzt.jee.tools.mwe.exception.ToolError;
+import org.azzyzt.jee.tools.mwe.model.MetaModel;
 import org.azzyzt.jee.tools.mwe.model.annotation.MetaAnnotation;
 
 public abstract class MetaType {
@@ -270,7 +271,13 @@ public abstract class MetaType {
 	}
 
 	public Object getProperty(Object key) {
-		return properties.get(key);
+		Object value = properties.get(key);
+		if (value == null) {
+			String msg = this.getName()+": property "+key+" has no value";
+			MetaModel.getCurrentModel().getLogger().error(msg);
+			throw new ToolError(msg);
+		}
+		return value;
 	}
 
 	public Properties getProperties() {

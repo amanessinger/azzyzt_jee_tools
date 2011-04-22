@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -30,6 +30,7 @@ package org.azzyzt.jee.tools.mwe.builder;
 import java.util.Set;
 
 import org.azzyzt.jee.tools.mwe.exception.ToolError;
+import org.azzyzt.jee.tools.mwe.identifiers.PackageTails;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
 import org.azzyzt.jee.tools.mwe.model.annotation.MetaAnnotationInstance;
 import org.azzyzt.jee.tools.mwe.model.type.MetaClass;
@@ -53,7 +54,7 @@ public class EaoModelBuilder extends DerivedModelBuilder implements Builder {
 			throw new ToolError("Entity model has no target entities, can't determine target package");
 		}
 		MetaEntity me = targetEntities.iterator().next();
-		String packageName = derivePackageNameFromEntity(me, "eao");
+		String packageName = derivePackageNameFromEntityAndFollowPackage(me, PackageTails.EAO);
 		String simpleName = "GenericEao";
 		MetaClass target = MetaClass.forName(packageName, simpleName);
 		target.setModifiers(std.mod_public);

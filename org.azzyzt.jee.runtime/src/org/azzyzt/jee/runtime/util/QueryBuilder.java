@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -65,20 +65,21 @@ import org.azzyzt.jee.runtime.exception.ThisCantHappen;
 import org.azzyzt.jee.runtime.meta.AssociationInfo;
 import org.azzyzt.jee.runtime.meta.AssociationPathInfo;
 import org.azzyzt.jee.runtime.meta.RequiredSelectionType;
+import org.azzyzt.jee.runtime.meta.TypeMetaInfoInterface;
 
 public class QueryBuilder <ID, T extends EntityBase<ID>> {
 	
 	private EntityManager em;
 	private QuerySpec qs;
 	private Class<T> clazz;
-	private TypeMetaInfo tmi;
+	private TypeMetaInfoInterface tmi;
 	private CriteriaBuilder cb;
 	private CriteriaQuery<T> cq;
 	private Root<T> root;
 	private boolean forceDistinct = false;
 	private Map<String, From<?,?>> fieldOwnersByAssociationId = new HashMap<String, From<?,?>>();
 
-	public QueryBuilder(EntityManager em, QuerySpec qs, Class<T> clazz, TypeMetaInfo tmi) {
+	public QueryBuilder(EntityManager em, QuerySpec qs, Class<T> clazz, TypeMetaInfoInterface tmi) {
 		this.em = em;
 		this.qs = new QueryOptimizer().optimize(qs);
 		this.clazz = clazz;

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -27,6 +27,8 @@
 
 package org.azzyzt.jee.tools.mwe.builder;
 
+import org.azzyzt.jee.tools.mwe.identifiers.ModelProperties;
+import org.azzyzt.jee.tools.mwe.identifiers.PackageTails;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
 import org.azzyzt.jee.tools.mwe.model.annotation.MetaAnnotationInstance;
 import org.azzyzt.jee.tools.mwe.model.type.MetaClass;
@@ -44,12 +46,13 @@ public class InvocationRegistryModelBuilder extends DerivedModelBuilder implemen
 		for (MetaEntity me : masterModel.getTargetEntities()) {
 
 			// create MetaClass
-			String packageName = derivePackageNameFromEntity(me, "meta");
+			String packageName = derivePackageNameFromEntityAndFollowPackage(me, PackageTails.META);
 			
 			// upon first entity create MetaClass
 			String simpleName = "InvocationRegistry";
 			MetaClass target = MetaClass.forName(packageName, simpleName);
 			target.setSuperMetaClass(std.InvocationRegistryBase);
+			target.addInterface(std.invocationRegistryInterface);
 			targetModel.follow(packageName);
 			target.setModifiers(std.mod_public);
 			
@@ -67,7 +70,7 @@ public class InvocationRegistryModelBuilder extends DerivedModelBuilder implemen
 			target.addReferencedForeignType(std.siteAdapterInterface);
 			
 			// TODO this implies order. We have to make sure that we call modifying builders in the right order. Dependencies?
-			masterModel.setProperty("invocation_registry", target);
+			masterModel.setProperty(ModelProperties.INVOCATION_REGISTRY, target);
 			
 			// now break out
 			break;

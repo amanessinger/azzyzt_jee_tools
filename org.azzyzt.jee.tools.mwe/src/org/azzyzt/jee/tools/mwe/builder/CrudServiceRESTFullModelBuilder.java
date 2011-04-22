@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -27,12 +27,16 @@
 
 package org.azzyzt.jee.tools.mwe.builder;
 
+import org.azzyzt.jee.tools.mwe.identifiers.ModelProperties;
+import org.azzyzt.jee.tools.mwe.identifiers.PackageTails;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
 import org.azzyzt.jee.tools.mwe.model.annotation.MetaAnnotationInstance;
 import org.azzyzt.jee.tools.mwe.model.type.MetaClass;
 import org.azzyzt.jee.tools.mwe.model.type.MetaEntity;
 
 public class CrudServiceRESTFullModelBuilder extends DerivedModelBuilder implements Builder {
+
+	public static final String CLASS_SUFFIX = "FullDelegator";
 
 	public CrudServiceRESTFullModelBuilder(MetaModel entityModel, String targetPackageName) {
 		super(entityModel, targetPackageName);
@@ -42,17 +46,17 @@ public class CrudServiceRESTFullModelBuilder extends DerivedModelBuilder impleme
 	public MetaModel build() {
 		
 		for (MetaEntity me : masterModel.getTargetEntities()) {
-			MetaClass dto = (MetaClass) me.getProperty("dto");
-			MetaClass svcBean = (MetaClass) me.getProperty("svcFullBean");
-			MetaClass restInterceptor = (MetaClass) masterModel.getProperty("rest_interceptor");
+			MetaClass dto = (MetaClass) me.getProperty(ModelProperties.DTO);
+			MetaClass svcBean = (MetaClass) me.getProperty(ModelProperties.SVC_FULL_BEAN);
+			MetaClass restInterceptor = (MetaClass) masterModel.getProperty(ModelProperties.REST_INTERCEPTOR);
 
 			// create MetaClass
-			String packageName = derivePackageNameFromEntity(me, "service");
+			String packageName = derivePackageNameFromEntityAndFollowPackage(me, PackageTails.SERVICE);
 			String simpleName = me.getSimpleName();
 			String pathString = simpleName.toLowerCase();
-			simpleName += "FullDelegator";
+			simpleName += CLASS_SUFFIX;
 			MetaClass target = MetaClass.forName(packageName, simpleName);
-			me.setProperty("RESTFullDelegator", target);
+			me.setProperty(ModelProperties.REST_FULL_DELEGATOR, target);
 			target.setModifiers(std.mod_public);
 			target.setSuperMetaClass(std.restDelegatorBase);
 			target.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxEjbStateless, target));
@@ -75,7 +79,6 @@ public class CrudServiceRESTFullModelBuilder extends DerivedModelBuilder impleme
 			target.addReferencedForeignType(std.javaxWsRsPOST);
 			target.addReferencedForeignType(std.javaxWsRsProduces);
 			target.addReferencedForeignType(std.javaxWsRsConsumes);
-			target.addReferencedForeignType(std.javaxWsRsPathParam);
 			target.addReferencedForeignType(std.javaxWsRsQueryParam);
 			target.addReferencedForeignType(std.javaxWsRsCoreMediaType);
 			target.addReferencedForeignType(std.querySpec);
@@ -86,9 +89,9 @@ public class CrudServiceRESTFullModelBuilder extends DerivedModelBuilder impleme
 
 			addFullServiceBeanField(target, me);
 			
-			target.setProperty("svcBean", svcBean);
-			target.setProperty("entity", me);
-			target.setProperty("dto", dto);
+			target.setProperty(ModelProperties.SVC_BEAN, svcBean);
+			target.setProperty(ModelProperties.ENTITY, me);
+			target.setProperty(ModelProperties.DTO, dto);
 		}
 		
 		
