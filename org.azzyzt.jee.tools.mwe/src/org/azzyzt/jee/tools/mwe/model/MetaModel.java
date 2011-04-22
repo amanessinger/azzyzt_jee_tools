@@ -53,6 +53,7 @@ public class MetaModel {
 	private Properties properties = new Properties(); // may be set by a synthesizing builder
 	private Log logger;
 	private String name;
+	private String projectBaseName;
 
 
     /**
@@ -60,9 +61,10 @@ public class MetaModel {
      * to create a model, build it or add to it manually, and then to generate it,
      * before the next model is created.
      */
-    public MetaModel(String name, Log logger) {
+    public MetaModel(String name, String projectBaseName, Log logger) {
     	// We feed class names of the builders creating the models; clean up
     	this.name = name.replaceAll("ModelBuilder$", "Model").replaceAll("Builder$", "Model");
+    	this.projectBaseName = projectBaseName;
     	this.logger = logger;
     	logger.debug("Creating model "+this.name);
     	MetaModel.setCurrentModel(this);
@@ -177,6 +179,10 @@ public class MetaModel {
 
 	public String getName() {
 		return name;
+	}
+
+	public String getProjectBaseName() {
+		return projectBaseName;
 	}
 
 }

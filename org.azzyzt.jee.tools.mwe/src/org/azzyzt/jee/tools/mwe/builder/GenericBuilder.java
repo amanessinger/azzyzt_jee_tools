@@ -29,6 +29,7 @@ package org.azzyzt.jee.tools.mwe.builder;
 
 public interface GenericBuilder extends Builder {
 
+	public void setProjectBaseName(String projectBaseName);
 	public String getTemplateGroup();
 	public boolean getGenerateFields();
 	public boolean getGenerateDefaultConstructor();

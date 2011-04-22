@@ -40,18 +40,19 @@ public class DefaultStandardEntityListenersBuilder implements GenericBuilder {
 	
 	private String packageName;
 	private String simpleName;
-	private MetaModel targetModel;
-	private MetaStandardDefs std;
+	private Log logger;
+	private String projectBaseName;
 
 	public DefaultStandardEntityListenersBuilder(String packageName, Log logger) {
 		this.packageName = packageName;
 		this.simpleName = CLASS_NAME;
-		this.targetModel = new MetaModel(this.getClass().getSimpleName(), logger);
-		this.std = new MetaStandardDefs();
+		this.logger = logger;
 	}
 	
 	@Override
 	public MetaModel build() {
+		MetaModel targetModel = new MetaModel(this.getClass().getSimpleName(), projectBaseName, logger);
+		MetaStandardDefs std = new MetaStandardDefs();
 		MetaClass target = MetaClass.forName(packageName, simpleName);
 		target.setModifiers(std.mod_public);
 		target.setSuperMetaClass(std.entityListenerBase);
@@ -87,6 +88,11 @@ public class DefaultStandardEntityListenersBuilder implements GenericBuilder {
 	@Override
 	public boolean getGenerateGettersSetters() {
 		return false;
+	}
+
+	@Override
+	public void setProjectBaseName(String projectBaseName) {
+		this.projectBaseName = projectBaseName;
 	}
 
 }

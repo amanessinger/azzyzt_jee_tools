@@ -65,16 +65,17 @@ public class MWEGeneratorWorker {
 						null
 				);
 			}
-			String stem = prjName.substring(0, prjName.length() - 3);
+			String projectBaseName = prjName.substring(0, prjName.length() - 3);
 			Context context = new Context();
-			context.setProjectBaseName(stem);
+			context.setProjectBaseName(projectBaseName);
 			
 			URL[] classPathEntries = ProjectUtil.classPathURLsForToolMainClass(prj, ProjectGen.extraURLsForToolMainClass());
 			String fqMainClassName = "org.azzyzt.jee.tools.mwe.StandardProjectStructureGenerator";
 			IWorkspace workspace = ResourcesPlugin.getWorkspace();
 			IWorkspaceRoot root = workspace.getRoot();
 			String[] args = {
-					root.getLocation()+""+IPath.SEPARATOR+stem
+					root.getLocation()+""+IPath.SEPARATOR,
+					projectBaseName
 			};
 
 			Util.callExternalMainClass("Generate code from entities", classPathEntries, fqMainClassName, args);

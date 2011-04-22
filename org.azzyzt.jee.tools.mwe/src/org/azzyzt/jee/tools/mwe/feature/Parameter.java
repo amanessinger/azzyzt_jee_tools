@@ -71,8 +71,11 @@ public class Parameter {
 			if (!(value instanceof String)) {
 				throw new ToolError("Value for parameter "+name+" must be a string but is a "+value.getClass().getName());
 			}
-			// intentionally falling through
+			break;
 		case SourceFolder:
+			if (!(value instanceof String)) {
+				throw new ToolError("Value for parameter "+name+" must be a string but is a "+value.getClass().getName());
+			}
 			File dir = new File((String) value);
 			if (!dir.isDirectory() || ! dir.canWrite()) {
 				throw new ToolError("Value for parameter "+name+" must be the name of a writable directory but is "+value);

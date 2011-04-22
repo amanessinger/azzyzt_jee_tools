@@ -60,7 +60,9 @@ public class StoreMultiBeanModelBuilder extends DerivedModelBuilder implements B
 			target.setModifiers(std.mod_public);
 			target.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxEjbLocalBean, target));
 			target.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxEjbStateless, target));
-			target.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxJwsWebService, target));
+			MetaAnnotationInstance mai = new MetaAnnotationInstance(std.javaxJwsWebService, target);
+			mai.setElement("serviceName", masterModel.getProjectBaseName());
+			target.addMetaAnnotationInstance(mai);
 			
 			target.addReferencedForeignType(dtoBase);
 			target.addReferencedForeignType(std.accessDeniedException);

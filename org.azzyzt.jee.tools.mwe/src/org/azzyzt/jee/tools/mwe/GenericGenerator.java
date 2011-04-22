@@ -67,13 +67,14 @@ public class GenericGenerator {
 					arguments.add(arg);
 				}
 			}
-			if (arguments.size() != 3) {
-				logger.info("usage: GenericGenerator <absolute-sourcefolder> <package-name> <builder-class>");
+			if (arguments.size() != 4) {
+				logger.info("usage: GenericGenerator <absolute-sourcefolder> <project-base-name> <package-name> <builder-class>");
 	            return;
 	        }
 	        String sourceFolder = arguments.get(0);
-	        String packageName = arguments.get(1);
-	        String builderClazzName = arguments.get(2);
+	        String projectBaseName = arguments.get(1);
+	        String packageName = arguments.get(2);
+	        String builderClazzName = arguments.get(3);
 	        
 	        Class<?> builderClazz = Class.forName(builderClazzName);
 	        Constructor<?> constructor = builderClazz.getConstructor(String.class, Log.class);
@@ -83,6 +84,7 @@ public class GenericGenerator {
 	            return;
 	        }
 	        GenericBuilder b = (GenericBuilder)o;
+	        b.setProjectBaseName(projectBaseName);
 	        
 	        MetaModel targetModel = b.build();
 	        JavaGenerator targetGen = new JavaGenerator(

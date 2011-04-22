@@ -173,6 +173,7 @@ public class JavaProject extends Project {
 
 	protected void buildJavaClass(
 			String srcFolderName, 
+			String projectBaseName,
 			String pkgName, 
 			String fqBuilder, 
 			String jobTitle,
@@ -186,6 +187,7 @@ public class JavaProject extends Project {
 		String fqMainClassName = "org.azzyzt.jee.tools.mwe.GenericGenerator";
 		String[] args = {
 				srcFolderPath.toString(), 
+				projectBaseName,
 				pkgName, 
 				fqBuilder
 		};

@@ -33,6 +33,7 @@ import org.azzyzt.jee.tools.mwe.util.Log;
 
 public class EntityModelBuilderFeature extends ModelBuilderFeature {
 	
+	public static final String PROJECT_BASE_NAME = "Project Base Name";
 	public static final String PERSISTENCE_UNIT_NAME = "Persistence Unit Name";
 
 	private Log logger;
@@ -44,21 +45,24 @@ public class EntityModelBuilderFeature extends ModelBuilderFeature {
 	@Override
 	public Parameters getParameters() {
 		Parameters parameters = new Parameters();
+		parameters.add(new Parameter(PROJECT_BASE_NAME, ParameterType.String, Parameter.IS_MANDATORY));
 		parameters.add(new Parameter(PERSISTENCE_UNIT_NAME, ParameterType.String, Parameter.IS_OPTIONAL));
 		return parameters;
 	}
 	
 	@Override
 	public MetaModel build(Parameters parameters) {
+		String projectBaseName;
 		String persistenceUnitName = null;
 		
+		projectBaseName = (String)parameters.byName(PROJECT_BASE_NAME).getValue();
 		persistenceUnitName = (String)parameters.byName(PERSISTENCE_UNIT_NAME).getValue();
 
         EntityModelBuilder emb;
         if (persistenceUnitName != null) {
-            emb = new EntityModelBuilder(persistenceUnitName, logger);
+            emb = new EntityModelBuilder(projectBaseName, persistenceUnitName, logger);
         } else {
-            emb = new EntityModelBuilder(logger);
+            emb = new EntityModelBuilder(projectBaseName, logger);
         }
 		MetaModel entityModel = emb.build();
 		return entityModel;

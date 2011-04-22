@@ -63,6 +63,7 @@ public class EjbProject extends JavaProject {
 		
 		buildJavaClass(
 				EJB_SRC_FOLDER_NAME, 
+				context.getProjectBaseName(),
 				context.getPackageName()+".service", 
 				"org.azzyzt.jee.tools.mwe.builder.HelloServiceBeanBuilder", 
 				"Creating HelloServiceBean", extraUrls
@@ -70,6 +71,7 @@ public class EjbProject extends JavaProject {
 		
 		buildJavaClass(
 				GENERATED_SRC_FOLDER_NAME, 
+				context.getProjectBaseName(), 
 				context.getPackageName()+".entity", 
 				"org.azzyzt.jee.tools.mwe.builder.DefaultStandardEntityListenersBuilder", 
 				"Creating initial StandardEntityListeners", extraUrls

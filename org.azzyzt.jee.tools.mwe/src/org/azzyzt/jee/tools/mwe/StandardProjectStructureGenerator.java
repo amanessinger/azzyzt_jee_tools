@@ -69,15 +69,17 @@ public class StandardProjectStructureGenerator {
 				arguments.add(arg);
 			}
 		}
-		if (arguments.size() < 1) {
-			logger.error("usage: StandardProjectStructureGenerator <project_prefix> [<persistence_unit_name>]");
+		if (arguments.size() < 2) {
+			logger.error("usage: StandardProjectStructureGenerator <root_path> <project_prefix> [<persistence_unit_name>]");
             return;
         }
 
-        String projectPrefix = arguments.get(0);
-        String ejbSourceFolder = projectPrefix+"EJB/generated";
-        String ejbClientSourceFolder = projectPrefix+"EJBClient/generated";
-        String restSourceFolder = projectPrefix+"Servlets/generated";
+		String rootPath = arguments.get(0);
+        String projectBaseName = arguments.get(1);
+        String projectPathPrefix = rootPath+projectBaseName;
+        String ejbSourceFolder = projectPathPrefix+"EJB/generated";
+        String ejbClientSourceFolder = projectPathPrefix+"EJBClient/generated";
+        String restSourceFolder = projectPathPrefix+"Servlets/generated";
 
         Parameters parameters;
         int numberOfSourcesGenerated;
@@ -85,7 +87,8 @@ public class StandardProjectStructureGenerator {
         EntityModelBuilderFeature embf = new EntityModelBuilderFeature(logger);
         
 		parameters = embf.getParameters();
-        if (2 == arguments.size()) {
+        parameters.byName(EntityModelBuilderFeature.PROJECT_BASE_NAME).setValue(projectBaseName);
+        if (3 == arguments.size()) {
             parameters.byName(EntityModelBuilderFeature.PERSISTENCE_UNIT_NAME).setValue(arguments.get(1));
         }
         MetaModel masterModel = embf.build(parameters);
