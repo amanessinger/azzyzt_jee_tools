@@ -76,7 +76,6 @@ public class RESTStoreMultiModelBuilder extends DerivedModelBuilder implements B
 			target.addReferencedForeignType(std.javaxWsRsProduces);
 			target.addReferencedForeignType(std.javaxWsRsConsumes);
 			target.addReferencedForeignType(std.javaxWsRsCoreMediaType);
-			target.addReferencedForeignType(std.stringListWrapper);
 
 			addStoreMultiBeanField(target);
 			

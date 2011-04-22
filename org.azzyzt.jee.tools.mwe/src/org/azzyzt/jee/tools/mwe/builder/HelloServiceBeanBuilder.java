@@ -41,23 +41,26 @@ public class HelloServiceBeanBuilder implements GenericBuilder {
 	
 	private String packageName;
 	private String simpleName;
-	private MetaModel targetModel;
-	private MetaStandardDefs std;
+	private Log logger;
+	private String projectBaseName;
 
 	public HelloServiceBeanBuilder(String packageName, Log logger) {
 		this.packageName = packageName;
 		this.simpleName = HELLO_BEAN_NAME;
-		this.targetModel = new MetaModel(this.getClass().getSimpleName(), logger);
-		this.std = new MetaStandardDefs();
+		this.logger = logger;
 	}
 	
 	@Override
 	public MetaModel build() {
+		MetaModel targetModel = new MetaModel(this.getClass().getSimpleName(), projectBaseName, logger);
+		MetaStandardDefs std = new MetaStandardDefs();
 		MetaClass target = MetaClass.forName(packageName, simpleName);
 		target.setModifiers(std.mod_public);
 		target.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxEjbLocalBean, target));
 		target.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxEjbStateless, target));
-		target.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxJwsWebService, target));
+		MetaAnnotationInstance mai = new MetaAnnotationInstance(std.javaxJwsWebService, target);
+		mai.setElement("serviceName", projectBaseName);
+		target.addMetaAnnotationInstance(mai);
 		
 		targetModel.follow(packageName);
 		targetModel.addMetaDeclaredTypeIfTarget(target);
@@ -83,6 +86,11 @@ public class HelloServiceBeanBuilder implements GenericBuilder {
 	@Override
 	public boolean getGenerateGettersSetters() {
 		return false;
+	}
+
+	@Override
+	public void setProjectBaseName(String projectBaseName) {
+		this.projectBaseName = projectBaseName;
 	}
 
 }

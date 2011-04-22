@@ -48,7 +48,11 @@ public class DerivedModelBuilder {
 		super();
 		this.targetPackageName = targetPackageName;
 		this.masterModel = masterModel;
-		this.targetModel = new MetaModel(this.getClass().getSimpleName(), masterModel.getLogger());
+		this.targetModel = new MetaModel(
+				this.getClass().getSimpleName(), 
+				masterModel.getProjectBaseName(), 
+				masterModel.getLogger()
+		);
 		this.std = new MetaStandardDefs();
 	}
 	
