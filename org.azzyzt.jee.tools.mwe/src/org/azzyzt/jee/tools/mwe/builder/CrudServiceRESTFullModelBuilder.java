@@ -79,7 +79,9 @@ public class CrudServiceRESTFullModelBuilder extends DerivedModelBuilder impleme
 			target.addReferencedForeignType(std.javaxWsRsPOST);
 			target.addReferencedForeignType(std.javaxWsRsProduces);
 			target.addReferencedForeignType(std.javaxWsRsConsumes);
-			target.addReferencedForeignType(std.javaxWsRsQueryParam);
+			if (!me.isCombinedId()) {
+				target.addReferencedForeignType(std.javaxWsRsQueryParam);
+			}
 			target.addReferencedForeignType(std.javaxWsRsCoreMediaType);
 			target.addReferencedForeignType(std.querySpec);
 
