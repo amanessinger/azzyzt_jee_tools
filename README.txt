@@ -2,7 +2,7 @@
 1 Azzyzt JEE Tools
 ==================
 
-  !!! Release 1.0.0
+  !!! Release 1.1.0
 
 Azzyzt JEE Tools is a collection of software tools designed to assist 
 software developers creating software using Java Enterprise Edition 6. 
@@ -12,10 +12,39 @@ Copyright (c) 2011, Municipiality of Vienna, Austria Licensed under the
 EUPL, Version 1.1 or highersubsequent versions
 
 
-1.1 Current status
+1.1 Changes in 1.1.0
+~~~~~~~~~~~~~~~~~~~~
+
+  * The "update()" operation was dropped. Basically it was a "store()" 
+    without result and also implemented as such.
+  * "store()" now returns not only the ID of the object (could come 
+    from a sequence), but instead returns the DTO for the whole entity. 
+    This avoids all problems with server-set timestamps or database 
+    column defaults. You store something, you get back what's in the 
+    database.
+  * A new operation "storeMulti()" takes a list of DTOs of any type, 
+    converts them to the respective entities and stores them. The 
+    resulting entities are then converted back and the list of DTOs is 
+    returned. Use it to store multiple objects of any kind in one 
+    transaction.
+  * URLs for SOAP web services have changed. They are now based on the 
+    project prefix. Thus what was
+
+    http://localhost:8080/StoreMultiBeanService/StoreMultiBean?wsdl[1]
+
+    is now
+
+    http://localhost:8080/cookbook/StoreMultiBean?wsdl[2]
+
+    or whatever host and portnumber are. The new URLs don't clash 
+    between applications, and we get a distinct namespace per 
+    application.
+
+
+1.2 Current status
 ~~~~~~~~~~~~~~~~~~
 
-As of release 1.0.0, Azzyzt JEE Tools consists of three main parts:
+As of release 1.1.0, Azzyzt JEE Tools consists of three main parts:
 
   1. a generator that creates so-called azzyzted projects. An azzyzted 
     project is a collection of four projects, an Enterprise Application 
@@ -41,7 +70,7 @@ As of release 1.0.0, Azzyzt JEE Tools consists of three main parts:
   3. a runtime library of code used by generated applications.
 
 The structure of azzyzted projects and the structure of generated code 
-evolved from the work on An Eclipse / GlassFish / Java EE 6 Tutorial[1] 
+evolved from the work on An Eclipse / GlassFish / Java EE 6 Tutorial[3] 
 and on usage of that tutorial in a subsequent internal training class 
 for developers at the Municipiality of Vienna, Austria.
 
@@ -63,7 +92,7 @@ and Eclipse versions
   * Helios SR1, SR2
 
 Eclipse is always understood as the generic bundle Eclipse IDE for Java 
-EE Developers[2]. Other distributions may contain the required plugins 
+EE Developers[4]. Other distributions may contain the required plugins 
 and may work, but they were not tested.
 
 The plugins compile on Indigo M4, but currently no plugin for GlassFish 
@@ -78,38 +107,38 @@ The project generator (#1) already runs with Apache Geronimo v3.0-M1,
 but due to lacking support for REST, generated applications do not 
 compile.
 
-Future extensions will provide generators for additional patterns 
+Future extensions may provide generators for additional patterns 
 commonly used in Java EE applications.
 
 Contributions to Azzyzt JEE Tools are welcome. Possible areas include 
 support for additional Java IDEs, additional patterns, additional 
 runtimes, etc. Of course bug fixes are welcome as well.
 
-Azzyzt JEE Tools were developed by Andreas Manessinger[3] for the 
+Azzyzt JEE Tools were developed by Andreas Manessinger[5] for the 
 Municipal Department 14 - Automated Data Processing, Information and 
-Communications Technology[4] (MA 14) of the City of Vienna, Austria
+Communications Technology[6] (MA 14) of the City of Vienna, Austria
 
 
-1.2 Using the software
+1.3 Using the software
 ~~~~~~~~~~~~~~~~~~~~~~
 
 
-1.2.1 Preparing the prerequisites
+1.3.1 Preparing the prerequisites
 ---------------------------------
 
 If you just want to use Azzyzt JEE Tools (as opposed to modify and build 
 them), the recommended way to install the software is via an Eclipse 
-update site. As of release 1.0.0, there are two update site URLs, one 
+update site. As of release 1.1.0, there are two update site URLs, one 
 for the edition used by the Municipiality of Vienna, Austria, the other 
 a generic version. The URLs are
 
-http://azzyzt.manessinger.com/azzyzt_generic/[5]
+http://azzyzt.manessinger.com/azzyzt_generic/[7]
 
-http://azzyzt.manessinger.com/azzyzt_magwien/[6]
+http://azzyzt.manessinger.com/azzyzt_magwien/[8]
 
 All announcements of new versions will be published on
 
-http://www.azzyzt.org[7]
+http://www.azzyzt.org[9]
 
 When you don't see any features available from the update site, try 
 unticking "Group items by category". There actually is a category called 
@@ -121,7 +150,7 @@ instance configured. The server does not need to be running, but it must
 be configured, in order to make the runtime available.
 
 
-1.2.2 Creating an azzyzted project
+1.3.2 Creating an azzyzted project
 ----------------------------------
 
 Make sure you are in the "Java EE" perspective. There are three ways to 
@@ -245,7 +274,7 @@ of the server) and try it via the service test client built into the
 GlassFish Administration Console.
 
 
-1.3 Azzyzted Modeling With Entities
+1.4 Azzyzted Modeling With Entities
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Upon project creation, a package "com.manessinger.cookbook.entity" 
@@ -296,7 +325,7 @@ overview, and besides it does not tempt the developer to introduce side
 effects into getters/setters.
 
 
-1.3.1 Azzyzt-specific annotations
+1.4.1 Azzyzt-specific annotations
 ---------------------------------
 
 Azzyzt introduces the following extra annotations, that can be used on 
@@ -317,7 +346,7 @@ entity fields:
     service, and being passed on via the standard 
     javax.transaction.TransactionSynchronizationRegistry
 
-    As of release 1.0.0 this is only partially implemented. It works for 
+    As of release 1.1.0 this is only partially implemented. It works for 
     REST but not for SOAP and CORBA, and from a service accessed via 
     REST, it currently wouldn't be passed on to backend services 
     accessed via REST or CORBA. The crucial knowledge about how to 
@@ -328,7 +357,7 @@ entity fields:
     authenticating portal or gateway in front of the application server.
 
 
-1.3.2 Generating a base application
+1.4.2 Generating a base application
 -----------------------------------
 
 Once you have entities, you can generate code. In order to do this, use 
@@ -336,7 +365,7 @@ Once you have entities, you can generate code. In order to do this, use
 project. That's it :)
 
 
-1.3.3 Structure of the generated code
+1.4.3 Structure of the generated code
 -------------------------------------
 
 In this example we have created three entity classes under 
@@ -378,18 +407,18 @@ COUNTRY and ZIP. The result of code generation looks like this:
                     |-- entity
                     |   `-- StandardEntityListeners.java
                     |-- meta
-                    |   |-- EntityMetaInfo.java
                     |   |-- InvocationRegistry.java
                     |   |-- SiteAdapter.java
+                    |   |-- TypeMetaInfo.java
                     |   `-- ValidAssociationPaths.java
                     `-- service
                         |-- CityFullBean.java
                         |-- CityRestrictedBean.java
                         |-- CountryFullBean.java
                         |-- CountryRestrictedBean.java
+                        |-- StoreMultiBean.java
                         |-- ZipFullBean.java
                         `-- ZipRestrictedBean.java
-    
     cookbookEJBClient
     |-- ejbModule
     |   `-- META-INF
@@ -401,15 +430,16 @@ COUNTRY and ZIP. The result of code generation looks like this:
                     |-- dto
                     |   |-- CityDto.java
                     |   |-- CountryDto.java
+                    |   |-- Dto.java
                     |   `-- ZipDto.java
                     `-- service
                         |-- CityFullInterface.java
                         |-- CityRestrictedInterface.java
                         |-- CountryFullInterface.java
                         |-- CountryRestrictedInterface.java
+                        |-- StoreMultiInterface.java
                         |-- ZipFullInterface.java
                         `-- ZipRestrictedInterface.java
-    
     cookbookServlets
     |-- generated
     |   `-- com
@@ -423,6 +453,7 @@ COUNTRY and ZIP. The result of code generation looks like this:
     |                   |-- RESTExceptionMapper.java
     |                   |-- RESTInterceptor.java
     |                   |-- RESTServlet.java
+    |                   |-- StoreMultiDelegator.java
     |                   |-- ZipFullDelegator.java
     |                   `-- ZipRestrictedDelegator.java
     |-- src
@@ -435,13 +466,13 @@ COUNTRY and ZIP. The result of code generation looks like this:
             `-- sun-web.xml
 
 
-1.3.4 Using the generated code
+1.4.4 Using the generated code
 ------------------------------
 
 The first step is to deploy the EAR project. Note please, that you have 
 to modify persistence.xml to refer to a jta-data-source, and that this 
 data source must be defined in the application server. The Eclipse / 
-GlassFish / Java EE 6 Tutorial[1] has a section titled "Specifying the 
+GlassFish / Java EE 6 Tutorial[3] has a section titled "Specifying the 
 database, testing, SQL log", that shows how to do this in GlassFish.
 
 Now that the application is deployed, you can call the services.
@@ -449,43 +480,48 @@ Now that the application is deployed, you can call the services.
 For each table/entity we get a DTO (EJBClient), two EJBs, one for full 
 (rw) and one for restricted (r) access, corresponding remote interfaces 
 in the EJBClient project, corresponding REST wrappers around the beans 
-(Servlet project). Here are some URLs, assuming GlassFish runs on port 
-8080. Try for yourself, for instance with soapUI[8]:
+(Servlet project). Additionally we get a StoreMultiBean[10], a 
+StoreMultiInterface[11] and a corresponding REST wrapper.
 
-http://localhost:8080/CityFullBeanService/CityFullBean?wsdl[9]
+Here are some URLs, assuming GlassFish runs on port 8080. Try for 
+yourself, for instance with soapUI[12]:
 
-http://localhost:8080/CityRestrictedBeanService/CityRestrictedBean?wsdl[10]
+http://localhost:8080/cookbook/CityFullBean?wsdl[13]
 
-http://localhost:8080/CountryFullBeanService/CountryFullBean?wsdl[11]
+http://localhost:8080/cookbook/CityRestrictedBean?wsdl[14]
 
-http://localhost:8080/CountryRestrictedBeanService/CountryRestrictedBean?wsdl[12]
+http://localhost:8080/cookbook/CountryFullBean?wsdl[15]
 
-http://localhost:8080/ZipFullBeanService/ZipFullBean?wsdl[13]
+http://localhost:8080/cookbook/CountryRestrictedBean?wsdl[16]
 
-http://localhost:8080/ZipRestrictedBeanService/ZipRestrictedBean?wsdl[14]
+http://localhost:8080/cookbook/ZipFullBean?wsdl[17]
+
+http://localhost:8080/cookbook/ZipRestrictedBean?wsdl[18]
+
+http://localhost:8080/cookbook/StoreMultiBean?wsdl[2]
 
 Get the WADL description of the REST services under
 
-http://localhost:8080/cookbookServlets/REST/application.wadl[15]
+http://localhost:8080/cookbookServlets/REST/application.wadl[19]
 
 
-1.3.5 Examples for REST
+1.4.5 Examples for REST
 -----------------------
 
 
-1.3.5.1 List of all countries
+1.4.5.1 List of all countries
 """""""""""""""""""""""""""""
 
-http://localhost:8080/cookbookServlets/REST/city/all[16]
+http://localhost:8080/cookbookServlets/REST/city/all[20]
 
 
-1.3.5.2 City with the ID 1
+1.4.5.2 City with the ID 1
 """"""""""""""""""""""""""
 
-http://localhost:8080/cookbookServlets/REST/city/byId?id=1[17]
+http://localhost:8080/cookbookServlets/REST/city/byId?id=1[21]
 
 
-1.3.5.3 Sorted list of cities
+1.4.5.3 Sorted list of cities
 """""""""""""""""""""""""""""
 
 POST the following XML document
@@ -503,13 +539,13 @@ POST the following XML document
 
 into
 
-http://localhost:8080/cookbookServlets/REST/city/list[18]
+http://localhost:8080/cookbookServlets/REST/city/list[22]
 
 to get a list of all cities, but now sorted by the ID of their country 
 ascending, and then alphabetically by their name descending.
 
 
-1.3.5.4 Query with three conditions
+1.4.5.4 Query with three conditions
 """""""""""""""""""""""""""""""""""
 
 POST the following XML document
@@ -537,7 +573,7 @@ POST the following XML document
 
 into
 
-http://localhost:8080/cookbookServlets/REST/city/list[18]
+http://localhost:8080/cookbookServlets/REST/city/list[22]
 
 to get a list of all cities, where the country name equals "Italy" and 
 the city's name does not begin with "r" (regardless case), but not the 
@@ -570,7 +606,7 @@ associations are valid. "City" has a field
 and thus you can follow the association with "country.name".
 
 
-1.3.5.5 Nested expressions
+1.4.5.5 Nested expressions
 """"""""""""""""""""""""""
 
 An example of a query specification with nested expressions is this:
@@ -600,14 +636,14 @@ An example of a query specification with nested expressions is this:
 
 POST it into
 
-http://localhost:8080/cookbookServlets/REST/city/list[18]
+http://localhost:8080/cookbookServlets/REST/city/list[22]
 
 to get a list of all cities in Italy and all other cities beginning with 
 "l" (regardless case), but not the one with ID 2.
 
 
-1.3.5.6 Update a record
-"""""""""""""""""""""""
+1.4.5.6 Store a record
+""""""""""""""""""""""
 
 POST the following XML
 
@@ -619,12 +655,30 @@ POST the following XML
 
 into
 
-http://localhost:8080/cookbookServlets/REST/city/update[19]
+http://localhost:8080/cookbookServlets/REST/city/store[23]
 
-to rename "Roma" to "Rome"
+to rename "Roma" to "Rome". In order to store a new city, use the same 
+URL, but in input data leave the id empty. In both cases the full XML 
+representation of the stored record will be returned. Thus POSTing
+
+    <city>
+       <countryId>2</countryId>
+       <id></id>
+       <name>Bologna</name>
+    </city>
+
+may return
+
+    <city>
+       <countryId>2</countryId>
+       <id>8</id>
+       <name>Bologna</name>
+    </city>
+
+The new id will have been automatically allocated from a sequence.
 
 
-1.3.6 Variants of the query specification
+1.4.6 Variants of the query specification
 -----------------------------------------
 
 REST is just one way to access the services. The XML format of query 
@@ -636,19 +690,19 @@ XML in form of a string parameter. The XML format is the same as for
 REST.
 
 
-1.4 Developing or modifying Azzyzt JEE Tools
+1.5 Developing or modifying Azzyzt JEE Tools
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-1.4.1 Getting the source
+1.5.1 Getting the source
 ------------------------
 
 Azzyzt JEE Tools have their home on GitHub under
 
-https://github.com/amanessinger/azzyzt_jee_tools[20]
+https://github.com/amanessinger/azzyzt_jee_tools[24]
 
 
-1.4.2 Directory layout
+1.5.2 Directory layout
 ----------------------
 
 Azzyzt JEE Tools are organized as a collection of Java projects. The 
@@ -656,7 +710,7 @@ projects were created using Eclipse Helios, and all development on
 Azzyzt JEE Tools is done with Eclipse.
 
 The recommended way to build Azzyzt JEE Tools, is to fork the project 
-from GitHub (https://github.com/amanessinger/azzyzt_jee_tools[20]) and 
+from GitHub (https://github.com/amanessinger/azzyzt_jee_tools[24]) and 
 use the resulting working directory as an Eclipse workspace. Doing so, 
 you will end up with the following structure:
 
@@ -687,7 +741,7 @@ If you don't work for the Municipality of Vienna, you can safely ignore
 everything with "magwien" in its name.
 
 
-1.4.3 Building the software
+1.5.3 Building the software
 ---------------------------
 
 Start Eclipse and open the new workspace. Don't import the projects yet. 
@@ -705,7 +759,7 @@ runtime of your newly created server instance.
 to be continued
 
 
-1.5 Licenses
+1.6 Licenses
 ~~~~~~~~~~~~
 
      Licensed under the EUPL, Version 1.1 or as soon they
@@ -732,7 +786,7 @@ to be continued
      permissions and limitations under the Licence.
 
 For the purpose of generating code, Azzyzt JEE Tools make use of and 
-bundles a copy of StringTemplate[21], which is
+bundles a copy of StringTemplate[25], which is
 
      Copyright (c) 2008, Terence Parr
      All rights reserved.
@@ -764,28 +818,32 @@ bundles a copy of StringTemplate[21], which is
      ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
      POSSIBILITY OF SUCH DAMAGE.
 
-This documentation was created using Deplate[22].
+This documentation was created using Deplate[26].
 
-[1] http://programming.manessinger.com/tutorials/an-eclipse-glassfish-java-ee-6-tutorial/
-[2] http://www.eclipse.org/downloads/
-[3] http://programming.manessinger.com
-[4] http://www.wien.gv.at/english/administration/ict/
-[5] http://azzyzt.manessinger.com/azzyzt_generic/
-[6] http://azzyzt.manessinger.com/azzyzt_magwien/
-[7] http://www.azzyzt.org
-[8] http://www.soapui.org
-[9] http://localhost:8080/CityFullBeanService/CityFullBean?wsdl
-[10] http://localhost:8080/CityRestrictedBeanService/CityRestrictedBean?wsdl
-[11] http://localhost:8080/CountryFullBeanService/CountryFullBean?wsdl
-[12] http://localhost:8080/CountryRestrictedBeanService/CountryRestrictedBean?wsdl
-[13] http://localhost:8080/ZipFullBeanService/ZipFullBean?wsdl
-[14] http://localhost:8080/ZipRestrictedBeanService/ZipRestrictedBean?wsdl
-[15] http://localhost:8080/cookbookServlets/REST/application.wadl
-[16] http://localhost:8080/cookbookServlets/REST/city/all
-[17] http://localhost:8080/cookbookServlets/REST/city/byId?id=1
-[18] http://localhost:8080/cookbookServlets/REST/city/list
-[19] http://localhost:8080/cookbookServlets/REST/city/update
-[20] https://github.com/amanessinger/azzyzt_jee_tools
-[21] http://www.stringtemplate.org/
-[22] http://deplate.sourceforge.net/
+[1] http://localhost:8080/StoreMultiBeanService/StoreMultiBean?wsdl
+[2] http://localhost:8080/cookbook/StoreMultiBean?wsdl
+[3] http://programming.manessinger.com/tutorials/an-eclipse-glassfish-java-ee-6-tutorial/
+[4] http://www.eclipse.org/downloads/
+[5] http://programming.manessinger.com
+[6] http://www.wien.gv.at/english/administration/ict/
+[7] http://azzyzt.manessinger.com/azzyzt_generic/
+[8] http://azzyzt.manessinger.com/azzyzt_magwien/
+[9] http://www.azzyzt.org
+[10] StoreMultiBean.text
+[11] StoreMultiInterface.text
+[12] http://www.soapui.org
+[13] http://localhost:8080/cookbook/CityFullBean?wsdl
+[14] http://localhost:8080/cookbook/CityRestrictedBean?wsdl
+[15] http://localhost:8080/cookbook/CountryFullBean?wsdl
+[16] http://localhost:8080/cookbook/CountryRestrictedBean?wsdl
+[17] http://localhost:8080/cookbook/ZipFullBean?wsdl
+[18] http://localhost:8080/cookbook/ZipRestrictedBean?wsdl
+[19] http://localhost:8080/cookbookServlets/REST/application.wadl
+[20] http://localhost:8080/cookbookServlets/REST/city/all
+[21] http://localhost:8080/cookbookServlets/REST/city/byId?id=1
+[22] http://localhost:8080/cookbookServlets/REST/city/list
+[23] http://localhost:8080/cookbookServlets/REST/city/store
+[24] https://github.com/amanessinger/azzyzt_jee_tools
+[25] http://www.stringtemplate.org/
+[26] http://deplate.sourceforge.net/
 
