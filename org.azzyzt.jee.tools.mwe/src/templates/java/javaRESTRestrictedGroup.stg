@@ -17,10 +17,14 @@ group javaRESTRestrictedGroup : javaGroup;
 >>
 
 byIdHead(entity, dto) ::= <<
-@GET
+<if(entity.combinedId)>@POST<else>@GET<endif>
 @Path("byId")
+<if(entity.combinedId)>
+@Consumes(MediaType.APPLICATION_XML)
+
+<endif>
 @Produces(MediaType.APPLICATION_XML)
-public <dto.simpleName> <entity.lcFirstSimpleName>ById(@QueryParam(value="id") <dto.properties.idFieldType.simpleName> id)
+public <dto.simpleName> <entity.lcFirstSimpleName>ById(<if(entity.combinedId)><else>@QueryParam(value="id") <endif><dto.properties.idFieldType.simpleName> id)
     throws EntityNotFoundException, AccessDeniedException, EntityInstantiationException, InvalidIdException
 >>
 

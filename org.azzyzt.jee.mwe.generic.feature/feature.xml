@@ -2,7 +2,7 @@
 <feature
       id="org.azzyzt.jee.mwe.generic.feature"
       label="Azzyzt JEE modeling with entities, generic version"
-      version="1.0.0.qualifier"
+      version="1.1.0.qualifier"
       provider-name="azzyzt.org">
 
    <description url="http://www.azzyzt.org">

@@ -78,7 +78,9 @@ public class CrudServiceRESTRestrictedModelBuilder extends DerivedModelBuilder i
 			target.addReferencedForeignType(std.javaxWsRsPOST);
 			target.addReferencedForeignType(std.javaxWsRsProduces);
 			target.addReferencedForeignType(std.javaxWsRsConsumes);
-			target.addReferencedForeignType(std.javaxWsRsQueryParam);
+			if (!me.isCombinedId()) {
+				target.addReferencedForeignType(std.javaxWsRsQueryParam);
+			}
 			target.addReferencedForeignType(std.javaxWsRsCoreMediaType);
 			target.addReferencedForeignType(std.querySpec);
 
