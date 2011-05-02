@@ -170,6 +170,7 @@ public class MetaStandardDefs {
 	public final MetaClass validAssociationPathsBase;
 	public final MetaInterface validAssociationPathsInterface;
 	public final MetaClass exceptionToSuccessMapper;
+	public final MetaClass idTranslator;
 	
 
 	public MetaStandardDefs() {
@@ -340,5 +341,6 @@ public class MetaStandardDefs {
 		validAssociationPathsBase = MetaClass.forType(org.azzyzt.jee.runtime.meta.ValidAssociationPathsBase.class);
 		validAssociationPathsInterface = MetaInterface.forType(org.azzyzt.jee.runtime.meta.ValidAssociactionPathsInterface.class);
 		exceptionToSuccessMapper = MetaClass.forType(org.azzyzt.jee.runtime.service.ExceptionToSuccessMapper.class);
+		idTranslator = MetaClass.forType(org.azzyzt.jee.runtime.eao.IdTranslator.class);
 	}
 }

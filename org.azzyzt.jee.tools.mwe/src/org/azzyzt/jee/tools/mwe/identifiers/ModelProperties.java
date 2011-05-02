@@ -11,6 +11,7 @@ public class ModelProperties {
 	public static final String EAO = "eao";
 	public static final String ENTITY = "entity";
 	public static final String GENERIC_EAO = "generic_eao";
+	public static final String ID_TRANSLATOR = "idTranslator";
 	public static final String INVOCATION_REGISTRY = "invocationRegistry";
 	public static final String REST_FULL_DELEGATOR = "RESTFullDelegator";
 	public static final String REST_INTERCEPTOR = "rest_interceptor";

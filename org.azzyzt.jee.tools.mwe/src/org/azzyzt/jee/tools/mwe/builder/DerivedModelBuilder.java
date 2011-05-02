@@ -124,14 +124,34 @@ public class DerivedModelBuilder {
 	}
 
 	protected void addTypeMetaInfoField(MetaClass target) {
+		addTypeMetaInfoFieldImpl(target, true);
+	}
+
+	protected void addNonInjectedTypeMetaInfoField(MetaClass target) {
+		addTypeMetaInfoFieldImpl(target, false);
+	}
+
+	private void addTypeMetaInfoFieldImpl(MetaClass target, boolean isInjected) {
 		MetaDeclaredType tmi = (MetaDeclaredType)masterModel.getProperty(ModelProperties.TYPE_META_INFO);
 		MetaField tmiField = new MetaField(target, FieldNames.TYPE_META_INFO);
 		tmiField.setFieldType(tmi);
 		tmiField.setModifiers(std.mod_private);
-		tmiField.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxEjbEJB, target));
+		if (isInjected) {
+			tmiField.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxEjbEJB, target));
+		}
 		target.addField(tmiField);
 		target.addReferencedForeignType(tmi);
 		target.setProperty(ModelProperties.TYPE_META_INFO, tmi);
+	}
+
+	protected void addNonInjectedIdTranslatorField(MetaClass target) {
+		MetaDeclaredType idTranslator = std.idTranslator;
+		MetaField idTranslatorField = new MetaField(target, FieldNames.ID_TRANSLATOR);
+		idTranslatorField.setFieldType(idTranslator);
+		idTranslatorField.setModifiers(std.mod_private);
+		target.addField(idTranslatorField);
+		target.addReferencedForeignType(idTranslator);
+		target.setProperty(ModelProperties.ID_TRANSLATOR, idTranslator);
 	}
 
 	protected void addFullServiceBeanField(MetaClass target, MetaClass entity) {

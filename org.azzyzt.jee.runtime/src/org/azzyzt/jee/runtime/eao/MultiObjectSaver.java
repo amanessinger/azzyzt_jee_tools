@@ -20,6 +20,7 @@ public class MultiObjectSaver {
 	
 	
 	private Map<Class<?>, ConverterRawInterface> converterForDto = new HashMap<Class<?>, ConverterRawInterface>();
+	private IdTranslator idTranslator = new IdTranslator();
 	
 	public Object[] store(
 			EaoBase eao, 
@@ -58,8 +59,13 @@ public class MultiObjectSaver {
 		} else {
 			Class<?> converterClass = tmi.getConverterForDto(dtoClass);
 			try {
-				Constructor<?> constructor = converterClass.getConstructor(EaoBase.class, InvocationRegistryInterface.class);
-				conv = (ConverterRawInterface)constructor.newInstance(eao, invocationRegistry);
+				Constructor<?> constructor = converterClass.getConstructor(
+						EaoBase.class, 
+						InvocationRegistryInterface.class, 
+						TypeMetaInfoInterface.class,
+						IdTranslator.class
+						);
+				conv = (ConverterRawInterface)constructor.newInstance(eao, invocationRegistry, tmi, idTranslator);
 				converterForDto.put(dtoClass, conv);
 			} catch (SecurityException e) {
 				throw new AccessDeniedException();

@@ -23,9 +23,11 @@ package <mdt.packageName>;
 
 injectionConstructor(mdt) ::= <<
 // avoid mass-injection in case of storeMulti
-public <mdt.simpleName>(EaoBase eao, InvocationRegistryInterface invocationRegistry) {
+public <mdt.simpleName>(EaoBase eao, InvocationRegistryInterface invocationRegistry, TypeMetaInfoInterface tmi, IdTranslator idTranslator) {
     super();
     this.eao = (GenericEao)eao;
+    this.tmi = (TypeMetaInfo)tmi;
+    this.idTranslator = idTranslator;
     <if(mdt.properties.entity.needingInvocationRegistry)>
     this.invocationRegistry = (InvocationRegistry)invocationRegistry;
     <endif>
@@ -108,7 +110,24 @@ throws EntityNotFoundException, EntityInstantiationException, InvalidIdException
 public <entity.simpleName> fromDto(<dto.simpleName> in) 
 throws EntityNotFoundException, EntityInstantiationException, InvalidIdException
 {
-    <entity.simpleName> result = eao.findOrCreate(<entity.simpleName>.class, in.getId());
+    <entity.idField.fieldType.simpleName> idValue = in.getId();
+    <if(entity.combinedId)>
+    <else>
+    <entity.idField.fieldType.simpleName> idProxyValue = null;
+    if (idValue \< 0) {
+        idProxyValue = idValue;
+        idValue = null;
+    }
+    
+    <endif>
+    <entity.simpleName> result = eao.findOrCreate(<entity.simpleName>.class, idValue);
+    
+    <if(entity.combinedId)>
+    <else>
+    if (idProxyValue != null) {
+        idTranslator.addTranslation(idProxyValue, result.getId());
+    }
+    <endif>
     
     <entity.fields:copyFieldD2E()>
     return result;
