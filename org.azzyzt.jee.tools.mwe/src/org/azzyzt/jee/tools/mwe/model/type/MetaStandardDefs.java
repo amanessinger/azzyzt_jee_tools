@@ -152,6 +152,8 @@ public class MetaStandardDefs {
 	public final MetaClass entityInstantiationException;
 	public final MetaClass invalidArgumentException;
 	public final MetaClass invalidIdException;
+	public final MetaClass duplicateProxyIdException;
+	public final MetaClass invalidProxyIdException;
 	public final MetaClass invalidFieldException;
 	public final MetaClass querySyntaxException;
 	public final MetaClass notYetImplementedException;
@@ -323,6 +325,8 @@ public class MetaStandardDefs {
 		entityInstantiationException = MetaClass.forType(org.azzyzt.jee.runtime.exception.EntityInstantiationException.class);
 		invalidArgumentException = MetaClass.forType(org.azzyzt.jee.runtime.exception.InvalidArgumentException.class);
 		invalidIdException = MetaClass.forType(org.azzyzt.jee.runtime.exception.InvalidIdException.class);
+		duplicateProxyIdException = MetaClass.forType(org.azzyzt.jee.runtime.exception.DuplicateProxyIdException.class);
+		invalidProxyIdException = MetaClass.forType(org.azzyzt.jee.runtime.exception.InvalidProxyIdException.class);
 		invalidFieldException = MetaClass.forType(org.azzyzt.jee.runtime.exception.InvalidFieldException.class);
 		querySyntaxException = MetaClass.forType(org.azzyzt.jee.runtime.exception.QuerySyntaxException.class);
 		notYetImplementedException = MetaClass.forType(org.azzyzt.jee.runtime.exception.NotYetImplementedException.class);

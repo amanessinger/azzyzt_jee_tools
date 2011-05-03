@@ -16,7 +16,8 @@ storeMultiHead() ::= <<
 @Consumes(MediaType.APPLICATION_XML)
 @Produces(MediaType.APPLICATION_XML)
 public List\<Dto\> storeMulti(List\<Dto\> dtos)
-    throws EntityNotFoundException, AccessDeniedException, EntityInstantiationException, InvalidIdException, InvalidArgumentException
+    throws EntityNotFoundException, AccessDeniedException, EntityInstantiationException, 
+           InvalidIdException, DuplicateProxyIdException, InvalidProxyIdException, InvalidArgumentException
 >>
 
 storeMultiBody() ::= <<

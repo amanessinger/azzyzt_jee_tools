@@ -62,6 +62,8 @@ public class StoreMultiInterfaceModelBuilder extends DerivedModelBuilder impleme
 			target.addReferencedForeignType(std.entityNotFoundException);
 			target.addReferencedForeignType(std.invalidArgumentException);
 			target.addReferencedForeignType(std.invalidIdException);
+			target.addReferencedForeignType(std.duplicateProxyIdException);
+			target.addReferencedForeignType(std.invalidProxyIdException);
 			target.addReferencedForeignType(std.javaUtilList);
 			
 			masterModel.setProperty(ModelProperties.STORE_MULTI_INTERFACE, target);

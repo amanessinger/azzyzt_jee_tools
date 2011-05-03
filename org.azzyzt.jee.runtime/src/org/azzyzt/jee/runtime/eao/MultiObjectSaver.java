@@ -9,10 +9,12 @@ import java.util.Map;
 import org.azzyzt.jee.runtime.conv.ConverterRawInterface;
 import org.azzyzt.jee.runtime.entity.EntityBase;
 import org.azzyzt.jee.runtime.exception.AccessDeniedException;
+import org.azzyzt.jee.runtime.exception.DuplicateProxyIdException;
 import org.azzyzt.jee.runtime.exception.EntityInstantiationException;
 import org.azzyzt.jee.runtime.exception.EntityNotFoundException;
 import org.azzyzt.jee.runtime.exception.InvalidArgumentException;
 import org.azzyzt.jee.runtime.exception.InvalidIdException;
+import org.azzyzt.jee.runtime.exception.InvalidProxyIdException;
 import org.azzyzt.jee.runtime.meta.InvocationRegistryInterface;
 import org.azzyzt.jee.runtime.meta.TypeMetaInfoInterface;
 
@@ -29,7 +31,8 @@ public class MultiObjectSaver {
 			@SuppressWarnings("rawtypes") List dtos
 			)
 	throws EntityNotFoundException, AccessDeniedException, InvalidArgumentException, 
-		   InvalidIdException, EntityInstantiationException
+		   InvalidIdException, DuplicateProxyIdException, InvalidProxyIdException, 
+		   EntityInstantiationException
 	{
 		Object[] result = new Object[dtos.size()];
 		

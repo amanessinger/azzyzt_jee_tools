@@ -71,6 +71,8 @@ public class RESTStoreMultiModelBuilder extends DerivedModelBuilder implements B
 			target.addReferencedForeignType(std.entityNotFoundException);
 			target.addReferencedForeignType(std.entityInstantiationException);
 			target.addReferencedForeignType(std.invalidArgumentException);
+			target.addReferencedForeignType(std.duplicateProxyIdException);
+			target.addReferencedForeignType(std.invalidProxyIdException);
 			target.addReferencedForeignType(std.invalidIdException);
 			target.addReferencedForeignType(std.javaxWsRsPOST);
 			target.addReferencedForeignType(std.javaxWsRsProduces);

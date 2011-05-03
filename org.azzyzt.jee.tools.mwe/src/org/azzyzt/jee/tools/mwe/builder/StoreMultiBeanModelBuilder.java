@@ -70,6 +70,8 @@ public class StoreMultiBeanModelBuilder extends DerivedModelBuilder implements B
 			target.addReferencedForeignType(std.entityNotFoundException);
 			target.addReferencedForeignType(std.invalidArgumentException);
 			target.addReferencedForeignType(std.invalidIdException);
+			target.addReferencedForeignType(std.duplicateProxyIdException);
+			target.addReferencedForeignType(std.invalidProxyIdException);
 			target.addReferencedForeignType(std.javaUtilList);
 			target.addReferencedForeignType(std.multiObjectSaver);
 			target.addReferencedForeignType(typeMetaInfo);

@@ -102,16 +102,19 @@ fromDto(mdt, entity, dto) ::= <<
 @Override
 @SuppressWarnings("rawtypes")
 public EntityBase fromRawDto(Object in) 
-throws EntityNotFoundException, EntityInstantiationException, InvalidIdException
+throws EntityNotFoundException, EntityInstantiationException, InvalidIdException, DuplicateProxyIdException, InvalidProxyIdException
 {
     return fromDto((<dto.simpleName>) in);
 }
 
 public <entity.simpleName> fromDto(<dto.simpleName> in) 
-throws EntityNotFoundException, EntityInstantiationException, InvalidIdException
+throws EntityNotFoundException, EntityInstantiationException, InvalidIdException, DuplicateProxyIdException, InvalidProxyIdException
 {
     <entity.idField.fieldType.simpleName> idValue = in.getId();
     <if(entity.combinedId)>
+    if (idTranslator != null) {
+        idValue = (<entity.idField.fieldType.simpleName>)idTranslator.translate(idValue);
+    }
     <else>
     <entity.idField.fieldType.simpleName> idProxyValue = null;
     if (idValue \< 0) {
@@ -124,7 +127,7 @@ throws EntityNotFoundException, EntityInstantiationException, InvalidIdException
     
     <if(entity.combinedId)>
     <else>
-    if (idProxyValue != null) {
+    if (idTranslator != null && idProxyValue != null) {
         idTranslator.addTranslation(idProxyValue, result.getId());
     }
     <endif>
@@ -175,8 +178,12 @@ fetchAssociatedEntities(field) ::= <<
 >>
 
 fetchSingleAssociatedEntity(field) ::= <<
-if (in.get<field.ucName>Id() != null) {
-    <field.fieldType.SimpleName> entity = eao.findOrInvalidId(<field.fieldType.SimpleName>.class, in.get<field.ucName>Id());
+<field.fieldType.idField.fieldType.simpleName> <field.name>Value = in.get<field.ucName>Id();
+if (<field.name>Value != null) {
+    if (idTranslator != null) {
+        <field.name>Value = (<field.fieldType.idField.fieldType.simpleName>)idTranslator.translate(<field.name>Value);
+    }
+    <field.fieldType.SimpleName> entity = eao.findOrInvalidId(<field.fieldType.SimpleName>.class, <field.name>Value);
     result.set<field.ucName>(entity);
 }
 
@@ -198,6 +205,9 @@ List\<<field.fieldType.entityMemberType.idField.fieldType.simpleName>\> <field.n
 
 fetchEntitiesLoop(field, keytype, valuetype, idsName, entitiesName) ::= <<
 for (<keytype> id : <idsName>) {
+    if (idTranslator != null) {
+        id = (<keytype>)idTranslator.translate(id);
+    }
     <valuetype> entity = eao.findOrInvalidId(<valuetype>.class, id);
     <if(field.fieldType.map)>
     <entitiesName>.put(id, entity)

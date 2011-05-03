@@ -69,6 +69,8 @@ public class EntityDtoConverterModelBuilder extends DerivedModelBuilder implemen
 			target.addReferencedForeignType(std.entityNotFoundException);
 			target.addReferencedForeignType(std.entityInstantiationException);
 			target.addReferencedForeignType(std.invalidIdException);
+			target.addReferencedForeignType(std.duplicateProxyIdException);
+			target.addReferencedForeignType(std.invalidProxyIdException);
 			target.addReferencedForeignType(me);
 			target.addReferencedForeignType(dto);
 			target.addReferencedForeignType(std.eaoBase);
