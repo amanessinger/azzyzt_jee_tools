@@ -119,6 +119,7 @@ public class MetaStandardDefs {
 	public final MetaAnnotation javaxXmlBindAnnotationXmlRootElement;
 	public final MetaAnnotation javaxXmlBindAnnotationXmlElementWrapper;
 	public final MetaAnnotation javaxXmlBindAnnotationXmlElement;
+	public final MetaAnnotation javaxXmlBindAnnotationXmlElements;
 	public final MetaAnnotation javaxXmlBindAnnotationXmlSeeAlso;
 	
 	public final MetaClass javaxWsRsCoreApplication;
@@ -290,6 +291,7 @@ public class MetaStandardDefs {
 		javaxXmlBindAnnotationXmlRootElement = MetaAnnotation.forType(javax.xml.bind.annotation.XmlRootElement.class);
 		javaxXmlBindAnnotationXmlElementWrapper = MetaAnnotation.forType(javax.xml.bind.annotation.XmlElementWrapper.class);
 		javaxXmlBindAnnotationXmlElement = MetaAnnotation.forType(javax.xml.bind.annotation.XmlElement.class);
+		javaxXmlBindAnnotationXmlElements = MetaAnnotation.forType(javax.xml.bind.annotation.XmlElements.class);
 		javaxXmlBindAnnotationXmlSeeAlso = MetaAnnotation.forType(javax.xml.bind.annotation.XmlSeeAlso.class);
 		
 		javaxWsRsCoreApplication = MetaClass.forType(javax.ws.rs.core.Application.class);

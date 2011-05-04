@@ -48,6 +48,7 @@ public class StoreMultiInterfaceModelBuilder extends DerivedModelBuilder impleme
 		
 		for (MetaEntity me : masterModel.getTargetEntities()) {
 			MetaClass dtoBase = (MetaClass) masterModel.getProperty(ModelProperties.DTO_BASE);
+			MetaClass storeDeleteDto = (MetaClass) masterModel.getProperty(ModelProperties.STORE_DELETE_DTO);
 
 			// create MetaInterface
 			String packageName = derivePackageNameFromEntityAndFollowPackage(me, PackageTails.SERVICE);
@@ -57,6 +58,7 @@ public class StoreMultiInterfaceModelBuilder extends DerivedModelBuilder impleme
 			target.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxEjbRemote, target));
 			
 			target.addReferencedForeignType(dtoBase);
+			target.addReferencedForeignType(storeDeleteDto);
 			target.addReferencedForeignType(std.accessDeniedException);
 			target.addReferencedForeignType(std.entityInstantiationException);
 			target.addReferencedForeignType(std.entityNotFoundException);

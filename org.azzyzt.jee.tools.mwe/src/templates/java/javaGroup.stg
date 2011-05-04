@@ -70,11 +70,11 @@ public <mdt.simpleName>() { super(); }
 >>
 
 getterSetter() ::= <<
-<attr.getterMetaAnnotationInstances:annotation()>public <attr.fieldType.shortName> get<attr.ucName>() {
+<attr.getterMetaAnnotationInstances:annotation()><attr.getterMetaAnnotationText>public <attr.fieldType.shortName> get<attr.ucName>() {
     return this.<attr.name>;
 }
 
-<attr.setterMetaAnnotationInstances:annotation()>public void set<attr.ucName>(<attr.fieldType.shortName> <attr.name>) {
+<attr.setterMetaAnnotationInstances:annotation()><attr.setterMetaAnnotationText>public void set<attr.ucName>(<attr.fieldType.shortName> <attr.name>) {
     this.<attr.name> = <attr.name>;
 }
 

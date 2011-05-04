@@ -32,6 +32,7 @@ import org.azzyzt.jee.tools.mwe.builder.EaoModelBuilder;
 import org.azzyzt.jee.tools.mwe.builder.InvocationRegistryModelBuilder;
 import org.azzyzt.jee.tools.mwe.builder.SiteAdapterModelBuilder;
 import org.azzyzt.jee.tools.mwe.builder.StandardEntityListenerModelBuilder;
+import org.azzyzt.jee.tools.mwe.builder.StoreDeleteDtoModelBuilder;
 import org.azzyzt.jee.tools.mwe.builder.TypeMetaInfoModelBuilder;
 import org.azzyzt.jee.tools.mwe.builder.ValidAssociationPathsModelBuilder;
 import org.azzyzt.jee.tools.mwe.generator.JavaGenerator;
@@ -92,6 +93,10 @@ public class SingleTargetsGeneratorFeature extends GeneratorFeature {
 		targetGen.setGenerateFields(false);
 		targetGen.setGenerateDefaultConstructor(false);
 		targetGen.setGenerateGettersSetters(false);
+		numberOfSourcesGenerated += targetGen.generate();
+
+		targetModel = new StoreDeleteDtoModelBuilder(getModel(), null).build();
+		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaGroup");
 		numberOfSourcesGenerated += targetGen.generate();
 
 		sourceFolder = (String)parameters.byName(SOURCE_FOLDER_EJB_PROJECT).getValue();

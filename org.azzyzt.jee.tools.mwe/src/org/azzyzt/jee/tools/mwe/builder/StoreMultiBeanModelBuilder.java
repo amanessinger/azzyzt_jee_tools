@@ -48,6 +48,7 @@ public class StoreMultiBeanModelBuilder extends DerivedModelBuilder implements B
 		
 		MetaClass typeMetaInfo = (MetaClass)masterModel.getProperty(ModelProperties.TYPE_META_INFO);
 		MetaInterface storeMultiInterface = (MetaInterface)masterModel.getProperty(ModelProperties.STORE_MULTI_INTERFACE);
+		MetaClass storeDeleteDto = (MetaClass) masterModel.getProperty(ModelProperties.STORE_DELETE_DTO);
 				
 		for (MetaEntity me : masterModel.getTargetEntities()) {
 			MetaClass dtoBase = (MetaClass) masterModel.getProperty(ModelProperties.DTO_BASE);
@@ -65,6 +66,7 @@ public class StoreMultiBeanModelBuilder extends DerivedModelBuilder implements B
 			target.addMetaAnnotationInstance(mai);
 			
 			target.addReferencedForeignType(dtoBase);
+			target.addReferencedForeignType(storeDeleteDto);
 			target.addReferencedForeignType(std.accessDeniedException);
 			target.addReferencedForeignType(std.entityInstantiationException);
 			target.addReferencedForeignType(std.entityNotFoundException);

@@ -4,14 +4,23 @@ group javaStoreMultiGroup : javaGroup;
 @Override
 <storeMultiHead()>
 <storeMultiBody()>
+<storeDeleteMultiHead()>
+<storeDeleteMultiBody()>
 >>
 
 @javaInterface.extra_methods() ::= <<
 <storeMultiHead()>;
+<storeDeleteMultiHead()>;
 >>
 
 storeMultiHead() ::= <<
 public List\<Dto\> storeMulti(List\<Dto\> dtos)
+    throws EntityNotFoundException, AccessDeniedException, InvalidArgumentException, 
+           InvalidIdException, DuplicateProxyIdException, InvalidProxyIdException, EntityInstantiationException
+>>
+
+storeDeleteMultiHead() ::= <<
+public List\<Dto\> storeDeleteMulti(StoreDelete storeDelete)
     throws EntityNotFoundException, AccessDeniedException, InvalidArgumentException, 
            InvalidIdException, DuplicateProxyIdException, InvalidProxyIdException, EntityInstantiationException
 >>
@@ -28,4 +37,24 @@ storeMultiBody() ::= <<
     }
     return dtos;
 }
+
+>>
+
+storeDeleteMultiBody() ::= <<
+{
+    for (Dto dto : storeDelete.getDelete().getDtoes()) {
+        
+    }
+    List\<Dto\> dtos = storeDelete.getStore().getDtoes();
+    @SuppressWarnings("rawtypes")
+    Object[] resultArray = new MultiObjectSaver().store(
+        eao, invocationRegistry, tmi, 
+        (List) dtos
+    );
+    for (int i = 0; i \< dtos.size(); i++) {
+        dtos.set(i, (Dto)resultArray[i]);
+    }
+    return dtos;
+}
+
 >>

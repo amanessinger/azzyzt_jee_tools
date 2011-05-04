@@ -45,4 +45,7 @@ public interface TypeMetaInfoInterface {
 	
 	public Class<?> getConverterForDto(Class<?> clazz)
 		throws InvalidArgumentException;
+	
+	public Class<?> getEntityForDto(Class<?> clazz)
+		throws InvalidArgumentException;
 }

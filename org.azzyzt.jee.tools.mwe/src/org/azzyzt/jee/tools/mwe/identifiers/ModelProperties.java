@@ -2,7 +2,7 @@ package org.azzyzt.jee.tools.mwe.identifiers;
 
 public class ModelProperties {
 
-	public static final String CLASS_ANNOTATIONS = "classAnnotations";
+	public static final String DTO_BASE_CLASS_ANNOTATIONS = "classAnnotations";
 	public static final String CONV_FQ_NAME = "convFQName";
 	public static final String CONVERTER = "conv";
 	public static final String DTO = "dto";
@@ -23,5 +23,8 @@ public class ModelProperties {
 	public static final String SVC_RESTRICTED_BEAN = "svcRestrictedBean";
 	public static final String TYPE_META_INFO = "typeMetaInfo";
 	public static final String VALID_ASSOCIATION_PATHS = "validAssociationPaths";
+	public static final String STORE_DELETE_DTO = "storeDeleteDto";
+	public static final String STORE_WRAPPER_DTO = "storeWrapperDto";
+	public static final String DELETE_WRAPPER_DTO = "deleteWrapperDto";
 
 }

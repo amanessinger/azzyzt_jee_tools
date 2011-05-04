@@ -48,6 +48,7 @@ public abstract class TypeMetaInfoBase implements TypeMetaInfoInterface {
 	protected static Map<Class<?>, String> modificationUserFieldByClass = new HashMap<Class<?>, String>();
 	
 	protected static Map<Class<?>, Class<?>> converterByDto = new HashMap<Class<?>, Class<?>>(); 
+	protected static Map<Class<?>, Class<?>> entityByDto = new HashMap<Class<?>, Class<?>>(); 
 	
 	public TypeMetaInfoBase() {
 		super();
@@ -167,6 +168,19 @@ public abstract class TypeMetaInfoBase implements TypeMetaInfoInterface {
 	throws InvalidArgumentException {
 		if (converterByDto.containsKey(clazz)) {
 			return converterByDto.get(clazz);
+		}
+		String val = "<null>";
+		if (clazz != null) {
+			val = clazz.getName();
+		}
+		throw new InvalidArgumentException(val);
+	}
+
+	@Override
+	public Class<?> getEntityForDto(Class<?> clazz) 
+	throws InvalidArgumentException {
+		if (entityByDto.containsKey(clazz)) {
+			return entityByDto.get(clazz);
 		}
 		String val = "<null>";
 		if (clazz != null) {

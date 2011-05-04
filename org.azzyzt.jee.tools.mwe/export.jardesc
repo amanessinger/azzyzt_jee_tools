@@ -11,6 +11,10 @@
         </sealing>
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="true" exportOutputFolder="false">
-        <javaElement handleIdentifier="=org.azzyzt.jee.tools.mwe"/>
+        <file path="/org.azzyzt.jee.tools.mwe/.gitignore"/>
+        <file path="/org.azzyzt.jee.tools.mwe/.project"/>
+        <javaElement handleIdentifier="=org.azzyzt.jee.tools.mwe/src"/>
+        <file path="/org.azzyzt.jee.tools.mwe/export.jardesc"/>
+        <file path="/org.azzyzt.jee.tools.mwe/.classpath"/>
     </selectedElements>
 </jardesc>

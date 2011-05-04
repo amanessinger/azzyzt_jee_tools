@@ -38,7 +38,8 @@ import org.azzyzt.jee.tools.mwe.model.type.MetaEntity;
 
 public class DtoBaseModelBuilder extends DerivedModelBuilder implements Builder {
 
-	private static final String CLASS_NAME = "Dto";
+	public static final String CLASS_NAME = "Dto";
+	public static final String ROOT_ELEMENT = "dtoes";
 
 	public DtoBaseModelBuilder(MetaModel entityModel, String targetPackageName) {
 		super(entityModel, targetPackageName);
@@ -85,7 +86,7 @@ public class DtoBaseModelBuilder extends DerivedModelBuilder implements Builder 
 		 * Construct text for the property. This is dirty but easy.
 		 */
 		StringBuilder sb = new StringBuilder();
-		sb.append("@XmlRootElement(name=\"dtoes\")\n");
+		sb.append("@XmlRootElement(name=\""+ROOT_ELEMENT+"\")\n");
 		sb.append("@XmlSeeAlso({");
 		String separator = "\n\t";
 		for (String dtoFQName : dtoFQNames) {
@@ -96,7 +97,7 @@ public class DtoBaseModelBuilder extends DerivedModelBuilder implements Builder 
 			sb.append(".class");
 		}
 		sb.append("\n})");
-		dtoBase.setProperty(ModelProperties.CLASS_ANNOTATIONS, sb.toString());
+		dtoBase.setProperty(ModelProperties.DTO_BASE_CLASS_ANNOTATIONS, sb.toString());
 		
 		targetModel.follow(dtoBase.getPackageName());
 		targetModel.addMetaDeclaredTypeIfTarget(dtoBase);
