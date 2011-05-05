@@ -145,6 +145,7 @@ public class MetaStandardDefs {
 	public final MetaInterface invocationRegistryInterface;
 	public final MetaClass InvocationRegistryBase;
 	public final MetaInterface javaxTransactionTransactionSynchronizationRegistry;
+	public final MetaClass multiObjectDeleter;
 	public final MetaClass multiObjectSaver;
 	public final MetaInterface converterRawInterface;
 	
@@ -319,6 +320,7 @@ public class MetaStandardDefs {
 		invocationRegistryInterface = MetaInterface.forType(org.azzyzt.jee.runtime.meta.InvocationRegistryInterface.class);
 		InvocationRegistryBase = MetaClass.forType(org.azzyzt.jee.runtime.meta.InvocationRegistryBase.class);
 		javaxTransactionTransactionSynchronizationRegistry = MetaInterface.forType(javax.transaction.TransactionSynchronizationRegistry.class);
+		multiObjectDeleter = MetaClass.forType(org.azzyzt.jee.runtime.eao.MultiObjectDeleter.class);
 		multiObjectSaver = MetaClass.forType(org.azzyzt.jee.runtime.eao.MultiObjectSaver.class);
 		converterRawInterface = MetaInterface.forType(org.azzyzt.jee.runtime.conv.ConverterRawInterface.class);
 		

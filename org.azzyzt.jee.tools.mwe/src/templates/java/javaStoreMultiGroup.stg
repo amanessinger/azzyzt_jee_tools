@@ -42,9 +42,10 @@ storeMultiBody() ::= <<
 
 storeDeleteMultiBody() ::= <<
 {
-    for (Dto dto : storeDelete.getDelete().getDtoes()) {
-        
-    }
+    // delete
+    new MultiObjectDeleter().delete(eao, tmi, storeDelete.getDelete().getDtoes());
+    
+    // store
     List\<Dto\> dtos = storeDelete.getStore().getDtoes();
     @SuppressWarnings("rawtypes")
     Object[] resultArray = new MultiObjectSaver().store(

@@ -67,6 +67,28 @@ public abstract class EaoBase {
 	    return e;
 	}
 
+	/**
+	 * Another version needed in cases when we are definite about the classes,
+	 * but have no way to prove it to the compiler. Used for the "delete" part
+	 * of "storeDelete()".
+	 * 
+	 * Order changed because of otherwise identical erasure.
+	 * 
+	 * @param id
+	 * @param clazz
+	 * @return
+	 * @throws EntityNotFoundException
+	 */
+	public Object findOrFail(Object id, Class<?> clazz)
+	throws EntityNotFoundException 
+	{
+	    Object e = getEm().find(clazz, id);
+	    if (e == null) {
+	        throw new EntityNotFoundException(clazz.getClass(), id.toString());
+	    }
+	    return e;
+	}
+
 	public <I, T extends EntityBase<I>> T findOrCreate(Class<T> clazz, I id)
 	throws EntityNotFoundException, EntityInstantiationException 
 	{
@@ -122,6 +144,23 @@ public abstract class EaoBase {
 	public <I, T extends EntityBase<I>> void delete(Class<T> clazz, I id)
 	throws EntityNotFoundException {
 		T e = findOrFail(clazz, id);
+		getEm().remove(e);
+	}
+
+	/**
+	 * Another version needed in cases when we are definite about the classes,
+	 * but have no way to prove it to the compiler. Used for the "delete" part
+	 * of "storeDelete()".
+	 * 
+	 * Order changed because of otherwise identical erasure.
+	 * 
+	 * @param id
+	 * @param clazz
+	 * @throws EntityNotFoundException
+	 */
+	public void delete(Object id, Class<?> clazz)
+	throws EntityNotFoundException {
+		Object e = findOrFail(id, clazz);
 		getEm().remove(e);
 	}
 
