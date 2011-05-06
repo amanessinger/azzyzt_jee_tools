@@ -49,6 +49,7 @@ public class RESTStoreMultiModelBuilder extends DerivedModelBuilder implements B
 			MetaClass dtoBase = (MetaClass) masterModel.getProperty(ModelProperties.DTO_BASE);
 			MetaClass svcBean = (MetaClass) masterModel.getProperty(ModelProperties.STORE_MULTI_BEAN);
 			MetaClass restInterceptor = (MetaClass) masterModel.getProperty(ModelProperties.REST_INTERCEPTOR);
+			MetaClass storeDeleteDto = (MetaClass) masterModel.getProperty(ModelProperties.STORE_DELETE_DTO);
 
 			// create MetaClass
 			String packageName = derivePackageNameFromEntityAndFollowPackage(me, PackageTails.SERVICE);
@@ -64,6 +65,7 @@ public class RESTStoreMultiModelBuilder extends DerivedModelBuilder implements B
 			target.addMetaAnnotationInstance(path);
 			
 			target.addReferencedForeignType(dtoBase);
+			target.addReferencedForeignType(storeDeleteDto);
 			target.addReferencedForeignType(restInterceptor);
 			target.addReferencedForeignType(std.javaxInterceptorInterceptors);
 			target.addReferencedForeignType(std.javaUtilList);
