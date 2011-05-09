@@ -4,6 +4,7 @@ public class FieldNames {
 
 	public static final String CONVERTER = "converter";
 	public static final String EAO = ModelProperties.EAO;
+	public static final String EJB_SESSION_CONTEXT = ModelProperties.EJB_SESSION_CONTEXT;
 	public static final String HTTP_SERVLET_RESPONSE = "httpServletResponse";
 	public static final String ID_TRANSLATOR = ModelProperties.ID_TRANSLATOR;
 	public static final String INVOCATION_REGISTRY = ModelProperties.INVOCATION_REGISTRY;

@@ -30,6 +30,7 @@ package org.azzyzt.jee.tools.mwe.builder;
 import java.util.Set;
 
 import org.azzyzt.jee.tools.mwe.exception.ToolError;
+import org.azzyzt.jee.tools.mwe.identifiers.ModelProperties;
 import org.azzyzt.jee.tools.mwe.identifiers.PackageTails;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
 import org.azzyzt.jee.tools.mwe.model.annotation.MetaAnnotationInstance;
@@ -71,7 +72,7 @@ public class EaoModelBuilder extends DerivedModelBuilder implements Builder {
 		metaEntityManagerField.addMetaAnnotationInstance(mai);
 		
 		// TODO this implies order. We have to make sure that we call modifying builders in the right order. Dependencies?
-		masterModel.setProperty("generic_eao", target);
+		masterModel.setProperty(ModelProperties.GENERIC_EAO, target);
 		
 		return targetModel;
 	}

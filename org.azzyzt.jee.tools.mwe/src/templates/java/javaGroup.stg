@@ -8,7 +8,7 @@ package <mdt.packageName>;
 /**
  * Generated class <mdt.fqName>
  */
-<mdt:annotations()><@extra_class_annotations()><mdt.modifiers> class <mdt.simpleName><extendsClasses(mdt)><implementsInterfaces(mdt)> {
+<mdt:annotations()><@extra_class_annotations()><mdt.extraClassAnnotationsText><mdt.modifiers> class <mdt.simpleName><extendsClasses(mdt)><implementsInterfaces(mdt)> {
 
     <if(mdt.serialVersionNeeded)>
     private static final long serialVersionUID = 1L;
@@ -32,7 +32,7 @@ package <mdt.packageName>;
 /**
  * Generated interface <mdt.fqName>
  */
-<mdt:annotations()><@extra_interface_annotations()><mdt.modifiers> interface <mdt.simpleName><extendsClasses(mdt)> {
+<mdt:annotations()><@extra_interface_annotations()><mdt.extraInterfaceAnnotationsText><mdt.modifiers> interface <mdt.simpleName><extendsClasses(mdt)> {
 
     <mdt.methods:interfaceMethodDeclaration()>
     <@extra_methods()>

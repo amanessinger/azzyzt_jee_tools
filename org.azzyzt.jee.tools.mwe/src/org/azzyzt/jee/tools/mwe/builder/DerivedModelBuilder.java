@@ -90,6 +90,17 @@ public class DerivedModelBuilder {
 		target.setProperty(ModelProperties.GENERIC_EAO, genericEao);
 	}
 
+	protected void addEJBSessionContext(MetaClass target) {
+		MetaDeclaredType sessionContext = std.javaxEjbSessionContext;
+		MetaField sessionContextField = new MetaField(target, FieldNames.EJB_SESSION_CONTEXT);
+		sessionContextField.setFieldType(sessionContext);
+		sessionContextField.setModifiers(std.mod_private);
+		sessionContextField.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxAnnotationResource, target));
+		target.addField(sessionContextField);
+		target.addReferencedForeignType(sessionContext);
+		target.setProperty(ModelProperties.EJB_SESSION_CONTEXT, sessionContext);
+	}
+
 	protected void addInvocationRegistryField(MetaClass target) {
 		MetaDeclaredType invocationRegistry = (MetaDeclaredType)masterModel.getProperty(ModelProperties.INVOCATION_REGISTRY);
 		MetaField invocationRegistryField = new MetaField(target, FieldNames.INVOCATION_REGISTRY);
@@ -193,6 +204,23 @@ public class DerivedModelBuilder {
 		target.addField(svcBeanField);
 		target.addReferencedForeignType(svcBean);
 		target.setProperty(ModelProperties.STORE_MULTI_BEAN, svcBean);
+	}
+
+	protected void addTransactionRollbackHandler(MetaClass target) {
+		MetaClass transactionRollbackHandler = (MetaClass)masterModel.getProperty(ModelProperties.TRANSACTION_ROLLBACK_HANDLER);
+		/*
+		 * We'd like to simply construct an annotation with the handler's class as value, 
+		 * but unfortunately we don't have the class object, because the class was synthesized 
+		 * instead of analyzed. We could try to load it, but instead we simply construct the 
+		 * annotation as string and set extra annotations. 
+		 */
+		StringBuilder sb = new StringBuilder();
+		sb.append("@Interceptors(");
+		sb.append(transactionRollbackHandler.getSimpleName());
+		sb.append(".class)\n");
+		target.setExtraClassAnnotationsText(sb.toString());
+		target.addReferencedForeignType(std.javaxInterceptorInterceptors);
+		target.addReferencedForeignType(transactionRollbackHandler);
 	}
 
 }

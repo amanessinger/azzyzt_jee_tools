@@ -83,6 +83,8 @@ public class StoreMultiBeanModelBuilder extends DerivedModelBuilder implements B
 			addTypeMetaInfoField(target);
 			addInvocationRegistryField(target);
 			
+			addTransactionRollbackHandler(target);
+			
 			masterModel.setProperty(ModelProperties.STORE_MULTI_BEAN, target);
 			
 			// now break out

@@ -95,6 +95,8 @@ public class MetaStandardDefs {
 	public final MetaAnnotation javaxEjbLock;
 	public final MetaEnum javaxEjbLockType;
 	public final MetaAnnotation javaxEjbEJB;
+	public final MetaInterface javaxEjbSessionContext;
+	public final MetaClass javaxEjbEJBTransactionRolledbackException;
 
 	public final MetaAnnotation javaxAnnotationResource;
 
@@ -159,6 +161,7 @@ public class MetaStandardDefs {
 	public final MetaClass invalidFieldException;
 	public final MetaClass querySyntaxException;
 	public final MetaClass notYetImplementedException;
+	public final MetaClass translatableException;
 	public final MetaClass restDelegatorBase;
 	public final MetaClass orderByClause;
 	public final MetaInterface typeMetaInfo;
@@ -268,6 +271,8 @@ public class MetaStandardDefs {
 		javaxEjbLock = MetaAnnotation.forType(javax.ejb.Lock.class);
 		javaxEjbLockType = MetaEnum.forType(javax.ejb.LockType.class);
 		javaxEjbEJB = MetaAnnotation.forType(javax.ejb.EJB.class);
+		javaxEjbSessionContext = MetaInterface.forType(javax.ejb.SessionContext.class);
+		javaxEjbEJBTransactionRolledbackException = MetaClass.forType(javax.ejb.EJBTransactionRolledbackException.class);
 		
 		javaxAnnotationResource = MetaAnnotation.forType(javax.annotation.Resource.class);
 		
@@ -334,6 +339,7 @@ public class MetaStandardDefs {
 		invalidFieldException = MetaClass.forType(org.azzyzt.jee.runtime.exception.InvalidFieldException.class);
 		querySyntaxException = MetaClass.forType(org.azzyzt.jee.runtime.exception.QuerySyntaxException.class);
 		notYetImplementedException = MetaClass.forType(org.azzyzt.jee.runtime.exception.NotYetImplementedException.class);
+		translatableException = MetaClass.forType(org.azzyzt.jee.runtime.exception.TranslatableException.class);
 		restDelegatorBase = MetaClass.forType(org.azzyzt.jee.runtime.service.RESTDelegatorBase.class);
 		orderByClause = MetaClass.forType(org.azzyzt.jee.runtime.dto.query.OrderByClause.class);
 		typeMetaInfo = MetaInterface.forType(org.azzyzt.jee.runtime.meta.TypeMetaInfoInterface.class);
