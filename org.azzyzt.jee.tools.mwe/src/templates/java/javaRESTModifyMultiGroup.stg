@@ -1,4 +1,4 @@
-group javaRESTStoreMultiGroup : javaGroup;
+group javaRESTModifyMultiGroup : javaGroup;
 
 @javaClass.extra_class_annotations() ::= <<
 @Interceptors(RESTInterceptor.class)

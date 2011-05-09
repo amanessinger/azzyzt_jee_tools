@@ -35,11 +35,11 @@ import org.azzyzt.jee.tools.mwe.model.type.MetaClass;
 import org.azzyzt.jee.tools.mwe.model.type.MetaEntity;
 import org.azzyzt.jee.tools.mwe.model.type.MetaInterface;
 
-public class StoreMultiInterfaceModelBuilder extends DerivedModelBuilder implements Builder {
+public class ModifyMultiInterfaceModelBuilder extends DerivedModelBuilder implements Builder {
 
-	public static final String CLASS_NAME = "StoreMultiInterface";
+	public static final String CLASS_NAME = "ModifyMultiInterface";
 
-	public StoreMultiInterfaceModelBuilder(MetaModel entityModel, String targetPackageName) {
+	public ModifyMultiInterfaceModelBuilder(MetaModel entityModel, String targetPackageName) {
 		super(entityModel, targetPackageName);
 	}
 
@@ -68,7 +68,7 @@ public class StoreMultiInterfaceModelBuilder extends DerivedModelBuilder impleme
 			target.addReferencedForeignType(std.invalidProxyIdException);
 			target.addReferencedForeignType(std.javaUtilList);
 			
-			masterModel.setProperty(ModelProperties.STORE_MULTI_INTERFACE, target);
+			masterModel.setProperty(ModelProperties.MODIFY_MULTI_INTERFACE, target);
 			
 			// now break out
 			break;

@@ -34,11 +34,11 @@ import org.azzyzt.jee.tools.mwe.model.annotation.MetaAnnotationInstance;
 import org.azzyzt.jee.tools.mwe.model.type.MetaClass;
 import org.azzyzt.jee.tools.mwe.model.type.MetaEntity;
 
-public class RESTStoreMultiModelBuilder extends DerivedModelBuilder implements Builder {
+public class RESTModifyMultiModelBuilder extends DerivedModelBuilder implements Builder {
 
-	public static final String CLASS_NAME = "StoreMultiDelegator";
+	public static final String CLASS_NAME = "ModifyMultiDelegator";
 
-	public RESTStoreMultiModelBuilder(MetaModel entityModel, String targetPackageName) {
+	public RESTModifyMultiModelBuilder(MetaModel entityModel, String targetPackageName) {
 		super(entityModel, targetPackageName);
 	}
 
@@ -47,14 +47,14 @@ public class RESTStoreMultiModelBuilder extends DerivedModelBuilder implements B
 		
 		for (MetaEntity me : masterModel.getTargetEntities()) {
 			MetaClass dtoBase = (MetaClass) masterModel.getProperty(ModelProperties.DTO_BASE);
-			MetaClass svcBean = (MetaClass) masterModel.getProperty(ModelProperties.STORE_MULTI_BEAN);
+			MetaClass svcBean = (MetaClass) masterModel.getProperty(ModelProperties.MODIFY_MULTI_BEAN);
 			MetaClass restInterceptor = (MetaClass) masterModel.getProperty(ModelProperties.REST_INTERCEPTOR);
 			MetaClass storeDeleteDto = (MetaClass) masterModel.getProperty(ModelProperties.STORE_DELETE_DTO);
 
 			// create MetaClass
 			String packageName = derivePackageNameFromEntityAndFollowPackage(me, PackageTails.SERVICE);
 			String simpleName = CLASS_NAME;
-			String pathString = "storeMulti";
+			String pathString = "modifyMulti";
 			MetaClass target = MetaClass.forName(packageName, simpleName);
 			masterModel.setProperty(ModelProperties.REST_STORE_MULTI_DELEGATOR, target);
 			target.setModifiers(std.mod_public);
@@ -81,7 +81,7 @@ public class RESTStoreMultiModelBuilder extends DerivedModelBuilder implements B
 			target.addReferencedForeignType(std.javaxWsRsConsumes);
 			target.addReferencedForeignType(std.javaxWsRsCoreMediaType);
 
-			addStoreMultiBeanField(target);
+			addModifyMultiBeanField(target);
 			
 			target.setProperty(ModelProperties.SVC_BEAN, svcBean);
 			target.setProperty(ModelProperties.DTO_BASE, dtoBase);

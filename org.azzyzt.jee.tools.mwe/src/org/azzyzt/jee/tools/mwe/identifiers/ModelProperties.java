@@ -15,12 +15,12 @@ public class ModelProperties {
 	public static final String GENERIC_EAO = "generic_eao";
 	public static final String ID_TRANSLATOR = "idTranslator";
 	public static final String INVOCATION_REGISTRY = "invocationRegistry";
+	public static final String MODIFY_MULTI_BEAN = "modifyMultiBean";
+	public static final String MODIFY_MULTI_INTERFACE = "modifyMultiInterface";
 	public static final String REST_FULL_DELEGATOR = "RESTFullDelegator";
 	public static final String REST_INTERCEPTOR = "rest_interceptor";
 	public static final String REST_STORE_MULTI_DELEGATOR = "RESTStoreMultiDelegator";
 	public static final String STORE_DELETE_DTO = "storeDeleteDto";
-	public static final String STORE_MULTI_BEAN = "storeMultiBean";
-	public static final String STORE_MULTI_INTERFACE = "storeMultiInterface";
 	public static final String STORE_WRAPPER_DTO = "storeWrapperDto";
 	public static final String SVC_BEAN = "svcBean";
 	public static final String SVC_FULL_BEAN = "svcFullBean";

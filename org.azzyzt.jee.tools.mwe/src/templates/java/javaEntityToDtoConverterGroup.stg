@@ -22,7 +22,7 @@ package <mdt.packageName>;
 
 
 injectionConstructor(mdt) ::= <<
-// avoid mass-injection in case of storeMulti
+// avoid mass-injection in case of storeMulti/storeDeleteMulti
 public <mdt.simpleName>(EaoBase eao, InvocationRegistryInterface invocationRegistry, TypeMetaInfoInterface tmi, IdTranslator idTranslator) {
     super();
     this.eao = (GenericEao)eao;

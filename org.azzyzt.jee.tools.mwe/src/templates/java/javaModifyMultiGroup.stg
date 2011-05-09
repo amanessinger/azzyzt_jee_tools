@@ -1,4 +1,4 @@
-group javaStoreMultiGroup : javaGroup;
+group javaModifyMultiGroup : javaGroup;
 
 @javaClass.extra_methods() ::= <<
 @Override

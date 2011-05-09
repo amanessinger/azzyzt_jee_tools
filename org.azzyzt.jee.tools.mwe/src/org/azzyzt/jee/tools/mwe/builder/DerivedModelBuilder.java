@@ -195,15 +195,15 @@ public class DerivedModelBuilder {
 		target.addField(httpServletresponseField);
 	}
 
-	protected void addStoreMultiBeanField(MetaClass target) {
-		MetaDeclaredType svcBean = (MetaDeclaredType)masterModel.getProperty(ModelProperties.STORE_MULTI_BEAN);
+	protected void addModifyMultiBeanField(MetaClass target) {
+		MetaDeclaredType svcBean = (MetaDeclaredType)masterModel.getProperty(ModelProperties.MODIFY_MULTI_BEAN);
 		MetaField svcBeanField = new MetaField(target, FieldNames.SVC_BEAN);
 		svcBeanField.setFieldType(svcBean);
 		svcBeanField.setModifiers(std.mod_private);
 		svcBeanField.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxEjbEJB, target));
 		target.addField(svcBeanField);
 		target.addReferencedForeignType(svcBean);
-		target.setProperty(ModelProperties.STORE_MULTI_BEAN, svcBean);
+		target.setProperty(ModelProperties.MODIFY_MULTI_BEAN, svcBean);
 	}
 
 	protected void addTransactionRollbackHandler(MetaClass target) {
