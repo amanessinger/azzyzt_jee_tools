@@ -117,7 +117,7 @@ throws EntityNotFoundException, EntityInstantiationException, InvalidIdException
     }
     <else>
     <entity.idField.fieldType.simpleName> idProxyValue = null;
-    if (idValue \< 0) {
+    if (idValue != null && idValue \< 0) {
         idProxyValue = idValue;
         idValue = null;
     }

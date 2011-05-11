@@ -8,6 +8,8 @@ group javaRESTModifyMultiGroup : javaGroup;
 @javaClass.extra_methods() ::= <<
 <storeMultiHead()>
 <storeMultiBody()>
+<deleteMultiHead()>
+<deleteMultiBody()>
 <storeDeleteMultiHead()>
 <storeDeleteMultiBody()>
 >>
@@ -26,6 +28,25 @@ storeMultiBody() ::= <<
 {    
     return svcBean.storeMulti(dtos);
 }
+
+>>
+
+deleteMultiHead() ::= <<
+@POST
+@Path("deleteMulti")
+@Consumes(MediaType.APPLICATION_XML)
+@Produces(MediaType.APPLICATION_XML)
+public String deleteMulti(List\<Dto\> dtos)
+    throws EntityNotFoundException, AccessDeniedException, EntityInstantiationException, 
+           InvalidIdException, InvalidArgumentException
+>>
+
+deleteMultiBody() ::= <<
+{    
+    svcBean.deleteMulti(dtos);
+    return "\<result\>OK\</result\>";
+}
+
 >>
 
 storeDeleteMultiHead() ::= <<
@@ -42,4 +63,5 @@ storeDeleteMultiBody() ::= <<
 {    
     return svcBean.storeDeleteMulti(storeDelete);
 }
+
 >>
