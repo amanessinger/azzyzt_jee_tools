@@ -1,0 +1,18 @@
+group javaTransactionRollbackHandlerGroup : javaGroup;
+
+@javaClass.extra_methods() ::= <<
+@AroundInvoke
+public Object handleException(InvocationContext ctx) throws Exception {
+    try {
+        Object result = ctx.proceed();
+        eao.flush();
+        return result;
+    } catch (EJBTransactionRolledbackException etrbe) {
+        throw new Exception(etrbe);
+    } catch (TranslatableException te) {
+        sessionContext.setRollbackOnly();
+        throw te;
+    }
+}
+
+>>

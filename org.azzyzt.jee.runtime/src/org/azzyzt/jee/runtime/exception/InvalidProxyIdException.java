@@ -25,27 +25,25 @@
  * permissions and limitations under the Licence.
  */
 
-package org.azzyzt.jee.runtime.meta;
+package org.azzyzt.jee.runtime.exception;
 
-import org.azzyzt.jee.runtime.exception.AccessDeniedException;
-import org.azzyzt.jee.runtime.exception.InvalidArgumentException;
-import org.azzyzt.jee.runtime.exception.InvalidFieldException;
+public class InvalidProxyIdException extends TranslatableException {
 
-public interface TypeMetaInfoInterface {
-	
-	public ValidAssociactionPathsInterface getValidPaths();
-	
-	public boolean isAssociationPath(String name);
-	
-	public void fieldVerification(Class<?> clazz, String name)
-		throws InvalidFieldException, AccessDeniedException;
+	private static final long serialVersionUID = 1L;
 
-	public Class<?> getFieldType(Class<?> clazz, String name) 
-    	throws InvalidFieldException, AccessDeniedException;
+	private String invalidProxyIdValue;
 	
-	public Class<?> getConverterForDto(Class<?> clazz)
-		throws InvalidArgumentException;
-	
-	public Class<?> getEntityForDto(Class<?> clazz)
-		throws InvalidArgumentException;
+	public InvalidProxyIdException(String invalidProxyIdValue) {
+		super("Access error",
+		  	  "Proxy ID is invalid");
+		this.setInvalidProxyId(invalidProxyIdValue);
+	}
+
+	public void setInvalidProxyId(String invalidProxyId) {
+		this.invalidProxyIdValue = invalidProxyId;
+	}
+
+	public String getInvalidProxyId() {
+		return invalidProxyIdValue;
+	}
 }

@@ -72,6 +72,8 @@ public class CrudServiceRESTFullModelBuilder extends DerivedModelBuilder impleme
 			target.addReferencedForeignType(std.entityNotFoundException);
 			target.addReferencedForeignType(std.entityInstantiationException);
 			target.addReferencedForeignType(std.invalidIdException);
+			target.addReferencedForeignType(std.duplicateProxyIdException);
+			target.addReferencedForeignType(std.invalidProxyIdException);
 			target.addReferencedForeignType(std.invalidFieldException);
 			target.addReferencedForeignType(std.notYetImplementedException);
 			target.addReferencedForeignType(std.querySyntaxException);

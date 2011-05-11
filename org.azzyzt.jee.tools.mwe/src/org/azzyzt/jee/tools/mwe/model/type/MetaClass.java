@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -47,6 +47,8 @@ public class MetaClass extends MetaDeclaredType {
 	private boolean isSerialVersionNeeded = false;
 	
 	private boolean isImplicitlyImported = false;
+	
+	private String extraClassAnnotationsText = "";
 	
 	private Set<MetaInterface> interfaces = new HashSet<MetaInterface>();
 	
@@ -188,6 +190,14 @@ public class MetaClass extends MetaDeclaredType {
 
 	private void setImplicitlyImported() {
 		this.isImplicitlyImported = true;
+	}
+
+	public String getExtraClassAnnotationsText() {
+		return extraClassAnnotationsText;
+	}
+
+	public void setExtraClassAnnotationsText(String extraClassAnnotationsText) {
+		this.extraClassAnnotationsText = extraClassAnnotationsText;
 	}
 
 }

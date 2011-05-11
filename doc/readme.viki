@@ -13,7 +13,7 @@ software developers creating software using Java Enterprise Edition
 6. It is designed to be integrated into popular Java IDEs.
 
 Copyright (c) 2011, Municipiality of Vienna, Austria
-Licensed under the EUPL, Version 1.1 or highersubsequent versions
+Licensed under the EUPL, Version 1.1 or subsequent versions
 
 
 ** Changes in 1.1.0
@@ -30,17 +30,34 @@ Licensed under the EUPL, Version 1.1 or highersubsequent versions
  - A new operation "storeMulti()" takes a list of DTOs of any type,
    converts them to the respective entities and stores them. The
    resulting entities are then converted back and the list of DTOs is
-   returned. Use it to store multiple objects of any kind in one
-   transaction. 
+   returned. 
+
+   In case of interdependent objects, the numeric IDs of not
+   -yet-existent objects may be filled with unique negative numbers,
+   so-called proxy IDs, and references to other entities may use those
+   proxy IDs. This works for numeric IDs only, and it assumes that ID
+   values can't be negative, but then, so does
+   "EntityBase.couldBeIdValue()". 
+
+   Use "storeMulti()" to store multiple objects of any kind in one
+   transaction.
+
+ - A new operation "storeDeleteMulti()" takes two lists of DTOs of any
+   type. DTOs in the first list, the delete list, only need to have
+   their IDs set, DTOs in the second list, the store list, are treated
+   exactly as in "storeMulti()". The operation returns the list of
+   stored entities, converted to external DTO form. Use
+   "storeDeleteMulti()" to make any kind of modification in one
+   transaction.
 
  - URLs for SOAP web services have changed. They are now based on the
    project prefix. Thus what was 
 
-      http://localhost:8080/StoreMultiBeanService/StoreMultiBean?wsdl
+      http://localhost:8080/ModifyMultiBeanService/ModifyMultiBean?wsdl
 
    is now
 
-      http://localhost:8080/cookbook/StoreMultiBean?wsdl
+      http://localhost:8080/cookbook/ModifyMultiBean?wsdl
 
    or whatever host and portnumber are. The new URLs don't clash
    between applications, and we get a distinct namespace per
@@ -433,7 +450,7 @@ cookbookEJB
                     |-- CityRestrictedBean.java
                     |-- CountryFullBean.java
                     |-- CountryRestrictedBean.java
-                    |-- StoreMultiBean.java
+                    |-- ModifyMultiBean.java
                     |-- ZipFullBean.java
                     `-- ZipRestrictedBean.java
 cookbookEJBClient
@@ -454,7 +471,7 @@ cookbookEJBClient
                     |-- CityRestrictedInterface.java
                     |-- CountryFullInterface.java
                     |-- CountryRestrictedInterface.java
-                    |-- StoreMultiInterface.java
+                    |-- ModifyMultiInterface.java
                     |-- ZipFullInterface.java
                     `-- ZipRestrictedInterface.java
 cookbookServlets
@@ -470,7 +487,7 @@ cookbookServlets
 |                   |-- RESTExceptionMapper.java
 |                   |-- RESTInterceptor.java
 |                   |-- RESTServlet.java
-|                   |-- StoreMultiDelegator.java
+|                   |-- ModifyMultiDelegator.java
 |                   |-- ZipFullDelegator.java
 |                   `-- ZipRestrictedDelegator.java
 |-- src
@@ -500,7 +517,7 @@ For each table/entity we get a DTO (EJBClient), two EJBs, one for full
 (rw) and one for restricted (r) access, corresponding remote
 interfaces in the EJBClient project, corresponding REST wrappers
 around the beans (Servlet project). Additionally we get a
-StoreMultiBean, a StoreMultiInterface and a corresponding REST
+ModifyMultiBean, a ModifyMultiInterface and a corresponding REST
 wrapper. 
 
 Here are some URLs, assuming \GlassFish runs on port 8080. Try for
@@ -518,7 +535,7 @@ yourself, for instance with [[http://www.soapui.org][soapUI]]:
 
   [[http://localhost:8080/cookbook/ZipRestrictedBean?wsdl]]
 
-  [[http://localhost:8080/cookbook/StoreMultiBean?wsdl]]
+  [[http://localhost:8080/cookbook/ModifyMultiBean?wsdl]]
 
 Get the WADL description of the REST services under
 
@@ -707,6 +724,255 @@ may return
 The new ''id'' will have been automatically allocated from a sequence.
 
 
+**** Delete a record
+
+Make a GET request to the following URL
+
+  [[http://localhost:8080/cookbookServlets/REST/city/delete?id=8]]
+
+to delete "''Bologna''", assuming its ID was indeed "''8''". The
+result will be
+
+#Code syntax=XML <<---
+<result>OK</result>
+---
+
+
+**** Store multiple records in different tables
+
+In many cases one use case will generate more than one object, and in
+such a case we will want to store them either all together
+(transactionally safe) or not at all. As far as REST calls go, our
+unit of transaction is the call itself, thus we have to transport all
+objects as parameters of the same operation.
+
+Azzyzt JEE Tools generate two stateless session beans for each table,
+one for full, one for restricted access to records of that table, but
+so far we have not seen anything for mixed access. The special
+stateless session bean ''\ModifyMultiBean'' fills that gap. It offers
+three operations.
+
+POST the following XML
+
+#Code syntax=XML <<---
+<dtoes>
+   <country>
+      <id>-1</id>
+      <name>France</name>
+   </country>
+   <city>
+      <countryId>-1</countryId>
+      <id>-2</id>
+      <name>Marseille</name>
+   </city>
+   <city>
+      <countryId>-1</countryId>
+      <id>-3</id>
+      <name>Paris</name>
+   </city>
+   <city>
+      <countryId>-1</countryId>
+      <id>-4</id>
+      <name>Rennes</name>
+   </city>
+</dtoes>
+---
+
+into
+
+  [[http://localhost:8080/cookbookServlets/REST/modifyMulti/storeMulti]]
+
+to store a new country named "''France''" and three of its cities,
+"''Marseille''", "''Paris''" and "''Rennes''". The result will be
+something like
+
+#Code syntax=XML <<---
+<dtoes>
+   <country>
+      <id>6</id>
+      <name>France</name>
+   </country>
+   <city>
+      <countryId>6</countryId>
+      <id>16</id>
+      <name>Marseille</name>
+   </city>
+   <city>
+      <countryId>6</countryId>
+      <id>17</id>
+      <name>Paris</name>
+   </city>
+   <city>
+      <countryId>6</countryId>
+      <id>18</id>
+      <name>Rennes</name>
+   </city>
+</dtoes>
+---
+
+Note that "''France''" did not exist before this call, thus we could
+not properly reference its ID (now "''6''", as seen in the
+result). Thus instead of leaving the ID empty, we have used a __negative
+proxy ID__. In our example we have used proxy IDs for all objects in
+the argument list. This would not have been necessary. We need proxy
+IDs only when we reference them from other objects in the same
+call. Thus we could as well have written
+
+#Code syntax=XML <<---
+<dtoes>
+   <country>
+      <id>-1</id>
+      <name>France</name>
+   </country>
+   <city>
+      <countryId>-1</countryId>
+      <id></id>
+      <name>Marseille</name>
+   </city>
+   <city>
+      <countryId>-1</countryId>
+      <id></id>
+      <name>Paris</name>
+   </city>
+   <city>
+      <countryId>-1</countryId>
+      <id></id>
+      <name>Rennes</name>
+   </city>
+</dtoes>
+---
+
+Proxy IDs have no meaning outside of the call. The only requirements
+are, that all defined proxy IDs within a call are distinct and that
+they must have been defined in the object list before they can be
+used. ''\ModifyMultiBean'' does not reorder objects, it stores them in
+the order they are given in the list of DTOs. Referencing a proxy ID
+that has not yet been defined in the list, makes the whole call fail
+with an ''\InvalidProxyIdException'', the transaction is rolled back
+and nothing is stored at all.
+
+
+**** Delete multiple records from different tables
+
+The second operation in ''\ModifyMultiBean'' deletes all in a list of objects.
+
+POST the following XML
+
+#Code syntax=XML <<---
+<dtoes>
+   <city>
+      <id>16</id>
+   </city>
+   <city>
+      <id>17</id>
+   </city>
+   <city>
+      <id>18</id>
+   </city>
+   <country>
+      <id>6</id>
+   </country>
+</dtoes>
+---
+
+into
+
+  [[http://localhost:8080/cookbookServlets/REST/modifyMulti/deleteMulti]]
+
+Again the result will be
+
+#Code syntax=XML <<---
+<result>OK</result>
+---
+
+
+**** Store and/or delete multiple records in different tables
+
+The third operation in ''\ModifyMultiBean'' is slightly more
+complicated but also more powerful.
+
+POST the following XML
+
+#Code syntax=XML <<---
+<storedelete>
+   <delete>
+      <dtoes>
+         <city>
+            <id>16</id>
+         </city>
+         <city>
+            <id>17</id>
+         </city>
+         <city>
+            <id>18</id>
+         </city>
+         <country>
+            <id>6</id>
+         </country>
+      </dtoes>
+   </delete>
+   <store>
+      <dtoes>
+         <country>
+            <id>-1</id>
+            <name>Egypt</name>
+         </country>
+         <city>
+            <countryId>-1</countryId>
+            <id></id>
+            <name>Assuan</name>
+         </city>
+         <city>
+            <countryId>-1</countryId>
+            <id></id>
+            <name>Cairo</name>
+         </city>
+      </dtoes>
+   </store>
+</storedelete>
+---
+
+into
+
+  [[http://localhost:8080/cookbookServlets/REST/modifyMulti/storeDeleteMulti]]
+
+Make sure the first list, the list of objects to delete, contains the
+exact IDs that you got in the last step, i.e. the country ID of
+"''France''" and the IDs of its cities. The Result will be something like
+
+#Code syntax=XML <<---
+<dtoes>
+   <country>
+      <id>7</id>
+      <name>Egypt</name>
+   </country>
+   <city>
+      <countryId>7</countryId>
+      <id>19</id>
+      <name>Assuan</name>
+   </city>
+   <city>
+      <countryId>7</countryId>
+      <id>20</id>
+      <name>Cairo</name>
+   </city>
+</dtoes>
+---
+
+We have deleted all of "''France''" and created "''Egypt''", this time
+with two cities, "''Assuan''" and "''Cairo''".
+
+Of course there is no need to use proxy IDs, if you already know the
+IDs of your objects and of their references. Thus you can use the same
+operations to make updates. In fact you can mix creating new objects
+and updating others, that already exist.
+
+Each of the two lists could have been left empty, reducing the
+operation "''storeDeletMulti()''" to a more complicated version of
+either "''storeMulti()''" or "''deleteMulti()''", or if both lists are
+empty, to a very complicated no-op.
+
+
 *** Variants of the query specification
 
 REST is just one way to access the services. The XML format of query
@@ -716,7 +982,6 @@ clients. When the services are accessed via SOAP or CORBA, the
 parameter. Alternatively a second method "''listByXML()''" is
 generated, and those methods again take XML in form of a string
 parameter. The XML format is the same as for REST.
-
 
 
 ** Developing or modifying Azzyzt JEE Tools

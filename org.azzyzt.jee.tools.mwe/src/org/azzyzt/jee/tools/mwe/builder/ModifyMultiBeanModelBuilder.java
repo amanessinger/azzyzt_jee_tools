@@ -35,11 +35,11 @@ import org.azzyzt.jee.tools.mwe.model.type.MetaClass;
 import org.azzyzt.jee.tools.mwe.model.type.MetaEntity;
 import org.azzyzt.jee.tools.mwe.model.type.MetaInterface;
 
-public class StoreMultiBeanModelBuilder extends DerivedModelBuilder implements Builder {
+public class ModifyMultiBeanModelBuilder extends DerivedModelBuilder implements Builder {
 
-	public static final String CLASS_NAME = "StoreMultiBean";
+	public static final String CLASS_NAME = "ModifyMultiBean";
 	
-	public StoreMultiBeanModelBuilder(MetaModel entityModel, String targetPackageName) {
+	public ModifyMultiBeanModelBuilder(MetaModel entityModel, String targetPackageName) {
 		super(entityModel, targetPackageName);
 	}
 
@@ -47,7 +47,8 @@ public class StoreMultiBeanModelBuilder extends DerivedModelBuilder implements B
 	public MetaModel build() {
 		
 		MetaClass typeMetaInfo = (MetaClass)masterModel.getProperty(ModelProperties.TYPE_META_INFO);
-		MetaInterface storeMultiInterface = (MetaInterface)masterModel.getProperty(ModelProperties.STORE_MULTI_INTERFACE);
+		MetaInterface modifyMultiInterface = (MetaInterface)masterModel.getProperty(ModelProperties.MODIFY_MULTI_INTERFACE);
+		MetaClass storeDeleteDto = (MetaClass) masterModel.getProperty(ModelProperties.STORE_DELETE_DTO);
 				
 		for (MetaEntity me : masterModel.getTargetEntities()) {
 			MetaClass dtoBase = (MetaClass) masterModel.getProperty(ModelProperties.DTO_BASE);
@@ -56,7 +57,7 @@ public class StoreMultiBeanModelBuilder extends DerivedModelBuilder implements B
 			String packageName = derivePackageNameFromEntityAndFollowPackage(me, PackageTails.SERVICE);
 			String simpleName = CLASS_NAME;
 			MetaClass target = MetaClass.forName(packageName, simpleName);
-			target.addInterface(storeMultiInterface);
+			target.addInterface(modifyMultiInterface);
 			target.setModifiers(std.mod_public);
 			target.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxEjbLocalBean, target));
 			target.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxEjbStateless, target));
@@ -65,12 +66,16 @@ public class StoreMultiBeanModelBuilder extends DerivedModelBuilder implements B
 			target.addMetaAnnotationInstance(mai);
 			
 			target.addReferencedForeignType(dtoBase);
+			target.addReferencedForeignType(storeDeleteDto);
 			target.addReferencedForeignType(std.accessDeniedException);
 			target.addReferencedForeignType(std.entityInstantiationException);
 			target.addReferencedForeignType(std.entityNotFoundException);
 			target.addReferencedForeignType(std.invalidArgumentException);
 			target.addReferencedForeignType(std.invalidIdException);
+			target.addReferencedForeignType(std.duplicateProxyIdException);
+			target.addReferencedForeignType(std.invalidProxyIdException);
 			target.addReferencedForeignType(std.javaUtilList);
+			target.addReferencedForeignType(std.multiObjectDeleter);
 			target.addReferencedForeignType(std.multiObjectSaver);
 			target.addReferencedForeignType(typeMetaInfo);
 
@@ -78,7 +83,9 @@ public class StoreMultiBeanModelBuilder extends DerivedModelBuilder implements B
 			addTypeMetaInfoField(target);
 			addInvocationRegistryField(target);
 			
-			masterModel.setProperty(ModelProperties.STORE_MULTI_BEAN, target);
+			addTransactionRollbackHandler(target);
+			
+			masterModel.setProperty(ModelProperties.MODIFY_MULTI_BEAN, target);
 			
 			// now break out
 			break;

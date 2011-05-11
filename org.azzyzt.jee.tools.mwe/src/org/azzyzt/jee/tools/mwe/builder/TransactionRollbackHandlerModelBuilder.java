@@ -33,13 +33,12 @@ import org.azzyzt.jee.tools.mwe.model.MetaModel;
 import org.azzyzt.jee.tools.mwe.model.annotation.MetaAnnotationInstance;
 import org.azzyzt.jee.tools.mwe.model.type.MetaClass;
 import org.azzyzt.jee.tools.mwe.model.type.MetaEntity;
-import org.azzyzt.jee.tools.mwe.model.type.MetaInterface;
 
-public class StoreMultiInterfaceModelBuilder extends DerivedModelBuilder implements Builder {
+public class TransactionRollbackHandlerModelBuilder extends DerivedModelBuilder implements Builder {
 
-	public static final String CLASS_NAME = "StoreMultiInterface";
+	private static final String CLASS_NAME = "TransactionRollbackHandler";
 
-	public StoreMultiInterfaceModelBuilder(MetaModel entityModel, String targetPackageName) {
+	public TransactionRollbackHandlerModelBuilder(MetaModel entityModel, String targetPackageName) {
 		super(entityModel, targetPackageName);
 	}
 
@@ -47,28 +46,37 @@ public class StoreMultiInterfaceModelBuilder extends DerivedModelBuilder impleme
 	public MetaModel build() {
 		
 		for (MetaEntity me : masterModel.getTargetEntities()) {
-			MetaClass dtoBase = (MetaClass) masterModel.getProperty(ModelProperties.DTO_BASE);
 
-			// create MetaInterface
-			String packageName = derivePackageNameFromEntityAndFollowPackage(me, PackageTails.SERVICE);
+			// create MetaClass
+			String packageName = derivePackageNameFromEntityAndFollowPackage(me, PackageTails.META);
+			
+			// upon first entity create MetaClass
 			String simpleName = CLASS_NAME;
-			MetaInterface target = MetaInterface.forName(packageName, simpleName);
+			MetaClass target = MetaClass.forName(packageName, simpleName);
+			targetModel.follow(packageName);
 			target.setModifiers(std.mod_public);
-			target.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxEjbRemote, target));
 			
-			target.addReferencedForeignType(dtoBase);
-			target.addReferencedForeignType(std.accessDeniedException);
-			target.addReferencedForeignType(std.entityInstantiationException);
-			target.addReferencedForeignType(std.entityNotFoundException);
-			target.addReferencedForeignType(std.invalidArgumentException);
-			target.addReferencedForeignType(std.invalidIdException);
-			target.addReferencedForeignType(std.javaUtilList);
+			MetaAnnotationInstance mai;
+			mai = new MetaAnnotationInstance(std.javaxEjbStateless, target);
+			target.addMetaAnnotationInstance(mai);
+			mai = new MetaAnnotationInstance(std.javaxInterceptorInterceptor, target);
+			target.addMetaAnnotationInstance(mai);
 			
-			masterModel.setProperty(ModelProperties.STORE_MULTI_INTERFACE, target);
+			target.addReferencedForeignType(std.javaxEjbEJB);
+			target.addReferencedForeignType(std.javaxInterceptorAroundInvoke);
+			target.addReferencedForeignType(std.javaxInterceptorInvocationContext);
+			target.addReferencedForeignType(std.javaxEjbEJBTransactionRolledbackException);
+			target.addReferencedForeignType(std.translatableException);
+			
+			addGenericEaoField(target);
+			addEJBSessionContext(target);
+			
+			masterModel.setProperty(ModelProperties.TRANSACTION_ROLLBACK_HANDLER, target);
 			
 			// now break out
 			break;
 		}
+
 		return targetModel;
 	}
 }

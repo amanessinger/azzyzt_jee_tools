@@ -77,7 +77,8 @@ storeHead(entity, dto) ::= <<
 @Consumes(MediaType.APPLICATION_XML)
 @Produces(MediaType.APPLICATION_XML)
 public <dto.simpleName> <entity.lcFirstSimpleName>Store(<dto.simpleName> dto)
-    throws EntityNotFoundException, AccessDeniedException, EntityInstantiationException, InvalidIdException
+    throws EntityNotFoundException, AccessDeniedException, EntityInstantiationException, 
+           InvalidIdException, DuplicateProxyIdException, InvalidProxyIdException
 >>
 
 storeBody(entity, dto) ::= <<

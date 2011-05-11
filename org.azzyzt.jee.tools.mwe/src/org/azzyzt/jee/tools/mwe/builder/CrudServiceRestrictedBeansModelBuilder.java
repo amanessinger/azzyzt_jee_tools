@@ -27,6 +27,7 @@
 
 package org.azzyzt.jee.tools.mwe.builder;
 
+import org.azzyzt.jee.tools.mwe.identifiers.ModelProperties;
 import org.azzyzt.jee.tools.mwe.identifiers.PackageTails;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
 import org.azzyzt.jee.tools.mwe.model.annotation.MetaAnnotationInstance;
@@ -45,18 +46,18 @@ public class CrudServiceRestrictedBeansModelBuilder extends DerivedModelBuilder 
 	@Override
 	public MetaModel build() {
 		
-		MetaClass typeMetaInfo = (MetaClass)masterModel.getProperty("typeMetaInfo");
+		MetaClass typeMetaInfo = (MetaClass)masterModel.getProperty(ModelProperties.TYPE_META_INFO);
 				
 		for (MetaEntity me : masterModel.getTargetEntities()) {
-			MetaClass dto = (MetaClass) me.getProperty("dto");
+			MetaClass dto = (MetaClass) me.getProperty(ModelProperties.DTO);
 
 			// create MetaClass
 			String packageName = derivePackageNameFromEntityAndFollowPackage(me, PackageTails.SERVICE);
 			String simpleName = me.getSimpleName();
 			simpleName += CLASS_SUFFIX;
 			MetaClass target = MetaClass.forName(packageName, simpleName);
-			target.addInterface((MetaInterface)me.getProperty("svcRestrictedInterface"));
-			me.setProperty("svcRestrictedBean", target);
+			target.addInterface((MetaInterface)me.getProperty(ModelProperties.SVC_RESTRICTED_INTERFACE));
+			me.setProperty(ModelProperties.SVC_RESTRICTED_BEAN, target);
 			target.setModifiers(std.mod_public);
 			target.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxEjbLocalBean, target));
 			target.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxEjbStateless, target));
@@ -85,8 +86,10 @@ public class CrudServiceRestrictedBeansModelBuilder extends DerivedModelBuilder 
 			addConverterField(target, me);
 			addTypeMetaInfoField(target);
 			
-			target.setProperty("entity", me);
-			target.setProperty("dto", dto);
+			addTransactionRollbackHandler(target);
+			
+			target.setProperty(ModelProperties.ENTITY, me);
+			target.setProperty(ModelProperties.DTO, dto);
 		}
 		return targetModel;
 	}

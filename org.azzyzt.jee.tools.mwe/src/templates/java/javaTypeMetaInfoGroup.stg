@@ -42,6 +42,10 @@ associationInfos = new HashMap\<String, AssociationInfo\>();
 associationsByClassAndPath.put(<attr.fieldType.simpleName>.class, associationInfos);
 
 <attr.fieldType.fields:add_entity_association_info()>
+<if(attr.fieldType.properties.dtoFQName)>
+entityByDto.put(<attr.fieldType.properties.dtoFQName>.class, <attr.fieldType.fqName>.class);
+
+<endif>
 
 >>
 

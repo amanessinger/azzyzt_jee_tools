@@ -33,67 +33,64 @@ import org.azzyzt.jee.tools.mwe.model.MetaModel;
 import org.azzyzt.jee.tools.mwe.model.annotation.MetaAnnotationInstance;
 import org.azzyzt.jee.tools.mwe.model.type.MetaClass;
 import org.azzyzt.jee.tools.mwe.model.type.MetaEntity;
-import org.azzyzt.jee.tools.mwe.model.type.MetaInterface;
 
-public class CrudServiceFullBeansModelBuilder extends DerivedModelBuilder implements Builder {
+public class RESTModifyMultiModelBuilder extends DerivedModelBuilder implements Builder {
 
-	public static final String CLASS_SUFFIX = "FullBean";
-	
-	public CrudServiceFullBeansModelBuilder(MetaModel entityModel, String targetPackageName) {
+	public static final String CLASS_NAME = "ModifyMultiDelegator";
+
+	public RESTModifyMultiModelBuilder(MetaModel entityModel, String targetPackageName) {
 		super(entityModel, targetPackageName);
 	}
 
 	@Override
 	public MetaModel build() {
 		
-		MetaClass typeMetaInfo = (MetaClass)masterModel.getProperty(ModelProperties.TYPE_META_INFO);
-				
 		for (MetaEntity me : masterModel.getTargetEntities()) {
-			MetaClass dto = (MetaClass) me.getProperty(ModelProperties.DTO);
+			MetaClass dtoBase = (MetaClass) masterModel.getProperty(ModelProperties.DTO_BASE);
+			MetaClass svcBean = (MetaClass) masterModel.getProperty(ModelProperties.MODIFY_MULTI_BEAN);
+			MetaClass restInterceptor = (MetaClass) masterModel.getProperty(ModelProperties.REST_INTERCEPTOR);
+			MetaClass storeDeleteDto = (MetaClass) masterModel.getProperty(ModelProperties.STORE_DELETE_DTO);
 
 			// create MetaClass
 			String packageName = derivePackageNameFromEntityAndFollowPackage(me, PackageTails.SERVICE);
-			String simpleName = me.getSimpleName();
-			simpleName += CLASS_SUFFIX;
+			String simpleName = CLASS_NAME;
+			String pathString = "modifyMulti";
 			MetaClass target = MetaClass.forName(packageName, simpleName);
-			target.addInterface((MetaInterface)me.getProperty(ModelProperties.SVC_FULL_INTERFACE));
-			me.setProperty(ModelProperties.SVC_FULL_BEAN, target);
+			masterModel.setProperty(ModelProperties.REST_STORE_MULTI_DELEGATOR, target);
 			target.setModifiers(std.mod_public);
-			target.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxEjbLocalBean, target));
+			target.setSuperMetaClass(std.restDelegatorBase);
 			target.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxEjbStateless, target));
-			MetaAnnotationInstance mai = new MetaAnnotationInstance(std.javaxJwsWebService, target);
-			mai.setElement("serviceName", masterModel.getProjectBaseName());
-			target.addMetaAnnotationInstance(mai);
+			MetaAnnotationInstance path = new MetaAnnotationInstance(std.javaxWsRsPath, target);
+			path.setElement("value", pathString);
+			target.addMetaAnnotationInstance(path);
 			
-			target.addReferencedForeignType(dto);
-			target.addReferencedForeignType(me);
+			target.addReferencedForeignType(dtoBase);
+			target.addReferencedForeignType(storeDeleteDto);
+			target.addReferencedForeignType(restInterceptor);
+			target.addReferencedForeignType(std.javaxInterceptorInterceptors);
+			target.addReferencedForeignType(std.javaUtilList);
 			target.addReferencedForeignType(std.accessDeniedException);
 			target.addReferencedForeignType(std.entityNotFoundException);
 			target.addReferencedForeignType(std.entityInstantiationException);
-			target.addReferencedForeignType(std.invalidIdException);
+			target.addReferencedForeignType(std.invalidArgumentException);
 			target.addReferencedForeignType(std.duplicateProxyIdException);
 			target.addReferencedForeignType(std.invalidProxyIdException);
-			target.addReferencedForeignType(std.invalidFieldException);
-			target.addReferencedForeignType(std.querySyntaxException);
-			target.addReferencedForeignType(std.notYetImplementedException);
-			target.addReferencedForeignType(std.javaUtilList);
-			target.addReferencedForeignType(std.javaUtilArrayList);
-			target.addReferencedForeignType(typeMetaInfo);
-			target.addReferencedForeignType(std.querySpec);
+			target.addReferencedForeignType(std.invalidIdException);
+			target.addReferencedForeignType(std.javaxWsRsPOST);
+			target.addReferencedForeignType(std.javaxWsRsProduces);
+			target.addReferencedForeignType(std.javaxWsRsConsumes);
+			target.addReferencedForeignType(std.javaxWsRsCoreMediaType);
 
-			if (me.isCombinedId()) {
-				target.addReferencedForeignType(me.getCombinedIdType());
-			}
-
-			addGenericEaoField(target);
-			addConverterField(target, me);
-			addTypeMetaInfoField(target);
+			addModifyMultiBeanField(target);
 			
-			addTransactionRollbackHandler(target);
+			target.setProperty(ModelProperties.SVC_BEAN, svcBean);
+			target.setProperty(ModelProperties.DTO_BASE, dtoBase);
 			
-			target.setProperty(ModelProperties.ENTITY, me);
-			target.setProperty(ModelProperties.DTO, dto);
+			// now break out
+			break;
 		}
+		
+		
 		return targetModel;
 	}
 }

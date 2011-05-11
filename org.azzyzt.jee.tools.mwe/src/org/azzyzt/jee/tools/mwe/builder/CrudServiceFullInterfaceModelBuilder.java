@@ -62,6 +62,8 @@ public class CrudServiceFullInterfaceModelBuilder extends DerivedModelBuilder im
 			target.addReferencedForeignType(std.entityNotFoundException);
 			target.addReferencedForeignType(std.entityInstantiationException);
 			target.addReferencedForeignType(std.invalidIdException);
+			target.addReferencedForeignType(std.duplicateProxyIdException);
+			target.addReferencedForeignType(std.invalidProxyIdException);
 			target.addReferencedForeignType(std.invalidFieldException);
 			target.addReferencedForeignType(std.querySyntaxException);
 			target.addReferencedForeignType(std.notYetImplementedException);

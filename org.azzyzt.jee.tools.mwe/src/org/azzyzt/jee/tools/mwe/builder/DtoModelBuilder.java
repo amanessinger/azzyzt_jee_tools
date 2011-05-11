@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.azzyzt.jee.tools.mwe.exception.ToolError;
+import org.azzyzt.jee.tools.mwe.identifiers.ModelProperties;
 import org.azzyzt.jee.tools.mwe.identifiers.PackageTails;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
 import org.azzyzt.jee.tools.mwe.model.annotation.MetaAnnotatable;
@@ -70,7 +71,8 @@ public class DtoModelBuilder extends DerivedModelBuilder implements Builder {
 			String simpleName = me.getSimpleName();
 			simpleName += CLASS_SUFFIX;
 			MetaClass target = MetaClass.forName(packageName, simpleName);
-			me.setProperty(PackageTails.DTO, target);
+			me.setProperty(ModelProperties.DTO, target);
+			target.setProperty(ModelProperties.ENTITY, me);
 			MetaAnnotationInstance mai = new MetaAnnotationInstance(std.javaxXmlBindAnnotationXmlRootElement, target);
 			mai.setElement("name", me.getSimpleName().toLowerCase());
 			target.addMetaAnnotationInstance(mai);
@@ -78,7 +80,6 @@ public class DtoModelBuilder extends DerivedModelBuilder implements Builder {
 			target.setSuperMetaClass(dtoBase);
 			target.addInterface(std.javaIoSerializable);
 			target.setSerialVersion(true);
-			target.addReferencedForeignType(std.javaIoSerializable);
 			
 			List<MetaAssociationEndpoint> maes = me.getAssociationEndpoints();
 			for (MetaAssociationEndpoint mae : maes) {

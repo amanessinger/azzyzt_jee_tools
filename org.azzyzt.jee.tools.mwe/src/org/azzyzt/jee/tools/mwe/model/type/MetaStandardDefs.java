@@ -95,6 +95,8 @@ public class MetaStandardDefs {
 	public final MetaAnnotation javaxEjbLock;
 	public final MetaEnum javaxEjbLockType;
 	public final MetaAnnotation javaxEjbEJB;
+	public final MetaInterface javaxEjbSessionContext;
+	public final MetaClass javaxEjbEJBTransactionRolledbackException;
 
 	public final MetaAnnotation javaxAnnotationResource;
 
@@ -119,6 +121,7 @@ public class MetaStandardDefs {
 	public final MetaAnnotation javaxXmlBindAnnotationXmlRootElement;
 	public final MetaAnnotation javaxXmlBindAnnotationXmlElementWrapper;
 	public final MetaAnnotation javaxXmlBindAnnotationXmlElement;
+	public final MetaAnnotation javaxXmlBindAnnotationXmlElements;
 	public final MetaAnnotation javaxXmlBindAnnotationXmlSeeAlso;
 	
 	public final MetaClass javaxWsRsCoreApplication;
@@ -144,6 +147,7 @@ public class MetaStandardDefs {
 	public final MetaInterface invocationRegistryInterface;
 	public final MetaClass InvocationRegistryBase;
 	public final MetaInterface javaxTransactionTransactionSynchronizationRegistry;
+	public final MetaClass multiObjectDeleter;
 	public final MetaClass multiObjectSaver;
 	public final MetaInterface converterRawInterface;
 	
@@ -152,9 +156,12 @@ public class MetaStandardDefs {
 	public final MetaClass entityInstantiationException;
 	public final MetaClass invalidArgumentException;
 	public final MetaClass invalidIdException;
+	public final MetaClass duplicateProxyIdException;
+	public final MetaClass invalidProxyIdException;
 	public final MetaClass invalidFieldException;
 	public final MetaClass querySyntaxException;
 	public final MetaClass notYetImplementedException;
+	public final MetaClass translatableException;
 	public final MetaClass restDelegatorBase;
 	public final MetaClass orderByClause;
 	public final MetaInterface typeMetaInfo;
@@ -170,6 +177,7 @@ public class MetaStandardDefs {
 	public final MetaClass validAssociationPathsBase;
 	public final MetaInterface validAssociationPathsInterface;
 	public final MetaClass exceptionToSuccessMapper;
+	public final MetaClass idTranslator;
 	
 
 	public MetaStandardDefs() {
@@ -263,6 +271,8 @@ public class MetaStandardDefs {
 		javaxEjbLock = MetaAnnotation.forType(javax.ejb.Lock.class);
 		javaxEjbLockType = MetaEnum.forType(javax.ejb.LockType.class);
 		javaxEjbEJB = MetaAnnotation.forType(javax.ejb.EJB.class);
+		javaxEjbSessionContext = MetaInterface.forType(javax.ejb.SessionContext.class);
+		javaxEjbEJBTransactionRolledbackException = MetaClass.forType(javax.ejb.EJBTransactionRolledbackException.class);
 		
 		javaxAnnotationResource = MetaAnnotation.forType(javax.annotation.Resource.class);
 		
@@ -287,6 +297,7 @@ public class MetaStandardDefs {
 		javaxXmlBindAnnotationXmlRootElement = MetaAnnotation.forType(javax.xml.bind.annotation.XmlRootElement.class);
 		javaxXmlBindAnnotationXmlElementWrapper = MetaAnnotation.forType(javax.xml.bind.annotation.XmlElementWrapper.class);
 		javaxXmlBindAnnotationXmlElement = MetaAnnotation.forType(javax.xml.bind.annotation.XmlElement.class);
+		javaxXmlBindAnnotationXmlElements = MetaAnnotation.forType(javax.xml.bind.annotation.XmlElements.class);
 		javaxXmlBindAnnotationXmlSeeAlso = MetaAnnotation.forType(javax.xml.bind.annotation.XmlSeeAlso.class);
 		
 		javaxWsRsCoreApplication = MetaClass.forType(javax.ws.rs.core.Application.class);
@@ -314,6 +325,7 @@ public class MetaStandardDefs {
 		invocationRegistryInterface = MetaInterface.forType(org.azzyzt.jee.runtime.meta.InvocationRegistryInterface.class);
 		InvocationRegistryBase = MetaClass.forType(org.azzyzt.jee.runtime.meta.InvocationRegistryBase.class);
 		javaxTransactionTransactionSynchronizationRegistry = MetaInterface.forType(javax.transaction.TransactionSynchronizationRegistry.class);
+		multiObjectDeleter = MetaClass.forType(org.azzyzt.jee.runtime.eao.MultiObjectDeleter.class);
 		multiObjectSaver = MetaClass.forType(org.azzyzt.jee.runtime.eao.MultiObjectSaver.class);
 		converterRawInterface = MetaInterface.forType(org.azzyzt.jee.runtime.conv.ConverterRawInterface.class);
 		
@@ -322,9 +334,12 @@ public class MetaStandardDefs {
 		entityInstantiationException = MetaClass.forType(org.azzyzt.jee.runtime.exception.EntityInstantiationException.class);
 		invalidArgumentException = MetaClass.forType(org.azzyzt.jee.runtime.exception.InvalidArgumentException.class);
 		invalidIdException = MetaClass.forType(org.azzyzt.jee.runtime.exception.InvalidIdException.class);
+		duplicateProxyIdException = MetaClass.forType(org.azzyzt.jee.runtime.exception.DuplicateProxyIdException.class);
+		invalidProxyIdException = MetaClass.forType(org.azzyzt.jee.runtime.exception.InvalidProxyIdException.class);
 		invalidFieldException = MetaClass.forType(org.azzyzt.jee.runtime.exception.InvalidFieldException.class);
 		querySyntaxException = MetaClass.forType(org.azzyzt.jee.runtime.exception.QuerySyntaxException.class);
 		notYetImplementedException = MetaClass.forType(org.azzyzt.jee.runtime.exception.NotYetImplementedException.class);
+		translatableException = MetaClass.forType(org.azzyzt.jee.runtime.exception.TranslatableException.class);
 		restDelegatorBase = MetaClass.forType(org.azzyzt.jee.runtime.service.RESTDelegatorBase.class);
 		orderByClause = MetaClass.forType(org.azzyzt.jee.runtime.dto.query.OrderByClause.class);
 		typeMetaInfo = MetaInterface.forType(org.azzyzt.jee.runtime.meta.TypeMetaInfoInterface.class);
@@ -340,5 +355,6 @@ public class MetaStandardDefs {
 		validAssociationPathsBase = MetaClass.forType(org.azzyzt.jee.runtime.meta.ValidAssociationPathsBase.class);
 		validAssociationPathsInterface = MetaInterface.forType(org.azzyzt.jee.runtime.meta.ValidAssociactionPathsInterface.class);
 		exceptionToSuccessMapper = MetaClass.forType(org.azzyzt.jee.runtime.service.ExceptionToSuccessMapper.class);
+		idTranslator = MetaClass.forType(org.azzyzt.jee.runtime.eao.IdTranslator.class);
 	}
 }
