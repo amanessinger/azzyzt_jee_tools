@@ -27,19 +27,19 @@
 
 package org.azzyzt.jee.tools.mwe.feature;
 
-import org.azzyzt.jee.tools.mwe.builder.RESTStoreMultiModelBuilder;
-import org.azzyzt.jee.tools.mwe.builder.StoreMultiBeanModelBuilder;
-import org.azzyzt.jee.tools.mwe.builder.StoreMultiInterfaceModelBuilder;
+import org.azzyzt.jee.tools.mwe.builder.RESTModifyMultiModelBuilder;
+import org.azzyzt.jee.tools.mwe.builder.ModifyMultiBeanModelBuilder;
+import org.azzyzt.jee.tools.mwe.builder.ModifyMultiInterfaceModelBuilder;
 import org.azzyzt.jee.tools.mwe.generator.JavaGenerator;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
 
-public class StoreMultiGeneratorFeature extends GeneratorFeature {
+public class ModifyMultiGeneratorFeature extends GeneratorFeature {
 
 	public static final String SOURCE_FOLDER_EJB_PROJECT = "Source Folder (EJB Project)";
 	public static final String SOURCE_FOLDER_CLIENT_PROJECT = "Source Folder (Client Project)";
 	public static final String SOURCE_FOLDER_SERVLET_PROJECT = "Source Folder (Servlet Project)";
 
-	public StoreMultiGeneratorFeature(MetaModel entityModel) {
+	public ModifyMultiGeneratorFeature(MetaModel entityModel) {
 		super(entityModel);
 	}
 
@@ -59,21 +59,21 @@ public class StoreMultiGeneratorFeature extends GeneratorFeature {
 		
 		sourceFolder = (String)parameters.byName(SOURCE_FOLDER_CLIENT_PROJECT).getValue();
 		
-		MetaModel targetModel = new StoreMultiInterfaceModelBuilder(getModel(), null).build();
-		JavaGenerator targetGen = new JavaGenerator(targetModel, sourceFolder, "javaStoreMultiGroup");
+		MetaModel targetModel = new ModifyMultiInterfaceModelBuilder(getModel(), null).build();
+		JavaGenerator targetGen = new JavaGenerator(targetModel, sourceFolder, "javaModifyMultiGroup");
 		numberOfSourcesGenerated = targetGen.generate();
 		
 		sourceFolder = (String)parameters.byName(SOURCE_FOLDER_EJB_PROJECT).getValue();
 		
-		targetModel = new StoreMultiBeanModelBuilder(getModel(), null).build();
-		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaStoreMultiGroup");
+		targetModel = new ModifyMultiBeanModelBuilder(getModel(), null).build();
+		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaModifyMultiGroup");
 		targetGen.setGenerateGettersSetters(false);
 		numberOfSourcesGenerated += targetGen.generate();
 				
 		sourceFolder = (String)parameters.byName(SOURCE_FOLDER_SERVLET_PROJECT).getValue();
 		
-		targetModel = new RESTStoreMultiModelBuilder(getModel(), null).build();
-		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaRESTStoreMultiGroup");
+		targetModel = new RESTModifyMultiModelBuilder(getModel(), null).build();
+		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaRESTModifyMultiGroup");
 		targetGen.setGenerateGettersSetters(false);
 		numberOfSourcesGenerated += targetGen.generate();
 				

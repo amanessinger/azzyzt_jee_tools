@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 <meta name="language" content="en">
-<meta name="date" content="2011-04-26T14:20:25">
+<meta name="date" content="2011-05-11T17:38:30">
 <meta name="generator" content="deplate.rb 0.8.5">
 <link rel="start" href="readme.html" title="Frontpage">
 <link rel="chapter" href="readme.html#hd001" title="Azzyzt JEE Tools">
@@ -812,7 +812,7 @@ software developers creating software using Java Enterprise Edition 6.
 It is designed to be integrated into popular Java IDEs.</p>
 
 <p>Copyright (c) 2011, Municipiality of Vienna, Austria Licensed under the 
-EUPL, Version 1.1 or highersubsequent versions</p>
+EUPL, Version 1.1 or subsequent versions</p>
 
 
 <h2 id="hd001001">1.1&nbsp;Changes in 1.1.0</h2>
@@ -832,15 +832,31 @@ EUPL, Version 1.1 or highersubsequent versions</p>
         A new operation &ldquo;storeMulti()&rdquo; takes a list of DTOs of any 
         type, converts them to the respective entities and stores them. The 
         resulting entities are then converted back and the list of DTOs is 
-        returned. Use it to store multiple objects of any kind in one 
+        returned.
+        <br class="itempara" />In case of interdependent objects, the numeric IDs of not -yet-existent 
+        objects may be filled with unique negative numbers, so-called proxy IDs, 
+        and references to other entities may use those proxy IDs. This works for 
+        numeric IDs only, and it assumes that ID values can&rsquo;t be negative, 
+        but then, so does 
+        &ldquo;<a href="EntityBase.html">EntityBase</a><a name="idx001"></a>.couldBeIdValue()&rdquo;.
+        <br class="itempara" />Use &ldquo;storeMulti()&rdquo; to store multiple objects of any kind in 
+        one transaction.
+    </li>
+    <li class="Itemize-1 Itemize dash">
+        A new operation &ldquo;storeDeleteMulti()&rdquo; takes two lists of DTOs 
+        of any type. DTOs in the first list, the delete list, only need to have 
+        their IDs set, DTOs in the second list, the store list, are treated 
+        exactly as in &ldquo;storeMulti()&rdquo;. The operation returns the list 
+        of stored entities, converted to external DTO form. Use 
+        &ldquo;storeDeleteMulti()&rdquo; to make any kind of modification in one 
         transaction.
     </li>
     <li class="Itemize-1 Itemize dash">
         URLs for SOAP web services have changed. They are now based on the 
         project prefix. Thus what was
-        <br class="itempara" /><span class="remote"><a href="http://localhost:8080/StoreMultiBeanService/StoreMultiBean?wsdl" class="remote">http://localhost:8080/StoreMultiBeanService/StoreMultiBean?wsdl</a></span>
+        <br class="itempara" /><span class="remote"><a href="http://localhost:8080/ModifyMultiBeanService/ModifyMultiBean?wsdl" class="remote">http://localhost:8080/ModifyMultiBeanService/ModifyMultiBean?wsdl</a></span>
         <br class="itempara" />is now
-        <br class="itempara" /><span class="remote"><a href="http://localhost:8080/cookbook/StoreMultiBean?wsdl" class="remote">http://localhost:8080/cookbook/StoreMultiBean?wsdl</a></span>
+        <br class="itempara" /><span class="remote"><a href="http://localhost:8080/cookbook/ModifyMultiBean?wsdl" class="remote">http://localhost:8080/cookbook/ModifyMultiBean?wsdl</a></span>
         <br class="itempara" />or whatever host and portnumber are. The new URLs don&rsquo;t clash 
         between applications, and we get a distinct namespace per application.
     </li>
@@ -885,7 +901,7 @@ EUPL, Version 1.1 or highersubsequent versions</p>
 <p>The structure of azzyzted projects and the structure of generated code 
 evolved from the work on 
 <span class="remote"><a href="http://programming.manessinger.com/tutorials/an-eclipse-glassfish-java-ee-6-tutorial/" class="remote">An 
-Eclipse / GlassFish / Java EE 6 Tutorial</a></span><a name="idx001"></a> 
+Eclipse / GlassFish / Java EE 6 Tutorial</a></span><a name="idx002"></a> 
 and on usage of that tutorial in a subsequent internal training class 
 for developers at the Municipiality of Vienna, Austria.</p>
 
@@ -922,7 +938,7 @@ command line utility.</p>
 
 <p>Eclipse is always understood as the generic bundle 
 <span class="remote"><a href="http://www.eclipse.org/downloads/" class="remote">Eclipse 
-IDE for Java EE Developers</a></span><a name="idx002"></a>. Other 
+IDE for Java EE Developers</a></span><a name="idx003"></a>. Other 
 distributions may contain the required plugins and may work, but they 
 were not tested.</p>
 
@@ -947,10 +963,10 @@ runtimes, etc. Of course bug fixes are welcome as well.</p>
 
 <p>Azzyzt JEE Tools were developed by 
 <span class="remote"><a href="http://programming.manessinger.com" class="remote">Andreas 
-Manessinger</a></span><a name="idx003"></a> for the 
+Manessinger</a></span><a name="idx004"></a> for the 
 <span class="remote"><a href="http://www.wien.gv.at/english/administration/ict/" class="remote">Municipal 
 Department 14 - Automated Data Processing, Information and 
-Communications Technology</a></span><a name="idx004"></a> (MA 14) of the 
+Communications Technology</a></span><a name="idx005"></a> (MA 14) of the 
 City of Vienna, Austria</p>
 
 
@@ -966,13 +982,13 @@ update site. As of release 1.1.0, there are two update site URLs, one
 for the edition used by the Municipiality of Vienna, Austria, the other 
 a generic version. The URLs are</p>
 
-<p><span class="remote"><a href="http://azzyzt.manessinger.com/azzyzt_generic/" class="remote">http://azzyzt.manessinger.com/azzyzt_generic/</a></span><a name="idx005"></a></p>
+<p><span class="remote"><a href="http://azzyzt.manessinger.com/azzyzt_generic/" class="remote">http://azzyzt.manessinger.com/azzyzt_generic/</a></span><a name="idx006"></a></p>
 
-<p><span class="remote"><a href="http://azzyzt.manessinger.com/azzyzt_magwien/" class="remote">http://azzyzt.manessinger.com/azzyzt_magwien/</a></span><a name="idx006"></a></p>
+<p><span class="remote"><a href="http://azzyzt.manessinger.com/azzyzt_magwien/" class="remote">http://azzyzt.manessinger.com/azzyzt_magwien/</a></span><a name="idx007"></a></p>
 
 <p>All announcements of new versions will be published on</p>
 
-<p><span class="remote"><a href="http://www.azzyzt.org" class="remote">http://www.azzyzt.org</a></span><a name="idx007"></a></p>
+<p><span class="remote"><a href="http://www.azzyzt.org" class="remote">http://www.azzyzt.org</a></span><a name="idx008"></a></p>
 
 <p>When you don&rsquo;t see any features available from the update site, 
 try unticking &ldquo;Group items by category&rdquo;. There actually is a 
@@ -1298,7 +1314,7 @@ cookbookEJB
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;CityRestrictedBean.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;CountryFullBean.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;CountryRestrictedBean.java
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;StoreMultiBean.java
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;ModifyMultiBean.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;ZipFullBean.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;ZipRestrictedBean.java
 cookbookEJBClient
@@ -1319,7 +1335,7 @@ cookbookEJBClient
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;CityRestrictedInterface.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;CountryFullInterface.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;CountryRestrictedInterface.java
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;StoreMultiInterface.java
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;ModifyMultiInterface.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;ZipFullInterface.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;ZipRestrictedInterface.java
 cookbookServlets
@@ -1335,7 +1351,7 @@ cookbookServlets
 |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;RESTExceptionMapper.java
 |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;RESTInterceptor.java
 |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;RESTServlet.java
-|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;StoreMultiDelegator.java
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;ModifyMultiDelegator.java
 |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;ZipFullDelegator.java
 |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;ZipRestrictedDelegator.java
 |--&nbsp;src
@@ -1357,7 +1373,7 @@ to modify <code>persistence.xml</code> to refer to a
 <code>jta-data-source</code>, and that this data source must be defined 
 in the application server. The 
 <span class="remote"><a href="http://programming.manessinger.com/tutorials/an-eclipse-glassfish-java-ee-6-tutorial/" class="remote">Eclipse 
-/ GlassFish / Java EE 6 Tutorial</a></span><a name="idx008"></a> has a 
+/ GlassFish / Java EE 6 Tutorial</a></span><a name="idx009"></a> has a 
 section titled &ldquo;<em>Specifying the database, testing, SQL 
 log</em>&rdquo;, that shows how to do this in GlassFish.</p>
 
@@ -1367,31 +1383,32 @@ log</em>&rdquo;, that shows how to do this in GlassFish.</p>
 (rw) and one for restricted (r) access, corresponding remote interfaces 
 in the EJBClient project, corresponding REST wrappers around the beans 
 (Servlet project). Additionally we get a 
-<a href="StoreMultiBean.html">StoreMultiBean</a><a name="idx009"></a>, a 
-<a href="StoreMultiInterface.html">StoreMultiInterface</a><a name="idx0010"></a> 
+<a href="ModifyMultiBean.html">ModifyMultiBean</a><a name="idx0010"></a>, 
+a 
+<a href="ModifyMultiInterface.html">ModifyMultiInterface</a><a name="idx0011"></a> 
 and a corresponding REST wrapper.</p>
 
 <p>Here are some URLs, assuming GlassFish runs on port 8080. Try for 
 yourself, for instance with 
-<span class="remote"><a href="http://www.soapui.org" class="remote">soapUI</a></span><a name="idx0011"></a>:</p>
+<span class="remote"><a href="http://www.soapui.org" class="remote">soapUI</a></span><a name="idx0012"></a>:</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbook/CityFullBean?wsdl" class="remote">http://localhost:8080/cookbook/CityFullBean?wsdl</a></span><a name="idx0012"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbook/CityFullBean?wsdl" class="remote">http://localhost:8080/cookbook/CityFullBean?wsdl</a></span><a name="idx0013"></a></p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbook/CityRestrictedBean?wsdl" class="remote">http://localhost:8080/cookbook/CityRestrictedBean?wsdl</a></span><a name="idx0013"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbook/CityRestrictedBean?wsdl" class="remote">http://localhost:8080/cookbook/CityRestrictedBean?wsdl</a></span><a name="idx0014"></a></p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbook/CountryFullBean?wsdl" class="remote">http://localhost:8080/cookbook/CountryFullBean?wsdl</a></span><a name="idx0014"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbook/CountryFullBean?wsdl" class="remote">http://localhost:8080/cookbook/CountryFullBean?wsdl</a></span><a name="idx0015"></a></p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbook/CountryRestrictedBean?wsdl" class="remote">http://localhost:8080/cookbook/CountryRestrictedBean?wsdl</a></span><a name="idx0015"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbook/CountryRestrictedBean?wsdl" class="remote">http://localhost:8080/cookbook/CountryRestrictedBean?wsdl</a></span><a name="idx0016"></a></p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbook/ZipFullBean?wsdl" class="remote">http://localhost:8080/cookbook/ZipFullBean?wsdl</a></span><a name="idx0016"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbook/ZipFullBean?wsdl" class="remote">http://localhost:8080/cookbook/ZipFullBean?wsdl</a></span><a name="idx0017"></a></p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbook/ZipRestrictedBean?wsdl" class="remote">http://localhost:8080/cookbook/ZipRestrictedBean?wsdl</a></span><a name="idx0017"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbook/ZipRestrictedBean?wsdl" class="remote">http://localhost:8080/cookbook/ZipRestrictedBean?wsdl</a></span><a name="idx0018"></a></p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbook/StoreMultiBean?wsdl" class="remote">http://localhost:8080/cookbook/StoreMultiBean?wsdl</a></span><a name="idx0018"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbook/ModifyMultiBean?wsdl" class="remote">http://localhost:8080/cookbook/ModifyMultiBean?wsdl</a></span><a name="idx0019"></a></p>
 
 <p>Get the WADL description of the REST services under</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/application.wadl" class="remote">http://localhost:8080/cookbookServlets/REST/application.wadl</a></span><a name="idx0019"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/application.wadl" class="remote">http://localhost:8080/cookbookServlets/REST/application.wadl</a></span><a name="idx0020"></a></p>
 
 
 
@@ -1400,13 +1417,13 @@ yourself, for instance with
 
 <h4 id="hd001004005001">1.4.5.1&nbsp;List of all countries</h4>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/all" class="remote">http://localhost:8080/cookbookServlets/REST/city/all</a></span><a name="idx0020"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/all" class="remote">http://localhost:8080/cookbookServlets/REST/city/all</a></span><a name="idx0021"></a></p>
 
 
 
 <h4 id="hd001004005002">1.4.5.2&nbsp;City with the ID 1</h4>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/byId?id=1" class="remote">http://localhost:8080/cookbookServlets/REST/city/byId?id=1</a></span><a name="idx0021"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/byId?id=1" class="remote">http://localhost:8080/cookbookServlets/REST/city/byId?id=1</a></span><a name="idx0022"></a></p>
 
 
 
@@ -1430,7 +1447,7 @@ yourself, for instance with
 </div>
 <p>into</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/list" class="remote">http://localhost:8080/cookbookServlets/REST/city/list</a></span><a name="idx0022"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/list" class="remote">http://localhost:8080/cookbookServlets/REST/city/list</a></span><a name="idx0023"></a></p>
 
 <p>to get a list of all cities, but now sorted by the ID of their country 
 ascending, and then alphabetically by their name descending.</p>
@@ -1467,7 +1484,7 @@ ascending, and then alphabetically by their name descending.</p>
 </div>
 <p>into</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/list" class="remote">http://localhost:8080/cookbookServlets/REST/city/list</a></span><a name="idx0023"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/list" class="remote">http://localhost:8080/cookbookServlets/REST/city/list</a></span><a name="idx0024"></a></p>
 
 <p>to get a list of all cities, where the country name equals 
 &ldquo;<em>Italy</em>&rdquo; and the city&rsquo;s name does not begin 
@@ -1541,7 +1558,7 @@ private Country country;
 </div>
 <p>POST it into</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/list" class="remote">http://localhost:8080/cookbookServlets/REST/city/list</a></span><a name="idx0024"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/list" class="remote">http://localhost:8080/cookbookServlets/REST/city/list</a></span><a name="idx0025"></a></p>
 
 <p>to get a list of all cities in Italy and all other cities beginning with 
 &ldquo;l&rdquo; (regardless case), but not the one with ID 2.</p>
@@ -1563,7 +1580,7 @@ private Country country;
 </div>
 <p>into</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/store" class="remote">http://localhost:8080/cookbookServlets/REST/city/store</a></span><a name="idx0025"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/store" class="remote">http://localhost:8080/cookbookServlets/REST/city/store</a></span><a name="idx0026"></a></p>
 
 <p>to rename &ldquo;<em>Roma</em>&rdquo; to &ldquo;<em>Rome</em>&rdquo;. In 
 order to store a new city, use the same URL, but in input data leave the 
@@ -1595,6 +1612,273 @@ sequence.</p>
 
 
 
+<h4 id="hd001004005007">1.4.5.7&nbsp;Delete a record</h4>
+
+<p>Make a GET request to the following URL</p>
+
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/delete?id=8" class="remote">http://localhost:8080/cookbookServlets/REST/city/delete?id=8</a></span><a name="idx0027"></a></p>
+
+<p>to delete &ldquo;<code>Bologna</code>&rdquo;, assuming its ID was indeed 
+&ldquo;<code>8</code>&rdquo;. The result will be</p>
+
+<div class="code">
+<pre>
+<span class="hl kwa">&lt;result&gt;</span>OK<span class="hl kwa">&lt;/result&gt;</span>
+</pre>
+</div>
+
+
+<h4 id="hd001004005008">1.4.5.8&nbsp;Store multiple records in different tables</h4>
+
+<p>In many cases one use case will generate more than one object, and in 
+such a case we will want to store them either all together 
+(transactionally safe) or not at all. As far as REST calls go, our unit 
+of transaction is the call itself, thus we have to transport all objects 
+as parameters of the same operation.</p>
+
+<p>Azzyzt JEE Tools generate two stateless session beans for each table, 
+one for full, one for restricted access to records of that table, but so 
+far we have not seen anything for mixed access. The special stateless 
+session bean <code>ModifyMultiBean</code> fills that gap. It offers 
+three operations.</p>
+
+<p>POST the following XML</p>
+
+<div class="code">
+<pre>
+<span class="hl kwa">&lt;dtoes&gt;</span>
+   <span class="hl kwa">&lt;country&gt;</span>
+      <span class="hl kwa">&lt;id&gt;</span>-<span class="hl num">1</span><span class="hl kwa">&lt;/id&gt;</span>
+      <span class="hl kwa">&lt;name&gt;</span>France<span class="hl kwa">&lt;/name&gt;</span>
+   <span class="hl kwa">&lt;/country&gt;</span>
+   <span class="hl kwa">&lt;city&gt;</span>
+      <span class="hl kwa">&lt;countryId&gt;</span>-<span class="hl num">1</span><span class="hl kwa">&lt;/countryId&gt;</span>
+      <span class="hl kwa">&lt;id&gt;</span>-<span class="hl num">2</span><span class="hl kwa">&lt;/id&gt;</span>
+      <span class="hl kwa">&lt;name&gt;</span>Marseille<span class="hl kwa">&lt;/name&gt;</span>
+   <span class="hl kwa">&lt;/city&gt;</span>
+   <span class="hl kwa">&lt;city&gt;</span>
+      <span class="hl kwa">&lt;countryId&gt;</span>-<span class="hl num">1</span><span class="hl kwa">&lt;/countryId&gt;</span>
+      <span class="hl kwa">&lt;id&gt;</span>-<span class="hl num">3</span><span class="hl kwa">&lt;/id&gt;</span>
+      <span class="hl kwa">&lt;name&gt;</span>Paris<span class="hl kwa">&lt;/name&gt;</span>
+   <span class="hl kwa">&lt;/city&gt;</span>
+   <span class="hl kwa">&lt;city&gt;</span>
+      <span class="hl kwa">&lt;countryId&gt;</span>-<span class="hl num">1</span><span class="hl kwa">&lt;/countryId&gt;</span>
+      <span class="hl kwa">&lt;id&gt;</span>-<span class="hl num">4</span><span class="hl kwa">&lt;/id&gt;</span>
+      <span class="hl kwa">&lt;name&gt;</span>Rennes<span class="hl kwa">&lt;/name&gt;</span>
+   <span class="hl kwa">&lt;/city&gt;</span>
+<span class="hl kwa">&lt;/dtoes&gt;</span>
+</pre>
+</div>
+<p>into</p>
+
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/modifyMulti/storeMulti" class="remote">http://localhost:8080/cookbookServlets/REST/modifyMulti/storeMulti</a></span><a name="idx0028"></a></p>
+
+<p>to store a new country named &ldquo;<code>France</code>&rdquo; and three 
+of its cities, &ldquo;<code>Marseille</code>&rdquo;, 
+&ldquo;<code>Paris</code>&rdquo; and &ldquo;<code>Rennes</code>&rdquo;. 
+The result will be something like</p>
+
+<div class="code">
+<pre>
+<span class="hl kwa">&lt;dtoes&gt;</span>
+   <span class="hl kwa">&lt;country&gt;</span>
+      <span class="hl kwa">&lt;id&gt;</span><span class="hl num">6</span><span class="hl kwa">&lt;/id&gt;</span>
+      <span class="hl kwa">&lt;name&gt;</span>France<span class="hl kwa">&lt;/name&gt;</span>
+   <span class="hl kwa">&lt;/country&gt;</span>
+   <span class="hl kwa">&lt;city&gt;</span>
+      <span class="hl kwa">&lt;countryId&gt;</span><span class="hl num">6</span><span class="hl kwa">&lt;/countryId&gt;</span>
+      <span class="hl kwa">&lt;id&gt;</span><span class="hl num">16</span><span class="hl kwa">&lt;/id&gt;</span>
+      <span class="hl kwa">&lt;name&gt;</span>Marseille<span class="hl kwa">&lt;/name&gt;</span>
+   <span class="hl kwa">&lt;/city&gt;</span>
+   <span class="hl kwa">&lt;city&gt;</span>
+      <span class="hl kwa">&lt;countryId&gt;</span><span class="hl num">6</span><span class="hl kwa">&lt;/countryId&gt;</span>
+      <span class="hl kwa">&lt;id&gt;</span><span class="hl num">17</span><span class="hl kwa">&lt;/id&gt;</span>
+      <span class="hl kwa">&lt;name&gt;</span>Paris<span class="hl kwa">&lt;/name&gt;</span>
+   <span class="hl kwa">&lt;/city&gt;</span>
+   <span class="hl kwa">&lt;city&gt;</span>
+      <span class="hl kwa">&lt;countryId&gt;</span><span class="hl num">6</span><span class="hl kwa">&lt;/countryId&gt;</span>
+      <span class="hl kwa">&lt;id&gt;</span><span class="hl num">18</span><span class="hl kwa">&lt;/id&gt;</span>
+      <span class="hl kwa">&lt;name&gt;</span>Rennes<span class="hl kwa">&lt;/name&gt;</span>
+   <span class="hl kwa">&lt;/city&gt;</span>
+<span class="hl kwa">&lt;/dtoes&gt;</span>
+</pre>
+</div>
+<p>Note that &ldquo;<code>France</code>&rdquo; did not exist before this 
+call, thus we could not properly reference its ID (now 
+&ldquo;<code>6</code>&rdquo;, as seen in the result). Thus instead of 
+leaving the ID empty, we have used a <em>negative proxy ID</em>. In our 
+example we have used proxy IDs for all objects in the argument list. 
+This would not have been necessary. We need proxy IDs only when we 
+reference them from other objects in the same call. Thus we could as 
+well have written</p>
+
+<div class="code">
+<pre>
+<span class="hl kwa">&lt;dtoes&gt;</span>
+   <span class="hl kwa">&lt;country&gt;</span>
+      <span class="hl kwa">&lt;id&gt;</span>-<span class="hl num">1</span><span class="hl kwa">&lt;/id&gt;</span>
+      <span class="hl kwa">&lt;name&gt;</span>France<span class="hl kwa">&lt;/name&gt;</span>
+   <span class="hl kwa">&lt;/country&gt;</span>
+   <span class="hl kwa">&lt;city&gt;</span>
+      <span class="hl kwa">&lt;countryId&gt;</span>-<span class="hl num">1</span><span class="hl kwa">&lt;/countryId&gt;</span>
+      <span class="hl kwa">&lt;id&gt;&lt;/id&gt;</span>
+      <span class="hl kwa">&lt;name&gt;</span>Marseille<span class="hl kwa">&lt;/name&gt;</span>
+   <span class="hl kwa">&lt;/city&gt;</span>
+   <span class="hl kwa">&lt;city&gt;</span>
+      <span class="hl kwa">&lt;countryId&gt;</span>-<span class="hl num">1</span><span class="hl kwa">&lt;/countryId&gt;</span>
+      <span class="hl kwa">&lt;id&gt;&lt;/id&gt;</span>
+      <span class="hl kwa">&lt;name&gt;</span>Paris<span class="hl kwa">&lt;/name&gt;</span>
+   <span class="hl kwa">&lt;/city&gt;</span>
+   <span class="hl kwa">&lt;city&gt;</span>
+      <span class="hl kwa">&lt;countryId&gt;</span>-<span class="hl num">1</span><span class="hl kwa">&lt;/countryId&gt;</span>
+      <span class="hl kwa">&lt;id&gt;&lt;/id&gt;</span>
+      <span class="hl kwa">&lt;name&gt;</span>Rennes<span class="hl kwa">&lt;/name&gt;</span>
+   <span class="hl kwa">&lt;/city&gt;</span>
+<span class="hl kwa">&lt;/dtoes&gt;</span>
+</pre>
+</div>
+<p>Proxy IDs have no meaning outside of the call. The only requirements 
+are, that all defined proxy IDs within a call are distinct and that they 
+must have been defined in the object list before they can be used. 
+<code>ModifyMultiBean</code> does not reorder objects, it stores them in 
+the order they are given in the list of DTOs. Referencing a proxy ID 
+that has not yet been defined in the list, makes the whole call fail 
+with an <code>InvalidProxyIdException</code>, the transaction is rolled 
+back and nothing is stored at all.</p>
+
+
+
+<h4 id="hd001004005009">1.4.5.9&nbsp;Delete multiple records from different tables</h4>
+
+<p>The second operation in <code>ModifyMultiBean</code> deletes all in a 
+list of objects.</p>
+
+<p>POST the following XML</p>
+
+<div class="code">
+<pre>
+<span class="hl kwa">&lt;dtoes&gt;</span>
+   <span class="hl kwa">&lt;city&gt;</span>
+      <span class="hl kwa">&lt;id&gt;</span><span class="hl num">16</span><span class="hl kwa">&lt;/id&gt;</span>
+   <span class="hl kwa">&lt;/city&gt;</span>
+   <span class="hl kwa">&lt;city&gt;</span>
+      <span class="hl kwa">&lt;id&gt;</span><span class="hl num">17</span><span class="hl kwa">&lt;/id&gt;</span>
+   <span class="hl kwa">&lt;/city&gt;</span>
+   <span class="hl kwa">&lt;city&gt;</span>
+      <span class="hl kwa">&lt;id&gt;</span><span class="hl num">18</span><span class="hl kwa">&lt;/id&gt;</span>
+   <span class="hl kwa">&lt;/city&gt;</span>
+   <span class="hl kwa">&lt;country&gt;</span>
+      <span class="hl kwa">&lt;id&gt;</span><span class="hl num">6</span><span class="hl kwa">&lt;/id&gt;</span>
+   <span class="hl kwa">&lt;/country&gt;</span>
+<span class="hl kwa">&lt;/dtoes&gt;</span>
+</pre>
+</div>
+<p>into</p>
+
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/modifyMulti/deleteMulti" class="remote">http://localhost:8080/cookbookServlets/REST/modifyMulti/deleteMulti</a></span><a name="idx0029"></a></p>
+
+<p>Again the result will be</p>
+
+<div class="code">
+<pre>
+<span class="hl kwa">&lt;result&gt;</span>OK<span class="hl kwa">&lt;/result&gt;</span>
+</pre>
+</div>
+
+
+<h4 id="hd0010040050010">1.4.5.10&nbsp;Store and/or delete multiple records in different tables</h4>
+
+<p>The third operation in <code>ModifyMultiBean</code> is slightly more 
+complicated but also more powerful.</p>
+
+<p>POST the following XML</p>
+
+<div class="code">
+<pre>
+<span class="hl kwa">&lt;storedelete&gt;</span>
+   <span class="hl kwa">&lt;delete&gt;</span>
+      <span class="hl kwa">&lt;dtoes&gt;</span>
+         <span class="hl kwa">&lt;city&gt;</span>
+            <span class="hl kwa">&lt;id&gt;</span><span class="hl num">16</span><span class="hl kwa">&lt;/id&gt;</span>
+         <span class="hl kwa">&lt;/city&gt;</span>
+         <span class="hl kwa">&lt;city&gt;</span>
+            <span class="hl kwa">&lt;id&gt;</span><span class="hl num">17</span><span class="hl kwa">&lt;/id&gt;</span>
+         <span class="hl kwa">&lt;/city&gt;</span>
+         <span class="hl kwa">&lt;city&gt;</span>
+            <span class="hl kwa">&lt;id&gt;</span><span class="hl num">18</span><span class="hl kwa">&lt;/id&gt;</span>
+         <span class="hl kwa">&lt;/city&gt;</span>
+         <span class="hl kwa">&lt;country&gt;</span>
+            <span class="hl kwa">&lt;id&gt;</span><span class="hl num">6</span><span class="hl kwa">&lt;/id&gt;</span>
+         <span class="hl kwa">&lt;/country&gt;</span>
+      <span class="hl kwa">&lt;/dtoes&gt;</span>
+   <span class="hl kwa">&lt;/delete&gt;</span>
+   <span class="hl kwa">&lt;store&gt;</span>
+      <span class="hl kwa">&lt;dtoes&gt;</span>
+         <span class="hl kwa">&lt;country&gt;</span>
+            <span class="hl kwa">&lt;id&gt;</span>-<span class="hl num">1</span><span class="hl kwa">&lt;/id&gt;</span>
+            <span class="hl kwa">&lt;name&gt;</span>Egypt<span class="hl kwa">&lt;/name&gt;</span>
+         <span class="hl kwa">&lt;/country&gt;</span>
+         <span class="hl kwa">&lt;city&gt;</span>
+            <span class="hl kwa">&lt;countryId&gt;</span>-<span class="hl num">1</span><span class="hl kwa">&lt;/countryId&gt;</span>
+            <span class="hl kwa">&lt;id&gt;&lt;/id&gt;</span>
+            <span class="hl kwa">&lt;name&gt;</span>Assuan<span class="hl kwa">&lt;/name&gt;</span>
+         <span class="hl kwa">&lt;/city&gt;</span>
+         <span class="hl kwa">&lt;city&gt;</span>
+            <span class="hl kwa">&lt;countryId&gt;</span>-<span class="hl num">1</span><span class="hl kwa">&lt;/countryId&gt;</span>
+            <span class="hl kwa">&lt;id&gt;&lt;/id&gt;</span>
+            <span class="hl kwa">&lt;name&gt;</span>Cairo<span class="hl kwa">&lt;/name&gt;</span>
+         <span class="hl kwa">&lt;/city&gt;</span>
+      <span class="hl kwa">&lt;/dtoes&gt;</span>
+   <span class="hl kwa">&lt;/store&gt;</span>
+<span class="hl kwa">&lt;/storedelete&gt;</span>
+</pre>
+</div>
+<p>into</p>
+
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/modifyMulti/storeDeleteMulti" class="remote">http://localhost:8080/cookbookServlets/REST/modifyMulti/storeDeleteMulti</a></span><a name="idx0030"></a></p>
+
+<p>Make sure the first list, the list of objects to delete, contains the 
+exact IDs that you got in the last step, i.e. the country ID of 
+&ldquo;<code>France</code>&rdquo; and the IDs of its cities. The Result 
+will be something like</p>
+
+<div class="code">
+<pre>
+<span class="hl kwa">&lt;dtoes&gt;</span>
+   <span class="hl kwa">&lt;country&gt;</span>
+      <span class="hl kwa">&lt;id&gt;</span><span class="hl num">7</span><span class="hl kwa">&lt;/id&gt;</span>
+      <span class="hl kwa">&lt;name&gt;</span>Egypt<span class="hl kwa">&lt;/name&gt;</span>
+   <span class="hl kwa">&lt;/country&gt;</span>
+   <span class="hl kwa">&lt;city&gt;</span>
+      <span class="hl kwa">&lt;countryId&gt;</span><span class="hl num">7</span><span class="hl kwa">&lt;/countryId&gt;</span>
+      <span class="hl kwa">&lt;id&gt;</span><span class="hl num">19</span><span class="hl kwa">&lt;/id&gt;</span>
+      <span class="hl kwa">&lt;name&gt;</span>Assuan<span class="hl kwa">&lt;/name&gt;</span>
+   <span class="hl kwa">&lt;/city&gt;</span>
+   <span class="hl kwa">&lt;city&gt;</span>
+      <span class="hl kwa">&lt;countryId&gt;</span><span class="hl num">7</span><span class="hl kwa">&lt;/countryId&gt;</span>
+      <span class="hl kwa">&lt;id&gt;</span><span class="hl num">20</span><span class="hl kwa">&lt;/id&gt;</span>
+      <span class="hl kwa">&lt;name&gt;</span>Cairo<span class="hl kwa">&lt;/name&gt;</span>
+   <span class="hl kwa">&lt;/city&gt;</span>
+<span class="hl kwa">&lt;/dtoes&gt;</span>
+</pre>
+</div>
+<p>We have deleted all of &ldquo;<code>France</code>&rdquo; and created 
+&ldquo;<code>Egypt</code>&rdquo;, this time with two cities, 
+&ldquo;<code>Assuan</code>&rdquo; and &ldquo;<code>Cairo</code>&rdquo;.</p>
+
+<p>Of course there is no need to use proxy IDs, if you already know the IDs 
+of your objects and of their references. Thus you can use the same 
+operations to make updates. In fact you can mix creating new objects and 
+updating others, that already exist.</p>
+
+<p>Each of the two lists could have been left empty, reducing the operation 
+&ldquo;<code>storeDeletMulti()</code>&rdquo; to a more complicated 
+version of either &ldquo;<code>storeMulti()</code>&rdquo; or 
+&ldquo;<code>deleteMulti()</code>&rdquo;, or if both lists are empty, to 
+a very complicated no-op.</p>
+
+
+
 <h3 id="hd001004006">1.4.6&nbsp;Variants of the query specification</h3>
 
 <p>REST is just one way to access the services. The XML format of query 
@@ -1615,7 +1899,7 @@ as for REST.</p>
 
 <p>Azzyzt JEE Tools have their home on GitHub under</p>
 
-<p><span class="remote"><a href="https://github.com/amanessinger/azzyzt_jee_tools" class="remote">https://github.com/amanessinger/azzyzt_jee_tools</a></span><a name="idx0026"></a></p>
+<p><span class="remote"><a href="https://github.com/amanessinger/azzyzt_jee_tools" class="remote">https://github.com/amanessinger/azzyzt_jee_tools</a></span><a name="idx0031"></a></p>
 
 
 
@@ -1627,7 +1911,7 @@ Azzyzt JEE Tools is done with Eclipse.</p>
 
 <p>The recommended way to build Azzyzt JEE Tools, is to fork the project 
 from GitHub 
-(<span class="remote"><a href="https://github.com/amanessinger/azzyzt_jee_tools" class="remote">https://github.com/amanessinger/azzyzt_jee_tools</a></span><a name="idx0027"></a>) 
+(<span class="remote"><a href="https://github.com/amanessinger/azzyzt_jee_tools" class="remote">https://github.com/amanessinger/azzyzt_jee_tools</a></span><a name="idx0032"></a>) 
 and use the resulting working directory as an Eclipse workspace. Doing 
 so, you will end up with the following structure:</p>
 
@@ -1761,7 +2045,7 @@ runtime of your newly created server instance.</p>
 
 <p>For the purpose of generating code, Azzyzt JEE Tools make use of and 
 bundles a copy of 
-<span class="remote"><a href="http://www.stringtemplate.org/" class="remote">StringTemplate</a></span><a name="idx0028"></a>, 
+<span class="remote"><a href="http://www.stringtemplate.org/" class="remote">StringTemplate</a></span><a name="idx0033"></a>, 
 which is</p>
 
 <pre class="verbatim">
@@ -1797,7 +2081,7 @@ which is</p>
 </pre>
 
 <p>This documentation was created using 
-<span class="remote"><a href="http://deplate.sourceforge.net/" class="remote">Deplate</a></span><a name="idx0029"></a>.</p>
+<span class="remote"><a href="http://deplate.sourceforge.net/" class="remote">Deplate</a></span><a name="idx0034"></a>.</p>
 
 
 </body>

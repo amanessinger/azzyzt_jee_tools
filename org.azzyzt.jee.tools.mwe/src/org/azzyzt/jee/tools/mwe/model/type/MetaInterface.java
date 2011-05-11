@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -30,6 +30,8 @@ package org.azzyzt.jee.tools.mwe.model.type;
 
 public class MetaInterface extends MetaDeclaredType {
 
+	private String extraInterfaceAnnotationsText = "";
+	
 	public static MetaInterface forName(String packageName, String simpleName) {
 		MetaInterface result = getOrConstruct(null, packageName, simpleName);
 		return result;
@@ -69,5 +71,14 @@ public class MetaInterface extends MetaDeclaredType {
 	@Override
 	public int compareTo(MetaDeclaredType other) {
 		return getFqName().compareTo(other.getFqName());
+	}
+
+	public String getExtraInterfaceAnnotationsText() {
+		return extraInterfaceAnnotationsText;
+	}
+
+	public void setExtraInterfaceAnnotationsText(
+			String extraInterfaceAnnotationsText) {
+		this.extraInterfaceAnnotationsText = extraInterfaceAnnotationsText;
 	}
 }

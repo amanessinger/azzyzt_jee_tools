@@ -29,6 +29,7 @@ package org.azzyzt.jee.tools.mwe.builder;
 
 import java.util.List;
 
+import org.azzyzt.jee.tools.mwe.identifiers.ModelProperties;
 import org.azzyzt.jee.tools.mwe.identifiers.PackageTails;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
 import org.azzyzt.jee.tools.mwe.model.annotation.MetaAnnotationInstance;
@@ -68,12 +69,20 @@ public class EntityDtoConverterModelBuilder extends DerivedModelBuilder implemen
 			target.addReferencedForeignType(std.entityNotFoundException);
 			target.addReferencedForeignType(std.entityInstantiationException);
 			target.addReferencedForeignType(std.invalidIdException);
+			target.addReferencedForeignType(std.duplicateProxyIdException);
+			target.addReferencedForeignType(std.invalidProxyIdException);
 			target.addReferencedForeignType(me);
 			target.addReferencedForeignType(dto);
 			target.addReferencedForeignType(std.eaoBase);
 			target.addReferencedForeignType(std.entityBase);
+			target.addReferencedForeignType(std.typeMetaInfo);
+			if (me.isCombinedId()) {
+				target.addReferencedForeignType(me.getIdField().getFieldType());
+			}
 			
 			addGenericEaoField(target);
+			addNonInjectedTypeMetaInfoField(target);
+			addNonInjectedIdTranslatorField(target);
 			
 			// interface always needed for constructor
 			target.addReferencedForeignType(std.invocationRegistryInterface);
@@ -82,8 +91,8 @@ public class EntityDtoConverterModelBuilder extends DerivedModelBuilder implemen
 				addInvocationRegistryField(target);
 			}
 			
-			target.setProperty("entity", me);
-			target.setProperty("dto", dto);
+			target.setProperty(ModelProperties.ENTITY, me);
+			target.setProperty(ModelProperties.DTO, dto);
 			
 			List<MetaAssociationEndpoint> maes = me.getAssociationEndpoints();
 			for (MetaAssociationEndpoint mae : maes) {

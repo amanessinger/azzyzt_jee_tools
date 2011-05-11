@@ -1,0 +1,80 @@
+group javaModifyMultiGroup : javaGroup;
+
+@javaClass.extra_methods() ::= <<
+@Override
+<storeMultiHead()>
+<storeMultiBody()>
+@SuppressWarnings("rawtypes")
+@Override
+<deleteMultiHead()>
+<deleteMultiBody()>
+@Override
+<storeDeleteMultiHead()>
+<storeDeleteMultiBody()>
+>>
+
+@javaInterface.extra_methods() ::= <<
+<storeMultiHead()>;
+<deleteMultiHead()>;
+<storeDeleteMultiHead()>;
+>>
+
+storeMultiHead() ::= <<
+public List\<Dto\> storeMulti(List\<Dto\> dtos)
+    throws EntityNotFoundException, AccessDeniedException, InvalidArgumentException, 
+           InvalidIdException, DuplicateProxyIdException, InvalidProxyIdException, EntityInstantiationException
+>>
+
+deleteMultiHead() ::= <<
+public void deleteMulti(List\<Dto\> dtos)
+    throws EntityNotFoundException, AccessDeniedException, InvalidArgumentException, 
+           InvalidIdException, EntityInstantiationException
+>>
+
+storeDeleteMultiHead() ::= <<
+public List\<Dto\> storeDeleteMulti(StoreDelete storeDelete)
+    throws EntityNotFoundException, AccessDeniedException, InvalidArgumentException, 
+           InvalidIdException, DuplicateProxyIdException, InvalidProxyIdException, EntityInstantiationException
+>>
+
+storeMultiBody() ::= <<
+{
+    @SuppressWarnings("rawtypes")
+    Object[] resultArray = new MultiObjectSaver().store(
+        eao, invocationRegistry, tmi, 
+        (List) dtos
+    );
+    for (int i = 0; i \< dtos.size(); i++) {
+        dtos.set(i, (Dto)resultArray[i]);
+    }
+    return dtos;
+}
+
+>>
+
+deleteMultiBody() ::= <<
+{
+    new MultiObjectDeleter().delete(eao, tmi, (List) dtos);
+}
+
+>>
+
+storeDeleteMultiBody() ::= <<
+{
+    // delete
+    new MultiObjectDeleter().delete(eao, tmi, storeDelete.getDelete().getDtoes());
+    
+    // store
+    List\<Dto\> dtos = storeDelete.getStore().getDtoes();
+    @SuppressWarnings("rawtypes")
+    Object[] resultArray = new MultiObjectSaver().store(
+        eao, invocationRegistry, tmi, 
+        (List) dtos
+    );
+    for (int i = 0; i \< dtos.size(); i++) {
+        dtos.set(i, (Dto)resultArray[i]);
+    }
+    return dtos;
+}
+
+>>

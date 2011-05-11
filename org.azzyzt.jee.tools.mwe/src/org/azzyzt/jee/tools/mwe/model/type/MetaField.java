@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -45,8 +45,15 @@ public class MetaField implements Comparable<MetaField>, MetaAnnotatable {
     private MetaType fieldType;
     private MetaModifiers modifiers; 
 	private List<MetaAnnotationInstance> metaAnnotationInstances = new ArrayList<MetaAnnotationInstance>();
+	
+	/* 
+	 * Either use lists of actual annotation instances to put on getters/setters, or synthesize
+	 * the annotation texts and set that. You could even do both.
+	 */
 	private List<MetaAnnotationInstance> getterMetaAnnotationInstances = new ArrayList<MetaAnnotationInstance>();
+	private String getterMetaAnnotationText = "";
 	private List<MetaAnnotationInstance> setterMetaAnnotationInstances = new ArrayList<MetaAnnotationInstance>();
+	private String setterMetaAnnotationText = "";
     
 	// TODO Add field initializers. Use MetaValue for that. 
 	
@@ -206,6 +213,22 @@ public class MetaField implements Comparable<MetaField>, MetaAnnotatable {
 
 	public boolean isStringField() {
 		return getFieldType().equals(MetaType.getStandardtypes().meta_String);
+	}
+
+	public String getGetterMetaAnnotationText() {
+		return getterMetaAnnotationText;
+	}
+
+	public void setGetterMetaAnnotationText(String getterMetaAnnotationText) {
+		this.getterMetaAnnotationText = getterMetaAnnotationText;
+	}
+
+	public String getSetterMetaAnnotationText() {
+		return setterMetaAnnotationText;
+	}
+
+	public void setSetterMetaAnnotationText(String setterMetaAnnotationText) {
+		this.setterMetaAnnotationText = setterMetaAnnotationText;
 	}
 	
 }

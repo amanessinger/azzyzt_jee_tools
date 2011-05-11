@@ -9,10 +9,12 @@ import java.util.Map;
 import org.azzyzt.jee.runtime.conv.ConverterRawInterface;
 import org.azzyzt.jee.runtime.entity.EntityBase;
 import org.azzyzt.jee.runtime.exception.AccessDeniedException;
+import org.azzyzt.jee.runtime.exception.DuplicateProxyIdException;
 import org.azzyzt.jee.runtime.exception.EntityInstantiationException;
 import org.azzyzt.jee.runtime.exception.EntityNotFoundException;
 import org.azzyzt.jee.runtime.exception.InvalidArgumentException;
 import org.azzyzt.jee.runtime.exception.InvalidIdException;
+import org.azzyzt.jee.runtime.exception.InvalidProxyIdException;
 import org.azzyzt.jee.runtime.meta.InvocationRegistryInterface;
 import org.azzyzt.jee.runtime.meta.TypeMetaInfoInterface;
 
@@ -20,6 +22,7 @@ public class MultiObjectSaver {
 	
 	
 	private Map<Class<?>, ConverterRawInterface> converterForDto = new HashMap<Class<?>, ConverterRawInterface>();
+	private IdTranslator idTranslator = new IdTranslator();
 	
 	public Object[] store(
 			EaoBase eao, 
@@ -28,7 +31,8 @@ public class MultiObjectSaver {
 			@SuppressWarnings("rawtypes") List dtos
 			)
 	throws EntityNotFoundException, AccessDeniedException, InvalidArgumentException, 
-		   InvalidIdException, EntityInstantiationException
+		   InvalidIdException, DuplicateProxyIdException, InvalidProxyIdException, 
+		   EntityInstantiationException
 	{
 		Object[] result = new Object[dtos.size()];
 		
@@ -58,8 +62,13 @@ public class MultiObjectSaver {
 		} else {
 			Class<?> converterClass = tmi.getConverterForDto(dtoClass);
 			try {
-				Constructor<?> constructor = converterClass.getConstructor(EaoBase.class, InvocationRegistryInterface.class);
-				conv = (ConverterRawInterface)constructor.newInstance(eao, invocationRegistry);
+				Constructor<?> constructor = converterClass.getConstructor(
+						EaoBase.class, 
+						InvocationRegistryInterface.class, 
+						TypeMetaInfoInterface.class,
+						IdTranslator.class
+						);
+				conv = (ConverterRawInterface)constructor.newInstance(eao, invocationRegistry, tmi, idTranslator);
 				converterForDto.put(dtoClass, conv);
 			} catch (SecurityException e) {
 				throw new AccessDeniedException();

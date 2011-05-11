@@ -38,7 +38,7 @@ import org.azzyzt.jee.tools.mwe.feature.EntityDtoConverterGeneratorFeature;
 import org.azzyzt.jee.tools.mwe.feature.EntityModelBuilderFeature;
 import org.azzyzt.jee.tools.mwe.feature.Parameters;
 import org.azzyzt.jee.tools.mwe.feature.SingleTargetsGeneratorFeature;
-import org.azzyzt.jee.tools.mwe.feature.StoreMultiGeneratorFeature;
+import org.azzyzt.jee.tools.mwe.feature.ModifyMultiGeneratorFeature;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
 import org.azzyzt.jee.tools.mwe.util.Log;
 import org.azzyzt.jee.tools.mwe.util.Log.Verbosity;
@@ -125,11 +125,11 @@ public class StandardProjectStructureGenerator {
         numberOfSourcesGenerated = restGen.generate(parameters);
         logger.info(numberOfSourcesGenerated+" REST wrapper files generated");
         
-        StoreMultiGeneratorFeature smGen = new StoreMultiGeneratorFeature(masterModel);
+        ModifyMultiGeneratorFeature smGen = new ModifyMultiGeneratorFeature(masterModel);
         parameters = smGen.getParameters();
-        parameters.byName(StoreMultiGeneratorFeature.SOURCE_FOLDER_CLIENT_PROJECT).setValue(ejbClientSourceFolder);
-        parameters.byName(StoreMultiGeneratorFeature.SOURCE_FOLDER_EJB_PROJECT).setValue(ejbSourceFolder);
-        parameters.byName(StoreMultiGeneratorFeature.SOURCE_FOLDER_SERVLET_PROJECT).setValue(restSourceFolder);
+        parameters.byName(ModifyMultiGeneratorFeature.SOURCE_FOLDER_CLIENT_PROJECT).setValue(ejbClientSourceFolder);
+        parameters.byName(ModifyMultiGeneratorFeature.SOURCE_FOLDER_EJB_PROJECT).setValue(ejbSourceFolder);
+        parameters.byName(ModifyMultiGeneratorFeature.SOURCE_FOLDER_SERVLET_PROJECT).setValue(restSourceFolder);
         numberOfSourcesGenerated = smGen.generate(parameters);
         logger.info(numberOfSourcesGenerated+" store multi support files generated");
 	}
