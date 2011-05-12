@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 <meta name="language" content="en">
-<meta name="date" content="2011-05-11T17:38:30">
+<meta name="date" content="2011-05-12T12:08:42">
 <meta name="generator" content="deplate.rb 0.8.5">
 <link rel="start" href="readme.html" title="Frontpage">
 <link rel="chapter" href="readme.html#hd001" title="Azzyzt JEE Tools">
@@ -807,9 +807,9 @@ span.progress {
 Release 1.1.0
 </p></div>
 
-<p>Azzyzt JEE Tools is a collection of software tools designed to assist 
-software developers creating software using Java Enterprise Edition 6. 
-It is designed to be integrated into popular Java IDEs.</p>
+<p>Azzyzt JEE Tools is a collection of software tools helping software 
+developers to create software using Java Enterprise Edition 6. It is 
+designed to be integrated into popular Java IDEs.</p>
 
 <p>Copyright (c) 2011, Municipiality of Vienna, Austria Licensed under the 
 EUPL, Version 1.1 or subsequent versions</p>
@@ -833,14 +833,20 @@ EUPL, Version 1.1 or subsequent versions</p>
         type, converts them to the respective entities and stores them. The 
         resulting entities are then converted back and the list of DTOs is 
         returned.
-        <br class="itempara" />In case of interdependent objects, the numeric IDs of not -yet-existent 
+        <br class="itempara" />In case of interdependent objects, the numeric IDs of not-yet-existing 
         objects may be filled with unique negative numbers, so-called proxy IDs, 
         and references to other entities may use those proxy IDs. This works for 
         numeric IDs only, and it assumes that ID values can&rsquo;t be negative, 
-        but then, so does 
-        &ldquo;<a href="EntityBase.html">EntityBase</a><a name="idx001"></a>.couldBeIdValue()&rdquo;.
+        but then, so does &ldquo;EntityBase.couldBeIdValue()&rdquo;.
         <br class="itempara" />Use &ldquo;storeMulti()&rdquo; to store multiple objects of any kind in 
         one transaction.
+    </li>
+    <li class="Itemize-1 Itemize dash">
+        A new operation &ldquo;deleteMulti()&rdquo; takes a list of DTOs of any 
+        type. Only the ID values must be set. The corresponding objects in the 
+        database are deleted.
+        <br class="itempara" />Use &ldquo;deleteMulti()&rdquo; to delete multiple objects of any kind 
+        in one transaction.
     </li>
     <li class="Itemize-1 Itemize dash">
         A new operation &ldquo;storeDeleteMulti()&rdquo; takes two lists of DTOs 
@@ -870,19 +876,19 @@ EUPL, Version 1.1 or subsequent versions</p>
 
 <ol class="Ordered numeric">
     <li class="Ordered-1 Ordered">
-        a generator that creates so-called azzyzted projects. An azzyzted 
-        project is a collection of four projects, an Enterprise Application 
-        Project (EAR project), an Enterprise Java Beans project (EJB project), 
-        its client project (EJB client project) and a Dynamic Web Project 
-        (servlet project). The EJB project contains all business code, the 
-        servlet project contains REST wrappers around business methods, the EJB 
-        client project contains all data types visible to SOAP or REST clients. 
-        These three are called member projects. The EAR project is a container 
-        for the member projects.
+        a generator that creates so-called <em>azzyzted projects</em>. An 
+        azzyzted project is a collection of four projects, an Enterprise 
+        Application Project (EAR project), an Enterprise Java Beans project (EJB 
+        project), its client project (EJB client project) and a Dynamic Web 
+        Project (servlet project). The EJB project contains all business code, 
+        the servlet project contains REST wrappers around business methods, the 
+        EJB client project contains all data types visible to SOAP or REST 
+        clients. These three are called member projects. The EAR project is a 
+        container for the member projects.
         <br class="itempara" />The code generator uses a project base name, a package prefix and an 
         Eclipse runtime specification capable of supporting EJB 3.1, and from 
         that it creates the four projects. The EJB project is marked with a 
-        special &ldquo;azzyzted nature&rdquo;.
+        special &ldquo;<em>azzyzted nature</em>&rdquo;.
     </li>
     <li class="Ordered-1 Ordered">
         a generator that analyzes JPA entities in azzyzted projects, and uses 
@@ -901,7 +907,7 @@ EUPL, Version 1.1 or subsequent versions</p>
 <p>The structure of azzyzted projects and the structure of generated code 
 evolved from the work on 
 <span class="remote"><a href="http://programming.manessinger.com/tutorials/an-eclipse-glassfish-java-ee-6-tutorial/" class="remote">An 
-Eclipse / GlassFish / Java EE 6 Tutorial</a></span><a name="idx002"></a> 
+Eclipse / GlassFish / Java EE 6 Tutorial</a></span><a name="idx001"></a> 
 and on usage of that tutorial in a subsequent internal training class 
 for developers at the Municipiality of Vienna, Austria.</p>
 
@@ -938,7 +944,7 @@ command line utility.</p>
 
 <p>Eclipse is always understood as the generic bundle 
 <span class="remote"><a href="http://www.eclipse.org/downloads/" class="remote">Eclipse 
-IDE for Java EE Developers</a></span><a name="idx003"></a>. Other 
+IDE for Java EE Developers</a></span><a name="idx002"></a>. Other 
 distributions may contain the required plugins and may work, but they 
 were not tested.</p>
 
@@ -948,7 +954,10 @@ is available for Indigo, thus the configuration has not been tested.</p>
 <p>Using JBOSS AS 6.0 as a runtime, generated code mostly compiles, 
 <code>@Remote</code> annotations on generated service bean interfaces 
 have to be removed though, because JBOSS AS 6.0 only supports the JEE 6 
-web profile. No further testing with JBOSS AS 6.0 has been done yet.</p>
+web profile. No further testing with JBOSS AS 6.0 has been done yet. 
+Eventually, things like whether <code>@Remote</code> annotations are 
+generated or not, should become configurable, and there are other good 
+uses for configurability as well.</p>
 
 <p>The project generator (#1) already runs with Apache Geronimo v3.0-M1, 
 but due to lacking support for REST, generated applications do not 
@@ -963,10 +972,10 @@ runtimes, etc. Of course bug fixes are welcome as well.</p>
 
 <p>Azzyzt JEE Tools were developed by 
 <span class="remote"><a href="http://programming.manessinger.com" class="remote">Andreas 
-Manessinger</a></span><a name="idx004"></a> for the 
+Manessinger</a></span><a name="idx003"></a> for the 
 <span class="remote"><a href="http://www.wien.gv.at/english/administration/ict/" class="remote">Municipal 
 Department 14 - Automated Data Processing, Information and 
-Communications Technology</a></span><a name="idx005"></a> (MA 14) of the 
+Communications Technology</a></span><a name="idx004"></a> (MA 14) of the 
 City of Vienna, Austria</p>
 
 
@@ -982,13 +991,13 @@ update site. As of release 1.1.0, there are two update site URLs, one
 for the edition used by the Municipiality of Vienna, Austria, the other 
 a generic version. The URLs are</p>
 
-<p><span class="remote"><a href="http://azzyzt.manessinger.com/azzyzt_generic/" class="remote">http://azzyzt.manessinger.com/azzyzt_generic/</a></span><a name="idx006"></a></p>
+<p><span class="remote"><a href="http://azzyzt.manessinger.com/azzyzt_generic/" class="remote">http://azzyzt.manessinger.com/azzyzt_generic/</a></span><a name="idx005"></a></p>
 
-<p><span class="remote"><a href="http://azzyzt.manessinger.com/azzyzt_magwien/" class="remote">http://azzyzt.manessinger.com/azzyzt_magwien/</a></span><a name="idx007"></a></p>
+<p><span class="remote"><a href="http://azzyzt.manessinger.com/azzyzt_magwien/" class="remote">http://azzyzt.manessinger.com/azzyzt_magwien/</a></span><a name="idx006"></a></p>
 
 <p>All announcements of new versions will be published on</p>
 
-<p><span class="remote"><a href="http://www.azzyzt.org" class="remote">http://www.azzyzt.org</a></span><a name="idx008"></a></p>
+<p><span class="remote"><a href="http://www.azzyzt.org" class="remote">http://www.azzyzt.org</a></span><a name="idx007"></a></p>
 
 <p>When you don&rsquo;t see any features available from the update site, 
 try unticking &ldquo;Group items by category&rdquo;. There actually is a 
@@ -1057,6 +1066,15 @@ four projects:</p>
         <code>cookbookServlets</code>
     </li>
 </ul>
+
+<p>If you remember my 
+<span class="remote"><a href="http://programming.manessinger.com/tutorials/an-eclipse-glassfish-java-ee-6-tutorial/" class="remote">Eclipse 
+/ GlassFish / Java EE 6 Tutorial</a></span><a name="idx008"></a>, this 
+is the same application, all subsequent examples will reference the same 
+database and the same entities. In fact, if you want to follow the 
+examples given, it is a good idea to set up a Postgresql database using 
+the script from my tutorial. Then you&rsquo;ll be able to execute step 
+by step and will even have the same ID values.</p>
 
 <p>The EAR project is an Enterprise Application Project, basically a 
 wrapper around the three Java projects. The artifact of an EAR project 

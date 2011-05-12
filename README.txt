@@ -4,9 +4,9 @@
 
   !!! Release 1.1.0
 
-Azzyzt JEE Tools is a collection of software tools designed to assist 
-software developers creating software using Java Enterprise Edition 6. 
-It is designed to be integrated into popular Java IDEs.
+Azzyzt JEE Tools is a collection of software tools helping software 
+developers to create software using Java Enterprise Edition 6. It is 
+designed to be integrated into popular Java IDEs.
 
 Copyright (c) 2011, Municipiality of Vienna, Austria Licensed under the 
 EUPL, Version 1.1 or subsequent versions
@@ -27,14 +27,20 @@ EUPL, Version 1.1 or subsequent versions
     resulting entities are then converted back and the list of DTOs is 
     returned.
 
-    In case of interdependent objects, the numeric IDs of not 
-    -yet-existent objects may be filled with unique negative numbers, 
+    In case of interdependent objects, the numeric IDs of 
+    not-yet-existing objects may be filled with unique negative numbers, 
     so-called proxy IDs, and references to other entities may use those 
     proxy IDs. This works for numeric IDs only, and it assumes that ID 
     values can't be negative, but then, so does 
-    "EntityBase[1].couldBeIdValue()".
+    "EntityBase.couldBeIdValue()".
 
     Use "storeMulti()" to store multiple objects of any kind in one 
+    transaction.
+  * A new operation "deleteMulti()" takes a list of DTOs of any type. 
+    Only the ID values must be set. The corresponding objects in the 
+    database are deleted.
+
+    Use "deleteMulti()" to delete multiple objects of any kind in one 
     transaction.
   * A new operation "storeDeleteMulti()" takes two lists of DTOs of 
     any type. DTOs in the first list, the delete list, only need to have 
@@ -46,11 +52,11 @@ EUPL, Version 1.1 or subsequent versions
   * URLs for SOAP web services have changed. They are now based on the 
     project prefix. Thus what was
 
-    http://localhost:8080/ModifyMultiBeanService/ModifyMultiBean?wsdl[2]
+    http://localhost:8080/ModifyMultiBeanService/ModifyMultiBean?wsdl[1]
 
     is now
 
-    http://localhost:8080/cookbook/ModifyMultiBean?wsdl[3]
+    http://localhost:8080/cookbook/ModifyMultiBean?wsdl[2]
 
     or whatever host and portnumber are. The new URLs don't clash 
     between applications, and we get a distinct namespace per 
@@ -86,7 +92,7 @@ As of release 1.1.0, Azzyzt JEE Tools consists of three main parts:
   3. a runtime library of code used by generated applications.
 
 The structure of azzyzted projects and the structure of generated code 
-evolved from the work on An Eclipse / GlassFish / Java EE 6 Tutorial[4] 
+evolved from the work on An Eclipse / GlassFish / Java EE 6 Tutorial[3] 
 and on usage of that tutorial in a subsequent internal training class 
 for developers at the Municipiality of Vienna, Austria.
 
@@ -108,7 +114,7 @@ and Eclipse versions
   * Helios SR1, SR2
 
 Eclipse is always understood as the generic bundle Eclipse IDE for Java 
-EE Developers[5]. Other distributions may contain the required plugins 
+EE Developers[4]. Other distributions may contain the required plugins 
 and may work, but they were not tested.
 
 The plugins compile on Indigo M4, but currently no plugin for GlassFish 
@@ -117,7 +123,9 @@ is available for Indigo, thus the configuration has not been tested.
 Using JBOSS AS 6.0 as a runtime, generated code mostly compiles, @Remote 
 annotations on generated service bean interfaces have to be removed 
 though, because JBOSS AS 6.0 only supports the JEE 6 web profile. No 
-further testing with JBOSS AS 6.0 has been done yet.
+further testing with JBOSS AS 6.0 has been done yet. Eventually, things 
+like whether @Remote annotations are generated or not, should become 
+configurable, and there are other good uses for configurability as well.
 
 The project generator (#1) already runs with Apache Geronimo v3.0-M1, 
 but due to lacking support for REST, generated applications do not 
@@ -130,9 +138,9 @@ Contributions to Azzyzt JEE Tools are welcome. Possible areas include
 support for additional Java IDEs, additional patterns, additional 
 runtimes, etc. Of course bug fixes are welcome as well.
 
-Azzyzt JEE Tools were developed by Andreas Manessinger[6] for the 
+Azzyzt JEE Tools were developed by Andreas Manessinger[5] for the 
 Municipal Department 14 - Automated Data Processing, Information and 
-Communications Technology[7] (MA 14) of the City of Vienna, Austria
+Communications Technology[6] (MA 14) of the City of Vienna, Austria
 
 
 1.3 Using the software
@@ -148,13 +156,13 @@ update site. As of release 1.1.0, there are two update site URLs, one
 for the edition used by the Municipiality of Vienna, Austria, the other 
 a generic version. The URLs are
 
-http://azzyzt.manessinger.com/azzyzt_generic/[8]
+http://azzyzt.manessinger.com/azzyzt_generic/[7]
 
-http://azzyzt.manessinger.com/azzyzt_magwien/[9]
+http://azzyzt.manessinger.com/azzyzt_magwien/[8]
 
 All announcements of new versions will be published on
 
-http://www.azzyzt.org[10]
+http://www.azzyzt.org[9]
 
 When you don't see any features available from the update site, try 
 unticking "Group items by category". There actually is a category called 
@@ -202,6 +210,13 @@ the following four projects:
   * cookbookEJB
   * cookbookEJBClient
   * cookbookServlets
+
+If you remember my Eclipse / GlassFish / Java EE 6 Tutorial[3], this is 
+the same application, all subsequent examples will reference the same 
+database and the same entities. In fact, if you want to follow the 
+examples given, it is a good idea to set up a Postgresql database using 
+the script from my tutorial. Then you'll be able to execute step by step 
+and will even have the same ID values.
 
 The EAR project is an Enterprise Application Project, basically a 
 wrapper around the three Java projects. The artifact of an EAR project 
@@ -488,7 +503,7 @@ COUNTRY and ZIP. The result of code generation looks like this:
 The first step is to deploy the EAR project. Note please, that you have 
 to modify persistence.xml to refer to a jta-data-source, and that this 
 data source must be defined in the application server. The Eclipse / 
-GlassFish / Java EE 6 Tutorial[4] has a section titled "Specifying the 
+GlassFish / Java EE 6 Tutorial[3] has a section titled "Specifying the 
 database, testing, SQL log", that shows how to do this in GlassFish.
 
 Now that the application is deployed, you can call the services.
@@ -496,29 +511,29 @@ Now that the application is deployed, you can call the services.
 For each table/entity we get a DTO (EJBClient), two EJBs, one for full 
 (rw) and one for restricted (r) access, corresponding remote interfaces 
 in the EJBClient project, corresponding REST wrappers around the beans 
-(Servlet project). Additionally we get a ModifyMultiBean[11], a 
-ModifyMultiInterface[12] and a corresponding REST wrapper.
+(Servlet project). Additionally we get a ModifyMultiBean[10], a 
+ModifyMultiInterface[11] and a corresponding REST wrapper.
 
 Here are some URLs, assuming GlassFish runs on port 8080. Try for 
-yourself, for instance with soapUI[13]:
+yourself, for instance with soapUI[12]:
 
-http://localhost:8080/cookbook/CityFullBean?wsdl[14]
+http://localhost:8080/cookbook/CityFullBean?wsdl[13]
 
-http://localhost:8080/cookbook/CityRestrictedBean?wsdl[15]
+http://localhost:8080/cookbook/CityRestrictedBean?wsdl[14]
 
-http://localhost:8080/cookbook/CountryFullBean?wsdl[16]
+http://localhost:8080/cookbook/CountryFullBean?wsdl[15]
 
-http://localhost:8080/cookbook/CountryRestrictedBean?wsdl[17]
+http://localhost:8080/cookbook/CountryRestrictedBean?wsdl[16]
 
-http://localhost:8080/cookbook/ZipFullBean?wsdl[18]
+http://localhost:8080/cookbook/ZipFullBean?wsdl[17]
 
-http://localhost:8080/cookbook/ZipRestrictedBean?wsdl[19]
+http://localhost:8080/cookbook/ZipRestrictedBean?wsdl[18]
 
-http://localhost:8080/cookbook/ModifyMultiBean?wsdl[3]
+http://localhost:8080/cookbook/ModifyMultiBean?wsdl[2]
 
 Get the WADL description of the REST services under
 
-http://localhost:8080/cookbookServlets/REST/application.wadl[20]
+http://localhost:8080/cookbookServlets/REST/application.wadl[19]
 
 
 1.4.5 Examples for REST
@@ -528,13 +543,13 @@ http://localhost:8080/cookbookServlets/REST/application.wadl[20]
 1.4.5.1 List of all countries
 """""""""""""""""""""""""""""
 
-http://localhost:8080/cookbookServlets/REST/city/all[21]
+http://localhost:8080/cookbookServlets/REST/city/all[20]
 
 
 1.4.5.2 City with the ID 1
 """"""""""""""""""""""""""
 
-http://localhost:8080/cookbookServlets/REST/city/byId?id=1[22]
+http://localhost:8080/cookbookServlets/REST/city/byId?id=1[21]
 
 
 1.4.5.3 Sorted list of cities
@@ -555,7 +570,7 @@ POST the following XML document
 
 into
 
-http://localhost:8080/cookbookServlets/REST/city/list[23]
+http://localhost:8080/cookbookServlets/REST/city/list[22]
 
 to get a list of all cities, but now sorted by the ID of their country 
 ascending, and then alphabetically by their name descending.
@@ -589,7 +604,7 @@ POST the following XML document
 
 into
 
-http://localhost:8080/cookbookServlets/REST/city/list[23]
+http://localhost:8080/cookbookServlets/REST/city/list[22]
 
 to get a list of all cities, where the country name equals "Italy" and 
 the city's name does not begin with "r" (regardless case), but not the 
@@ -652,7 +667,7 @@ An example of a query specification with nested expressions is this:
 
 POST it into
 
-http://localhost:8080/cookbookServlets/REST/city/list[23]
+http://localhost:8080/cookbookServlets/REST/city/list[22]
 
 to get a list of all cities in Italy and all other cities beginning with 
 "l" (regardless case), but not the one with ID 2.
@@ -671,7 +686,7 @@ POST the following XML
 
 into
 
-http://localhost:8080/cookbookServlets/REST/city/store[24]
+http://localhost:8080/cookbookServlets/REST/city/store[23]
 
 to rename "Roma" to "Rome". In order to store a new city, use the same 
 URL, but in input data leave the id empty. In both cases the full XML 
@@ -699,7 +714,7 @@ The new id will have been automatically allocated from a sequence.
 
 Make a GET request to the following URL
 
-http://localhost:8080/cookbookServlets/REST/city/delete?id=8[25]
+http://localhost:8080/cookbookServlets/REST/city/delete?id=8[24]
 
 to delete "Bologna", assuming its ID was indeed "8". The result will be
 
@@ -746,7 +761,7 @@ POST the following XML
 
 into
 
-http://localhost:8080/cookbookServlets/REST/modifyMulti/storeMulti[26]
+http://localhost:8080/cookbookServlets/REST/modifyMulti/storeMulti[25]
 
 to store a new country named "France" and three of its cities, 
 "Marseille", "Paris" and "Rennes". The result will be something like
@@ -837,7 +852,7 @@ POST the following XML
 
 into
 
-http://localhost:8080/cookbookServlets/REST/modifyMulti/deleteMulti[27]
+http://localhost:8080/cookbookServlets/REST/modifyMulti/deleteMulti[26]
 
 Again the result will be
 
@@ -891,7 +906,7 @@ POST the following XML
 
 into
 
-http://localhost:8080/cookbookServlets/REST/modifyMulti/storeDeleteMulti[28]
+http://localhost:8080/cookbookServlets/REST/modifyMulti/storeDeleteMulti[27]
 
 Make sure the first list, the list of objects to delete, contains the 
 exact IDs that you got in the last step, i.e. the country ID of "France" 
@@ -949,7 +964,7 @@ REST.
 
 Azzyzt JEE Tools have their home on GitHub under
 
-https://github.com/amanessinger/azzyzt_jee_tools[29]
+https://github.com/amanessinger/azzyzt_jee_tools[28]
 
 
 1.5.2 Directory layout
@@ -960,7 +975,7 @@ projects were created using Eclipse Helios, and all development on
 Azzyzt JEE Tools is done with Eclipse.
 
 The recommended way to build Azzyzt JEE Tools, is to fork the project 
-from GitHub (https://github.com/amanessinger/azzyzt_jee_tools[29]) and 
+from GitHub (https://github.com/amanessinger/azzyzt_jee_tools[28]) and 
 use the resulting working directory as an Eclipse workspace. Doing so, 
 you will end up with the following structure:
 
@@ -1036,7 +1051,7 @@ to be continued
      permissions and limitations under the Licence.
 
 For the purpose of generating code, Azzyzt JEE Tools make use of and 
-bundles a copy of StringTemplate[30], which is
+bundles a copy of StringTemplate[29], which is
 
      Copyright (c) 2008, Terence Parr
      All rights reserved.
@@ -1068,37 +1083,36 @@ bundles a copy of StringTemplate[30], which is
      ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
      POSSIBILITY OF SUCH DAMAGE.
 
-This documentation was created using Deplate[31].
+This documentation was created using Deplate[30].
 
-[1] EntityBase.text
-[2] http://localhost:8080/ModifyMultiBeanService/ModifyMultiBean?wsdl
-[3] http://localhost:8080/cookbook/ModifyMultiBean?wsdl
-[4] http://programming.manessinger.com/tutorials/an-eclipse-glassfish-java-ee-6-tutorial/
-[5] http://www.eclipse.org/downloads/
-[6] http://programming.manessinger.com
-[7] http://www.wien.gv.at/english/administration/ict/
-[8] http://azzyzt.manessinger.com/azzyzt_generic/
-[9] http://azzyzt.manessinger.com/azzyzt_magwien/
-[10] http://www.azzyzt.org
-[11] ModifyMultiBean.text
-[12] ModifyMultiInterface.text
-[13] http://www.soapui.org
-[14] http://localhost:8080/cookbook/CityFullBean?wsdl
-[15] http://localhost:8080/cookbook/CityRestrictedBean?wsdl
-[16] http://localhost:8080/cookbook/CountryFullBean?wsdl
-[17] http://localhost:8080/cookbook/CountryRestrictedBean?wsdl
-[18] http://localhost:8080/cookbook/ZipFullBean?wsdl
-[19] http://localhost:8080/cookbook/ZipRestrictedBean?wsdl
-[20] http://localhost:8080/cookbookServlets/REST/application.wadl
-[21] http://localhost:8080/cookbookServlets/REST/city/all
-[22] http://localhost:8080/cookbookServlets/REST/city/byId?id=1
-[23] http://localhost:8080/cookbookServlets/REST/city/list
-[24] http://localhost:8080/cookbookServlets/REST/city/store
-[25] http://localhost:8080/cookbookServlets/REST/city/delete?id=8
-[26] http://localhost:8080/cookbookServlets/REST/modifyMulti/storeMulti
-[27] http://localhost:8080/cookbookServlets/REST/modifyMulti/deleteMulti
-[28] http://localhost:8080/cookbookServlets/REST/modifyMulti/storeDeleteMulti
-[29] https://github.com/amanessinger/azzyzt_jee_tools
-[30] http://www.stringtemplate.org/
-[31] http://deplate.sourceforge.net/
+[1] http://localhost:8080/ModifyMultiBeanService/ModifyMultiBean?wsdl
+[2] http://localhost:8080/cookbook/ModifyMultiBean?wsdl
+[3] http://programming.manessinger.com/tutorials/an-eclipse-glassfish-java-ee-6-tutorial/
+[4] http://www.eclipse.org/downloads/
+[5] http://programming.manessinger.com
+[6] http://www.wien.gv.at/english/administration/ict/
+[7] http://azzyzt.manessinger.com/azzyzt_generic/
+[8] http://azzyzt.manessinger.com/azzyzt_magwien/
+[9] http://www.azzyzt.org
+[10] ModifyMultiBean.text
+[11] ModifyMultiInterface.text
+[12] http://www.soapui.org
+[13] http://localhost:8080/cookbook/CityFullBean?wsdl
+[14] http://localhost:8080/cookbook/CityRestrictedBean?wsdl
+[15] http://localhost:8080/cookbook/CountryFullBean?wsdl
+[16] http://localhost:8080/cookbook/CountryRestrictedBean?wsdl
+[17] http://localhost:8080/cookbook/ZipFullBean?wsdl
+[18] http://localhost:8080/cookbook/ZipRestrictedBean?wsdl
+[19] http://localhost:8080/cookbookServlets/REST/application.wadl
+[20] http://localhost:8080/cookbookServlets/REST/city/all
+[21] http://localhost:8080/cookbookServlets/REST/city/byId?id=1
+[22] http://localhost:8080/cookbookServlets/REST/city/list
+[23] http://localhost:8080/cookbookServlets/REST/city/store
+[24] http://localhost:8080/cookbookServlets/REST/city/delete?id=8
+[25] http://localhost:8080/cookbookServlets/REST/modifyMulti/storeMulti
+[26] http://localhost:8080/cookbookServlets/REST/modifyMulti/deleteMulti
+[27] http://localhost:8080/cookbookServlets/REST/modifyMulti/storeDeleteMulti
+[28] https://github.com/amanessinger/azzyzt_jee_tools
+[29] http://www.stringtemplate.org/
+[30] http://deplate.sourceforge.net/
 

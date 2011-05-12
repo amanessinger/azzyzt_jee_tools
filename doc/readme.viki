@@ -8,9 +8,9 @@
 
  !!! Release {version}
 
-Azzyzt JEE Tools is a collection of software tools designed to assist
-software developers creating software using Java Enterprise Edition
-6. It is designed to be integrated into popular Java IDEs.
+Azzyzt JEE Tools is a collection of software tools helping software
+developers to create software using Java Enterprise Edition 6. It is
+designed to be integrated into popular Java IDEs.
 
 Copyright (c) 2011, Municipiality of Vienna, Austria
 Licensed under the EUPL, Version 1.1 or subsequent versions
@@ -32,14 +32,21 @@ Licensed under the EUPL, Version 1.1 or subsequent versions
    resulting entities are then converted back and the list of DTOs is
    returned. 
 
-   In case of interdependent objects, the numeric IDs of not
-   -yet-existent objects may be filled with unique negative numbers,
+   In case of interdependent objects, the numeric IDs of 
+   not-yet-existing objects may be filled with unique negative numbers,
    so-called proxy IDs, and references to other entities may use those
    proxy IDs. This works for numeric IDs only, and it assumes that ID
    values can't be negative, but then, so does
-   "EntityBase.couldBeIdValue()". 
+   "\EntityBase.couldBeIdValue()". 
 
    Use "storeMulti()" to store multiple objects of any kind in one
+   transaction.
+
+ - A new operation "deleteMulti()" takes a list of DTOs of any
+   type. Only the ID values must be set. The corresponding objects in
+   the database are deleted.
+
+   Use "deleteMulti()" to delete multiple objects of any kind in one
    transaction.
 
  - A new operation "storeDeleteMulti()" takes two lists of DTOs of any
@@ -68,20 +75,20 @@ Licensed under the EUPL, Version 1.1 or subsequent versions
 
 As of release {version}, Azzyzt JEE Tools consists of three main parts:
 
- # a generator that creates so-called azzyzted projects. An azzyzted
-   project is a collection of four projects, an Enterprise Application
-   Project (EAR project), an Enterprise Java Beans project (EJB
-   project), its client project (EJB client project) and a Dynamic Web
-   Project (servlet project). The EJB project contains all business
-   code, the servlet project contains REST wrappers around business
-   methods, the EJB client project contains all data types visible to
-   SOAP or REST clients. These three are called member projects. The
-   EAR project is a container for the member projects.
+ # a generator that creates so-called __azzyzted projects__. An
+   azzyzted project is a collection of four projects, an Enterprise
+   Application Project (EAR project), an Enterprise Java Beans project
+   (EJB project), its client project (EJB client project) and a
+   Dynamic Web Project (servlet project). The EJB project contains all
+   business code, the servlet project contains REST wrappers around
+   business methods, the EJB client project contains all data types
+   visible to SOAP or REST clients. These three are called member
+   projects. The EAR project is a container for the member projects.
 
    The code generator uses a project base name, a package prefix and
    an Eclipse runtime specification capable of supporting EJB
    3.1, and from that it creates the four projects. The EJB project is
-   marked with a special "azzyzted nature".
+   marked with a special "__azzyzted nature__".
 
  # a generator that analyzes JPA entities in azzyzted projects, and
    uses that information to create a base application. This
@@ -129,7 +136,10 @@ tested.
 Using JBOSS AS 6.0 as a runtime, generated code mostly compiles,
 ''@Remote'' annotations on generated service bean interfaces have to
 be removed though, because JBOSS AS 6.0 only supports the JEE 6 web
-profile. No further testing with JBOSS AS 6.0 has been done yet.
+profile. No further testing with JBOSS AS 6.0 has been done
+yet. Eventually, things like whether ''@Remote'' annotations are
+generated or not, should become configurable, and there are other good
+uses for configurability as well.
 
 The project generator (#1) already runs with Apache Geronimo v3.0-M1,
 but due to lacking support for REST, generated applications do not
@@ -212,6 +222,14 @@ with the following four projects:
  - ''cookbookEJB''
  - ''cookbookEJBClient''
  - ''cookbookServlets''
+
+If you remember my
+[[http://programming.manessinger.com/tutorials/an-eclipse-glassfish-java-ee-6-tutorial/][Eclipse / \GlassFish / Java EE 6 Tutorial]], this is the 
+same application, all subsequent examples will reference the same
+database and the same entities. In fact, if you want to follow the
+examples given, it is a good idea to set up a Postgresql database
+using the script from my tutorial. Then you'll be able to execute step
+by step and will even have the same ID values.
 
 The EAR project is an Enterprise Application Project, basically a
 wrapper around the three Java projects. The artifact of an EAR project
