@@ -5,6 +5,8 @@
 		<class>com.manessinger.cookbook.entity.City</class>
 		<class>com.manessinger.cookbook.entity.Country</class>
 		<class>com.manessinger.cookbook.entity.Zip</class>
+		<class>com.manessinger.cookbook.entity.Visit</class>
+		<class>com.manessinger.cookbook.entity.VisitId</class>
 		<properties>
 			<property name="eclipselink.logging.level" value="FINE"/>
 		</properties>

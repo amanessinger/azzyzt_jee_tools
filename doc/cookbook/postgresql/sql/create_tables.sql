@@ -2,66 +2,104 @@
 
 
 CREATE SEQUENCE country_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
 ALTER TABLE country_id_seq OWNER TO cookbookuser;
+
  
-CREATE TABLE country (
-    id INTEGER NOT NULL,
-    name CHARACTER VARYING(10) NOT NULL
+CREATE TABLE country
+(
+  id bigint NOT NULL,
+  create_timestamp timestamp without time zone,
+  create_user character varying(255),
+  modification_timestamp timestamp without time zone,
+  modification_user character varying(255),
+  name character varying(255),
+  CONSTRAINT country_pkey PRIMARY KEY (id)
+)
+WITH (
+  OIDS=FALSE
 );
 ALTER TABLE country OWNER TO cookbookuser;
-ALTER TABLE ONLY country
-    ADD CONSTRAINT country_name_idx UNIQUE (name);
-ALTER TABLE ONLY country
-    ADD CONSTRAINT country_pk PRIMARY KEY (id);
  
  
 CREATE SEQUENCE city_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
 ALTER TABLE city_id_seq OWNER TO cookbookuser;
  
-CREATE TABLE city (
-    id INTEGER NOT NULL,
-    country_id INTEGER NOT NULL,
-    name CHARACTER VARYING(30) NOT NULL
+CREATE TABLE city
+(
+  id bigint NOT NULL,
+  create_timestamp timestamp without time zone,
+  create_user character varying(255),
+  modification_timestamp timestamp without time zone,
+  modification_user character varying(255),
+  name character varying(255),
+  country_id bigint,
+  CONSTRAINT city_pkey PRIMARY KEY (id),
+  CONSTRAINT fk_city_country_id FOREIGN KEY (country_id)
+      REFERENCES country (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
 );
 ALTER TABLE city OWNER TO cookbookuser;
-ALTER TABLE ONLY city
-    ADD CONSTRAINT city_name_idx UNIQUE (name);
-ALTER TABLE ONLY city
-    ADD CONSTRAINT city_pk PRIMARY KEY (id);
-ALTER TABLE ONLY city
-    ADD CONSTRAINT city_country_fk FOREIGN KEY (country_id) 
-    REFERENCES country(id) ON DELETE CASCADE;
  
  
 CREATE SEQUENCE zip_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MAXVALUE
-    NO MINVALUE
-    CACHE 1;
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
 ALTER TABLE zip_id_seq OWNER TO cookbookuser;
  
-CREATE TABLE zip (
-    id INTEGER NOT NULL,
-    country_id INTEGER NOT NULL,
-    code CHARACTER VARYING(20) NOT NULL,
-    name CHARACTER VARYING(50) NOT NULL
+CREATE TABLE zip
+(
+  id bigint NOT NULL,
+  code character varying(255),
+  create_timestamp timestamp without time zone,
+  create_user character varying(255),
+  modification_timestamp timestamp without time zone,
+  modification_user character varying(255),
+  name character varying(255),
+  country_id bigint,
+  CONSTRAINT zip_pkey PRIMARY KEY (id),
+  CONSTRAINT fk_zip_country_id FOREIGN KEY (country_id)
+      REFERENCES country (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
 );
 ALTER TABLE zip OWNER TO cookbookuser;
-ALTER TABLE ONLY zip
-    ADD CONSTRAINT zip_name_idx UNIQUE (name);
-ALTER TABLE ONLY zip
-    ADD CONSTRAINT zip_pk PRIMARY KEY (id);
-ALTER TABLE ONLY zip
-    ADD CONSTRAINT zip_country_fk FOREIGN KEY (country_id) 
-    REFERENCES country(id) ON DELETE CASCADE;
+
+CREATE TABLE visit
+(
+  from_zip_area bigint NOT NULL,
+  to_city bigint NOT NULL,
+  create_timestamp timestamp without time zone,
+  create_user character varying(255),
+  modification_timestamp timestamp without time zone,
+  modification_user character varying(255),
+  number_of_visitors bigint NOT NULL,
+  CONSTRAINT visit_pkey PRIMARY KEY (from_zip_area, to_city),
+  CONSTRAINT fk_visit_from_zip_area FOREIGN KEY (from_zip_area)
+      REFERENCES zip (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT fk_visit_to_city FOREIGN KEY (to_city)
+      REFERENCES city (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE visit OWNER TO cookbookuser;

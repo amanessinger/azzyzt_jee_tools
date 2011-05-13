@@ -2,40 +2,39 @@ package com.manessinger.cookbook.entity;
 
 import java.io.Serializable;
 import java.util.Calendar;
-import java.util.List;
 
 import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.azzyzt.jee.runtime.annotation.CreateTimestamp;
 import org.azzyzt.jee.runtime.annotation.CreateUser;
+import org.azzyzt.jee.runtime.annotation.Internal;
 import org.azzyzt.jee.runtime.annotation.ModificationTimestamp;
 import org.azzyzt.jee.runtime.annotation.ModificationUser;
 import org.azzyzt.jee.runtime.entity.EntityBase;
 
+import com.manessinger.cookbook.entity.StandardEntityListeners;
+
 @Entity
+@Table(name="visit")
 @EntityListeners({StandardEntityListeners.class})
-public class Zip extends EntityBase<Long> implements Serializable {
+public class Visit extends EntityBase<VisitId> implements Serializable {
+
 	private static final long serialVersionUID = 1L;
-
-	@Id
-	@SequenceGenerator(name = "ZIP_ID_GENERATOR", sequenceName = "ZIP_ID_SEQ", allocationSize = 1)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ZIP_ID_GENERATOR")
-	private Long id;
-
-	private String code;
 	
-	private String name;
+	@EmbeddedId
+	private VisitId id;
 	
+	@Column(name="number_of_visitors")
+	private Long numberOfVisitors;
+
 	@CreateTimestamp
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="create_timestamp")
@@ -54,46 +53,27 @@ public class Zip extends EntityBase<Long> implements Serializable {
 	@Column(name="modification_user")
 	private String modificationUser;
 
-	// bi-directional many-to-one association to Country
-	@ManyToOne
-	private Country country;
-
-    @OneToMany(mappedBy="fromZipArea")
-	private List<Visit> visits;
-    
-	public Zip() {
+	public VisitId getId() {
+		if (id == null) {
+			return null;
+		}
+		VisitId result = new VisitId(id.getFromZipArea(), id.getToCity());
+		return result;
 	}
 
-	public Long getId() {
-		return this.id;
+	public void setId(VisitId id) {
+		if (id == null) {
+			return;
+		}
+		this.id = new VisitId(id.getFromZipArea(), id.getToCity());
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public Long getNumberOfVisitors() {
+		return numberOfVisitors;
 	}
 
-	public String getCode() {
-		return this.code;
-	}
-
-	public void setCode(String code) {
-		this.code = code;
-	}
-
-	public String getName() {
-		return this.name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public Country getCountry() {
-		return this.country;
-	}
-
-	public void setCountry(Country country) {
-		this.country = country;
+	public void setNumberOfVisitors(Long numberOfVisitors) {
+		this.numberOfVisitors = numberOfVisitors;
 	}
 
 	public Calendar getCreateTimestamp() {
@@ -128,11 +108,27 @@ public class Zip extends EntityBase<Long> implements Serializable {
 		this.modificationUser = modificationUser;
 	}
 
-	public List<Visit> getVisits() {
-		return visits;
+	@Internal @ManyToOne
+	@JoinColumn(name="from_zip_area", referencedColumnName="id", insertable=false, updatable=false)
+	private Zip fromZipArea;
+	
+	@Internal @ManyToOne
+	@JoinColumn(name="to_city", referencedColumnName="id", insertable=false, updatable=false)
+	private City toCity;
+
+	public Zip getFromZipArea() {
+		return fromZipArea;
 	}
 
-	public void setVisits(List<Visit> visits) {
-		this.visits = visits;
+	public void setFromZipArea(Zip fromZipArea) {
+		this.fromZipArea = fromZipArea;
+	}
+
+	public City getToCity() {
+		return toCity;
+	}
+
+	public void setToCity(City toCity) {
+		this.toCity = toCity;
 	}
 }

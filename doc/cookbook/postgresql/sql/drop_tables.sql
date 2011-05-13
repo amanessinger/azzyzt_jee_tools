@@ -1,5 +1,6 @@
 -- Database: cookbookdb
 
+DROP TABLE visit;
 DROP TABLE zip;
 DROP TABLE city;
 DROP TABLE country;

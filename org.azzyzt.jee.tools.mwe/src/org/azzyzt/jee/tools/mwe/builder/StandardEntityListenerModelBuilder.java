@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -42,6 +42,8 @@ public class StandardEntityListenerModelBuilder extends DerivedModelBuilder impl
 	public MetaModel build() {
 		
 		MetaClass target = null;
+		boolean needsDate = false;
+		boolean needsCalendar = false;
 		
 		for (MetaEntity me : masterModel.getTargetEntities()) {
 
@@ -64,10 +66,45 @@ public class StandardEntityListenerModelBuilder extends DerivedModelBuilder impl
 				target.addReferencedForeignType(std.dateFieldType);
 			}
 			
+			// we may need to reference Date
+			if (!needsDate) {
+				if (me.isUsingCreateTimestampField()) {
+					if (me.getCreateTimestampField().isDateField()) {
+						needsDate = true;
+					}
+				}
+				if (!needsDate && me.isUsingModificationTimestampField()) {
+					if (me.getModificationTimestampField().isDateField()) {
+						needsDate = true;
+					}
+				}
+			}
+			
+			// we may need to reference Calendar
+			if (!needsCalendar) {
+				if (me.isUsingCreateTimestampField()) {
+					if (me.getCreateTimestampField().isCalendarField()) {
+						needsCalendar = true;
+					}
+				}
+				if (!needsCalendar && me.isUsingModificationTimestampField()) {
+					if (me.getModificationTimestampField().isCalendarField()) {
+						needsCalendar = true;
+					}
+				}
+			}
+			
 			// add a pseudo-field that we can use in the template
 			MetaField mf = new MetaField(target, me.getLcFirstSimpleName());
 			mf.setFieldType(me);
 			target.addField(mf);
+		}
+		
+		if (needsDate) {
+			target.addReferencedForeignType(std.javaUtilDate);
+		}
+		if (needsCalendar) {
+			target.addReferencedForeignType(std.javaUtilCalendar);
 		}
 		
 		return targetModel;
