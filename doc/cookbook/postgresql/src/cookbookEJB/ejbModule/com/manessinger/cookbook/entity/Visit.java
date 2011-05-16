@@ -109,11 +109,11 @@ public class Visit extends EntityBase<VisitId> implements Serializable {
 	}
 
 	@Internal @ManyToOne
-	@JoinColumn(name="from_zip_area", referencedColumnName="id", insertable=false, updatable=false)
+	@JoinColumn(name="from_zip_area", insertable=false, updatable=false)
 	private Zip fromZipArea;
 	
 	@Internal @ManyToOne
-	@JoinColumn(name="to_city", referencedColumnName="id", insertable=false, updatable=false)
+	@JoinColumn(name="to_city", insertable=false, updatable=false)
 	private City toCity;
 
 	public Zip getFromZipArea() {

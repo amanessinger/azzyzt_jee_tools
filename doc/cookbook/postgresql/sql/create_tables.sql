@@ -13,10 +13,10 @@ ALTER TABLE country_id_seq OWNER TO cookbookuser;
 CREATE TABLE country
 (
   id bigint NOT NULL,
-  create_timestamp timestamp without time zone,
-  create_user character varying(255),
-  modification_timestamp timestamp without time zone,
-  modification_user character varying(255),
+  create_timestamp timestamp without time zone DEFAULT now(),
+  create_user character varying(255) DEFAULT 'anonymous'::character varying,
+  modification_timestamp timestamp without time zone DEFAULT now(),
+  modification_user character varying(255) DEFAULT 'anonymous'::character varying,
   name character varying(255),
   CONSTRAINT country_pkey PRIMARY KEY (id)
 )
@@ -37,10 +37,10 @@ ALTER TABLE city_id_seq OWNER TO cookbookuser;
 CREATE TABLE city
 (
   id bigint NOT NULL,
-  create_timestamp timestamp without time zone,
-  create_user character varying(255),
-  modification_timestamp timestamp without time zone,
-  modification_user character varying(255),
+  create_timestamp timestamp without time zone DEFAULT now(),
+  create_user character varying(255) DEFAULT 'anonymous'::character varying,
+  modification_timestamp timestamp without time zone DEFAULT now(),
+  modification_user character varying(255) DEFAULT 'anonymous'::character varying,
   name character varying(255),
   country_id bigint,
   CONSTRAINT city_pkey PRIMARY KEY (id),
@@ -66,10 +66,10 @@ CREATE TABLE zip
 (
   id bigint NOT NULL,
   code character varying(255),
-  create_timestamp timestamp without time zone,
-  create_user character varying(255),
-  modification_timestamp timestamp without time zone,
-  modification_user character varying(255),
+  create_timestamp timestamp without time zone DEFAULT now(),
+  create_user character varying(255) DEFAULT 'anonymous'::character varying,
+  modification_timestamp timestamp without time zone DEFAULT now(),
+  modification_user character varying(255) DEFAULT 'anonymous'::character varying,
   name character varying(255),
   country_id bigint,
   CONSTRAINT zip_pkey PRIMARY KEY (id),
@@ -86,10 +86,10 @@ CREATE TABLE visit
 (
   from_zip_area bigint NOT NULL,
   to_city bigint NOT NULL,
-  create_timestamp timestamp without time zone,
-  create_user character varying(255),
-  modification_timestamp timestamp without time zone,
-  modification_user character varying(255),
+  create_timestamp timestamp without time zone DEFAULT now(),
+  create_user character varying(255) DEFAULT 'anonymous'::character varying,
+  modification_timestamp timestamp without time zone DEFAULT now(),
+  modification_user character varying(255) DEFAULT 'anonymous'::character varying,
   number_of_visitors bigint NOT NULL,
   CONSTRAINT visit_pkey PRIMARY KEY (from_zip_area, to_city),
   CONSTRAINT fk_visit_from_zip_area FOREIGN KEY (from_zip_area)
