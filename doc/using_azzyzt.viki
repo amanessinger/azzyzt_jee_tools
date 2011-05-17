@@ -58,42 +58,56 @@ therein.
 
 #Verbatim <<---
 doc/cookbook
+|-- oracle
+|   |-- README.txt
+|   `-- sql
+|       |-- create_tables.sql
+|       |-- drop_tables.sql
+|       `-- initialize_data.sql
 |-- postgresql
 |   |-- README.txt
-|   |-- sql
-|   |   |-- create_cookbook_db.sql
-|   |   |-- create_cookbook__user.sql
-|   |   |-- create_tables.sql
-|   |   |-- drop_tables.sql
-|   |   `-- initialize_data.sql
-|   `-- src
-|       |-- cookbookEJB
-|       |   `-- ejbModule
-|       |       |-- com
-|       |       |   `-- manessinger
-|       |       |       `-- cookbook
-|       |       |           `-- entity
-|       |       |               |-- City.java
-|       |       |               |-- Country.java
-|       |       |               |-- Visit.java
-|       |       |               `-- Zip.java
-|       |       `-- META-INF
-|       |           `-- persistence.xml
-|       `-- cookbookEJBClient
-|           `-- ejbModule
-|               `-- com
-|                   `-- manessinger
-|                       `-- cookbook
-|                           `-- entity
-|                               `-- VisitId.java
-`-- README.txt
+|   `-- sql
+|       |-- create_cookbook_db.sql
+|       |-- create_cookbook__user.sql
+|       |-- create_tables.sql
+|       |-- drop_tables.sql
+|       `-- initialize_data.sql
+|-- README.txt
+`-- src
+    |-- cookbookEJB
+    |   `-- ejbModule
+    |       |-- com
+    |       |   `-- manessinger
+    |       |       `-- cookbook
+    |       |           `-- entity
+    |       |               |-- City.java
+    |       |               |-- Country.java
+    |       |               |-- Visit.java
+    |       |               `-- Zip.java
+    |       `-- META-INF
+    |           `-- persistence.xml
+    `-- cookbookEJBClient
+        `-- ejbModule
+            `-- com
+                `-- manessinger
+                    `-- cookbook
+                        `-- entity
+                            `-- VisitId.java
 ---
 
 On the same level as ''README.txt'' you find one directory for each
-database that the tutorial supports. Each database subdirectoty
-contains a set of SQL scripts to create the database user, the
-database, the schema objects (tables and sequences), to initialize the
-tables, and finally to drop the schema objects if you want to start over.
+database that the tutorial supports. Note, it's not that Java EE 6 or
+GlassFish or Azzyzt don't support other databases, it's just that I've
+not tested the tutorial with anything else.
+
+Each database subdirectory contains a set of SQL instructions on how
+to create the database user, the database, and scripts to create the
+schema objects (tables and sequences), to initialize the tables, and
+finally to drop the schema objects if you want to start over.
+
+Furthermore there is a directory ''src'', that contains the sources of
+entity classes and a ''persistence.xml'', that already references
+these classes. More about that in the next couple of sections.
 
 
 *** Creating an azzyzted project
@@ -117,15 +131,17 @@ The package name is actually a prefix as well. All generated Java
 packages will be below this prefix.
 
 The target runtime is a list of all runtimes used in defined server
-instances. Thus if you have two servers running, one for \GlassFish
-3.01, one for 3.1, you will see a list of two runtimes. Choose one of
-them.
+instances. Thus if you have two servers supporting Java EE 6 running
+or at least defined in Eclipse, one for \GlassFish 3.01, one for 3.1,
+you will see a list of two runtimes. Choose one of them.
 
 If the list of target runtimes is empty, then you have not yet defined
 a server. Do so from the Servers view with "__New / Server__".
 
-If for example the project base name is "''cookbook''", you will end up
-with the following four projects:
+In the context of this tutorial, the project base name is
+"''cookbook''", the package name is
+"''com.manessinger.cookbook''". Try this and you will end up with the
+following four projects:
 
  - ''cookbookEAR''
  - ''cookbookEJB''
@@ -134,8 +150,8 @@ with the following four projects:
 
 The EAR project is an Enterprise Application Project, basically a
 wrapper around the three Java projects. The artifact of an EAR project
-is an enterprise archive, for instance "''cookbook.ear''", and this is
-the deployable application.
+is an enterprise archive, for instance "''cookbookEAR.ear''", and this
+is the deployable application.
 
 "''cookbookEJB''" is where we put all application functionality,
 "''cookbookEJBClient''" is the EJB client project, its artifact could
@@ -158,8 +174,8 @@ the EJB and EJBClient projects the other source folder is
 "''ejbModule''", for the Servlets project it is "''src''". These
 source folders are for manually written code.
 
-If for example the package name was "''com.manessinger.cookbook''",
-the following directories and files will be generated initially:
+In our case the following directories and files will be generated
+initially:
 
 #Verbatim <<---
 cookbookEJB
@@ -236,17 +252,22 @@ class of the table's primary key.
 There are two ways to create entities:
 
  - For a first cut you can choose to let Eclipse generate
-   entities. Dali, the mapping tool, comes with a wizard that lets you
-   choose a connection (defined in the Datasource Explorer view with
-   "__Database Connections / New__"), and it then analyzes tables
-   defined in the corresponding database schema. Start the wizard via
-   "__JPA Tools / Generate Entities from Tables__" from the EJB
-   project's context menu.
+   entities. Dali, the mapping tool, comes with a wizard that you can
+   run on the connection associated with an EJB project. In order to
+   do this, the connection must have been defined in the Datasource
+   Explorer view with "__Database Connections / New__" and it must
+   have been associated with the EJB project via "__Properties / Java
+   Persistence / Connection__".
+
+   The wizard analyzes tables defined in the corresponding database
+   schema. Start the wizard via "__JPA Tools / Generate Entities from
+   Tables__" from the EJB project's context menu.
 
    In this graphical tool you can choose the tables to be mapped,
    create associations and/or choose from those automatically
    discovered, set defaults for the mapping of all tables, and finally
-   specify the mappings on a per-table basis.
+   specify the mappings on a per-table basis. You can even specify for
+   the generated entities to extend the required superclass.
 
    This is the preferred way if the database already exists. The only
    problem is, that the wizard can't properly cope with ''@\ManyToMany''
@@ -261,7 +282,18 @@ There are two ways to create entities:
    from Entities__", again from the EJB project's context menu. Make
    sure that the EJB project is already associated with a database
    connection. If not, open the properties of the EJB project and
-   choose a connection under "__Java Persistence / Connection__".
+   choose a connection under "__Java Persistence / Connection__". I'm
+   sorry to say that this may fail (due to tool errors) in some
+   perfectly legal cases as well, and one of those cases, the mapping
+   of a many-to-many association where the join table has additional
+   attributes and does not feature a separate id, is part of the
+   tutorial. 
+
+Whichever way you go, be prepared to have to do some manual work in
+this phase. Those problems have been in Dali for quite some time and I
+have not seen any progress in a year. On the other hand, creating the
+entities or database schemata is definitely not in the scope of Azzyzt
+JEE Tools. So far my hopes are on Eclipse Indigo :)
 
 Note please, that __Azzyzted Modeling With Entities__ only supports mapping
 annotations on fields, not on accessor methods. This is not a deeply
@@ -297,17 +329,258 @@ entity fields:
       passed on via the standard
       ''javax.transaction.TransactionSynchronizationRegistry''
 
-      As of release {version} this is only partially implemented. It works
-      for REST but not for SOAP and CORBA, and from a service accessed
-      via REST, it currently wouldn't be passed on to backend services
-      accessed via REST or CORBA. The crucial knowledge about how to
-      extract user information from a
+      As of release {version} this is only partially implemented. It
+      works for REST but not for SOAP and CORBA, and from a service
+      accessed via REST, it currently wouldn't be passed on to backend
+      services accessed via REST or SOAP. The crucial knowledge about
+      how to extract user information from a
       ''javax.interceptor.InvocationContext'' is left to a standalone
       EJB that I call a \SiteAdapter. Azzyzt comes with a site adapter
       that uses information supplied in an HTTP header called
       "''x-authenticate-userid''", thus it relies on some
       authenticating portal or gateway in front of the application
-      server.
+      server. I admit that here's definitely potential for
+      configurability :)
+
+*** Sample entities
+
+Remember the folder ''doc/cookbook/src''? For your convenience I have
+already provided entities and a ''persistence.xml'', that match the
+sample databases.
+
+Note that the entities work with Postgresql as well as with
+Oracle. There is nothing that prevents you from writing entities
+specific to a certain database system, but on the other hand you
+should not need to. Try to keep database-agnostic if you can, it gives
+you one dependency less to care about.
+
+#Verbatim <<---
+doc/cookbook/src
+|-- cookbookEJB
+|   `-- ejbModule
+|       |-- com
+|       |   `-- manessinger
+|       |       `-- cookbook
+|       |           `-- entity
+|       |               |-- City.java
+|       |               |-- Country.java
+|       |               |-- Visit.java
+|       |               `-- Zip.java
+|       `-- META-INF
+|           `-- persistence.xml
+`-- cookbookEJBClient
+    `-- ejbModule
+        `-- com
+            `-- manessinger
+                `-- cookbook
+                    `-- entity
+                        `-- VisitId.java
+---
+
+In order to use the entities, just copy the two folders
+
+ - ''cookbookEJB''
+ - ''cookbookEJBClient''
+
+into your workspace and then refresh the projects in Eclipse. Most
+likely an error symbol will be shown on the EJB project. Don't worry,
+use "__Project / Clean ... / Clean all projects__" and it will go
+away. I believe this to be an error in Eclipse.
+
+The sample database is pretty simple. We have have countries, cities,
+zips and visits from a zip code area to a certain city. A __Country__ has
+cities and each __City__ is in a certain country. A country has a
+number of __Zip__ areas and each ZIP area belongs to a certain
+country. ZIPs don't necessarily correspond to cities. __Country__,
+__City__ and __Zip__ are easy cases. The corresponding tables each
+have an ID taken from a sequence, and the only relationships that we
+need to map, can be modeled using ''\@OneToMany'' and ''\@ManyToOne''.
+
+**** A complicated association
+
+__Visit__ is a more complicated case. It maps a many-to-many
+association between __City__ and __Zip__. A city can be the target of
+visits from many ZIP areas and different people from a certain ZIP area will
+visit many cities.
+
+Although JPA supports ''\@ManyToMany'', we can't use
+it. ''\@ManyToMany'' assumes a simple join table containing no extra
+attributes. In such a case, the table would not need to be mapped at
+all, we would just have to map the ''\@ManyToMany'' associations in
+__City__ and __Zip__.
+
+When a join table has additional attributes, you always need to map it
+as an entity. This is easiest when it has its own ID attribute,
+preferrably taken from a sequence as well. Then you just have to treat
+it like any other entity.
+
+Unfortunately both things are rare in legacy databases. Join tables
+frequently have additional attributes, and teh concept of an extra ID
+on the join table looks extremely alient outside the realm of
+object-relational mapping.
+
+To cover this common and not well documented case (at least it took me
+some time to find anything on the Internet and figure it out),
+__Visit__ has an extra attribute ''Long numberOfVisitors'' that acts
+as a counter. Think of a system where we have to collect some
+anonymized statistics about visits.
+
+The corresponding database table has no explicit ID, thus we have to
+use the idiom of an __embedded ID__. The embedded ID is a separate
+class __\VisitId__ in the client project. It's in the client project,
+because we will have to pass it around as parameter.
+
+Look at the class ''Visit'' and note that it has an ID defined as
+
+#Code id=EmbeddedId syntax=Java <<---
+@EmbeddedId private VisitId id;
+---
+
+with the getter and setter defined like
+
+#Code id=EmbeddedIdGetterSetter syntax=Java<<---
+public VisitId getId() {
+    if (id == null) {
+        return null;
+    }
+    VisitId result = new VisitId(id.getFromZipArea(), id.getToCity());
+    return result;
+}
+
+public void setId(VisitId id) {
+    if (id == null) {
+        return;
+    }
+    this.id = new VisitId(id.getFromZipArea(), id.getToCity());
+}
+---
+
+Additionally we have two ''\@ManyToOne'' associations.
+
+#Code id=VisitAssociations syntax=Java <<---
+@Internal @ManyToOne
+@JoinColumn(name="from_zip_area", insertable=false, updatable=false)
+private Zip fromZipArea;
+
+@Internal @ManyToOne
+@JoinColumn(name="to_city", insertable=false, updatable=false)
+private City toCity;
+---
+
+We have explicitly named the join columns, because their names can't
+be guessed automatically by JPA. We have also marked them as neither
+insertable nor updatable, because the attributes that get actually
+written to the database are inside the embedded ID class ''VisitId''.
+
+We have also used Azzyzt's ''@Internal'' annotation, thus these
+association attributes will not be contained in generated DTOs (but
+the embedded ID will). The two association attributes just need to be
+there to give us the information, that there is an asociation at all.
+
+''\VisitId'' is a class with IDs only. It starts like this:
+
+#Code id=VisitId syntax=Java <<---
+@XmlRootElement(name="visitId")
+@Embeddable
+public class VisitId implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @Column(name="from_zip_area", nullable = false)
+    private Long fromZipArea;
+
+    @Column(name="to_city", nullable = false)
+    private Long toCity;
+
+    ...
+---
+
+Note that ''\VisitId'' is a DTO, and thus it is annotated with
+''\@XmlRootElement''. It is also used as an embedded Id, thus JPA
+requires the annotation ''@Embeddable''.
+
+Here is a case where we directly use part of an entity as a DTO, but
+if you think about it, this is only a generalization. For ''Visit'',
+''\VisitId'' is the type of its ID, and we always expose the type of
+IDs, only that the type is normally ''Long'' and therfore does not
+look suspicious.
+
+In order to be able to use ''\VisitId'' as a JPA entity's ID, we have
+to define ''hashCode()'' and ''equals()'', thus I have generated them
+in Eclipse using "__Source / Generate hashCode() and equals
+...__". 
+
+''\VisitId'' is not an entity class, but it must be contained in
+''persistence.xml''. If it is not, you get a funny error in ''Visit'',
+stating that "__\VisitId is not mapped as embeddable__", which is
+clearly wrong. The ''@Embeddable'' annotation is there, only the error
+message is wrong, it would have to be "__\VisitId is not contained in
+the persistence unit__" or something like that.
+
+Also note the two constructors. For the purpose of serialization we
+need a parameterless constructor, for ''getId()'' and ''setId()'' in
+''Visit'', we need a constructor with values for the two fields.
+
+In ''City'' we have one opposite end of the association
+
+#Code id=CityVisits syntax=Java <<---
+@OneToMany(mappedBy="toCity")
+private List<Visit> visits;
+---
+
+and the other opposite end is defined in ''Zip'':
+
+#Code id=CityVisits syntax=Java <<---
+@OneToMany(mappedBy="fromZipArea")
+private List<Visit> visits;
+---
+
+The pattern always goes like this. After the same pattern you could
+have a complex relation between three tables. In that case the
+embedded ID would contain three ID fields (encapsulate the foreign
+keys), the constructor would take three parameters, we would have
+bi-directional associations towards all three participating entities,
+but otherwise it would be the same.
+
+**** Create / modification users and timestamps
+
+All four entity classes have some fields automatically set by the code
+that Azzyzt JEE Tools generate:
+
+#Code id=createModifyTimestampUser syntax=Java <<---
+@CreateTimestamp
+@Temporal(TemporalType.TIMESTAMP)
+@Column(name="create_timestamp")
+private Calendar createTimestamp;
+
+@ModificationTimestamp
+@Temporal(TemporalType.TIMESTAMP)
+@Column(name="modification_timestamp")
+private Calendar modificationTimestamp;
+
+@CreateUser
+@Column(name="create_user")
+private String createUser;
+
+@ModificationUser
+@Column(name="modification_user")
+private String modificationUser;
+---
+
+Create timestamps could be easily set via database defaults, for
+modification timestamps you could use database triggers, but doing it
+programmatically, we can make sure that they are __only__ set
+automatically, it's more portable this way, and it gives Azzyzt a tad
+more meta information to work with :)
+
+In order for automatic setting of timestamps to work, all entities
+using this feature, must use a so-called __entity listener__.
+
+#Code id=entityListener syntax=Java <<---
+@EntityListeners({StandardEntityListeners.class})
+---
+
+Here we are, that's our entity model.
 
 
 *** Generating a base application
@@ -319,10 +592,7 @@ project. That's it :)
 
 *** Structure of the generated code
 
-In this example we have created three entity classes under
-"''cookbookEJB/ejbModule''". They correspond to the database tables
-''CITY'', ''COUNTRY'' and ''ZIP''. The result of code generation looks
-like this:
+In our example, the result of code generation looks like this:
 
 #Verbatim <<---
 cookbookEAR
@@ -339,6 +609,7 @@ cookbookEJB
 |   |           |-- entity
 |   |           |   |-- City.java
 |   |           |   |-- Country.java
+|   |           |   |-- Visit.java
 |   |           |   `-- Zip.java
 |   |           `-- service
 |   |               `-- HelloTestBean.java
@@ -354,6 +625,7 @@ cookbookEJB
                 |-- conv
                 |   |-- CityConv.java
                 |   |-- CountryConv.java
+                |   |-- VisitConv.java
                 |   `-- ZipConv.java
                 |-- eao
                 |   `-- GenericEao.java
@@ -362,6 +634,7 @@ cookbookEJB
                 |-- meta
                 |   |-- InvocationRegistry.java
                 |   |-- SiteAdapter.java
+                |   |-- TransactionRollbackHandler.java
                 |   |-- TypeMetaInfo.java
                 |   `-- ValidAssociationPaths.java
                 `-- service
@@ -370,10 +643,18 @@ cookbookEJB
                     |-- CountryFullBean.java
                     |-- CountryRestrictedBean.java
                     |-- ModifyMultiBean.java
+                    |-- VisitFullBean.java
+                    |-- VisitRestrictedBean.java
                     |-- ZipFullBean.java
                     `-- ZipRestrictedBean.java
+
 cookbookEJBClient
 |-- ejbModule
+|   |-- com
+|   |   `-- manessinger
+|   |       `-- cookbook
+|   |           `-- entity
+|   |               `-- VisitId.java
 |   `-- META-INF
 |       `-- MANIFEST.MF
 `-- generated
@@ -383,7 +664,11 @@ cookbookEJBClient
                 |-- dto
                 |   |-- CityDto.java
                 |   |-- CountryDto.java
+                |   |-- DeleteWrapper.java
                 |   |-- Dto.java
+                |   |-- StoreDelete.java
+                |   |-- StoreWrapper.java
+                |   |-- VisitDto.java
                 |   `-- ZipDto.java
                 `-- service
                     |-- CityFullInterface.java
@@ -391,8 +676,11 @@ cookbookEJBClient
                     |-- CountryFullInterface.java
                     |-- CountryRestrictedInterface.java
                     |-- ModifyMultiInterface.java
+                    |-- VisitFullInterface.java
+                    |-- VisitRestrictedInterface.java
                     |-- ZipFullInterface.java
                     `-- ZipRestrictedInterface.java
+
 cookbookServlets
 |-- generated
 |   `-- com
@@ -403,10 +691,12 @@ cookbookServlets
 |                   |-- CityRestrictedDelegator.java
 |                   |-- CountryFullDelegator.java
 |                   |-- CountryRestrictedDelegator.java
+|                   |-- ModifyMultiDelegator.java
 |                   |-- RESTExceptionMapper.java
 |                   |-- RESTInterceptor.java
 |                   |-- RESTServlet.java
-|                   |-- ModifyMultiDelegator.java
+|                   |-- VisitFullDelegator.java
+|                   |-- VisitRestrictedDelegator.java
 |                   |-- ZipFullDelegator.java
 |                   `-- ZipRestrictedDelegator.java
 |-- src
@@ -419,6 +709,10 @@ cookbookServlets
         `-- sun-web.xml
 ---
 
+Quite a lot of code, and this is only for four tables. Imagine a real
+project with dozens or hundreds of tables. Sure, this could all be
+useless rubbish, so let's look at what we can do with it :)
+
 
 *** Using the generated code
 
@@ -426,21 +720,24 @@ The first step is to deploy the EAR project. Note please, that you
 have to modify ''persistence.xml'' to refer to a ''jta-data-source'',
 and that this data source must be defined in the application
 server. The
-[[http://programming.manessinger.com/tutorials/an-eclipse-glassfish-java-ee-6-tutorial/][Eclipse / \GlassFish / Java EE 6 Tutorial]] has a section titled
-"__Specifying the database, testing, SQL log__", that shows how to do
-this in \GlassFish.
+[[http://programming.manessinger.com/tutorials/an-eclipse-glassfish-java-ee-6-tutorial/][Eclipse / \GlassFish / Java EE 6 Tutorial]] has a section titled "__Specifying
+the database, testing, SQL log__", that shows how to do this in
+\GlassFish. The sample ''persistence.xml'' from
+''doc/cookbook/src/cookbookEJB/ejbModule/META-INF'' is already set up
+correctly.
 
 Now that the application is deployed, you can call the services.
 
 For each table/entity we get a DTO (EJBClient), two EJBs, one for full
 (rw) and one for restricted (r) access, corresponding remote
-interfaces in the EJBClient project, corresponding REST wrappers
+interfaces in the EJBClient project, and corresponding REST wrappers
 around the beans (Servlet project). Additionally we get a
-ModifyMultiBean, a ModifyMultiInterface and a corresponding REST
-wrapper. 
+\ModifyMultiBean, a \ModifyMultiInterface and a corresponding REST
+wrapper.
 
-Here are some URLs, assuming \GlassFish runs on port 8080. Try for
-yourself, for instance with [[http://www.soapui.org][soapUI]]:
+Here are some URLs of WSDLs (service descriptions of SOAP services)
+for the generated service beans, assuming \GlassFish runs on port
+8080:
 
   [[http://localhost:8080/cookbook/CityFullBean?wsdl]]
 
@@ -456,130 +753,55 @@ yourself, for instance with [[http://www.soapui.org][soapUI]]:
 
   [[http://localhost:8080/cookbook/ModifyMultiBean?wsdl]]
 
+
+*** Examples for REST
+
 Get the WADL description of the REST services under
 
   [[http://localhost:8080/cookbookServlets/REST/application.wadl]]
 
+Try the services for yourself, for instance with
+[[http://www.soapui.org][soapUI]]. Open soapUI, create a new project
+from the context menu of "__Projects__" in the tree view on the left
+pane. Enter "''cookbook - REST''" as the project name and paste the
+WADL URL into "__Initial WSDL/WADL__". Press "__OK__" and soapUI will
+create all REST resources with one sample request each. 
 
-*** Examples for REST
+Look at the generated tree. Drill down to the requests. 
 
 **** List of all countries
 
-  [[http://localhost:8080/cookbookServlets/REST/city/all]]
+  [[http://localhost:8080/cookbookServlets/REST/country/all]]
 
 The result will look like
 
 #Code syntax=XML <<---
-<cityDtoes>
-   <city>
-      <countryId>1</countryId>
-      <createTimestamp>2011-05-16T09:58:09.172+02:00</createTimestamp>
-      <createUser>admin</createUser>
-      <id>4</id>
-      <modificationTimestamp>2011-05-16T09:58:09.172+02:00</modificationTimestamp>
-      <modificationUser>admin</modificationUser>
-      <name>Wien</name>
-   </city>
-   <city>
-      <countryId>1</countryId>
-      <createTimestamp>2011-05-16T09:58:09.151+02:00</createTimestamp>
-      <createUser>admin</createUser>
-      <id>3</id>
-      <modificationTimestamp>2011-05-16T09:58:09.151+02:00</modificationTimestamp>
-      <modificationUser>admin</modificationUser>
-      <name>Salzburg</name>
-   </city>
-   <city>
-      <countryId>1</countryId>
-      <createTimestamp>2011-05-16T09:58:09.130+02:00</createTimestamp>
-      <createUser>admin</createUser>
-      <id>2</id>
-      <modificationTimestamp>2011-05-16T09:58:09.130+02:00</modificationTimestamp>
-      <modificationUser>admin</modificationUser>
-      <name>Linz</name>
-   </city>
-   <city>
-      <countryId>1</countryId>
-      <createTimestamp>2011-05-16T09:58:09.110+02:00</createTimestamp>
+<countryDtoes>
+   <country>
+      <createTimestamp>2011-05-16T09:58:09.027+02:00</createTimestamp>
       <createUser>admin</createUser>
       <id>1</id>
-      <modificationTimestamp>2011-05-16T09:58:09.110+02:00</modificationTimestamp>
+      <modificationTimestamp>2011-05-16T09:58:09.027+02:00</modificationTimestamp>
       <modificationUser>admin</modificationUser>
-      <name>Graz</name>
-   </city>
-   <city>
-      <countryId>2</countryId>
-      <createTimestamp>2011-05-16T09:58:09.254+02:00</createTimestamp>
+      <name>Austria</name>
+   </country>
+   <country>
+      <createTimestamp>2011-05-16T09:58:09.068+02:00</createTimestamp>
       <createUser>admin</createUser>
-      <id>8</id>
-      <modificationTimestamp>2011-05-16T09:58:09.254+02:00</modificationTimestamp>
+      <id>2</id>
+      <modificationTimestamp>2011-05-16T09:58:09.068+02:00</modificationTimestamp>
       <modificationUser>admin</modificationUser>
-      <name>Venezia</name>
-   </city>
-   <city>
-      <countryId>2</countryId>
-      <createTimestamp>2011-05-16T09:58:09.233+02:00</createTimestamp>
+      <name>Italy</name>
+   </country>
+   <country>
+      <createTimestamp>2011-05-16T09:58:09.089+02:00</createTimestamp>
       <createUser>admin</createUser>
-      <id>7</id>
-      <modificationTimestamp>2011-05-16T09:58:09.233+02:00</modificationTimestamp>
+      <id>3</id>
+      <modificationTimestamp>2011-05-16T09:58:09.089+02:00</modificationTimestamp>
       <modificationUser>admin</modificationUser>
-      <name>Roma</name>
-   </city>
-   <city>
-      <countryId>2</countryId>
-      <createTimestamp>2011-05-16T09:58:09.213+02:00</createTimestamp>
-      <createUser>admin</createUser>
-      <id>6</id>
-      <modificationTimestamp>2011-05-16T09:58:09.213+02:00</modificationTimestamp>
-      <modificationUser>admin</modificationUser>
-      <name>Firenze</name>
-   </city>
-   <city>
-      <countryId>2</countryId>
-      <createTimestamp>2011-05-16T09:58:09.192+02:00</createTimestamp>
-      <createUser>admin</createUser>
-      <id>5</id>
-      <modificationTimestamp>2011-05-16T09:58:09.192+02:00</modificationTimestamp>
-      <modificationUser>admin</modificationUser>
-      <name>Bologna</name>
-   </city>
-   <city>
-      <countryId>3</countryId>
-      <createTimestamp>2011-05-16T09:58:09.356+02:00</createTimestamp>
-      <createUser>admin</createUser>
-      <id>12</id>
-      <modificationTimestamp>2011-05-16T09:58:09.356+02:00</modificationTimestamp>
-      <modificationUser>admin</modificationUser>
-      <name>Washington</name>
-   </city>
-   <city>
-      <countryId>3</countryId>
-      <createTimestamp>2011-05-16T09:58:09.316+02:00</createTimestamp>
-      <createUser>admin</createUser>
-      <id>11</id>
-      <modificationTimestamp>2011-05-16T09:58:09.316+02:00</modificationTimestamp>
-      <modificationUser>admin</modificationUser>
-      <name>New York</name>
-   </city>
-   <city>
-      <countryId>3</countryId>
-      <createTimestamp>2011-05-16T09:58:09.295+02:00</createTimestamp>
-      <createUser>admin</createUser>
-      <id>10</id>
-      <modificationTimestamp>2011-05-16T09:58:09.295+02:00</modificationTimestamp>
-      <modificationUser>admin</modificationUser>
-      <name>Los Angeles</name>
-   </city>
-   <city>
-      <countryId>3</countryId>
-      <createTimestamp>2011-05-16T09:58:09.274+02:00</createTimestamp>
-      <createUser>admin</createUser>
-      <id>9</id>
-      <modificationTimestamp>2011-05-16T09:58:09.274+02:00</modificationTimestamp>
-      <modificationUser>admin</modificationUser>
-      <name>Atlanta</name>
-   </city>
-</cityDtoes>
+      <name>USA</name>
+   </country>
+</countryDtoes>
 ---
 
 **** City with the ID 1

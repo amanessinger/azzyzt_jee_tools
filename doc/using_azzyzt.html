@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 <meta name="language" content="en">
-<meta name="date" content="2011-05-16T15:48:19">
+<meta name="date" content="2011-05-17T17:31:31">
 <meta name="generator" content="deplate.rb 0.8.5">
 <link rel="start" href="using_azzyzt.html" title="Frontpage">
 <link rel="chapter" href="using_azzyzt.html#hd001" title="Azzyzt JEE Tools">
@@ -862,42 +862,58 @@ directions therein.</p>
 
 <pre class="verbatim">
 doc/cookbook
+|--&nbsp;oracle
+|&nbsp;&nbsp;&nbsp;|--&nbsp;README.txt
+|&nbsp;&nbsp;&nbsp;`--&nbsp;sql
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;create_tables.sql
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;drop_tables.sql
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;initialize_data.sql
 |--&nbsp;postgresql
 |&nbsp;&nbsp;&nbsp;|--&nbsp;README.txt
-|&nbsp;&nbsp;&nbsp;|--&nbsp;sql
-|&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;|--&nbsp;create_cookbook_db.sql
-|&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;|--&nbsp;create_cookbook__user.sql
-|&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;|--&nbsp;create_tables.sql
-|&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;|--&nbsp;drop_tables.sql
-|&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;`--&nbsp;initialize_data.sql
-|&nbsp;&nbsp;&nbsp;`--&nbsp;src
-|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;cookbookEJB
-|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;`--&nbsp;ejbModule
-|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;com
-|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;`--&nbsp;manessinger
-|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;cookbook
-|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;entity
-|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;City.java
-|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;Country.java
-|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;Visit.java
-|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;Zip.java
-|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;META-INF
-|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;persistence.xml
-|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;cookbookEJBClient
-|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;ejbModule
-|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;com
-|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;manessinger
-|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;cookbook
-|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;entity
-|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;VisitId.java
-`--&nbsp;README.txt
+|&nbsp;&nbsp;&nbsp;`--&nbsp;sql
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;create_cookbook_db.sql
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;create_cookbook__user.sql
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;create_tables.sql
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;drop_tables.sql
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;initialize_data.sql
+|--&nbsp;README.txt
+`--&nbsp;src
+&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;cookbookEJB
+&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;`--&nbsp;ejbModule
+&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;com
+&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;`--&nbsp;manessinger
+&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;cookbook
+&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;entity
+&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;City.java
+&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;Country.java
+&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;Visit.java
+&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;Zip.java
+&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;META-INF
+&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;persistence.xml
+&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;cookbookEJBClient
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;ejbModule
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;com
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;manessinger
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;cookbook
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;entity
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;VisitId.java
 </pre>
 
 <p>On the same level as <code>README.txt</code> you find one directory for 
-each database that the tutorial supports. Each database subdirectoty 
-contains a set of SQL scripts to create the database user, the database, 
-the schema objects (tables and sequences), to initialize the tables, and 
-finally to drop the schema objects if you want to start over.</p>
+each database that the tutorial supports. Note, it&rsquo;s not that Java 
+EE 6 or <a href="GlassFish.html">GlassFish</a><a name="idx005"></a> or 
+Azzyzt don&rsquo;t support other databases, it&rsquo;s just that 
+I&rsquo;ve not tested the tutorial with anything else.</p>
+
+<p>Each database subdirectory contains a set of SQL instructions on how to 
+create the database user, the database, and scripts to create the schema 
+objects (tables and sequences), to initialize the tables, and finally to 
+drop the schema objects if you want to start over.</p>
+
+<p>Furthermore there is a directory <code>src</code>, that contains the 
+sources of entity classes and a <code>persistence.xml</code>, that 
+already references these classes. More about that in the next couple of 
+sections.</p>
 
 
 
@@ -931,16 +947,18 @@ projects that together make up an azzyzted project.</p>
 packages will be below this prefix.</p>
 
 <p>The target runtime is a list of all runtimes used in defined server 
-instances. Thus if you have two servers running, one for GlassFish 3.01, 
-one for 3.1, you will see a list of two runtimes. Choose one of them.</p>
+instances. Thus if you have two servers supporting Java EE 6 running or 
+at least defined in Eclipse, one for GlassFish 3.01, one for 3.1, you 
+will see a list of two runtimes. Choose one of them.</p>
 
 <p>If the list of target runtimes is empty, then you have not yet defined a 
 server. Do so from the Servers view with &ldquo;<em>New / 
 Server</em>&rdquo;.</p>
 
-<p>If for example the project base name is 
-&ldquo;<code>cookbook</code>&rdquo;, you will end up with the following 
-four projects:</p>
+<p>In the context of this tutorial, the project base name is 
+&ldquo;<code>cookbook</code>&rdquo;, the package name is 
+&ldquo;<code>com.manessinger.cookbook</code>&rdquo;. Try this and you 
+will end up with the following four projects:</p>
 
 <ul class="Itemize">
     <li class="Itemize-1 Itemize dash">
@@ -960,7 +978,7 @@ four projects:</p>
 <p>The EAR project is an Enterprise Application Project, basically a 
 wrapper around the three Java projects. The artifact of an EAR project 
 is an enterprise archive, for instance 
-&ldquo;<code>cookbook.ear</code>&rdquo;, and this is the deployable 
+&ldquo;<code>cookbookEAR.ear</code>&rdquo;, and this is the deployable 
 application.</p>
 
 <p>&ldquo;<code>cookbookEJB</code>&rdquo; is where we put all application 
@@ -986,9 +1004,8 @@ folder is &ldquo;<code>ejbModule</code>&rdquo;, for the Servlets project
 it is &ldquo;<code>src</code>&rdquo;. These source folders are for 
 manually written code.</p>
 
-<p>If for example the package name was 
-&ldquo;<code>com.manessinger.cookbook</code>&rdquo;, the following 
-directories and files will be generated initially:</p>
+<p>In our case the following directories and files will be generated 
+initially:</p>
 
 <pre class="verbatim">
 cookbookEJB
@@ -1073,16 +1090,20 @@ where ID is the class of the table&rsquo;s primary key.</p>
 <ul class="Itemize">
     <li class="Itemize-1 Itemize dash">
         For a first cut you can choose to let Eclipse generate entities. Dali, 
-        the mapping tool, comes with a wizard that lets you choose a connection 
-        (defined in the Datasource Explorer view with &ldquo;<em>Database 
-        Connections / New</em>&rdquo;), and it then analyzes tables defined in 
-        the corresponding database schema. Start the wizard via &ldquo;<em>JPA 
-        Tools / Generate Entities from Tables</em>&rdquo; from the EJB 
-        project&rsquo;s context menu.
+        the mapping tool, comes with a wizard that you can run on the connection 
+        associated with an EJB project. In order to do this, the connection must 
+        have been defined in the Datasource Explorer view with 
+        &ldquo;<em>Database Connections / New</em>&rdquo; and it must have been 
+        associated with the EJB project via &ldquo;<em>Properties / Java 
+        Persistence / Connection</em>&rdquo;.
+        <br class="itempara" />The wizard analyzes tables defined in the corresponding database schema. 
+        Start the wizard via &ldquo;<em>JPA Tools / Generate Entities from 
+        Tables</em>&rdquo; from the EJB project&rsquo;s context menu.
         <br class="itempara" />In this graphical tool you can choose the tables to be mapped, create 
         associations and/or choose from those automatically discovered, set 
         defaults for the mapping of all tables, and finally specify the mappings 
-        on a per-table basis.
+        on a per-table basis. You can even specify for the generated entities to 
+        extend the required superclass.
         <br class="itempara" />This is the preferred way if the database already exists. The only 
         problem is, that the wizard can&rsquo;t properly cope with 
         <code>@ManyToMany</code> associations. It should, but errors in the code 
@@ -1097,9 +1118,19 @@ where ID is the class of the table&rsquo;s primary key.</p>
         Entities</em>&rdquo;, again from the EJB project&rsquo;s context menu. 
         Make sure that the EJB project is already associated with a database 
         connection. If not, open the properties of the EJB project and choose a 
-        connection under &ldquo;<em>Java Persistence / Connection</em>&rdquo;.
+        connection under &ldquo;<em>Java Persistence / Connection</em>&rdquo;. 
+        I&rsquo;m sorry to say that this may fail (due to tool errors) in some 
+        perfectly legal cases as well, and one of those cases, the mapping of a 
+        many-to-many association where the join table has additional attributes 
+        and does not feature a separate id, is part of the tutorial.
     </li>
 </ul>
+
+<p>Whichever way you go, be prepared to have to do some manual work in this 
+phase. Those problems have been in Dali for quite some time and I have 
+not seen any progress in a year. On the other hand, creating the 
+entities or database schemata is definitely not in the scope of Azzyzt 
+JEE Tools. So far my hopes are on Eclipse Indigo :)</p>
 
 <p>Note please, that <em>Azzyzted Modeling With Entities</em> only supports 
 mapping annotations on fields, not on accessor methods. This is not a 
@@ -1142,18 +1173,292 @@ entity fields:</p>
         <br class="itempara" />As of release 1.1.0 this is only partially implemented. It works for 
         REST but not for SOAP and CORBA, and from a service accessed via REST, 
         it currently wouldn&rsquo;t be passed on to backend services accessed 
-        via REST or CORBA. The crucial knowledge about how to extract user 
+        via REST or SOAP. The crucial knowledge about how to extract user 
         information from a <code>javax.interceptor.InvocationContext</code> is 
         left to a standalone EJB that I call a SiteAdapter. Azzyzt comes with a 
         site adapter that uses information supplied in an HTTP header called 
         &ldquo;<code>x-authenticate-userid</code>&rdquo;, thus it relies on some 
-        authenticating portal or gateway in front of the application server.
+        authenticating portal or gateway in front of the application server. I 
+        admit that here&rsquo;s definitely potential for configurability :)
     </dd>
 </dl>
 
 
 
-<h3 id="hd001002002">1.2.2&nbsp;Generating a base application</h3>
+<h3 id="hd001002002">1.2.2&nbsp;Sample entities</h3>
+
+<p>Remember the folder <code>doc/cookbook/src</code>? For your convenience 
+I have already provided entities and a <code>persistence.xml</code>, 
+that match the sample databases.</p>
+
+<p>Note that the entities work with Postgresql as well as with Oracle. 
+There is nothing that prevents you from writing entities specific to a 
+certain database system, but on the other hand you should not need to. 
+Try to keep database-agnostic if you can, it gives you one dependency 
+less to care about.</p>
+
+<pre class="verbatim">
+doc/cookbook/src
+|--&nbsp;cookbookEJB
+|&nbsp;&nbsp;&nbsp;`--&nbsp;ejbModule
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;com
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;`--&nbsp;manessinger
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;cookbook
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;entity
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;City.java
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;Country.java
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;Visit.java
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;Zip.java
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;META-INF
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;persistence.xml
+`--&nbsp;cookbookEJBClient
+&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;ejbModule
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;com
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;manessinger
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;cookbook
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;entity
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;VisitId.java
+</pre>
+
+<p>In order to use the entities, just copy the two folders</p>
+
+<ul class="Itemize">
+    <li class="Itemize-1 Itemize dash">
+        <code>cookbookEJB</code>
+    </li>
+    <li class="Itemize-1 Itemize dash">
+        <code>cookbookEJBClient</code>
+    </li>
+</ul>
+
+<p>into your workspace and then refresh the projects in Eclipse. Most 
+likely an error symbol will be shown on the EJB project. Don&rsquo;t 
+worry, use &ldquo;<em>Project / Clean &hellip; / Clean all 
+projects</em>&rdquo; and it will go away. I believe this to be an error 
+in Eclipse.</p>
+
+<p>The sample database is pretty simple. We have have countries, cities, 
+zips and visits from a zip code area to a certain city. A 
+<em>Country</em> has cities and each <em>City</em> is in a certain 
+country. A country has a number of <em>Zip</em> areas and each ZIP area 
+belongs to a certain country. ZIPs don&rsquo;t necessarily correspond to 
+cities. <em>Country</em>, <em>City</em> and <em>Zip</em> are easy cases. 
+The corresponding tables each have an ID taken from a sequence, and the 
+only relationships that we need to map, can be modeled using 
+<code>@OneToMany</code> and <code>@ManyToOne</code>.</p>
+
+
+<h4 id="hd001002002001">1.2.2.1&nbsp;A complicated association</h4>
+
+<p><em>Visit</em> is a more complicated case. It maps a many-to-many 
+association between <em>City</em> and <em>Zip</em>. A city can be the 
+target of visits from many ZIP areas and different people from a certain 
+ZIP area will visit many cities.</p>
+
+<p>Although JPA supports <code>@ManyToMany</code>, we can&rsquo;t use it. 
+<code>@ManyToMany</code> assumes a simple join table containing no extra 
+attributes. In such a case, the table would not need to be mapped at 
+all, we would just have to map the <code>@ManyToMany</code> associations 
+in <em>City</em> and <em>Zip</em>.</p>
+
+<p>When a join table has additional attributes, you always need to map it 
+as an entity. This is easiest when it has its own ID attribute, 
+preferrably taken from a sequence as well. Then you just have to treat 
+it like any other entity.</p>
+
+<p>Unfortunately both things are rare in legacy databases. Join tables 
+frequently have additional attributes, and teh concept of an extra ID on 
+the join table looks extremely alient outside the realm of 
+object-relational mapping.</p>
+
+<p>To cover this common and not well documented case (at least it took me 
+some time to find anything on the Internet and figure it out), 
+<em>Visit</em> has an extra attribute 
+<code>Long&nbsp;numberOfVisitors</code> that acts as a counter. Think of 
+a system where we have to collect some anonymized statistics about 
+visits.</p>
+
+<p>The corresponding database table has no explicit ID, thus we have to use 
+the idiom of an <em>embedded ID</em>. The embedded ID is a separate 
+class <em>VisitId</em> in the client project. It&rsquo;s in the client 
+project, because we will have to pass it around as parameter.</p>
+
+<p>Look at the class <code>Visit</code> and note that it has an ID defined 
+as</p>
+
+<a name="EmbeddedId"></a>
+<div class="code">
+<pre>
+&#64;EmbeddedId <span class="hl kwa">private</span> VisitId id<span class="hl sym">;</span>
+</pre>
+</div>
+<p>with the getter and setter defined like</p>
+
+<a name="EmbeddedIdGetterSetter"></a>
+<div class="code">
+<pre>
+<span class="hl kwa">public</span> VisitId <span class="hl kwd">getId</span><span class="hl sym">() {</span>
+    <span class="hl kwa">if</span> <span class="hl sym">(</span>id <span class="hl sym">==</span> null<span class="hl sym">) {</span>
+        <span class="hl kwa">return</span> null<span class="hl sym">;</span>
+    <span class="hl sym">}</span>
+    VisitId result <span class="hl sym">=</span> <span class="hl kwa">new</span> <span class="hl kwd">VisitId</span><span class="hl sym">(</span>id<span class="hl sym">.</span><span class="hl kwd">getFromZipArea</span><span class="hl sym">(),</span> id<span class="hl sym">.</span><span class="hl kwd">getToCity</span><span class="hl sym">());</span>
+    <span class="hl kwa">return</span> result<span class="hl sym">;</span>
+<span class="hl sym">}</span>
+
+<span class="hl kwa">public</span> <span class="hl kwb">void</span> <span class="hl kwd">setId</span><span class="hl sym">(</span>VisitId id<span class="hl sym">) {</span>
+    <span class="hl kwa">if</span> <span class="hl sym">(</span>id <span class="hl sym">==</span> null<span class="hl sym">) {</span>
+        <span class="hl kwa">return</span><span class="hl sym">;</span>
+    <span class="hl sym">}</span>
+    <span class="hl kwa">this</span><span class="hl sym">.</span>id <span class="hl sym">=</span> <span class="hl kwa">new</span> <span class="hl kwd">VisitId</span><span class="hl sym">(</span>id<span class="hl sym">.</span><span class="hl kwd">getFromZipArea</span><span class="hl sym">(),</span> id<span class="hl sym">.</span><span class="hl kwd">getToCity</span><span class="hl sym">());</span>
+<span class="hl sym">}</span>
+</pre>
+</div>
+<p>Additionally we have two <code>@ManyToOne</code> associations.</p>
+
+<a name="VisitAssociations"></a>
+<div class="code">
+<pre>
+&#64;Internal &#64;ManyToOne
+&#64;<span class="hl kwd">JoinColumn</span><span class="hl sym">(</span>name<span class="hl sym">=</span><span class="hl str">&quot;from_zip_area&quot;</span><span class="hl sym">,</span> insertable<span class="hl sym">=</span>false<span class="hl sym">,</span> updatable<span class="hl sym">=</span>false<span class="hl sym">)</span>
+<span class="hl kwa">private</span> Zip fromZipArea<span class="hl sym">;</span>
+
+&#64;Internal &#64;ManyToOne
+&#64;<span class="hl kwd">JoinColumn</span><span class="hl sym">(</span>name<span class="hl sym">=</span><span class="hl str">&quot;to_city&quot;</span><span class="hl sym">,</span> insertable<span class="hl sym">=</span>false<span class="hl sym">,</span> updatable<span class="hl sym">=</span>false<span class="hl sym">)</span>
+<span class="hl kwa">private</span> City toCity<span class="hl sym">;</span>
+</pre>
+</div>
+<p>We have explicitly named the join columns, because their names 
+can&rsquo;t be guessed automatically by JPA. We have also marked them as 
+neither insertable nor updatable, because the attributes that get 
+actually written to the database are inside the embedded ID class 
+<code>VisitId</code>.</p>
+
+<p>We have also used Azzyzt&rsquo;s <code>@Internal</code> annotation, thus 
+these association attributes will not be contained in generated DTOs 
+(but the embedded ID will). The two association attributes just need to 
+be there to give us the information, that there is an asociation at all.</p>
+
+<p><code>VisitId</code> is a class with IDs only. It starts like this:</p>
+
+<a name="VisitId"></a>
+<div class="code">
+<pre>
+&#64;<span class="hl kwd">XmlRootElement</span><span class="hl sym">(</span>name<span class="hl sym">=</span><span class="hl str">&quot;visitId&quot;</span><span class="hl sym">)</span>
+&#64;Embeddable
+<span class="hl kwa">public class</span> VisitId <span class="hl kwa">implements</span> <span class="hl kwc">Serializable</span> <span class="hl sym">{</span>
+
+    <span class="hl kwa">private static final</span> <span class="hl kwb">long</span> serialVersionUID <span class="hl sym">=</span> <span class="hl num">1L</span><span class="hl sym">;</span>
+
+    &#64;<span class="hl kwd">Column</span><span class="hl sym">(</span>name<span class="hl sym">=</span><span class="hl str">&quot;from_zip_area&quot;</span><span class="hl sym">,</span> nullable <span class="hl sym">=</span> false<span class="hl sym">)</span>
+    <span class="hl kwa">private</span> <span class="hl kwc">Long</span> fromZipArea<span class="hl sym">;</span>
+
+    &#64;<span class="hl kwd">Column</span><span class="hl sym">(</span>name<span class="hl sym">=</span><span class="hl str">&quot;to_city&quot;</span><span class="hl sym">,</span> nullable <span class="hl sym">=</span> false<span class="hl sym">)</span>
+    <span class="hl kwa">private</span> <span class="hl kwc">Long</span> toCity<span class="hl sym">;</span>
+
+    <span class="hl sym">...</span>
+</pre>
+</div>
+<p>Note that <code>VisitId</code> is a DTO, and thus it is annotated with 
+<code>@XmlRootElement</code>. It is also used as an embedded Id, thus 
+JPA requires the annotation <code>@Embeddable</code>.</p>
+
+<p>Here is a case where we directly use part of an entity as a DTO, but if 
+you think about it, this is only a generalization. For 
+<code>Visit</code>, <code>VisitId</code> is the type of its ID, and we 
+always expose the type of IDs, only that the type is normally 
+<code>Long</code> and therfore does not look suspicious.</p>
+
+<p>In order to be able to use <code>VisitId</code> as a JPA entity&rsquo;s 
+ID, we have to define <code>hashCode()</code> and <code>equals()</code>, 
+thus I have generated them in Eclipse using &ldquo;<em>Source / Generate 
+hashCode() and equals &hellip;</em>&rdquo;.</p>
+
+<p><code>VisitId</code> is not an entity class, but it must be contained in 
+<code>persistence.xml</code>. If it is not, you get a funny error in 
+<code>Visit</code>, stating that &ldquo;<em>VisitId is not mapped as 
+embeddable</em>&rdquo;, which is clearly wrong. The 
+<code>@Embeddable</code> annotation is there, only the error message is 
+wrong, it would have to be &ldquo;<em>VisitId is not contained in the 
+persistence unit</em>&rdquo; or something like that.</p>
+
+<p>Also note the two constructors. For the purpose of serialization we need 
+a parameterless constructor, for <code>getId()</code> and 
+<code>setId()</code> in <code>Visit</code>, we need a constructor with 
+values for the two fields.</p>
+
+<p>In <code>City</code> we have one opposite end of the association</p>
+
+<a name="CityVisits"></a>
+<div class="code">
+<pre>
+&#64;<span class="hl kwd">OneToMany</span><span class="hl sym">(</span>mappedBy<span class="hl sym">=</span><span class="hl str">&quot;toCity&quot;</span><span class="hl sym">)</span>
+<span class="hl kwa">private</span> <span class="hl kwc">List</span><span class="hl sym">&lt;</span>Visit<span class="hl sym">&gt;</span> visits<span class="hl sym">;</span>
+</pre>
+</div>
+<p>and the other opposite end is defined in <code>Zip</code>:</p>
+
+<div class="code">
+<pre>
+&#64;<span class="hl kwd">OneToMany</span><span class="hl sym">(</span>mappedBy<span class="hl sym">=</span><span class="hl str">&quot;fromZipArea&quot;</span><span class="hl sym">)</span>
+<span class="hl kwa">private</span> <span class="hl kwc">List</span><span class="hl sym">&lt;</span>Visit<span class="hl sym">&gt;</span> visits<span class="hl sym">;</span>
+</pre>
+</div>
+<p>The pattern always goes like this. After the same pattern you could have 
+a complex relation between three tables. In that case the embedded ID 
+would contain three ID fields (encapsulate the foreign keys), the 
+constructor would take three parameters, we would have bi-directional 
+associations towards all three participating entities, but otherwise it 
+would be the same.</p>
+
+
+
+<h4 id="hd001002002002">1.2.2.2&nbsp;Create / modification users and timestamps</h4>
+
+<p>All four entity classes have some fields automatically set by the code 
+that Azzyzt JEE Tools generate:</p>
+
+<a name="createModifyTimestampUser"></a>
+<div class="code">
+<pre>
+&#64;CreateTimestamp
+&#64;<span class="hl kwd">Temporal</span><span class="hl sym">(</span>TemporalType<span class="hl sym">.</span>TIMESTAMP<span class="hl sym">)</span>
+&#64;<span class="hl kwd">Column</span><span class="hl sym">(</span>name<span class="hl sym">=</span><span class="hl str">&quot;create_timestamp&quot;</span><span class="hl sym">)</span>
+<span class="hl kwa">private</span> <span class="hl kwc">Calendar</span> createTimestamp<span class="hl sym">;</span>
+
+&#64;ModificationTimestamp
+&#64;<span class="hl kwd">Temporal</span><span class="hl sym">(</span>TemporalType<span class="hl sym">.</span>TIMESTAMP<span class="hl sym">)</span>
+&#64;<span class="hl kwd">Column</span><span class="hl sym">(</span>name<span class="hl sym">=</span><span class="hl str">&quot;modification_timestamp&quot;</span><span class="hl sym">)</span>
+<span class="hl kwa">private</span> <span class="hl kwc">Calendar</span> modificationTimestamp<span class="hl sym">;</span>
+
+&#64;CreateUser
+&#64;<span class="hl kwd">Column</span><span class="hl sym">(</span>name<span class="hl sym">=</span><span class="hl str">&quot;create_user&quot;</span><span class="hl sym">)</span>
+<span class="hl kwa">private</span> <span class="hl kwc">String</span> createUser<span class="hl sym">;</span>
+
+&#64;ModificationUser
+&#64;<span class="hl kwd">Column</span><span class="hl sym">(</span>name<span class="hl sym">=</span><span class="hl str">&quot;modification_user&quot;</span><span class="hl sym">)</span>
+<span class="hl kwa">private</span> <span class="hl kwc">String</span> modificationUser<span class="hl sym">;</span>
+</pre>
+</div>
+<p>Create timestamps could be easily set via database defaults, for 
+modification timestamps you could use database triggers, but doing it 
+programmatically, we can make sure that they are <em>only</em> set 
+automatically, it&rsquo;s more portable this way, and it gives Azzyzt a 
+tad more meta information to work with :)</p>
+
+<p>In order for automatic setting of timestamps to work, all entities using 
+this feature, must use a so-called <em>entity listener</em>.</p>
+
+<a name="entityListener"></a>
+<div class="code">
+<pre>
+&#64;<span class="hl kwd">EntityListeners</span><span class="hl sym">({</span>StandardEntityListeners<span class="hl sym">.</span><span class="hl kwa">class</span><span class="hl sym">})</span>
+</pre>
+</div>
+<p>Here we are, that&rsquo;s our entity model.</p>
+
+
+
+<h3 id="hd001002003">1.2.3&nbsp;Generating a base application</h3>
 
 <p>Once you have entities, you can generate code. In order to do this, use 
 &ldquo;<em>Azzyzt / Start code generator</em>&rdquo; from the context 
@@ -1161,12 +1466,9 @@ menu of the EJB project. That&rsquo;s it :)</p>
 
 
 
-<h3 id="hd001002003">1.2.3&nbsp;Structure of the generated code</h3>
+<h3 id="hd001002004">1.2.4&nbsp;Structure of the generated code</h3>
 
-<p>In this example we have created three entity classes under 
-&ldquo;<code>cookbookEJB/ejbModule</code>&rdquo;. They correspond to the 
-database tables <code>CITY</code>, <code>COUNTRY</code> and 
-<code>ZIP</code>. The result of code generation looks like this:</p>
+<p>In our example, the result of code generation looks like this:</p>
 
 <pre class="verbatim">
 cookbookEAR
@@ -1183,6 +1485,7 @@ cookbookEJB
 |&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;entity
 |&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;|--&nbsp;City.java
 |&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;|--&nbsp;Country.java
+|&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;|--&nbsp;Visit.java
 |&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;`--&nbsp;Zip.java
 |&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;service
 |&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;HelloTestBean.java
@@ -1198,6 +1501,7 @@ cookbookEJB
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;conv
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;|--&nbsp;CityConv.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;|--&nbsp;CountryConv.java
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;|--&nbsp;VisitConv.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;`--&nbsp;ZipConv.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;eao
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;`--&nbsp;GenericEao.java
@@ -1206,6 +1510,7 @@ cookbookEJB
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;meta
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;|--&nbsp;InvocationRegistry.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;|--&nbsp;SiteAdapter.java
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;|--&nbsp;TransactionRollbackHandler.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;|--&nbsp;TypeMetaInfo.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;`--&nbsp;ValidAssociationPaths.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;service
@@ -1214,10 +1519,18 @@ cookbookEJB
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;CountryFullBean.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;CountryRestrictedBean.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;ModifyMultiBean.java
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;VisitFullBean.java
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;VisitRestrictedBean.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;ZipFullBean.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;ZipRestrictedBean.java
+
 cookbookEJBClient
 |--&nbsp;ejbModule
+|&nbsp;&nbsp;&nbsp;|--&nbsp;com
+|&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;`--&nbsp;manessinger
+|&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;cookbook
+|&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;entity
+|&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;VisitId.java
 |&nbsp;&nbsp;&nbsp;`--&nbsp;META-INF
 |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;MANIFEST.MF
 `--&nbsp;generated
@@ -1227,7 +1540,11 @@ cookbookEJBClient
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;dto
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;|--&nbsp;CityDto.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;|--&nbsp;CountryDto.java
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;|--&nbsp;DeleteWrapper.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;|--&nbsp;Dto.java
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;|--&nbsp;StoreDelete.java
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;|--&nbsp;StoreWrapper.java
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;|--&nbsp;VisitDto.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;`--&nbsp;ZipDto.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;service
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;CityFullInterface.java
@@ -1235,8 +1552,11 @@ cookbookEJBClient
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;CountryFullInterface.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;CountryRestrictedInterface.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;ModifyMultiInterface.java
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;VisitFullInterface.java
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;VisitRestrictedInterface.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;ZipFullInterface.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;ZipRestrictedInterface.java
+
 cookbookServlets
 |--&nbsp;generated
 |&nbsp;&nbsp;&nbsp;`--&nbsp;com
@@ -1247,10 +1567,12 @@ cookbookServlets
 |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;CityRestrictedDelegator.java
 |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;CountryFullDelegator.java
 |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;CountryRestrictedDelegator.java
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;ModifyMultiDelegator.java
 |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;RESTExceptionMapper.java
 |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;RESTInterceptor.java
 |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;RESTServlet.java
-|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;ModifyMultiDelegator.java
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;VisitFullDelegator.java
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;VisitRestrictedDelegator.java
 |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;ZipFullDelegator.java
 |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;ZipRestrictedDelegator.java
 |--&nbsp;src
@@ -1263,186 +1585,116 @@ cookbookServlets
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;sun-web.xml
 </pre>
 
+<p>Quite a lot of code, and this is only for four tables. Imagine a real 
+project with dozens or hundreds of tables. Sure, this could all be 
+useless rubbish, so let&rsquo;s look at what we can do with it :)</p>
 
 
-<h3 id="hd001002004">1.2.4&nbsp;Using the generated code</h3>
+
+<h3 id="hd001002005">1.2.5&nbsp;Using the generated code</h3>
 
 <p>The first step is to deploy the EAR project. Note please, that you have 
 to modify <code>persistence.xml</code> to refer to a 
 <code>jta-data-source</code>, and that this data source must be defined 
 in the application server. The 
 <span class="remote"><a href="http://programming.manessinger.com/tutorials/an-eclipse-glassfish-java-ee-6-tutorial/" class="remote">Eclipse 
-/ GlassFish / Java EE 6 Tutorial</a></span><a name="idx005"></a> has a 
+/ GlassFish / Java EE 6 Tutorial</a></span><a name="idx006"></a> has a 
 section titled &ldquo;<em>Specifying the database, testing, SQL 
-log</em>&rdquo;, that shows how to do this in GlassFish.</p>
+log</em>&rdquo;, that shows how to do this in GlassFish. The sample 
+<code>persistence.xml</code> from 
+<code>doc/cookbook/src/cookbookEJB/ejbModule/META-INF</code> is already 
+set up correctly.</p>
 
 <p>Now that the application is deployed, you can call the services.</p>
 
 <p>For each table/entity we get a DTO (EJBClient), two EJBs, one for full 
 (rw) and one for restricted (r) access, corresponding remote interfaces 
-in the EJBClient project, corresponding REST wrappers around the beans 
-(Servlet project). Additionally we get a 
-<a href="ModifyMultiBean.html">ModifyMultiBean</a><a name="idx006"></a>, 
-a 
-<a href="ModifyMultiInterface.html">ModifyMultiInterface</a><a name="idx007"></a> 
-and a corresponding REST wrapper.</p>
+in the EJBClient project, and corresponding REST wrappers around the 
+beans (Servlet project). Additionally we get a ModifyMultiBean, a 
+ModifyMultiInterface and a corresponding REST wrapper.</p>
 
-<p>Here are some URLs, assuming GlassFish runs on port 8080. Try for 
-yourself, for instance with 
-<span class="remote"><a href="http://www.soapui.org" class="remote">soapUI</a></span><a name="idx008"></a>:</p>
+<p>Here are some URLs of WSDLs (service descriptions of SOAP services) for 
+the generated service beans, assuming GlassFish runs on port 8080:</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbook/CityFullBean?wsdl" class="remote">http://localhost:8080/cookbook/CityFullBean?wsdl</a></span><a name="idx009"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbook/CityFullBean?wsdl" class="remote">http://localhost:8080/cookbook/CityFullBean?wsdl</a></span><a name="idx007"></a></p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbook/CityRestrictedBean?wsdl" class="remote">http://localhost:8080/cookbook/CityRestrictedBean?wsdl</a></span><a name="idx0010"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbook/CityRestrictedBean?wsdl" class="remote">http://localhost:8080/cookbook/CityRestrictedBean?wsdl</a></span><a name="idx008"></a></p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbook/CountryFullBean?wsdl" class="remote">http://localhost:8080/cookbook/CountryFullBean?wsdl</a></span><a name="idx0011"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbook/CountryFullBean?wsdl" class="remote">http://localhost:8080/cookbook/CountryFullBean?wsdl</a></span><a name="idx009"></a></p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbook/CountryRestrictedBean?wsdl" class="remote">http://localhost:8080/cookbook/CountryRestrictedBean?wsdl</a></span><a name="idx0012"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbook/CountryRestrictedBean?wsdl" class="remote">http://localhost:8080/cookbook/CountryRestrictedBean?wsdl</a></span><a name="idx0010"></a></p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbook/ZipFullBean?wsdl" class="remote">http://localhost:8080/cookbook/ZipFullBean?wsdl</a></span><a name="idx0013"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbook/ZipFullBean?wsdl" class="remote">http://localhost:8080/cookbook/ZipFullBean?wsdl</a></span><a name="idx0011"></a></p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbook/ZipRestrictedBean?wsdl" class="remote">http://localhost:8080/cookbook/ZipRestrictedBean?wsdl</a></span><a name="idx0014"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbook/ZipRestrictedBean?wsdl" class="remote">http://localhost:8080/cookbook/ZipRestrictedBean?wsdl</a></span><a name="idx0012"></a></p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbook/ModifyMultiBean?wsdl" class="remote">http://localhost:8080/cookbook/ModifyMultiBean?wsdl</a></span><a name="idx0015"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbook/ModifyMultiBean?wsdl" class="remote">http://localhost:8080/cookbook/ModifyMultiBean?wsdl</a></span><a name="idx0013"></a></p>
+
+
+
+<h3 id="hd001002006">1.2.6&nbsp;Examples for REST</h3>
 
 <p>Get the WADL description of the REST services under</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/application.wadl" class="remote">http://localhost:8080/cookbookServlets/REST/application.wadl</a></span><a name="idx0016"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/application.wadl" class="remote">http://localhost:8080/cookbookServlets/REST/application.wadl</a></span><a name="idx0014"></a></p>
+
+<p>Try the services for yourself, for instance with 
+<span class="remote"><a href="http://www.soapui.org" class="remote">soapUI</a></span><a name="idx0015"></a>. 
+Open soapUI, create a new project from the context menu of 
+&ldquo;<em>Projects</em>&rdquo; in the tree view on the left pane. Enter 
+&ldquo;<code>cookbook&nbsp;-&nbsp;REST</code>&rdquo; as the project name 
+and paste the WADL URL into &ldquo;<em>Initial WSDL/WADL</em>&rdquo;. 
+Press &ldquo;<em>OK</em>&rdquo; and soapUI will create all REST 
+resources with one sample request each.</p>
+
+<p>Look at the generated tree. Drill down to the requests.</p>
 
 
+<h4 id="hd001002006001">1.2.6.1&nbsp;List of all countries</h4>
 
-<h3 id="hd001002005">1.2.5&nbsp;Examples for REST</h3>
-
-
-<h4 id="hd001002005001">1.2.5.1&nbsp;List of all countries</h4>
-
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/all" class="remote">http://localhost:8080/cookbookServlets/REST/city/all</a></span><a name="idx0017"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/country/all" class="remote">http://localhost:8080/cookbookServlets/REST/country/all</a></span><a name="idx0016"></a></p>
 
 <p>The result will look like</p>
 
 <div class="code">
 <pre>
-<span class="hl kwa">&lt;cityDtoes&gt;</span>
-   <span class="hl kwa">&lt;city&gt;</span>
-      <span class="hl kwa">&lt;countryId&gt;</span><span class="hl num">1</span><span class="hl kwa">&lt;/countryId&gt;</span>
-      <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">16</span>T09:<span class="hl num">58</span>:<span class="hl num">09.172</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
-      <span class="hl kwa">&lt;createUser&gt;</span>admin<span class="hl kwa">&lt;/createUser&gt;</span>
-      <span class="hl kwa">&lt;id&gt;</span><span class="hl num">4</span><span class="hl kwa">&lt;/id&gt;</span>
-      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">16</span>T09:<span class="hl num">58</span>:<span class="hl num">09.172</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
-      <span class="hl kwa">&lt;modificationUser&gt;</span>admin<span class="hl kwa">&lt;/modificationUser&gt;</span>
-      <span class="hl kwa">&lt;name&gt;</span>Wien<span class="hl kwa">&lt;/name&gt;</span>
-   <span class="hl kwa">&lt;/city&gt;</span>
-   <span class="hl kwa">&lt;city&gt;</span>
-      <span class="hl kwa">&lt;countryId&gt;</span><span class="hl num">1</span><span class="hl kwa">&lt;/countryId&gt;</span>
-      <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">16</span>T09:<span class="hl num">58</span>:<span class="hl num">09.151</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
-      <span class="hl kwa">&lt;createUser&gt;</span>admin<span class="hl kwa">&lt;/createUser&gt;</span>
-      <span class="hl kwa">&lt;id&gt;</span><span class="hl num">3</span><span class="hl kwa">&lt;/id&gt;</span>
-      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">16</span>T09:<span class="hl num">58</span>:<span class="hl num">09.151</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
-      <span class="hl kwa">&lt;modificationUser&gt;</span>admin<span class="hl kwa">&lt;/modificationUser&gt;</span>
-      <span class="hl kwa">&lt;name&gt;</span>Salzburg<span class="hl kwa">&lt;/name&gt;</span>
-   <span class="hl kwa">&lt;/city&gt;</span>
-   <span class="hl kwa">&lt;city&gt;</span>
-      <span class="hl kwa">&lt;countryId&gt;</span><span class="hl num">1</span><span class="hl kwa">&lt;/countryId&gt;</span>
-      <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">16</span>T09:<span class="hl num">58</span>:<span class="hl num">09.130</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
-      <span class="hl kwa">&lt;createUser&gt;</span>admin<span class="hl kwa">&lt;/createUser&gt;</span>
-      <span class="hl kwa">&lt;id&gt;</span><span class="hl num">2</span><span class="hl kwa">&lt;/id&gt;</span>
-      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">16</span>T09:<span class="hl num">58</span>:<span class="hl num">09.130</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
-      <span class="hl kwa">&lt;modificationUser&gt;</span>admin<span class="hl kwa">&lt;/modificationUser&gt;</span>
-      <span class="hl kwa">&lt;name&gt;</span>Linz<span class="hl kwa">&lt;/name&gt;</span>
-   <span class="hl kwa">&lt;/city&gt;</span>
-   <span class="hl kwa">&lt;city&gt;</span>
-      <span class="hl kwa">&lt;countryId&gt;</span><span class="hl num">1</span><span class="hl kwa">&lt;/countryId&gt;</span>
-      <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">16</span>T09:<span class="hl num">58</span>:<span class="hl num">09.110</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
+<span class="hl kwa">&lt;countryDtoes&gt;</span>
+   <span class="hl kwa">&lt;country&gt;</span>
+      <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">16</span>T09:<span class="hl num">58</span>:<span class="hl num">09.027</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
       <span class="hl kwa">&lt;createUser&gt;</span>admin<span class="hl kwa">&lt;/createUser&gt;</span>
       <span class="hl kwa">&lt;id&gt;</span><span class="hl num">1</span><span class="hl kwa">&lt;/id&gt;</span>
-      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">16</span>T09:<span class="hl num">58</span>:<span class="hl num">09.110</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
+      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">16</span>T09:<span class="hl num">58</span>:<span class="hl num">09.027</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
       <span class="hl kwa">&lt;modificationUser&gt;</span>admin<span class="hl kwa">&lt;/modificationUser&gt;</span>
-      <span class="hl kwa">&lt;name&gt;</span>Graz<span class="hl kwa">&lt;/name&gt;</span>
-   <span class="hl kwa">&lt;/city&gt;</span>
-   <span class="hl kwa">&lt;city&gt;</span>
-      <span class="hl kwa">&lt;countryId&gt;</span><span class="hl num">2</span><span class="hl kwa">&lt;/countryId&gt;</span>
-      <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">16</span>T09:<span class="hl num">58</span>:<span class="hl num">09.254</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
+      <span class="hl kwa">&lt;name&gt;</span>Austria<span class="hl kwa">&lt;/name&gt;</span>
+   <span class="hl kwa">&lt;/country&gt;</span>
+   <span class="hl kwa">&lt;country&gt;</span>
+      <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">16</span>T09:<span class="hl num">58</span>:<span class="hl num">09.068</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
       <span class="hl kwa">&lt;createUser&gt;</span>admin<span class="hl kwa">&lt;/createUser&gt;</span>
-      <span class="hl kwa">&lt;id&gt;</span><span class="hl num">8</span><span class="hl kwa">&lt;/id&gt;</span>
-      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">16</span>T09:<span class="hl num">58</span>:<span class="hl num">09.254</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
+      <span class="hl kwa">&lt;id&gt;</span><span class="hl num">2</span><span class="hl kwa">&lt;/id&gt;</span>
+      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">16</span>T09:<span class="hl num">58</span>:<span class="hl num">09.068</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
       <span class="hl kwa">&lt;modificationUser&gt;</span>admin<span class="hl kwa">&lt;/modificationUser&gt;</span>
-      <span class="hl kwa">&lt;name&gt;</span>Venezia<span class="hl kwa">&lt;/name&gt;</span>
-   <span class="hl kwa">&lt;/city&gt;</span>
-   <span class="hl kwa">&lt;city&gt;</span>
-      <span class="hl kwa">&lt;countryId&gt;</span><span class="hl num">2</span><span class="hl kwa">&lt;/countryId&gt;</span>
-      <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">16</span>T09:<span class="hl num">58</span>:<span class="hl num">09.233</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
+      <span class="hl kwa">&lt;name&gt;</span>Italy<span class="hl kwa">&lt;/name&gt;</span>
+   <span class="hl kwa">&lt;/country&gt;</span>
+   <span class="hl kwa">&lt;country&gt;</span>
+      <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">16</span>T09:<span class="hl num">58</span>:<span class="hl num">09.089</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
       <span class="hl kwa">&lt;createUser&gt;</span>admin<span class="hl kwa">&lt;/createUser&gt;</span>
-      <span class="hl kwa">&lt;id&gt;</span><span class="hl num">7</span><span class="hl kwa">&lt;/id&gt;</span>
-      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">16</span>T09:<span class="hl num">58</span>:<span class="hl num">09.233</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
+      <span class="hl kwa">&lt;id&gt;</span><span class="hl num">3</span><span class="hl kwa">&lt;/id&gt;</span>
+      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">16</span>T09:<span class="hl num">58</span>:<span class="hl num">09.089</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
       <span class="hl kwa">&lt;modificationUser&gt;</span>admin<span class="hl kwa">&lt;/modificationUser&gt;</span>
-      <span class="hl kwa">&lt;name&gt;</span>Roma<span class="hl kwa">&lt;/name&gt;</span>
-   <span class="hl kwa">&lt;/city&gt;</span>
-   <span class="hl kwa">&lt;city&gt;</span>
-      <span class="hl kwa">&lt;countryId&gt;</span><span class="hl num">2</span><span class="hl kwa">&lt;/countryId&gt;</span>
-      <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">16</span>T09:<span class="hl num">58</span>:<span class="hl num">09.213</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
-      <span class="hl kwa">&lt;createUser&gt;</span>admin<span class="hl kwa">&lt;/createUser&gt;</span>
-      <span class="hl kwa">&lt;id&gt;</span><span class="hl num">6</span><span class="hl kwa">&lt;/id&gt;</span>
-      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">16</span>T09:<span class="hl num">58</span>:<span class="hl num">09.213</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
-      <span class="hl kwa">&lt;modificationUser&gt;</span>admin<span class="hl kwa">&lt;/modificationUser&gt;</span>
-      <span class="hl kwa">&lt;name&gt;</span>Firenze<span class="hl kwa">&lt;/name&gt;</span>
-   <span class="hl kwa">&lt;/city&gt;</span>
-   <span class="hl kwa">&lt;city&gt;</span>
-      <span class="hl kwa">&lt;countryId&gt;</span><span class="hl num">2</span><span class="hl kwa">&lt;/countryId&gt;</span>
-      <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">16</span>T09:<span class="hl num">58</span>:<span class="hl num">09.192</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
-      <span class="hl kwa">&lt;createUser&gt;</span>admin<span class="hl kwa">&lt;/createUser&gt;</span>
-      <span class="hl kwa">&lt;id&gt;</span><span class="hl num">5</span><span class="hl kwa">&lt;/id&gt;</span>
-      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">16</span>T09:<span class="hl num">58</span>:<span class="hl num">09.192</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
-      <span class="hl kwa">&lt;modificationUser&gt;</span>admin<span class="hl kwa">&lt;/modificationUser&gt;</span>
-      <span class="hl kwa">&lt;name&gt;</span>Bologna<span class="hl kwa">&lt;/name&gt;</span>
-   <span class="hl kwa">&lt;/city&gt;</span>
-   <span class="hl kwa">&lt;city&gt;</span>
-      <span class="hl kwa">&lt;countryId&gt;</span><span class="hl num">3</span><span class="hl kwa">&lt;/countryId&gt;</span>
-      <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">16</span>T09:<span class="hl num">58</span>:<span class="hl num">09.356</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
-      <span class="hl kwa">&lt;createUser&gt;</span>admin<span class="hl kwa">&lt;/createUser&gt;</span>
-      <span class="hl kwa">&lt;id&gt;</span><span class="hl num">12</span><span class="hl kwa">&lt;/id&gt;</span>
-      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">16</span>T09:<span class="hl num">58</span>:<span class="hl num">09.356</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
-      <span class="hl kwa">&lt;modificationUser&gt;</span>admin<span class="hl kwa">&lt;/modificationUser&gt;</span>
-      <span class="hl kwa">&lt;name&gt;</span>Washington<span class="hl kwa">&lt;/name&gt;</span>
-   <span class="hl kwa">&lt;/city&gt;</span>
-   <span class="hl kwa">&lt;city&gt;</span>
-      <span class="hl kwa">&lt;countryId&gt;</span><span class="hl num">3</span><span class="hl kwa">&lt;/countryId&gt;</span>
-      <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">16</span>T09:<span class="hl num">58</span>:<span class="hl num">09.316</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
-      <span class="hl kwa">&lt;createUser&gt;</span>admin<span class="hl kwa">&lt;/createUser&gt;</span>
-      <span class="hl kwa">&lt;id&gt;</span><span class="hl num">11</span><span class="hl kwa">&lt;/id&gt;</span>
-      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">16</span>T09:<span class="hl num">58</span>:<span class="hl num">09.316</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
-      <span class="hl kwa">&lt;modificationUser&gt;</span>admin<span class="hl kwa">&lt;/modificationUser&gt;</span>
-      <span class="hl kwa">&lt;name&gt;</span>New York<span class="hl kwa">&lt;/name&gt;</span>
-   <span class="hl kwa">&lt;/city&gt;</span>
-   <span class="hl kwa">&lt;city&gt;</span>
-      <span class="hl kwa">&lt;countryId&gt;</span><span class="hl num">3</span><span class="hl kwa">&lt;/countryId&gt;</span>
-      <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">16</span>T09:<span class="hl num">58</span>:<span class="hl num">09.295</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
-      <span class="hl kwa">&lt;createUser&gt;</span>admin<span class="hl kwa">&lt;/createUser&gt;</span>
-      <span class="hl kwa">&lt;id&gt;</span><span class="hl num">10</span><span class="hl kwa">&lt;/id&gt;</span>
-      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">16</span>T09:<span class="hl num">58</span>:<span class="hl num">09.295</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
-      <span class="hl kwa">&lt;modificationUser&gt;</span>admin<span class="hl kwa">&lt;/modificationUser&gt;</span>
-      <span class="hl kwa">&lt;name&gt;</span>Los Angeles<span class="hl kwa">&lt;/name&gt;</span>
-   <span class="hl kwa">&lt;/city&gt;</span>
-   <span class="hl kwa">&lt;city&gt;</span>
-      <span class="hl kwa">&lt;countryId&gt;</span><span class="hl num">3</span><span class="hl kwa">&lt;/countryId&gt;</span>
-      <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">16</span>T09:<span class="hl num">58</span>:<span class="hl num">09.274</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
-      <span class="hl kwa">&lt;createUser&gt;</span>admin<span class="hl kwa">&lt;/createUser&gt;</span>
-      <span class="hl kwa">&lt;id&gt;</span><span class="hl num">9</span><span class="hl kwa">&lt;/id&gt;</span>
-      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">16</span>T09:<span class="hl num">58</span>:<span class="hl num">09.274</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
-      <span class="hl kwa">&lt;modificationUser&gt;</span>admin<span class="hl kwa">&lt;/modificationUser&gt;</span>
-      <span class="hl kwa">&lt;name&gt;</span>Atlanta<span class="hl kwa">&lt;/name&gt;</span>
-   <span class="hl kwa">&lt;/city&gt;</span>
-<span class="hl kwa">&lt;/cityDtoes&gt;</span>
+      <span class="hl kwa">&lt;name&gt;</span>USA<span class="hl kwa">&lt;/name&gt;</span>
+   <span class="hl kwa">&lt;/country&gt;</span>
+<span class="hl kwa">&lt;/countryDtoes&gt;</span>
 </pre>
 </div>
 
 
-<h4 id="hd001002005002">1.2.5.2&nbsp;City with the ID 1</h4>
+<h4 id="hd001002006002">1.2.6.2&nbsp;City with the ID 1</h4>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/byId?id=1" class="remote">http://localhost:8080/cookbookServlets/REST/city/byId?id=1</a></span><a name="idx0018"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/byId?id=1" class="remote">http://localhost:8080/cookbookServlets/REST/city/byId?id=1</a></span><a name="idx0017"></a></p>
 
 
 
-<h4 id="hd001002005003">1.2.5.3&nbsp;Sorted list of cities</h4>
+<h4 id="hd001002006003">1.2.6.3&nbsp;Sorted list of cities</h4>
 
 <p>POST the following XML document</p>
 
@@ -1462,14 +1714,14 @@ yourself, for instance with
 </div>
 <p>into</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/list" class="remote">http://localhost:8080/cookbookServlets/REST/city/list</a></span><a name="idx0019"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/list" class="remote">http://localhost:8080/cookbookServlets/REST/city/list</a></span><a name="idx0018"></a></p>
 
 <p>to get a list of all cities, but now sorted by the ID of their country 
 ascending, and then alphabetically by their name descending.</p>
 
 
 
-<h4 id="hd001002005004">1.2.5.4&nbsp;Query with three conditions</h4>
+<h4 id="hd001002006004">1.2.6.4&nbsp;Query with three conditions</h4>
 
 <p>POST the following XML document</p>
 
@@ -1499,7 +1751,7 @@ ascending, and then alphabetically by their name descending.</p>
 </div>
 <p>into</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/list" class="remote">http://localhost:8080/cookbookServlets/REST/city/list</a></span><a name="idx0020"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/list" class="remote">http://localhost:8080/cookbookServlets/REST/city/list</a></span><a name="idx0019"></a></p>
 
 <p>to get a list of all cities, where the country name equals 
 &ldquo;<em>Italy</em>&rdquo; and the city&rsquo;s name does not begin 
@@ -1541,7 +1793,7 @@ private Country country;
 
 
 
-<h4 id="hd001002005005">1.2.5.5&nbsp;Nested expressions</h4>
+<h4 id="hd001002006005">1.2.6.5&nbsp;Nested expressions</h4>
 
 <p>An example of a query specification with nested expressions is this:</p>
 
@@ -1573,14 +1825,14 @@ private Country country;
 </div>
 <p>POST it into</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/list" class="remote">http://localhost:8080/cookbookServlets/REST/city/list</a></span><a name="idx0021"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/list" class="remote">http://localhost:8080/cookbookServlets/REST/city/list</a></span><a name="idx0020"></a></p>
 
 <p>to get a list of all cities in Italy and all other cities beginning with 
 &ldquo;l&rdquo; (regardless case), but not the one with ID 2.</p>
 
 
 
-<h4 id="hd001002005006">1.2.5.6&nbsp;Store a record</h4>
+<h4 id="hd001002006006">1.2.6.6&nbsp;Store a record</h4>
 
 <p>POST the following XML</p>
 
@@ -1595,7 +1847,7 @@ private Country country;
 </div>
 <p>into</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/store" class="remote">http://localhost:8080/cookbookServlets/REST/city/store</a></span><a name="idx0022"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/store" class="remote">http://localhost:8080/cookbookServlets/REST/city/store</a></span><a name="idx0021"></a></p>
 
 <p>to rename &ldquo;<em>Roma</em>&rdquo; to &ldquo;<em>Rome</em>&rdquo;. In 
 order to store a new city, use the same URL, but in input data leave the 
@@ -1627,11 +1879,11 @@ sequence.</p>
 
 
 
-<h4 id="hd001002005007">1.2.5.7&nbsp;Delete a record</h4>
+<h4 id="hd001002006007">1.2.6.7&nbsp;Delete a record</h4>
 
 <p>Make a GET request to the following URL</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/delete?id=8" class="remote">http://localhost:8080/cookbookServlets/REST/city/delete?id=8</a></span><a name="idx0023"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/delete?id=8" class="remote">http://localhost:8080/cookbookServlets/REST/city/delete?id=8</a></span><a name="idx0022"></a></p>
 
 <p>to delete &ldquo;<code>Bologna</code>&rdquo;, assuming its ID was indeed 
 &ldquo;<code>8</code>&rdquo;. The result will be</p>
@@ -1643,7 +1895,7 @@ sequence.</p>
 </div>
 
 
-<h4 id="hd001002005008">1.2.5.8&nbsp;Store multiple records in different tables</h4>
+<h4 id="hd001002006008">1.2.6.8&nbsp;Store multiple records in different tables</h4>
 
 <p>In many cases one use case will generate more than one object, and in 
 such a case we will want to store them either all together 
@@ -1686,7 +1938,7 @@ three operations.</p>
 </div>
 <p>into</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/modifyMulti/storeMulti" class="remote">http://localhost:8080/cookbookServlets/REST/modifyMulti/storeMulti</a></span><a name="idx0024"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/modifyMulti/storeMulti" class="remote">http://localhost:8080/cookbookServlets/REST/modifyMulti/storeMulti</a></span><a name="idx0023"></a></p>
 
 <p>to store a new country named &ldquo;<code>France</code>&rdquo; and three 
 of its cities, &ldquo;<code>Marseille</code>&rdquo;, 
@@ -1763,7 +2015,7 @@ back and nothing is stored at all.</p>
 
 
 
-<h4 id="hd001002005009">1.2.5.9&nbsp;Delete multiple records from different tables</h4>
+<h4 id="hd001002006009">1.2.6.9&nbsp;Delete multiple records from different tables</h4>
 
 <p>The second operation in <code>ModifyMultiBean</code> deletes all in a 
 list of objects.</p>
@@ -1790,7 +2042,7 @@ list of objects.</p>
 </div>
 <p>into</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/modifyMulti/deleteMulti" class="remote">http://localhost:8080/cookbookServlets/REST/modifyMulti/deleteMulti</a></span><a name="idx0025"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/modifyMulti/deleteMulti" class="remote">http://localhost:8080/cookbookServlets/REST/modifyMulti/deleteMulti</a></span><a name="idx0024"></a></p>
 
 <p>Again the result will be</p>
 
@@ -1801,7 +2053,7 @@ list of objects.</p>
 </div>
 
 
-<h4 id="hd0010020050010">1.2.5.10&nbsp;Store and/or delete multiple records in different tables</h4>
+<h4 id="hd0010020060010">1.2.6.10&nbsp;Store and/or delete multiple records in different tables</h4>
 
 <p>The third operation in <code>ModifyMultiBean</code> is slightly more 
 complicated but also more powerful.</p>
@@ -1850,7 +2102,7 @@ complicated but also more powerful.</p>
 </div>
 <p>into</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/modifyMulti/storeDeleteMulti" class="remote">http://localhost:8080/cookbookServlets/REST/modifyMulti/storeDeleteMulti</a></span><a name="idx0026"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/modifyMulti/storeDeleteMulti" class="remote">http://localhost:8080/cookbookServlets/REST/modifyMulti/storeDeleteMulti</a></span><a name="idx0025"></a></p>
 
 <p>Make sure the first list, the list of objects to delete, contains the 
 exact IDs that you got in the last step, i.e. the country ID of 
@@ -1894,7 +2146,7 @@ a very complicated no-op.</p>
 
 
 
-<h3 id="hd001002006">1.2.6&nbsp;Variants of the query specification</h3>
+<h3 id="hd001002007">1.2.7&nbsp;Variants of the query specification</h3>
 
 <p>REST is just one way to access the services. The XML format of query 
 specifications was chosen to be easily creatable from Adobe Flash 
@@ -1914,7 +2166,7 @@ as for REST.</p>
 
 <p>Azzyzt JEE Tools have their home on GitHub under</p>
 
-<p><span class="remote"><a href="https://github.com/amanessinger/azzyzt_jee_tools" class="remote">https://github.com/amanessinger/azzyzt_jee_tools</a></span><a name="idx0027"></a></p>
+<p><span class="remote"><a href="https://github.com/amanessinger/azzyzt_jee_tools" class="remote">https://github.com/amanessinger/azzyzt_jee_tools</a></span><a name="idx0026"></a></p>
 
 
 
@@ -1926,7 +2178,7 @@ Azzyzt JEE Tools is done with Eclipse.</p>
 
 <p>The recommended way to build Azzyzt JEE Tools, is to fork the project 
 from GitHub 
-(<span class="remote"><a href="https://github.com/amanessinger/azzyzt_jee_tools" class="remote">https://github.com/amanessinger/azzyzt_jee_tools</a></span><a name="idx0028"></a>) 
+(<span class="remote"><a href="https://github.com/amanessinger/azzyzt_jee_tools" class="remote">https://github.com/amanessinger/azzyzt_jee_tools</a></span><a name="idx0027"></a>) 
 and use the resulting working directory as an Eclipse workspace. Doing 
 so, you will end up with the following structure:</p>
 
@@ -2060,7 +2312,7 @@ runtime of your newly created server instance.</p>
 
 <p>For the purpose of generating code, Azzyzt JEE Tools make use of and 
 bundles a copy of 
-<span class="remote"><a href="http://www.stringtemplate.org/" class="remote">StringTemplate</a></span><a name="idx0029"></a>, 
+<span class="remote"><a href="http://www.stringtemplate.org/" class="remote">StringTemplate</a></span><a name="idx0028"></a>, 
 which is</p>
 
 <pre class="verbatim">
@@ -2096,7 +2348,7 @@ which is</p>
 </pre>
 
 <p>This documentation was created using 
-<span class="remote"><a href="http://deplate.sourceforge.net/" class="remote">Deplate</a></span><a name="idx0030"></a>.</p>
+<span class="remote"><a href="http://deplate.sourceforge.net/" class="remote">Deplate</a></span><a name="idx0029"></a>.</p>
 
 
 </body>

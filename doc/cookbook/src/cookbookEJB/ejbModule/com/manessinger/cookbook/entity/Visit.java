@@ -53,6 +53,14 @@ public class Visit extends EntityBase<VisitId> implements Serializable {
 	@Column(name="modification_user")
 	private String modificationUser;
 
+	@Internal @ManyToOne
+	@JoinColumn(name="from_zip_area", insertable=false, updatable=false)
+	private Zip fromZipArea;
+	
+	@Internal @ManyToOne
+	@JoinColumn(name="to_city", insertable=false, updatable=false)
+	private City toCity;
+	
 	public VisitId getId() {
 		if (id == null) {
 			return null;
@@ -107,14 +115,6 @@ public class Visit extends EntityBase<VisitId> implements Serializable {
 	public void setModificationUser(String modificationUser) {
 		this.modificationUser = modificationUser;
 	}
-
-	@Internal @ManyToOne
-	@JoinColumn(name="from_zip_area", insertable=false, updatable=false)
-	private Zip fromZipArea;
-	
-	@Internal @ManyToOne
-	@JoinColumn(name="to_city", insertable=false, updatable=false)
-	private City toCity;
 
 	public Zip getFromZipArea() {
 		return fromZipArea;

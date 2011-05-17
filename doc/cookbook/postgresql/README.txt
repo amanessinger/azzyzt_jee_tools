@@ -1,5 +1,5 @@
-Database setup
-==============
+Postgresql database setup
+=========================
 
 The subdirectory "sql" contains scripts to create a Postgresql login
 role (basically a user), a database, the tables (and sequences) and to
