@@ -16,7 +16,8 @@ Copyright (c) 2011, Municipiality of Vienna, Austria
 Licensed under the EUPL, Version 1.1 or subsequent versions
 
 If you're new to Azzyzt JEE Tools, a good way to get started is to
-work through the tutorial in [[using_azzyzt.html]].
+work through the tutorial in [[using_azzyzt.html]] in the source
+distribution's ''doc'' directory.
 
 
 ** Changes in 1.1.0
