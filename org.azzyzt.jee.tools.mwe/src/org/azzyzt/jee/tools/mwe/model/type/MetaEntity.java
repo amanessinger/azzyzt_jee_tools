@@ -241,8 +241,13 @@ public class MetaEntity extends MetaClass {
 		return isUsingModificationTimestampField;
 	}
 	
-	public boolean isNeedingInvocationRegistry() {
-		return isUsingCreateUserField() || isUsingModificationUserField();
+	public boolean isConverterNeedingInvocationRegistry() {
+		return isUsingCreateUserField() || isUsingModificationUserField() || isUsingCreateTimestampField() || isUsingModificationTimestampField();
+	}
+	
+	public boolean isConverterNeedingStringFormat() {
+		return (isUsingCreateTimestampField() && createTimestampField.isStringField()) 
+			|| (isUsingModificationTimestampField() && modificationTimestampField.isStringField());
 	}
 
 }

@@ -1,17 +1,13 @@
 package com.manessinger.cookbook.entity;
 
 import java.io.Serializable;
-import java.util.Calendar;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import org.azzyzt.jee.runtime.annotation.CreateTimestamp;
 import org.azzyzt.jee.runtime.annotation.CreateUser;
@@ -20,11 +16,8 @@ import org.azzyzt.jee.runtime.annotation.ModificationTimestamp;
 import org.azzyzt.jee.runtime.annotation.ModificationUser;
 import org.azzyzt.jee.runtime.entity.EntityBase;
 
-import com.manessinger.cookbook.entity.StandardEntityListeners;
-
 @Entity
 @Table(name="visit")
-@EntityListeners({StandardEntityListeners.class})
 public class Visit extends EntityBase<VisitId> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -35,15 +28,13 @@ public class Visit extends EntityBase<VisitId> implements Serializable {
 	@Column(name="number_of_visitors")
 	private Long numberOfVisitors;
 
-	@CreateTimestamp
-	@Temporal(TemporalType.TIMESTAMP)
+	@CreateTimestamp(format="yyyy-MM-dd-HHmmss.SSS")
 	@Column(name="create_timestamp")
-	private Calendar createTimestamp;
+	private String createTimestamp;
 
-	@ModificationTimestamp
-	@Temporal(TemporalType.TIMESTAMP)
+	@ModificationTimestamp(format="yyyy-MM-dd-HHmmss.SSS")
 	@Column(name="modification_timestamp")
-	private Calendar modificationTimestamp;
+	private String modificationTimestamp;
 
 	@CreateUser
 	@Column(name="create_user")
@@ -84,19 +75,19 @@ public class Visit extends EntityBase<VisitId> implements Serializable {
 		this.numberOfVisitors = numberOfVisitors;
 	}
 
-	public Calendar getCreateTimestamp() {
+	public String getCreateTimestamp() {
 		return createTimestamp;
 	}
 
-	public void setCreateTimestamp(Calendar createTimestamp) {
+	public void setCreateTimestamp(String createTimestamp) {
 		this.createTimestamp = createTimestamp;
 	}
 
-	public Calendar getModificationTimestamp() {
+	public String getModificationTimestamp() {
 		return modificationTimestamp;
 	}
 
-	public void setModificationTimestamp(Calendar modificationTimestamp) {
+	public void setModificationTimestamp(String modificationTimestamp) {
 		this.modificationTimestamp = modificationTimestamp;
 	}
 

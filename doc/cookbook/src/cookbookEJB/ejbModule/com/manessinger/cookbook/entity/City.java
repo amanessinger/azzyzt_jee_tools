@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -23,7 +22,6 @@ import org.azzyzt.jee.runtime.annotation.ModificationUser;
 import org.azzyzt.jee.runtime.entity.EntityBase;
 
 @Entity
-@EntityListeners({StandardEntityListeners.class})
 public class City extends EntityBase<Long> implements Serializable {
 	private static final long serialVersionUID = 1L;
 

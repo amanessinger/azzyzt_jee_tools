@@ -1,12 +1,11 @@
 package com.manessinger.cookbook.entity;
 
 import java.io.Serializable;
-import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -23,7 +22,6 @@ import org.azzyzt.jee.runtime.annotation.ModificationUser;
 import org.azzyzt.jee.runtime.entity.EntityBase;
 
 @Entity
-@EntityListeners({StandardEntityListeners.class})
 public class Zip extends EntityBase<Long> implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -39,12 +37,12 @@ public class Zip extends EntityBase<Long> implements Serializable {
 	@CreateTimestamp
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="create_timestamp")
-	private Calendar createTimestamp;
+	private Date createTimestamp;
 
 	@ModificationTimestamp
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="modification_timestamp")
-	private Calendar modificationTimestamp;
+	private Date modificationTimestamp;
 
 	@CreateUser
 	@Column(name="create_user")
@@ -96,19 +94,19 @@ public class Zip extends EntityBase<Long> implements Serializable {
 		this.country = country;
 	}
 
-	public Calendar getCreateTimestamp() {
+	public Date getCreateTimestamp() {
 		return createTimestamp;
 	}
 
-	public void setCreateTimestamp(Calendar createTimestamp) {
+	public void setCreateTimestamp(Date createTimestamp) {
 		this.createTimestamp = createTimestamp;
 	}
 
-	public Calendar getModificationTimestamp() {
+	public Date getModificationTimestamp() {
 		return modificationTimestamp;
 	}
 
-	public void setModificationTimestamp(Calendar modificationTimestamp) {
+	public void setModificationTimestamp(Date modificationTimestamp) {
 		this.modificationTimestamp = modificationTimestamp;
 	}
 

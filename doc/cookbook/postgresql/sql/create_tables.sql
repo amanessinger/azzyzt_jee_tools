@@ -86,9 +86,9 @@ CREATE TABLE visit
 (
   from_zip_area bigint NOT NULL,
   to_city bigint NOT NULL,
-  create_timestamp timestamp without time zone DEFAULT now(),
+  create_timestamp character varying(21) DEFAULT '2011-05-19-081030.000'::character varying,
   create_user character varying(255) DEFAULT 'anonymous'::character varying,
-  modification_timestamp timestamp without time zone DEFAULT now(),
+  modification_timestamp character varying(21) DEFAULT '2011-05-19-081030.000'::character varying,
   modification_user character varying(255) DEFAULT 'anonymous'::character varying,
   number_of_visitors bigint NOT NULL,
   CONSTRAINT visit_pkey PRIMARY KEY (from_zip_area, to_city),

@@ -86,9 +86,12 @@ public class EntityDtoConverterModelBuilder extends DerivedModelBuilder implemen
 			
 			// interface always needed for constructor
 			target.addReferencedForeignType(std.invocationRegistryInterface);
-			if (me.isUsingCreateUserField() || me.isUsingModificationUserField()) {
+			if (me.isConverterNeedingInvocationRegistry()) {
 				// inject only when used
 				addInvocationRegistryField(target);
+			}
+			if (me.isConverterNeedingStringFormat()) {
+				target.addReferencedForeignType(std.javaTextSimpleDateFormat);
 			}
 			
 			target.setProperty(ModelProperties.ENTITY, me);

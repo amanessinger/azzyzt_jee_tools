@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -67,14 +67,6 @@ public class EjbProject extends JavaProject {
 				context.getPackageName()+".service", 
 				"org.azzyzt.jee.tools.mwe.builder.HelloServiceBeanBuilder", 
 				"Creating HelloServiceBean", extraUrls
-		);
-		
-		buildJavaClass(
-				GENERATED_SRC_FOLDER_NAME, 
-				context.getProjectBaseName(), 
-				context.getPackageName()+".entity", 
-				"org.azzyzt.jee.tools.mwe.builder.DefaultStandardEntityListenersBuilder", 
-				"Creating initial StandardEntityListeners", extraUrls
 		);
 		
 		for (String nature : markerNatures) {

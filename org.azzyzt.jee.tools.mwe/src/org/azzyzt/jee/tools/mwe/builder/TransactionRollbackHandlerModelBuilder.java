@@ -70,6 +70,7 @@ public class TransactionRollbackHandlerModelBuilder extends DerivedModelBuilder 
 			
 			addGenericEaoField(target);
 			addEJBSessionContext(target);
+			addInvocationRegistryField(target);
 			
 			masterModel.setProperty(ModelProperties.TRANSACTION_ROLLBACK_HANDLER, target);
 			

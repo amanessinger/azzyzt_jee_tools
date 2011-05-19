@@ -54,9 +54,9 @@ CREATE TABLE visit
 (
   from_zip_area NUMBER(19, 0) NOT NULL,
   to_city NUMBER(19, 0) NOT NULL,
-  create_timestamp TIMESTAMP DEFAULT SYSDATE,
+  create_timestamp VARCHAR2(21) DEFAULT '2011-05-19-081030.000',
   create_user VARCHAR2(255) DEFAULT 'anonymous',
-  modification_timestamp TIMESTAMP DEFAULT SYSDATE,
+  modification_timestamp VARCHAR2(21) DEFAULT '2011-05-19-081030.000',
   modification_user VARCHAR2(255) DEFAULT 'anonymous',
   number_of_visitors NUMBER(19, 0) NOT NULL,
   CONSTRAINT visit_pkey PRIMARY KEY (from_zip_area, to_city),

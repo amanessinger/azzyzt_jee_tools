@@ -55,12 +55,13 @@ public class MetaEntityField extends MetaField {
 	private boolean isInternal = false;
 	private boolean isCreateUserField = false;
 	private boolean isModificationUserField = false;
+	private boolean isCreateTimestampField = false;
+	private boolean isModificationTimestampField = false;
 	private boolean isHoldingMultivaluedAssociationEndpoint = false;
 	private boolean isNotAutomaticallySet = true;
 	private MetaAssociationEndpoint associationEndpoint = null;
 
-	private String createTimestampFormat;
-	private String modificationTimestampFormat;
+	private String timestampFormat;
 	
 	public MetaEntityField(MetaEntity me, String fieldName) {
 		super(me, fieldName);
@@ -134,8 +135,8 @@ public class MetaEntityField extends MetaField {
 				if (isStringField()) {
 					// needs a format attribute
 					CreateTimestamp tst = (CreateTimestamp)fa;
-					createTimestampFormat = tst.format();
-					if (createTimestampFormat == null || createTimestampFormat.isEmpty()) {
+					timestampFormat = tst.format();
+					if (timestampFormat == null || timestampFormat.isEmpty()) {
 						String msg = "Field attributed with @CreateTimestamp needs timestamp format";
 						throw new ToolError(msg);
 					}
@@ -146,14 +147,15 @@ public class MetaEntityField extends MetaField {
 					throw new ToolError(msg);
 				}
 				metaEntity.setCreateTimestampField(this);
+				isCreateTimestampField = true;
 				isNotAutomaticallySet = false;
 			} else if (fa.annotationType().equals(ModificationTimestamp.class)) {
 				// we need this to be a String, Calendar or Date
 				if (isStringField()) {
 					// needs a format attribute
 					ModificationTimestamp tst = (ModificationTimestamp)fa;
-					modificationTimestampFormat = tst.format();
-					if (modificationTimestampFormat == null || modificationTimestampFormat.isEmpty()) {
+					timestampFormat = tst.format();
+					if (timestampFormat == null || timestampFormat.isEmpty()) {
 						String msg = "Field attributed with @ModificationTimestamp needs timestamp format";
 						throw new ToolError(msg);
 					}
@@ -164,6 +166,7 @@ public class MetaEntityField extends MetaField {
 					throw new ToolError(msg);
 				}
 				metaEntity.setModificationTimestampField(this);
+				isModificationTimestampField = true;
 				isNotAutomaticallySet = false;
 			} else if (fa.annotationType().equals(Id.class)) {
 				metaEntity.setIdField(this);
@@ -194,20 +197,12 @@ public class MetaEntityField extends MetaField {
 		}
 	}
 
-	public String getModificationTimestampFormat() {
-		return modificationTimestampFormat;
+	public String getTimestampFormat() {
+		return timestampFormat;
 	}
 
-	public void setModificationTimestampFormat(String modificationTimestampFormat) {
-		this.modificationTimestampFormat = modificationTimestampFormat;
-	}
-
-	public String getCreateTimestampFormat() {
-		return createTimestampFormat;
-	}
-
-	public void setCreateTimestampFormat(String createTimestampFormat) {
-		this.createTimestampFormat = createTimestampFormat;
+	public void setTimestampFormat(String timestampFormat) {
+		this.timestampFormat = timestampFormat;
 	}
 
 	public boolean isNotAutomaticallySet() {
@@ -224,6 +219,18 @@ public class MetaEntityField extends MetaField {
 
 	public boolean isModificationUserField() {
 		return isModificationUserField;
+	}
+
+	public boolean isCreateTimestampField() {
+		return isCreateTimestampField;
+	}
+
+	public boolean isModificationTimestampField() {
+		return isModificationTimestampField;
+	}
+	
+	public boolean isAutomaticallySetStringTimestamp() {
+		return (isCreateTimestampField || isModificationTimestampField) && isStringField();
 	}
 
 	@Override

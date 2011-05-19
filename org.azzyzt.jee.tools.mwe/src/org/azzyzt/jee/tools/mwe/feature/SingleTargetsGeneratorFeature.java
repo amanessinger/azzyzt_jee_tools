@@ -31,7 +31,6 @@ import org.azzyzt.jee.tools.mwe.builder.DtoBaseModelBuilder;
 import org.azzyzt.jee.tools.mwe.builder.EaoModelBuilder;
 import org.azzyzt.jee.tools.mwe.builder.InvocationRegistryModelBuilder;
 import org.azzyzt.jee.tools.mwe.builder.SiteAdapterModelBuilder;
-import org.azzyzt.jee.tools.mwe.builder.StandardEntityListenerModelBuilder;
 import org.azzyzt.jee.tools.mwe.builder.StoreDeleteDtoModelBuilder;
 import org.azzyzt.jee.tools.mwe.builder.TransactionRollbackHandlerModelBuilder;
 import org.azzyzt.jee.tools.mwe.builder.TypeMetaInfoModelBuilder;
@@ -111,13 +110,6 @@ public class SingleTargetsGeneratorFeature extends GeneratorFeature {
 
 		targetModel = new EaoModelBuilder(getModel(), null).build();
 		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaGenericEaoGroup");
-		targetGen.setGenerateGettersSetters(false);
-		numberOfSourcesGenerated += targetGen.generate();
-		
-		targetModel = new StandardEntityListenerModelBuilder(getModel(), null).build();
-		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaEntityListenersGroup");
-		targetGen.setGenerateFields(false);
-		targetGen.setGenerateDefaultConstructor(false);
 		targetGen.setGenerateGettersSetters(false);
 		numberOfSourcesGenerated += targetGen.generate();
 		
