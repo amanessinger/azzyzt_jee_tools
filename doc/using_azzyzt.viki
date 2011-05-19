@@ -178,6 +178,12 @@ In our case the following directories and files will be generated
 initially:
 
 #Verbatim <<---
+cookbookEAR
+|-- EarContent
+`-- lib
+    |-- org.azzyzt.jee.runtime.jar
+    `-- org.azzyzt.jee.runtime.site.jar
+
 cookbookEJB
 |-- ejbModule
 |   |-- com
@@ -192,11 +198,7 @@ cookbookEJB
 |       |-- persistence.xml
 |       `-- sun-ejb-jar.xml
 `-- generated
-    `-- com
-        `-- manessinger
-            `-- cookbook
-                `-- entity
-                    `-- StandardEntityListeners.java
+
 cookbookEJBClient
 |-- ejbModule
 |   `-- META-INF
@@ -351,7 +353,7 @@ sample databases.
 Note that the entities work with Postgresql as well as with
 Oracle. There is nothing that prevents you from writing entities
 specific to a certain database system, but on the other hand you
-should not need to. Try to keep database-agnostic if you can, it gives
+should not need to. Try to stay database-agnostic if you can, it gives
 you one dependency less to care about.
 
 #Verbatim <<---
@@ -415,8 +417,8 @@ preferrably taken from a sequence as well. Then you just have to treat
 it like any other entity.
 
 Unfortunately both things are rare in legacy databases. Join tables
-frequently have additional attributes, and teh concept of an extra ID
-on the join table looks extremely alient outside the realm of
+frequently have additional attributes, and the concept of an extra ID
+on the join table looks extremely alien outside of the realm of
 object-relational mapping.
 
 To cover this common and not well documented case (at least it took me
@@ -475,7 +477,7 @@ written to the database are inside the embedded ID class ''VisitId''.
 We have also used Azzyzt's ''@Internal'' annotation, thus these
 association attributes will not be contained in generated DTOs (but
 the embedded ID will). The two association attributes just need to be
-there to give us the information, that there is an asociation at all.
+there to give us the information, that there is an association at all.
 
 ''\VisitId'' is a class with IDs only. It starts like this:
 
@@ -502,7 +504,7 @@ requires the annotation ''@Embeddable''.
 Here is a case where we directly use part of an entity as a DTO, but
 if you think about it, this is only a generalization. For ''Visit'',
 ''\VisitId'' is the type of its ID, and we always expose the type of
-IDs, only that the type is normally ''Long'' and therfore does not
+IDs, only that the type is normally ''Long'' and therefore does not
 look suspicious.
 
 In order to be able to use ''\VisitId'' as a JPA entity's ID, we have
@@ -567,18 +569,41 @@ private String createUser;
 private String modificationUser;
 ---
 
+In order to demonstrate your options for timestamps, I have defined
+them in ''Zip'' as ''java.util.Date''
+
+#Code id=createModifyTimestampDate syntax=Java <<---
+@CreateTimestamp
+@Temporal(TemporalType.TIMESTAMP)
+@Column(name="create_timestamp")
+private Date createTimestamp;
+
+@ModificationTimestamp
+@Temporal(TemporalType.TIMESTAMP)
+@Column(name="modification_timestamp")
+private Date modificationTimestamp;
+---
+
+and finally in ''Visit'' as string. This is not uncommon in legacy
+databases, and because there is no standard string representation that
+we can rely on, we have to specify the format as a standard format
+string as documented for ''java.text.SimpleDateFormat''.
+
+#Code id=createModifyTimestampDate syntax=Java <<---
+@CreateTimestamp(format="yyyy-MM-dd-HHmmss.SSS")
+@Column(name="create_timestamp")
+private String createTimestamp;
+
+@ModificationTimestamp(format="yyyy-MM-dd-HHmmss.SSS")
+@Column(name="modification_timestamp")
+private String modificationTimestamp;
+---
+
 Create timestamps could be easily set via database defaults, for
 modification timestamps you could use database triggers, but doing it
 programmatically, we can make sure that they are __only__ set
 automatically, it's more portable this way, and it gives Azzyzt a tad
 more meta information to work with :)
-
-In order for automatic setting of timestamps to work, all entities
-using this feature, must use a so-called __entity listener__.
-
-#Code id=entityListener syntax=Java <<---
-@EntityListeners({StandardEntityListeners.class})
----
 
 Here we are, that's our entity model.
 
@@ -629,8 +654,6 @@ cookbookEJB
                 |   `-- ZipConv.java
                 |-- eao
                 |   `-- GenericEao.java
-                |-- entity
-                |   `-- StandardEntityListeners.java
                 |-- meta
                 |   |-- InvocationRegistry.java
                 |   |-- SiteAdapter.java
@@ -724,7 +747,9 @@ server. The
 the database, testing, SQL log__", that shows how to do this in
 \GlassFish. The sample ''persistence.xml'' from
 ''doc/cookbook/src/cookbookEJB/ejbModule/META-INF'' is already set up
-correctly.
+correctly. In fact, after creating the azzyzted project, copying over
+the enitites, refreshing the projects and rebuilding all, and then
+finally generating code, you are ready to go.
 
 You deploy the application by first starting the Server from Eclipse's
 "__Servers__" view. When the server runs, select "__Add and Remove

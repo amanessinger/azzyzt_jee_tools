@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 <meta name="language" content="en">
-<meta name="date" content="2011-05-18T13:53:25">
+<meta name="date" content="2011-05-19T15:41:19">
 <meta name="generator" content="deplate.rb 0.8.5">
 <link rel="start" href="using_azzyzt.html" title="Frontpage">
 <link rel="chapter" href="using_azzyzt.html#hd001" title="Azzyzt JEE Tools">
@@ -1012,6 +1012,12 @@ manually written code.</p>
 initially:</p>
 
 <pre class="verbatim">
+cookbookEAR
+|--&nbsp;EarContent
+`--&nbsp;lib
+&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;org.azzyzt.jee.runtime.jar
+&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;org.azzyzt.jee.runtime.site.jar
+
 cookbookEJB
 |--&nbsp;ejbModule
 |&nbsp;&nbsp;&nbsp;|--&nbsp;com
@@ -1026,11 +1032,7 @@ cookbookEJB
 |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;persistence.xml
 |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;sun-ejb-jar.xml
 `--&nbsp;generated
-&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;com
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;manessinger
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;cookbook
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;entity
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;StandardEntityListeners.java
+
 cookbookEJBClient
 |--&nbsp;ejbModule
 |&nbsp;&nbsp;&nbsp;`--&nbsp;META-INF
@@ -1198,7 +1200,7 @@ that match the sample databases.</p>
 <p>Note that the entities work with Postgresql as well as with Oracle. 
 There is nothing that prevents you from writing entities specific to a 
 certain database system, but on the other hand you should not need to. 
-Try to keep database-agnostic if you can, it gives you one dependency 
+Try to stay database-agnostic if you can, it gives you one dependency 
 less to care about.</p>
 
 <pre class="verbatim">
@@ -1271,8 +1273,8 @@ preferrably taken from a sequence as well. Then you just have to treat
 it like any other entity.</p>
 
 <p>Unfortunately both things are rare in legacy databases. Join tables 
-frequently have additional attributes, and teh concept of an extra ID on 
-the join table looks extremely alient outside the realm of 
+frequently have additional attributes, and the concept of an extra ID on 
+the join table looks extremely alien outside of the realm of 
 object-relational mapping.</p>
 
 <p>To cover this common and not well documented case (at least it took me 
@@ -1340,7 +1342,7 @@ actually written to the database are inside the embedded ID class
 <p>We have also used Azzyzt&rsquo;s <code>@Internal</code> annotation, thus 
 these association attributes will not be contained in generated DTOs 
 (but the embedded ID will). The two association attributes just need to 
-be there to give us the information, that there is an asociation at all.</p>
+be there to give us the information, that there is an association at all.</p>
 
 <p><code>VisitId</code> is a class with IDs only. It starts like this:</p>
 
@@ -1370,7 +1372,7 @@ JPA requires the annotation <code>@Embeddable</code>.</p>
 you think about it, this is only a generalization. For 
 <code>Visit</code>, <code>VisitId</code> is the type of its ID, and we 
 always expose the type of IDs, only that the type is normally 
-<code>Long</code> and therfore does not look suspicious.</p>
+<code>Long</code> and therefore does not look suspicious.</p>
 
 <p>In order to be able to use <code>VisitId</code> as a JPA entity&rsquo;s 
 ID, we have to define <code>hashCode()</code> and <code>equals()</code>, 
@@ -1443,21 +1445,45 @@ that Azzyzt JEE Tools generate:</p>
 <span class="hl kwa">private</span> <span class="hl kwc">String</span> modificationUser<span class="hl sym">;</span>
 </pre>
 </div>
+<p>In order to demonstrate your options for timestamps, I have defined them 
+in <code>Zip</code> as <code>java.util.Date</code></p>
+
+<a name="createModifyTimestampDate"></a>
+<div class="code">
+<pre>
+&#64;CreateTimestamp
+&#64;<span class="hl kwd">Temporal</span><span class="hl sym">(</span>TemporalType<span class="hl sym">.</span>TIMESTAMP<span class="hl sym">)</span>
+&#64;<span class="hl kwd">Column</span><span class="hl sym">(</span>name<span class="hl sym">=</span><span class="hl str">&quot;create_timestamp&quot;</span><span class="hl sym">)</span>
+<span class="hl kwa">private</span> <span class="hl kwc">Date</span> createTimestamp<span class="hl sym">;</span>
+
+&#64;ModificationTimestamp
+&#64;<span class="hl kwd">Temporal</span><span class="hl sym">(</span>TemporalType<span class="hl sym">.</span>TIMESTAMP<span class="hl sym">)</span>
+&#64;<span class="hl kwd">Column</span><span class="hl sym">(</span>name<span class="hl sym">=</span><span class="hl str">&quot;modification_timestamp&quot;</span><span class="hl sym">)</span>
+<span class="hl kwa">private</span> <span class="hl kwc">Date</span> modificationTimestamp<span class="hl sym">;</span>
+</pre>
+</div>
+<p>and finally in <code>Visit</code> as string. This is not uncommon in 
+legacy databases, and because there is no standard string representation 
+that we can rely on, we have to specify the format as a standard format 
+string as documented for <code>java.text.SimpleDateFormat</code>.</p>
+
+<div class="code">
+<pre>
+&#64;<span class="hl kwd">CreateTimestamp</span><span class="hl sym">(</span>format<span class="hl sym">=</span><span class="hl str">&quot;yyyy-MM-dd-HHmmss.SSS&quot;</span><span class="hl sym">)</span>
+&#64;<span class="hl kwd">Column</span><span class="hl sym">(</span>name<span class="hl sym">=</span><span class="hl str">&quot;create_timestamp&quot;</span><span class="hl sym">)</span>
+<span class="hl kwa">private</span> <span class="hl kwc">String</span> createTimestamp<span class="hl sym">;</span>
+
+&#64;<span class="hl kwd">ModificationTimestamp</span><span class="hl sym">(</span>format<span class="hl sym">=</span><span class="hl str">&quot;yyyy-MM-dd-HHmmss.SSS&quot;</span><span class="hl sym">)</span>
+&#64;<span class="hl kwd">Column</span><span class="hl sym">(</span>name<span class="hl sym">=</span><span class="hl str">&quot;modification_timestamp&quot;</span><span class="hl sym">)</span>
+<span class="hl kwa">private</span> <span class="hl kwc">String</span> modificationTimestamp<span class="hl sym">;</span>
+</pre>
+</div>
 <p>Create timestamps could be easily set via database defaults, for 
 modification timestamps you could use database triggers, but doing it 
 programmatically, we can make sure that they are <em>only</em> set 
 automatically, it&rsquo;s more portable this way, and it gives Azzyzt a 
 tad more meta information to work with :)</p>
 
-<p>In order for automatic setting of timestamps to work, all entities using 
-this feature, must use a so-called <em>entity listener</em>.</p>
-
-<a name="entityListener"></a>
-<div class="code">
-<pre>
-&#64;<span class="hl kwd">EntityListeners</span><span class="hl sym">({</span>StandardEntityListeners<span class="hl sym">.</span><span class="hl kwa">class</span><span class="hl sym">})</span>
-</pre>
-</div>
 <p>Here we are, that&rsquo;s our entity model.</p>
 
 
@@ -1509,8 +1535,6 @@ cookbookEJB
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;`--&nbsp;ZipConv.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;eao
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;`--&nbsp;GenericEao.java
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;entity
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;`--&nbsp;StandardEntityListeners.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;meta
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;|--&nbsp;InvocationRegistry.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;|--&nbsp;SiteAdapter.java
@@ -1607,7 +1631,9 @@ section titled &ldquo;<em>Specifying the database, testing, SQL
 log</em>&rdquo;, that shows how to do this in GlassFish. The sample 
 <code>persistence.xml</code> from 
 <code>doc/cookbook/src/cookbookEJB/ejbModule/META-INF</code> is already 
-set up correctly.</p>
+set up correctly. In fact, after creating the azzyzted project, copying 
+over the enitites, refreshing the projects and rebuilding all, and then 
+finally generating code, you are ready to go.</p>
 
 <p>You deploy the application by first starting the Server from 
 Eclipse&rsquo;s &ldquo;<em>Servers</em>&rdquo; view. When the server 
@@ -2157,6 +2183,12 @@ would have been &ldquo;<code>Linz</code>&rdquo;).</p>
 </div>
 
 <h3 id="hd005005001">5.5.1&nbsp;Store a record</h3>
+
+<p>So far we have not modified anything. Create and modification timestamps 
+have been from the time of database initialization, create and 
+modification user has been &ldquo;<code>admin</code>&rdquo;, a value 
+coded into <code>initialize_data.sql</code>, the script that you have 
+used to initialize the empty tables with sample data.</p>
 
 <p>POST the following XML</p>
 
