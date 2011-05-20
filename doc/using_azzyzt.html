@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 <meta name="language" content="en">
-<meta name="date" content="2011-05-19T15:41:19">
+<meta name="date" content="2011-05-20T09:47:20">
 <meta name="generator" content="deplate.rb 0.8.5">
 <link rel="start" href="using_azzyzt.html" title="Frontpage">
 <link rel="chapter" href="using_azzyzt.html#hd001" title="Azzyzt JEE Tools">
@@ -1714,7 +1714,7 @@ supports. For the restricted variants these are</p>
     </dd>
     <dt class="Description-1 Description"><code>list(query_spec)</code></dt>
     <dd class="Description-1 Description">
-        Takes a <em>query spacification</em> and delivers all objects of the 
+        Takes a <em>query specification</em> and delivers all objects of the 
         class, that match the query specification. This is always a POST request.
     </dd>
 </dl>
@@ -1772,18 +1772,21 @@ operation will automatically have one request called
 
 <p>I assume that you use 
 <span class="remote"><a href="http://www.soapui.org" class="remote">soapUI</a></span><a name="idx0016"></a> 
-to work through the following examples. In any case you send a request 
-by clicking on the green triangle in the upper left corner. That&rsquo;s 
-all you have to do for the parameterless GET request (only 
-<code>all()</code>). The result of a request will always be in the right 
-pane. The URL for the request will already be correct, because the 
+to work through the following examples. In soapUI you send a request by 
+opening it (double click in the tree) and clicking on the green triangle 
+in the upper left corner of the request sub-window. That&rsquo;s all you 
+have to do for a parameterless GET request (only <code>all()</code>). 
+The result of a request will always be in the right pane of the request 
+sub-window. The URL for the request will already be correct, because the 
 request has been generated from a WADL description.</p>
 
 <p>For GET requests with parameters, you already see the needed parameters 
-in the left pane. The name is &ldquo;<code>id</code>&rdquo;, just fill 
-in the value, press <code>&lt;TAB&gt;</code> to get out of the value 
-field (important, otherwise soapUI does not accept the value!) and send 
-the request.</p>
+in the left pane. This is only the case for 
+&ldquo;<code>byId</code>&rdquo; and &ldquo;<code>delete</code>&rdquo;, 
+thus the name is always &ldquo;<code>id</code>&rdquo;. Fill in the 
+value, press <code>&lt;TAB&gt;</code> to get out of the value field 
+(important, otherwise soapUI does not accept the value!) and send the 
+request.</p>
 
 <p>For POST requests, the left pane has an upper and a lower part. Just 
 copy the XML from the example and paste it into the lower left pane. 
@@ -1792,9 +1795,11 @@ Then send the request.</p>
 
 <h2 id="hd005001">5.1&nbsp;List of all countries</h2>
 
-<p>Issue a GET request to the following URL:</p>
+<p>Issue a GET request to one of the following URLs:</p>
 
 <p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/country/all" class="remote">http://localhost:8080/cookbookServlets/REST/country/all</a></span><a name="idx0017"></a></p>
+
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/countryRestricted/all" class="remote">http://localhost:8080/cookbookServlets/REST/countryRestricted/all</a></span><a name="idx0018"></a></p>
 
 <p>The result will be an unsorted list of all countries:</p>
 
@@ -1834,7 +1839,7 @@ Then send the request.</p>
 
 <p>A GET request to</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/byId?id=1" class="remote">http://localhost:8080/cookbookServlets/REST/city/byId?id=1</a></span><a name="idx0018"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/byId?id=1" class="remote">http://localhost:8080/cookbookServlets/REST/city/byId?id=1</a></span><a name="idx0019"></a></p>
 
 <p>delivers</p>
 
@@ -1873,7 +1878,7 @@ Then send the request.</p>
 </div>
 <p>into</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/list" class="remote">http://localhost:8080/cookbookServlets/REST/city/list</a></span><a name="idx0019"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/list" class="remote">http://localhost:8080/cookbookServlets/REST/city/list</a></span><a name="idx0020"></a></p>
 
 <p>to get a list of all cities, but sorted by the ID of their country 
 ascending, and then alphabetically by their name descending. 
@@ -2025,7 +2030,7 @@ Here&rsquo;s the result:</p>
 </div>
 <p>into</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/list" class="remote">http://localhost:8080/cookbookServlets/REST/city/list</a></span><a name="idx0020"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/list" class="remote">http://localhost:8080/cookbookServlets/REST/city/list</a></span><a name="idx0021"></a></p>
 
 <p>to get a list of all cities, where the country name equals 
 &ldquo;<em>Italy</em>&rdquo; and the city&rsquo;s name does not begin 
@@ -2124,7 +2129,7 @@ private Country country;
 </div>
 <p>POST it into</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/list" class="remote">http://localhost:8080/cookbookServlets/REST/city/list</a></span><a name="idx0021"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/list" class="remote">http://localhost:8080/cookbookServlets/REST/city/list</a></span><a name="idx0022"></a></p>
 
 <p>to get a list of all cities in Italy and all other cities beginning with 
 &ldquo;l&rdquo; (regardless case), but not the one with ID 2 (which 
@@ -2203,7 +2208,7 @@ used to initialize the empty tables with sample data.</p>
 </div>
 <p>into</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/store" class="remote">http://localhost:8080/cookbookServlets/REST/city/store</a></span><a name="idx0022"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/store" class="remote">http://localhost:8080/cookbookServlets/REST/city/store</a></span><a name="idx0023"></a></p>
 
 <p>to rename &ldquo;<em>Roma</em>&rdquo; to &ldquo;<em>Rome</em>&rdquo;. In 
 order to store a new city, use the same URL, but in input data leave the 
@@ -2239,7 +2244,7 @@ sequence.</p>
 
 <p>Make a GET request to the following URL</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/delete?id=8" class="remote">http://localhost:8080/cookbookServlets/REST/city/delete?id=8</a></span><a name="idx0023"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/delete?id=8" class="remote">http://localhost:8080/cookbookServlets/REST/city/delete?id=8</a></span><a name="idx0024"></a></p>
 
 <p>to delete &ldquo;<code>Bologna</code>&rdquo;, assuming its ID was indeed 
 &ldquo;<code>8</code>&rdquo;. The result will be</p>
@@ -2294,7 +2299,7 @@ three operations.</p>
 </div>
 <p>into</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/modifyMulti/storeMulti" class="remote">http://localhost:8080/cookbookServlets/REST/modifyMulti/storeMulti</a></span><a name="idx0024"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/modifyMulti/storeMulti" class="remote">http://localhost:8080/cookbookServlets/REST/modifyMulti/storeMulti</a></span><a name="idx0025"></a></p>
 
 <p>to store a new country named &ldquo;<code>France</code>&rdquo; and three 
 of its cities, &ldquo;<code>Marseille</code>&rdquo;, 
@@ -2398,7 +2403,7 @@ list of objects.</p>
 </div>
 <p>into</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/modifyMulti/deleteMulti" class="remote">http://localhost:8080/cookbookServlets/REST/modifyMulti/deleteMulti</a></span><a name="idx0025"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/modifyMulti/deleteMulti" class="remote">http://localhost:8080/cookbookServlets/REST/modifyMulti/deleteMulti</a></span><a name="idx0026"></a></p>
 
 <p>Again the result will be</p>
 
@@ -2458,7 +2463,7 @@ complicated but also more powerful.</p>
 </div>
 <p>into</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/modifyMulti/storeDeleteMulti" class="remote">http://localhost:8080/cookbookServlets/REST/modifyMulti/storeDeleteMulti</a></span><a name="idx0026"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/modifyMulti/storeDeleteMulti" class="remote">http://localhost:8080/cookbookServlets/REST/modifyMulti/storeDeleteMulti</a></span><a name="idx0027"></a></p>
 
 <p>Make sure the first list, the list of objects to delete, contains the 
 exact IDs that you got in the last step, i.e. the country ID of 
@@ -2547,7 +2552,7 @@ as for REST.</p>
 
 <p>For the purpose of generating code, Azzyzt JEE Tools make use of and 
 bundles a copy of 
-<span class="remote"><a href="http://www.stringtemplate.org/" class="remote">StringTemplate</a></span><a name="idx0027"></a>, 
+<span class="remote"><a href="http://www.stringtemplate.org/" class="remote">StringTemplate</a></span><a name="idx0028"></a>, 
 which is</p>
 
 <pre class="verbatim">
@@ -2583,7 +2588,7 @@ which is</p>
 </pre>
 
 <p>This documentation was created using 
-<span class="remote"><a href="http://deplate.sourceforge.net/" class="remote">Deplate</a></span><a name="idx0028"></a>.</p>
+<span class="remote"><a href="http://deplate.sourceforge.net/" class="remote">Deplate</a></span><a name="idx0029"></a>.</p>
 
 
 </body>

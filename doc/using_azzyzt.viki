@@ -820,7 +820,7 @@ supports. For the restricted variants these are
       URL parameter named ''id'', for embedded IDs it is a POST
       request. 
 
-  ''list(query_spec)'' :: Takes a __query spacification__ and delivers
+  ''list(query_spec)'' :: Takes a __query specification__ and delivers
       all objects of the class, that match the query
       specification. This is always a POST request.
 
@@ -861,17 +861,20 @@ operation will automatically have one request called "''Request 1''".
 * Examples for REST
 
 I assume that you use [[http://www.soapui.org][soapUI]] to work
-through the following examples. In any case you send a request by
-clicking on the green triangle in the upper left corner. That's all
-you have to do for the parameterless GET request (only ''all()''). The
-result of a request will always be in the right pane. The URL for the
-request will already be correct, because the request has been
-generated from a WADL description.
+through the following examples. In soapUI you send a request by
+opening it (double click in the tree) and clicking on the green
+triangle in the upper left corner of the request sub-window. That's
+all you have to do for a parameterless GET request (only
+''all()''). The result of a request will always be in the right pane
+of the request sub-window. The URL for the request will already be
+correct, because the request has been generated from a WADL
+description.
 
 For GET requests with parameters, you already see the needed
-parameters in the left pane. The name is "''id''", just fill in the
-value, press ''<TAB>'' to get out of the value field (important,
-otherwise soapUI does not accept the value!) and send the request.
+parameters in the left pane. This is only the case for "''byId''" and
+"''delete''", thus the name is always "''id''". Fill in the value,
+press ''<TAB>'' to get out of the value field (important, otherwise
+soapUI does not accept the value!) and send the request.
 
 For POST requests, the left pane has an upper and a lower part. Just
 copy the XML from the example and paste it into the lower left
@@ -879,9 +882,11 @@ pane. Then send the request.
 
 ** List of all countries
 
-Issue a GET request to the following URL:
+Issue a GET request to any of the following URLs:
 
   [[http://localhost:8080/cookbookServlets/REST/country/all]]
+
+  [[http://localhost:8080/cookbookServlets/REST/countryRestricted/all]]
 
 The result will be an unsorted list of all countries:
 
