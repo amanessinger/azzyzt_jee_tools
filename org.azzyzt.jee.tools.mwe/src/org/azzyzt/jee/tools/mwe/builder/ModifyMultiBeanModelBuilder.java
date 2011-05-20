@@ -49,9 +49,9 @@ public class ModifyMultiBeanModelBuilder extends DerivedModelBuilder implements 
 		MetaClass typeMetaInfo = (MetaClass)masterModel.getProperty(ModelProperties.TYPE_META_INFO);
 		MetaInterface modifyMultiInterface = (MetaInterface)masterModel.getProperty(ModelProperties.MODIFY_MULTI_INTERFACE);
 		MetaClass storeDeleteDto = (MetaClass) masterModel.getProperty(ModelProperties.STORE_DELETE_DTO);
+		MetaClass dtoBase = (MetaClass) masterModel.getProperty(ModelProperties.DTO_BASE);
 				
 		for (MetaEntity me : masterModel.getTargetEntities()) {
-			MetaClass dtoBase = (MetaClass) masterModel.getProperty(ModelProperties.DTO_BASE);
 
 			// create MetaClass
 			String packageName = derivePackageNameFromEntityAndFollowPackage(me, PackageTails.SERVICE);

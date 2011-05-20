@@ -45,6 +45,8 @@ public class CrudServiceRESTFullModelBuilder extends DerivedModelBuilder impleme
 	@Override
 	public MetaModel build() {
 		
+		MetaClass dtoBase = (MetaClass) masterModel.getProperty(ModelProperties.DTO_BASE);
+
 		for (MetaEntity me : masterModel.getTargetEntities()) {
 			MetaClass dto = (MetaClass) me.getProperty(ModelProperties.DTO);
 			MetaClass svcBean = (MetaClass) me.getProperty(ModelProperties.SVC_FULL_BEAN);
@@ -64,6 +66,7 @@ public class CrudServiceRESTFullModelBuilder extends DerivedModelBuilder impleme
 			path.setElement("value", pathString);
 			target.addMetaAnnotationInstance(path);
 			
+			target.addReferencedForeignType(dtoBase);
 			target.addReferencedForeignType(dto);
 			target.addReferencedForeignType(restInterceptor);
 			target.addReferencedForeignType(std.javaxInterceptorInterceptors);

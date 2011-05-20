@@ -39,7 +39,7 @@ allHead(entity, dto) ::= <<
 @GET
 @Path("all")
 @Produces(MediaType.APPLICATION_XML)
-public List\<<dto.simpleName>\> <entity.lcFirstSimpleName>All()
+public List\<<dto.superMetaClass.simpleName>\> <entity.lcFirstSimpleName>All()
     throws EntityNotFoundException, AccessDeniedException, EntityInstantiationException, InvalidIdException, InvalidFieldException, QuerySyntaxException, NotYetImplementedException
 >>
 
@@ -55,7 +55,7 @@ listHead(entity, dto) ::= <<
 @Path("list")
 @Consumes(MediaType.APPLICATION_XML)
 @Produces(MediaType.APPLICATION_XML)
-public List\<<dto.simpleName>\> <entity.lcFirstSimpleName>List(String querySpecXml)
+public List\<<dto.superMetaClass.simpleName>\> <entity.lcFirstSimpleName>List(String querySpecXml)
     throws AccessDeniedException, InvalidFieldException, QuerySyntaxException, NotYetImplementedException
 >>
 
