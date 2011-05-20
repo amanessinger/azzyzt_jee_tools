@@ -35,13 +35,13 @@ byIdBody(entity, dto) ::= <<
 >>
 
 listHead(entity, dto) ::= <<
-public List\<<dto.simpleName>\> <entity.lcFirstSimpleName>List_r(QuerySpec qs)
+public List\<<dto.superMetaClass.simpleName>\> <entity.lcFirstSimpleName>List_r(QuerySpec qs)
     throws InvalidFieldException, AccessDeniedException, QuerySyntaxException, NotYetImplementedException
 >>
 
 listBody(entity, dto) ::= <<
 {
-    List\<<dto.simpleName>\> result = new ArrayList\<<dto.simpleName>\>();
+    List\<<dto.superMetaClass.simpleName>\> result = new ArrayList\<<dto.superMetaClass.simpleName>\>();
     List\<<entity.simpleName>\> entities = eao.list(qs, <entity.simpleName>.class, tmi);
     
     for (<entity.simpleName> e : entities) {
@@ -54,7 +54,7 @@ listBody(entity, dto) ::= <<
 >>
 
 listXmlHead(entity, dto) ::= <<
-public List\<<dto.simpleName>\> <entity.lcFirstSimpleName>ListByXML_r(String querySpecXml)
+public List\<<dto.superMetaClass.simpleName>\> <entity.lcFirstSimpleName>ListByXML_r(String querySpecXml)
     throws InvalidFieldException, AccessDeniedException, QuerySyntaxException, NotYetImplementedException
 >>
 
@@ -62,7 +62,7 @@ listXmlBody(entity, dto) ::= <<
 {
     QuerySpec qs = QuerySpec.fromXML(querySpecXml);
     
-    List\<<dto.simpleName>\> result = new ArrayList\<<dto.simpleName>\>();
+    List\<<dto.superMetaClass.simpleName>\> result = new ArrayList\<<dto.superMetaClass.simpleName>\>();
     List\<<entity.simpleName>\> entities = eao.list(qs, <entity.simpleName>.class, tmi);
     
     for (<entity.simpleName> e : entities) {

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dtoes>
+   <country>
+      <createTimestamp>2011-05-20T13:49:03.912+02:00</createTimestamp>
+      <createUser>andreas</createUser>
+      <id>6</id>
+      <modificationTimestamp>2011-05-20T13:49:03.912+02:00</modificationTimestamp>
+      <modificationUser>andreas</modificationUser>
+      <name>Egypt</name>
+   </country>
+   <city>
+      <countryId>6</countryId>
+      <createTimestamp>2011-05-20T13:49:03.912+02:00</createTimestamp>
+      <createUser>andreas</createUser>
+      <id>20</id>
+      <modificationTimestamp>2011-05-20T13:49:03.912+02:00</modificationTimestamp>
+      <modificationUser>andreas</modificationUser>
+      <name>Assuan</name>
+   </city>
+   <city>
+      <countryId>6</countryId>
+      <createTimestamp>2011-05-20T13:49:03.912+02:00</createTimestamp>
+      <createUser>andreas</createUser>
+      <id>21</id>
+      <modificationTimestamp>2011-05-20T13:49:03.912+02:00</modificationTimestamp>
+      <modificationUser>andreas</modificationUser>
+      <name>Cairo</name>
+   </city>
+</dtoes>
