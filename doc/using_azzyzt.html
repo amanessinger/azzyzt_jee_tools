@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 <meta name="language" content="en">
-<meta name="date" content="2011-05-20T14:02:56">
+<meta name="date" content="2011-05-20T15:33:16">
 <meta name="generator" content="deplate.rb 0.8.5">
 <link rel="start" href="using_azzyzt.html" title="Frontpage">
 <link rel="chapter" href="using_azzyzt.html#hd001" title="Azzyzt JEE Tools">
@@ -2691,6 +2691,75 @@ a very complicated no-op.</p>
 
 
 
+<h2 id="hd0050012">5.12&nbsp;A visit from Austria to Luxor</h2>
+
+<p>Remember the strange entity <code>Visit</code>? It represents a 
+many-to-many association between ZIP areas and cities, meaning that a 
+number of visitors from a certain ZIP area have visited a certain city. 
+The number of visitors augments the join table and so do our usual 
+create/modification timestamps/users, only that this time the timestamps 
+are actually strings. Additionally the join table has no explicit ID, 
+thus we had to use an embedded ID.</p>
+
+<p>Let&rsquo;s pretend that we just got statistical data. Five visitors 
+from the Austrian ZIP area Graz-Webling have visited Luxor in Egypt. 
+This is a case for <code>storeMulti()</code> and for using negative 
+proxy IDs.</p>
+
+<p>POST the following XML</p>
+
+<div class="code">
+<pre>
+<span class="hl kwa">&lt;dtoes&gt;</span>
+   <span class="hl kwa">&lt;city&gt;</span>
+      <span class="hl kwa">&lt;countryId&gt;</span><span class="hl num">6</span><span class="hl kwa">&lt;/countryId&gt;</span>
+      <span class="hl kwa">&lt;id&gt;</span>-<span class="hl num">1</span><span class="hl kwa">&lt;/id&gt;</span>
+      <span class="hl kwa">&lt;name&gt;</span>Luxor<span class="hl kwa">&lt;/name&gt;</span>
+   <span class="hl kwa">&lt;/city&gt;</span>
+   <span class="hl kwa">&lt;visit&gt;</span>
+      <span class="hl kwa">&lt;id&gt;</span>
+         <span class="hl kwa">&lt;fromZipArea&gt;</span><span class="hl num">1</span><span class="hl kwa">&lt;/fromZipArea&gt;</span>
+         <span class="hl kwa">&lt;toCity&gt;</span>-<span class="hl num">1</span><span class="hl kwa">&lt;/toCity&gt;</span>
+      <span class="hl kwa">&lt;/id&gt;</span>
+      <span class="hl kwa">&lt;numberOfVisitors&gt;</span><span class="hl num">5</span><span class="hl kwa">&lt;/numberOfVisitors&gt;</span>
+   <span class="hl kwa">&lt;/visit&gt;</span>
+<span class="hl kwa">&lt;/dtoes&gt;</span>
+</pre>
+</div>
+<p>into</p>
+
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/modifyMulti/storeMulti" class="remote">http://localhost:8080/cookbookServlets/REST/modifyMulti/storeMulti</a></span><a name="idx0033"></a></p>
+
+<p>The result is</p>
+
+<div class="code">
+<pre>
+<span class="hl kwa">&lt;dtoes&gt;</span>
+   <span class="hl kwa">&lt;city&gt;</span>
+      <span class="hl kwa">&lt;countryId&gt;</span><span class="hl num">6</span><span class="hl kwa">&lt;/countryId&gt;</span>
+      <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">20</span>T15:<span class="hl num">31</span>:<span class="hl num">33.887</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
+      <span class="hl kwa">&lt;createUser&gt;</span>andreas<span class="hl kwa">&lt;/createUser&gt;</span>
+      <span class="hl kwa">&lt;id&gt;</span><span class="hl num">22</span><span class="hl kwa">&lt;/id&gt;</span>
+      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">20</span>T15:<span class="hl num">31</span>:<span class="hl num">33.887</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
+      <span class="hl kwa">&lt;modificationUser&gt;</span>andreas<span class="hl kwa">&lt;/modificationUser&gt;</span>
+      <span class="hl kwa">&lt;name&gt;</span>Luxor<span class="hl kwa">&lt;/name&gt;</span>
+   <span class="hl kwa">&lt;/city&gt;</span>
+   <span class="hl kwa">&lt;visit&gt;</span>
+      <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">20</span>-<span class="hl num">153133.887</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
+      <span class="hl kwa">&lt;createUser&gt;</span>andreas<span class="hl kwa">&lt;/createUser&gt;</span>
+      <span class="hl kwa">&lt;id&gt;</span>
+         <span class="hl kwa">&lt;fromZipArea&gt;</span><span class="hl num">1</span><span class="hl kwa">&lt;/fromZipArea&gt;</span>
+         <span class="hl kwa">&lt;toCity&gt;</span><span class="hl num">22</span><span class="hl kwa">&lt;/toCity&gt;</span>
+      <span class="hl kwa">&lt;/id&gt;</span>
+      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">20</span>-<span class="hl num">153133.887</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
+      <span class="hl kwa">&lt;modificationUser&gt;</span>andreas<span class="hl kwa">&lt;/modificationUser&gt;</span>
+      <span class="hl kwa">&lt;numberOfVisitors&gt;</span><span class="hl num">5</span><span class="hl kwa">&lt;/numberOfVisitors&gt;</span>
+   <span class="hl kwa">&lt;/visit&gt;</span>
+<span class="hl kwa">&lt;/dtoes&gt;</span>
+</pre>
+</div>
+
+
 <h1 id="hd006">6&nbsp;Miscellanea</h1>
 
 
@@ -2736,7 +2805,7 @@ as for REST.</p>
 
 <p>For the purpose of generating code, Azzyzt JEE Tools make use of and 
 bundles a copy of 
-<span class="remote"><a href="http://www.stringtemplate.org/" class="remote">StringTemplate</a></span><a name="idx0033"></a>, 
+<span class="remote"><a href="http://www.stringtemplate.org/" class="remote">StringTemplate</a></span><a name="idx0034"></a>, 
 which is</p>
 
 <pre class="verbatim">
@@ -2772,7 +2841,7 @@ which is</p>
 </pre>
 
 <p>This documentation was created using 
-<span class="remote"><a href="http://deplate.sourceforge.net/" class="remote">Deplate</a></span><a name="idx0034"></a>.</p>
+<span class="remote"><a href="http://deplate.sourceforge.net/" class="remote">Deplate</a></span><a name="idx0035"></a>.</p>
 
 
 </body>

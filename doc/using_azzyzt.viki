@@ -1724,6 +1724,72 @@ operation "''storeDeletMulti()''" to a more complicated version of
 either "''storeMulti()''" or "''deleteMulti()''", or if both lists are
 empty, to a very complicated no-op.
 
+** A visit from Austria to Luxor
+
+Remember the strange entity ''Visit''? It represents a many-to-many
+association between ZIP areas and cities, meaning that a number of
+visitors from a certain ZIP area have visited a certain city. The
+number of visitors augments the join table and so do our usual
+create/modification timestamps/users, only that this time the
+timestamps are actually strings. Additionally the join table has no
+explicit ID, thus we had to use an embedded ID.
+
+Let's pretend that we just got statistical data. Five visitors from
+the Austrian ZIP area Graz-Webling have visited Luxor in Egypt. This
+is a case for ''storeMulti()'' and for using negative proxy IDs.
+
+POST the following XML
+
+#Code syntax=XML <<---
+<dtoes>
+   <city>
+      <countryId>6</countryId>
+      <id>-1</id>
+      <name>Luxor</name>
+   </city>
+   <visit>
+      <id>
+         <fromZipArea>1</fromZipArea>
+         <toCity>-1</toCity>
+      </id>
+      <numberOfVisitors>5</numberOfVisitors>
+   </visit>
+</dtoes>
+---
+
+into
+
+  [[http://localhost:8080/cookbookServlets/REST/modifyMulti/storeMulti]]
+
+The result is
+
+#Code syntax=XML <<---
+<dtoes>
+   <city>
+      <countryId>6</countryId>
+      <createTimestamp>2011-05-20T15:31:33.887+02:00</createTimestamp>
+      <createUser>andreas</createUser>
+      <id>22</id>
+      <modificationTimestamp>2011-05-20T15:31:33.887+02:00</modificationTimestamp>
+      <modificationUser>andreas</modificationUser>
+      <name>Luxor</name>
+   </city>
+   <visit>
+      <createTimestamp>2011-05-20-153133.887</createTimestamp>
+      <createUser>andreas</createUser>
+      <id>
+         <fromZipArea>1</fromZipArea>
+         <toCity>22</toCity>
+      </id>
+      <modificationTimestamp>2011-05-20-153133.887</modificationTimestamp>
+      <modificationUser>andreas</modificationUser>
+      <numberOfVisitors>5</numberOfVisitors>
+   </visit>
+</dtoes>
+---
+
+
+
 * Miscellanea
 
 ** Variants of the query specification
