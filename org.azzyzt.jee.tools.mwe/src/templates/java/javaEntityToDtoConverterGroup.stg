@@ -28,7 +28,7 @@ public <mdt.simpleName>(EaoBase eao, InvocationRegistryInterface invocationRegis
     this.eao = (GenericEao)eao;
     this.tmi = (TypeMetaInfo)tmi;
     this.idTranslator = idTranslator;
-    <if(mdt.properties.entity.needingInvocationRegistry)>
+    <if(mdt.properties.entity.converterNeedingInvocationRegistry)>
     this.invocationRegistry = (InvocationRegistry)invocationRegistry;
     <endif>
 }
@@ -153,7 +153,7 @@ copyFieldD2ESimple(field) ::= <<
 <elseif(field.notAutomaticallySet)>
 result.set<field.ucName>(in.get<field.ucName>());
 
-<elseif(field.createUserField)>if (result.get<field.ucName>() != null) {
+<elseif(field.createUserField)>if (result.get<field.ucName>() == null) {
     // only set if not already set!
     result.set<field.ucName>(invocationRegistry.getMetaInfo().getAuthenticatedUserName());
 }
@@ -161,11 +161,29 @@ result.set<field.ucName>(in.get<field.ucName>());
 <elseif(field.modificationUserField)>
 result.set<field.ucName>(invocationRegistry.getMetaInfo().getAuthenticatedUserName());
 
+<elseif(field.createTimestampField)>if (result.get<field.ucName>() == null) {
+    // only set if not already set!
+    result.set<field.ucName>(<timestampValue(field)>);
+}
+
+<elseif(field.modificationTimestampField)>
+result.set<field.ucName>(<timestampValue(field)>);
+
 <else>
-// a value for <field.name> is automatically set by the persistence system 
+throw new Error("Automatically set field not set. This can't happen!");
 
 <endif>
 
+>>
+
+timestampValue(field) ::= <<
+<if(field.dateField)>
+invocationRegistry.getInvocationTimestamp().getTime()
+<elseif(field.calendarField)>
+invocationRegistry.getInvocationTimestamp()
+<else>
+new SimpleDateFormat("<field.timestampFormat>").format(invocationRegistry.getInvocationTimestamp().getTime())
+<endif>
 >>
 
 fetchAssociatedEntities(field) ::= <<

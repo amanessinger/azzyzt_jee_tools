@@ -2,7 +2,8 @@ group javaTransactionRollbackHandlerGroup : javaGroup;
 
 @javaClass.extra_methods() ::= <<
 @AroundInvoke
-public Object handleException(InvocationContext ctx) throws Exception {
+public Object aroundBeanInvocation(InvocationContext ctx) throws Exception {
+    invocationRegistry.registerEJBInvocation(ctx);
     try {
         Object result = ctx.proceed();
         eao.flush();

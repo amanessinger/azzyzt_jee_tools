@@ -1,0 +1,4 @@
+-- Database: cookbookdb
+
+CREATE ROLE cookbookuser LOGIN
+  NOSUPERUSER INHERIT CREATEDB NOCREATEROLE;
