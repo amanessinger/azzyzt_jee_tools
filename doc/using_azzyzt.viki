@@ -51,6 +51,16 @@ here we will use more or less the same application, just slightly
 expanded to show off some new features. All subsequent examples will
 reference the same database and the same entities.
 
+In the following I frequently reference a subdirectory ''doc'' of the
+Azzyzt source distribution. For your convenience, a compressed archive
+of this directory (including the sample sources) is available under
+
+    [[http://azzyzt.manessinger.com/doc.zip]]
+
+and additionally the extracted content is available under
+
+    [[http://azzyzt.manessinger.com/doc/]]
+
 If you want to follow the examples given, you should first set up a
 database. The subdirectory ''doc/cookbook'' of the Azzyzt source
 distribution contains a file ''README.txt''. Follow the directions

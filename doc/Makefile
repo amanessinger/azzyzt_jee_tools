@@ -3,6 +3,9 @@ README  = ../README.txt
 
 %.html : %.viki
 	deplate -X -m code-highlight -o $@ $<
+	head -n -3 $@ > xxx.tmp
+	cat xxx.tmp statcounter.inc tail.inc > $@
+	rm -f xxx.tmp
 
 all:    $(HTML) $(README) clean
 

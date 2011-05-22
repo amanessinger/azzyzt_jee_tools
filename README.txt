@@ -2,7 +2,7 @@
 1 Azzyzt JEE Tools
 ==================
 
-  !!! Release 1.1.0
+  !!! Release 1.1.1
 
 Azzyzt JEE Tools is a collection of software tools helping software 
 developers to create software using Java Enterprise Edition 6. It is 
@@ -15,63 +15,13 @@ If you're new to Azzyzt JEE Tools, a good way to get started is to work
 through the tutorial in using_azzyzt.html[1] in the source 
 distribution's doc directory.
 
-
-1.1 Changes in 1.1.0
-~~~~~~~~~~~~~~~~~~~~
-
-  * The "update()" operation was dropped. Basically it was a "store()" 
-    without result and also implemented as such.
-  * "store()" now returns not only the ID of the object (could come 
-    from a sequence), but instead returns the DTO for the whole entity. 
-    This avoids all problems with server-set timestamps or database 
-    column defaults. You store something, you get back what's in the 
-    database.
-  * A new operation "storeMulti()" takes a list of DTOs of any type, 
-    converts them to the respective entities and stores them. The 
-    resulting entities are then converted back and the list of DTOs is 
-    returned.
-
-    In case of interdependent objects, the numeric IDs of 
-    not-yet-existing objects may be filled with unique negative numbers, 
-    so-called proxy IDs, and references to other entities may use those 
-    proxy IDs. This works for numeric IDs only, and it assumes that ID 
-    values can't be negative, but then, so does 
-    "EntityBase.couldBeIdValue()".
-
-    Use "storeMulti()" to store multiple objects of any kind in one 
-    transaction.
-  * A new operation "deleteMulti()" takes a list of DTOs of any type. 
-    Only the ID values must be set. The corresponding objects in the 
-    database are deleted.
-
-    Use "deleteMulti()" to delete multiple objects of any kind in one 
-    transaction.
-  * A new operation "storeDeleteMulti()" takes two lists of DTOs of 
-    any type. DTOs in the first list, the delete list, only need to have 
-    their IDs set, DTOs in the second list, the store list, are treated 
-    exactly as in "storeMulti()". The operation returns the list of 
-    stored entities, converted to external DTO form. Use 
-    "storeDeleteMulti()" to make any kind of modification in one 
-    transaction.
-  * URLs for SOAP web services have changed. They are now based on the 
-    project prefix. Thus what was
-
-    http://localhost:8080/ModifyMultiBeanService/ModifyMultiBean?wsdl[2]
-
-    is now
-
-    http://localhost:8080/cookbook/ModifyMultiBean?wsdl[3]
-
-    or whatever host and portnumber are. The new URLs don't clash 
-    between applications, and we get a distinct namespace per 
-    application.
-  * Documentation has been added, building upon types from my tutorial.
+For a change log see changelog.html[2].
 
 
-1.2 Current status
+1.1 Current status
 ~~~~~~~~~~~~~~~~~~
 
-As of release 1.1.0, Azzyzt JEE Tools consists of three main parts:
+As of release 1.1.1, Azzyzt JEE Tools consists of three main parts:
 
   1. a generator that creates so-called azzyzted projects. An azzyzted 
     project is a collection of four projects, an Enterprise Application 
@@ -97,7 +47,7 @@ As of release 1.1.0, Azzyzt JEE Tools consists of three main parts:
   3. a runtime library of code used by generated applications.
 
 The structure of azzyzted projects and the structure of generated code 
-evolved from the work on An Eclipse / GlassFish / Java EE 6 Tutorial[4] 
+evolved from the work on An Eclipse / GlassFish / Java EE 6 Tutorial[3] 
 and on usage of that tutorial in a subsequent internal training class 
 for developers at the Municipiality of Vienna, Austria.
 
@@ -119,7 +69,7 @@ and Eclipse versions
   * Helios SR1, SR2
 
 Eclipse is always understood as the generic bundle Eclipse IDE for Java 
-EE Developers[5]. Other distributions may contain the required plugins 
+EE Developers[4]. Other distributions may contain the required plugins 
 and may work, but they were not tested.
 
 The plugins compile on Indigo M4, but currently no plugin for GlassFish 
@@ -143,12 +93,12 @@ Contributions to Azzyzt JEE Tools are welcome. Possible areas include
 support for additional Java IDEs, additional patterns, additional 
 runtimes, etc. Of course bug fixes are welcome as well.
 
-Azzyzt JEE Tools were developed by Andreas Manessinger[6] for the 
+Azzyzt JEE Tools were developed by Andreas Manessinger[5] for the 
 Municipal Department 14 - Automated Data Processing, Information and 
-Communications Technology[7] (MA 14) of the City of Vienna, Austria
+Communications Technology[6] (MA 14) of the City of Vienna, Austria
 
 
-1.3 Licenses
+1.2 Licenses
 ~~~~~~~~~~~~
 
      Licensed under the EUPL, Version 1.1 or as soon they
@@ -175,7 +125,7 @@ Communications Technology[7] (MA 14) of the City of Vienna, Austria
      permissions and limitations under the Licence.
 
 For the purpose of generating code, Azzyzt JEE Tools make use of and 
-bundles a copy of StringTemplate[8], which is
+bundles a copy of StringTemplate[7], which is
 
      Copyright (c) 2008, Terence Parr
      All rights reserved.
@@ -207,15 +157,14 @@ bundles a copy of StringTemplate[8], which is
      ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
      POSSIBILITY OF SUCH DAMAGE.
 
-This documentation was created using Deplate[9].
+This documentation was created using Deplate[8].
 
 [1] using_azzyzt.html
-[2] http://localhost:8080/ModifyMultiBeanService/ModifyMultiBean?wsdl
-[3] http://localhost:8080/cookbook/ModifyMultiBean?wsdl
-[4] http://programming.manessinger.com/tutorials/an-eclipse-glassfish-java-ee-6-tutorial/
-[5] http://www.eclipse.org/downloads/
-[6] http://programming.manessinger.com
-[7] http://www.wien.gv.at/english/administration/ict/
-[8] http://www.stringtemplate.org/
-[9] http://deplate.sourceforge.net/
+[2] changelog.html
+[3] http://programming.manessinger.com/tutorials/an-eclipse-glassfish-java-ee-6-tutorial/
+[4] http://www.eclipse.org/downloads/
+[5] http://programming.manessinger.com
+[6] http://www.wien.gv.at/english/administration/ict/
+[7] http://www.stringtemplate.org/
+[8] http://deplate.sourceforge.net/
 
