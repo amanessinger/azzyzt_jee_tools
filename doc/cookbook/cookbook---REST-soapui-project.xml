@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dtoes>
+   <city>
+      <countryId>6</countryId>
+      <createTimestamp>2011-05-20T15:31:33.887+02:00</createTimestamp>
+      <createUser>andreas</createUser>
+      <id>22</id>
+      <modificationTimestamp>2011-05-20T15:31:33.887+02:00</modificationTimestamp>
+      <modificationUser>andreas</modificationUser>
+      <name>Luxor</name>
+   </city>
+   <visit>
+      <createTimestamp>2011-05-20-153133.887</createTimestamp>
+      <createUser>andreas</createUser>
+      <id>
+         <fromZipArea>1</fromZipArea>
+         <toCity>22</toCity>
+      </id>
+      <modificationTimestamp>2011-05-20-153133.887</modificationTimestamp>
+      <modificationUser>andreas</modificationUser>
+      <numberOfVisitors>5</numberOfVisitors>
+   </visit>
+</dtoes>

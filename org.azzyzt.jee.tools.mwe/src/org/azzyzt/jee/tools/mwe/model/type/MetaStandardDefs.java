@@ -143,7 +143,6 @@ public class MetaStandardDefs {
 
 	public final MetaClass eaoBase;
 	public final MetaClass entityBase;
-	public final MetaClass entityListenerBase;
 	public final MetaInterface invocationRegistryInterface;
 	public final MetaClass InvocationRegistryBase;
 	public final MetaInterface javaxTransactionTransactionSynchronizationRegistry;
@@ -321,7 +320,6 @@ public class MetaStandardDefs {
 		
 		eaoBase = MetaClass.forType(org.azzyzt.jee.runtime.eao.EaoBase.class);
 		entityBase = MetaClass.forType(org.azzyzt.jee.runtime.entity.EntityBase.class);
-		entityListenerBase = MetaClass.forType(org.azzyzt.jee.runtime.entity.EntityListenerBase.class);
 		invocationRegistryInterface = MetaInterface.forType(org.azzyzt.jee.runtime.meta.InvocationRegistryInterface.class);
 		InvocationRegistryBase = MetaClass.forType(org.azzyzt.jee.runtime.meta.InvocationRegistryBase.class);
 		javaxTransactionTransactionSynchronizationRegistry = MetaInterface.forType(javax.transaction.TransactionSynchronizationRegistry.class);

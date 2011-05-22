@@ -27,6 +27,7 @@
 
 package org.azzyzt.jee.tools.mwe.builder;
 
+import org.azzyzt.jee.tools.mwe.identifiers.ModelProperties;
 import org.azzyzt.jee.tools.mwe.identifiers.PackageTails;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
 import org.azzyzt.jee.tools.mwe.model.annotation.MetaAnnotationInstance;
@@ -44,6 +45,8 @@ public class CrudServiceRESTRestrictedModelBuilder extends DerivedModelBuilder i
 	@Override
 	public MetaModel build() {
 		
+		MetaClass dtoBase = (MetaClass) masterModel.getProperty(ModelProperties.DTO_BASE);
+
 		for (MetaEntity me : masterModel.getTargetEntities()) {
 			MetaClass dto = (MetaClass) me.getProperty("dto");
 			MetaClass svcBean = (MetaClass) me.getProperty("svcRestrictedBean");
@@ -63,6 +66,7 @@ public class CrudServiceRESTRestrictedModelBuilder extends DerivedModelBuilder i
 			path.setElement("value", pathString);
 			target.addMetaAnnotationInstance(path);
 			
+			target.addReferencedForeignType(dtoBase);
 			target.addReferencedForeignType(dto);
 			target.addReferencedForeignType(restInterceptor);
 			target.addReferencedForeignType(std.javaxInterceptorInterceptors);

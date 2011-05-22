@@ -1,0 +1,158 @@
+#VAR: fmt=~html(site|slides): css=highlight.css,layout-deplate.css cssInclude=true
+#VAR: tableStyle=formal
+
+#VAR: version=1.1.0
+
+* Azzyzt JEE Tools
+#OPT: plain!
+
+ !!! Release {version}
+
+Azzyzt JEE Tools is a collection of software tools helping software
+developers to create software using Java Enterprise Edition 6. It is
+designed to be integrated into popular Java IDEs.
+
+This file is an introduction to building and modifying Azzyzt JEE
+Tools.
+
+Copyright (c) 2011, Municipiality of Vienna, Austria
+Licensed under the EUPL, Version 1.1 or subsequent versions
+
+ !!! This file is outdated!
+
+** Developing or modifying Azzyzt JEE Tools
+
+*** Getting the source
+
+Azzyzt JEE Tools have their home on \GitHub under 
+
+    [[https://github.com/amanessinger/azzyzt_jee_tools]]
+
+
+*** Directory layout
+
+Azzyzt JEE Tools are organized as a collection of Java projects. The
+projects were created using Eclipse Helios, and all development on
+Azzyzt JEE Tools is done with Eclipse.
+
+The recommended way to build Azzyzt JEE Tools, is to fork the project
+from \GitHub ([[https://github.com/amanessinger/azzyzt_jee_tools]]) 
+and use the resulting working directory as an Eclipse workspace. 
+Doing so, you will end up with the following structure:
+
+| --------------------------------------------------------------------------- |
+| ''.git/''                                          | local Git repository |
+| ''.gitignore''                                     | list of ignored files |
+| ''README.txt''                                     | this file |
+| ''LICENCE.txt''                                    | text version of EUPL |
+| ''azzyzt_magwien/''                                | update site (magwien) |
+| ''azzyzt_generic/''                                | update site (generic) |
+| ''org.azzyzt.jee.mwe.generic.feature/''            | feature |
+| ''org.azzyzt.jee.mwe.magwien.feature/''            | feature |
+| ''org.azzyzt.jee.runtime/''                        | runtime for generated apps |
+| ''org.azzyzt.jee.runtime.site.generic/''           | site-specific EJB (generic) |
+| ''org.azzyzt.jee.runtime.site.generic.fragment/''  | fragment (generic) |
+| ''org.azzyzt.jee.runtime.site.magwien/''           | site-specific EJB (magwien) |
+| ''org.azzyzt.jee.runtime.site.magwien.fragment/''  | fragment (magwien) |
+| ''org.azzyzt.jee.tools.common.plugin/''            | plugin (plugin tools) |
+| ''org.azzyzt.jee.tools.mwe/''                      | code generator |
+| ''org.azzyzt.jee.tools.mwe.projectgen.plugin/''    | plugin (project generator) |
+| ''org.azzyzt.jee.tools.project.plugin/''           | plugin (faceted projects) |
+| --------------------------------------------------------------------------- |
+#OPT: cols=j.left,j.right
+
+Additionally you may find a directory named ".metadata" in case
+you actually use the working directory as an Eclipse workspace.
+
+If you don't work for the Municipality of Vienna, you can safely
+ignore everything with "magwien" in its name.
+
+
+*** Building the software
+
+Start Eclipse and open the new workspace. Don't import the projects
+yet. In order to compile the source, you need a Java EE 6 runtime, for
+instance \GlassFish v3.1, the current version as of Spring 2011.
+
+Install the Oracle \GlassFish plugin if you have not done so, download
+and install \GlassFish if you have not done so, and then create a new
+server instance ("__[Servers View] / New / server__").
+
+At this point the build will likely fail. Look at the libraries in the
+build path. The server runtime will likely be unbound. Bind it to the
+runtime of your newly created server instance.
+
+__to be continued__
+
+
+** Licenses
+
+#Verbatim <<---
+ Licensed under the EUPL, Version 1.1 or as soon they
+ will be approved by the European Commission - subsequent
+ versions of the EUPL (the "Licence");
+ You may not use this work except in compliance with the
+ Licence.
+ 
+ For convenience a plain text copy of the English version 
+ of the Licence can be found in the file LICENCE.txt in
+ the top-level directory of this software distribution.
+ 
+ You may obtain a copy of the Licence in any of 22 European
+ Languages at:
+
+ http://www.osor.eu/eupl
+
+ Unless required by applicable law or agreed to in
+ writing, software distributed under the Licence is
+ distributed on an "AS IS" basis,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ express or implied.
+ See the Licence for the specific language governing
+ permissions and limitations under the Licence.
+---
+
+For the purpose of generating code, Azzyzt JEE Tools make use of and
+bundles a copy of [[http://www.stringtemplate.org/][\StringTemplate]],
+which is
+ 
+#Verbatim <<---
+ Copyright (c) 2008, Terence Parr
+ All rights reserved.
+ Redistribution and use in source and binary forms, with or 
+ without modification, are permitted provided that the 
+ following conditions are met:
+ 
+ Redistributions of source code must retain the above copyright 
+ notice, this list of conditions and the following disclaimer.
+ 
+ Redistributions in binary form must reproduce the above copyright 
+ notice, this list of conditions and the following disclaimer in 
+ the documentation and/or other materials provided with the distribution.
+ 
+ Neither the name of the author nor the names of its contributors 
+ may be used to endorse or promote products derived from this software 
+ without specific prior written permission.
+ 
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS 
+ FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE 
+ COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, 
+ INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
+ BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; 
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT 
+ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN 
+ ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
+ POSSIBILITY OF SUCH DAMAGE.
+---
+
+This documentation was created using [[http://deplate.sourceforge.net/][Deplate]].
+
+%
+% 
+% Local Variables:
+% mode:text
+% mode:auto-fill
+% End:

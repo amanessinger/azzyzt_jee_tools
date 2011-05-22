@@ -27,6 +27,7 @@
 
 package org.azzyzt.jee.tools.mwe.builder;
 
+import org.azzyzt.jee.tools.mwe.identifiers.ModelProperties;
 import org.azzyzt.jee.tools.mwe.identifiers.PackageTails;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
 import org.azzyzt.jee.tools.mwe.model.annotation.MetaAnnotationInstance;
@@ -45,6 +46,8 @@ public class CrudServiceFullInterfaceModelBuilder extends DerivedModelBuilder im
 	@Override
 	public MetaModel build() {
 		
+		MetaClass dtoBase = (MetaClass) masterModel.getProperty(ModelProperties.DTO_BASE);
+
 		for (MetaEntity me : masterModel.getTargetEntities()) {
 			MetaClass dto = (MetaClass) me.getProperty("dto");
 
@@ -57,6 +60,7 @@ public class CrudServiceFullInterfaceModelBuilder extends DerivedModelBuilder im
 			target.setModifiers(std.mod_public);
 			target.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxEjbRemote, target));
 			
+			target.addReferencedForeignType(dtoBase);
 			target.addReferencedForeignType(dto);
 			target.addReferencedForeignType(std.accessDeniedException);
 			target.addReferencedForeignType(std.entityNotFoundException);

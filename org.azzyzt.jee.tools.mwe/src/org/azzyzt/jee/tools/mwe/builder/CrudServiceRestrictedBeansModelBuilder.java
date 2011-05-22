@@ -47,6 +47,7 @@ public class CrudServiceRestrictedBeansModelBuilder extends DerivedModelBuilder 
 	public MetaModel build() {
 		
 		MetaClass typeMetaInfo = (MetaClass)masterModel.getProperty(ModelProperties.TYPE_META_INFO);
+		MetaClass dtoBase = (MetaClass) masterModel.getProperty(ModelProperties.DTO_BASE);
 				
 		for (MetaEntity me : masterModel.getTargetEntities()) {
 			MetaClass dto = (MetaClass) me.getProperty(ModelProperties.DTO);
@@ -65,6 +66,7 @@ public class CrudServiceRestrictedBeansModelBuilder extends DerivedModelBuilder 
 			mai.setElement("serviceName", masterModel.getProjectBaseName());
 			target.addMetaAnnotationInstance(mai);
 			
+			target.addReferencedForeignType(dtoBase);
 			target.addReferencedForeignType(dto);
 			target.addReferencedForeignType(me);
 			target.addReferencedForeignType(std.accessDeniedException);

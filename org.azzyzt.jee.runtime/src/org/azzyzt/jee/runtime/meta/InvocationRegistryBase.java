@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -27,6 +27,8 @@
 
 package org.azzyzt.jee.runtime.meta;
 
+import java.util.Calendar;
+
 import javax.interceptor.InvocationContext;
 import javax.transaction.TransactionSynchronizationRegistry;
 
@@ -38,11 +40,31 @@ public abstract class InvocationRegistryBase {
 	public abstract TransactionSynchronizationRegistry getTsr();
 
 	public void registerRESTInvocation(InvocationContext ctx) {
+		TransactionSynchronizationRegistry tsr = getTsr();
+
+		ensureInvocationTimestamp(tsr);
 		
 		SiteAdapterInterface siteAdapter = getSiteAdapter();
 		if (siteAdapter != null) {
 			InvocationMetaInfo metaInfo = siteAdapter.fromRESTContext(ctx);
-			getTsr().putResource("invocationMetaInfo", metaInfo);
+			tsr.putResource("invocationMetaInfo", metaInfo);
+		}
+	}
+	
+	public void registerEJBInvocation(InvocationContext ctx) {
+		TransactionSynchronizationRegistry tsr = getTsr();
+
+		ensureInvocationTimestamp(tsr);
+	}
+	
+	private Calendar ensureInvocationTimestamp(TransactionSynchronizationRegistry tsr) {
+		Object resource = tsr.getResource("invocationTimestamp");
+		if (resource == null) {
+			Calendar invocationTimestamp = Calendar.getInstance();
+			tsr.putResource("invocationTimestamp", invocationTimestamp);
+			return invocationTimestamp;
+		} else {
+			return (Calendar)resource;
 		}
 	}
 	
@@ -50,6 +72,13 @@ public abstract class InvocationRegistryBase {
 		// TODO make sure that the caller (generated) can cope with nulls
 		InvocationMetaInfo metaInfo = (InvocationMetaInfo)getTsr().getResource("invocationMetaInfo");
 		return metaInfo;
+	}
+	
+	public Calendar getInvocationTimestamp() {
+		TransactionSynchronizationRegistry tsr = getTsr();
+
+		return ensureInvocationTimestamp(tsr);
+		
 	}
 
 }

@@ -1,0 +1,1876 @@
+#VAR: fmt=~html(site|slides): css=highlight.css,layout-deplate.css cssInclude=true
+#VAR: tableStyle=formal
+
+#VAR: version=1.1.0
+
+* Azzyzt JEE Tools
+#OPT: plain!
+
+ !!! Release {version}
+
+Azzyzt JEE Tools is a collection of software tools helping software
+developers to create software using Java Enterprise Edition 6. It is
+designed to be integrated into popular Java IDEs.
+
+This file is a tutorial for users of Azzyzt JEE Tools.
+
+Copyright (c) 2011, Municipiality of Vienna, Austria
+Licensed under the EUPL, Version 1.1 or subsequent versions
+
+
+* Using Azzyzt JEE Tools
+
+If you just want to use Azzyzt JEE Tools (as opposed to modify and
+build them), the recommended way to install the software is via
+an Eclipse update site. As of release {version}, there are two update site
+URLs, one for the edition used by the Municipiality of Vienna,
+Austria, the other a generic version. The URLs are
+
+    [[http://azzyzt.manessinger.com/azzyzt_generic/]]
+
+    [[http://azzyzt.manessinger.com/azzyzt_magwien/]]
+
+All announcements of new versions will be published on 
+
+    [[http://www.azzyzt.org]]
+
+When you don't see any features available from the update site, try
+unticking "Group items by category". There actually is a category
+called "Azzyzt", but you may see "There are no categorized items"
+anyway. I believe this to be a bug in Eclipse p2.
+
+Once the feature is installed, make sure to have a Java EE 6 server
+instance configured. The server does not need to be running, but it
+must be configured, in order to make the runtime available.
+
+* The cookbook example
+
+If you remember my
+[[http://programming.manessinger.com/tutorials/an-eclipse-glassfish-java-ee-6-tutorial/][Eclipse / \GlassFish / Java EE 6 Tutorial]], 
+here we will use more or less the same application, just slightly
+expanded to show off some new features. All subsequent examples will
+reference the same database and the same entities.
+
+If you want to follow the examples given, you should first set up a
+database. The subdirectory ''doc/cookbook'' of the Azzyzt source
+distribution contains a file ''README.txt''. Follow the directions
+therein. 
+
+#Verbatim <<---
+doc/cookbook
+|
+|-- cookbook---REST-soapui-project.xml
+|
+|-- oracle
+|   |-- README.txt
+|   `-- sql
+|       |-- create_tables.sql
+|       |-- drop_tables.sql
+|       `-- initialize_data.sql
+|
+|-- postgresql
+|   |-- README.txt
+|   `-- sql
+|       |-- create_cookbook_db.sql
+|       |-- create_cookbook__user.sql
+|       |-- create_tables.sql
+|       |-- drop_tables.sql
+|       `-- initialize_data.sql
+|
+|-- README.txt
+|
+`-- src
+    |-- cookbookEJB
+    |   `-- ejbModule
+    |       |-- com
+    |       |   `-- manessinger
+    |       |       `-- cookbook
+    |       |           `-- entity
+    |       |               |-- City.java
+    |       |               |-- Country.java
+    |       |               |-- Visit.java
+    |       |               `-- Zip.java
+    |       `-- META-INF
+    |           `-- persistence.xml
+    |
+    `-- cookbookEJBClient
+        `-- ejbModule
+            `-- com
+                `-- manessinger
+                    `-- cookbook
+                        `-- entity
+                            `-- VisitId.java
+---
+
+On the same level as ''README.txt'' you find one directory for each
+database that the tutorial supports. Note, it's not that Java EE 6 or
+GlassFish or Azzyzt don't support other databases, it's just that I've
+not tested the tutorial with anything else.
+
+Each database subdirectory contains a set of SQL instructions on how
+to create the database user, the database, and scripts to create the
+schema objects (tables and sequences), to initialize the tables, and
+finally to drop the schema objects if you want to start over.
+
+Furthermore there is a directory ''src'', that contains the sources of
+entity classes and a ''persistence.xml'', that already references
+these classes. More about that in the next couple of sections.
+
+Finally ''doc/cookbook'' contains a soapUI project file. This already
+contains the REST requests for the examples at the end of this
+tutorial.
+
+
+** Creating an azzyzted project
+
+Make sure you are in the "Java EE" perspective. There are three ways
+to get to the "New Azzyzted JEE Project" wizard:
+
+ - __File / New / Other / Java EE / New Azzyzted JEE Project__
+ - __\[Project Explorer\] / New / Other / Java EE / New Azzyzted JEE Project__
+ - __''Ctrl+N'' / Java EE / New Azzyzted JEE Project__
+
+I normally use the keyboard shortcut, as this is the shortest path.
+
+In the wizard dialog enter a project base name, a package name, and
+choose the target runtime.
+
+The project base name is a prefix that will be used for the four
+projects that together make up an azzyzted project. 
+
+The package name is actually a prefix as well. All generated Java
+packages will be below this prefix.
+
+The target runtime is a list of all runtimes used in defined server
+instances. Thus if you have two servers supporting Java EE 6 running
+or at least defined in Eclipse, one for \GlassFish 3.01, one for 3.1,
+you will see a list of two runtimes. Choose one of them.
+
+If the list of target runtimes is empty, then you have not yet defined
+a server. Do so from the Servers view with "__New / Server__".
+
+In the context of this tutorial, the project base name is
+"''cookbook''", the package name is
+"''com.manessinger.cookbook''". Try this and you will end up with the
+following four projects:
+
+ - ''cookbookEAR''
+ - ''cookbookEJB''
+ - ''cookbookEJBClient''
+ - ''cookbookServlets''
+
+The EAR project is an Enterprise Application Project, basically a
+wrapper around the three Java projects. The artifact of an EAR project
+is an enterprise archive, for instance "''cookbookEAR.ear''", and this
+is the deployable application.
+
+"''cookbookEJB''" is where we put all application functionality,
+"''cookbookEJBClient''" is the EJB client project, its artifact could
+be distributed in order to allow clients to call EJB functionality via
+CORBA. All datatypes used as parameters or return values of EJB
+service methods must be definied in the client project.
+
+"''cookbookServlets''" is a Dynamic Web Project. It is used for the
+REST wrappers around service methods contained in
+"''cookbookEJB''". Additionally it can be used to add any kind and
+number of servlets. Keep in mind though, that you need to put your
+logic into the EJB project, in order to have the most options for
+accessing it. If you stick to that pattern, you can access services
+via CORBA, SOAP and REST. Accesses via CORBA and SOAP can even partake
+in distributed transactions.
+
+The three Java projects will have two source folders each. One of them
+is always named "''generated''", that's where generated code goes. For
+the EJB and EJBClient projects the other source folder is
+"''ejbModule''", for the Servlets project it is "''src''". These
+source folders are for manually written code.
+
+In our case the following directories and files will be generated
+initially:
+
+#Verbatim <<---
+cookbookEAR
+|-- EarContent
+`-- lib
+    |-- org.azzyzt.jee.runtime.jar
+    `-- org.azzyzt.jee.runtime.site.jar
+
+cookbookEJB
+|-- ejbModule
+|   |-- com
+|   |   `-- manessinger
+|   |       `-- cookbook
+|   |           |-- entity
+|   |           `-- service
+|   |               `-- HelloTestBean.java
+|   `-- META-INF
+|       |-- ejb-jar.xml
+|       |-- MANIFEST.MF
+|       |-- persistence.xml
+|       `-- sun-ejb-jar.xml
+`-- generated
+
+cookbookEJBClient
+|-- ejbModule
+|   `-- META-INF
+|       `-- MANIFEST.MF
+`-- generated
+
+cookbookServlets
+|-- generated
+|-- src
+`-- WebContent
+    |-- index.jsp
+    |-- META-INF
+    |   `-- MANIFEST.MF
+    `-- WEB-INF
+        |-- lib
+        `-- sun-web.xml
+---
+
+"''com.manessinger.cookbook.service.HelloTestBean''" is the only
+generated class that will ever be generated into a source folder meant
+to hold manually written code. You can keep it or throw it away. It is
+only generated upon project creation and is meant to make the project
+instantly deployable.
+
+The bean has one (predictable) method 
+#Code id=HelloTestBean syntax=Java <<---
+@LocalBean
+@Stateless
+@WebService
+public class HelloTestBean {
+
+    public String hello(String s) {
+        return "Hello "+s;
+    }
+}
+---
+
+Start the server, deploy the EAR ("__Add and Remove__" from the context
+menu of the server) and try it via the service test client built into
+the \GlassFish Administration Console.
+
+
+** Azzyzted Modeling With Entities
+
+Upon project creation, a package "''com.manessinger.cookbook.entity''"
+(given the example) was generated under
+"''cookbookEJB/ejbModule''". Use this package to define your entities.
+
+Entities have to extend
+"''org.azzyzt.jee.runtime.entity.EntityBase<ID>''", where ID is the
+class of the table's primary key.
+
+There are two ways to create entities:
+
+ - For a first cut you can choose to let Eclipse generate
+   entities. Dali, the mapping tool, comes with a wizard that you can
+   run on the connection associated with an EJB project. In order to
+   do this, the connection must have been defined in the Datasource
+   Explorer view with "__Database Connections / New__" and it must
+   have been associated with the EJB project via "__Properties / Java
+   Persistence / Connection__".
+
+   The wizard analyzes tables defined in the corresponding database
+   schema. Start the wizard via "__JPA Tools / Generate Entities from
+   Tables__" from the EJB project's context menu.
+
+   In this graphical tool you can choose the tables to be mapped,
+   create associations and/or choose from those automatically
+   discovered, set defaults for the mapping of all tables, and finally
+   specify the mappings on a per-table basis. You can even specify for
+   the generated entities to extend the required superclass.
+
+   This is the preferred way if the database already exists. The only
+   problem is, that the wizard can't properly cope with ''@\ManyToMany''
+   associations. It should, but errors in the code lead to errors in
+   the generated entities. Still, for medium to large databases, this
+   saves a lot of work. Just insert the ''@\ManyToMany'' associations
+   manually.
+
+ - If the database does not already exist, it can be generated from
+   manually written entities. Just write your entities and then
+   generate the database schema with "__JPA Tools / Generate Tables
+   from Entities__", again from the EJB project's context menu. Make
+   sure that the EJB project is already associated with a database
+   connection. If not, open the properties of the EJB project and
+   choose a connection under "__Java Persistence / Connection__". I'm
+   sorry to say that this may fail (due to tool errors) in some
+   perfectly legal cases as well, and one of those cases, the mapping
+   of a many-to-many association where the join table has additional
+   attributes and does not feature a separate id, is part of the
+   tutorial. 
+
+Whichever way you go, be prepared to have to do some manual work in
+this phase. Those problems have been in Dali for quite some time and I
+have not seen any progress in a year. On the other hand, creating the
+entities or database schemata is definitely not in the scope of Azzyzt
+JEE Tools. So far my hopes are on Eclipse Indigo :)
+
+Note please, that __Azzyzted Modeling With Entities__ only supports mapping
+annotations on fields, not on accessor methods. This is not a deeply
+rooted design decision but just a matter of how it was
+implemented. Though it would be principally possible to support
+annotations of accessor methods, I currently see no reason to do
+so. The general consensus among experts seems to be, that none of the
+two methods has substantial advantages over the other. 
+
+Personally I feel that annotating the fields makes it easier to get an
+overview, and besides it does not tempt the developer to introduce
+side effects into getters/setters.
+
+
+*** Azzyzt-specific annotations
+
+Azzyzt introduces the following extra annotations, that can be used on
+entity fields:
+
+  ''@Internal'' :: marks a field as internal. It is mapped, but not
+      exposed to service clients.
+
+  ''@\CreateTimestamp'', ''@\ModifyTimestamp'' :: marks a field as
+      create/modify timestamp. Field types can be Calendar, Date or
+      String. In case it is a string, the annotations need an
+      attribute "format", and that string has to be a valid format for
+      ''java.text.SimpleDateFormat''
+
+  ''@\CreateUser'', ''@\ModificationUser'' :: marks a string field as user
+      name. Determining a user name is by definition a highly
+      site-specific thing, thus we rely on some ''InvocationMetaInfo''
+      being generated at the entry point into the service, and being
+      passed on via the standard
+      ''javax.transaction.TransactionSynchronizationRegistry''
+
+      As of release {version} this is only partially implemented. It
+      works for REST but not for SOAP and CORBA, and from a service
+      accessed via REST, it currently wouldn't be passed on to backend
+      services accessed via REST or SOAP. The crucial knowledge about
+      how to extract user information from a
+      ''javax.interceptor.InvocationContext'' is left to a standalone
+      EJB that I call a \SiteAdapter. Azzyzt comes with a site adapter
+      that uses information supplied in an HTTP header called
+      "''x-authenticate-userid''", thus it relies on some
+      authenticating portal or gateway in front of the application
+      server. I admit that here's definitely potential for
+      configurability :)
+
+*** Sample entities
+
+Remember the folder ''doc/cookbook/src''? For your convenience I have
+already provided entities and a ''persistence.xml'', that match the
+sample databases.
+
+Note that the entities work with Postgresql as well as with
+Oracle. There is nothing that prevents you from writing entities
+specific to a certain database system, but on the other hand you
+should not need to. Try to stay database-agnostic if you can, it gives
+you one dependency less to care about.
+
+#Verbatim <<---
+doc/cookbook/src
+|
+|-- cookbookEJB
+|   `-- ejbModule
+|       |-- com
+|       |   `-- manessinger
+|       |       `-- cookbook
+|       |           `-- entity
+|       |               |-- City.java
+|       |               |-- Country.java
+|       |               |-- Visit.java
+|       |               `-- Zip.java
+|       `-- META-INF
+|           `-- persistence.xml
+|
+`-- cookbookEJBClient
+    `-- ejbModule
+        `-- com
+            `-- manessinger
+                `-- cookbook
+                    `-- entity
+                        `-- VisitId.java
+---
+
+In order to use the entities, just copy the two folders
+
+ - ''cookbookEJB''
+ - ''cookbookEJBClient''
+
+into your workspace and then refresh the projects in Eclipse. Most
+likely an error symbol will be shown on the EJB project. Don't worry,
+use "__Project / Clean ... / Clean all projects__" and it will go
+away. I believe this to be an error in Eclipse.
+
+The sample database is pretty simple. We have have countries, cities,
+zips and visits from a zip code area to a certain city. A __Country__ has
+cities and each __City__ is in a certain country. A country has a
+number of __Zip__ areas and each ZIP area belongs to a certain
+country. ZIPs don't necessarily correspond to cities. __Country__,
+__City__ and __Zip__ are easy cases. The corresponding tables each
+have an ID taken from a sequence, and the only relationships that we
+need to map, can be modeled using ''\@OneToMany'' and ''\@ManyToOne''.
+
+**** A complicated association
+
+__Visit__ is a more complicated case. It maps a many-to-many
+association between __City__ and __Zip__. A city can be the target of
+visits from many ZIP areas and different people from a certain ZIP area will
+visit many cities.
+
+Although JPA supports ''\@ManyToMany'', we can't use
+it. ''\@ManyToMany'' assumes a simple join table containing no extra
+attributes. In such a case, the table would not need to be mapped at
+all, we would just have to map the ''\@ManyToMany'' associations in
+__City__ and __Zip__.
+
+When a join table has additional attributes, you always need to map it
+as an entity. This is easiest when it has its own ID attribute,
+preferrably taken from a sequence as well. Then you just have to treat
+it like any other entity.
+
+Unfortunately both things are rare in legacy databases. Join tables
+frequently have additional attributes, and the concept of an extra ID
+on the join table looks extremely alien outside of the realm of
+object-relational mapping.
+
+To cover this common and not well documented case (at least it took me
+some time to find anything on the Internet and figure it out),
+__Visit__ has an extra attribute ''Long numberOfVisitors'' that acts
+as a counter. Think of a system where we have to collect some
+anonymized statistics about visits.
+
+The corresponding database table has no explicit ID, thus we have to
+use the idiom of an __embedded ID__. The embedded ID is a separate
+class __\VisitId__ in the client project. It's in the client project,
+because we will have to pass it around as parameter.
+
+Look at the class ''Visit'' and note that it has an ID defined as
+
+#Code id=EmbeddedId syntax=Java <<---
+@EmbeddedId private VisitId id;
+---
+
+with the getter and setter defined like
+
+#Code id=EmbeddedIdGetterSetter syntax=Java<<---
+public VisitId getId() {
+    if (id == null) {
+        return null;
+    }
+    VisitId result = new VisitId(id.getFromZipArea(), id.getToCity());
+    return result;
+}
+
+public void setId(VisitId id) {
+    if (id == null) {
+        return;
+    }
+    this.id = new VisitId(id.getFromZipArea(), id.getToCity());
+}
+---
+
+Additionally we have two ''\@ManyToOne'' associations.
+
+#Code id=VisitAssociations syntax=Java <<---
+@Internal @ManyToOne
+@JoinColumn(name="from_zip_area", insertable=false, updatable=false)
+private Zip fromZipArea;
+
+@Internal @ManyToOne
+@JoinColumn(name="to_city", insertable=false, updatable=false)
+private City toCity;
+---
+
+We have explicitly named the join columns, because their names can't
+be guessed automatically by JPA. We have also marked them as neither
+insertable nor updatable, because the attributes that get actually
+written to the database are inside the embedded ID class ''VisitId''.
+
+We have also used Azzyzt's ''@Internal'' annotation, thus these
+association attributes will not be contained in generated DTOs (but
+the embedded ID will). The two association attributes just need to be
+there to give us the information, that there is an association at all.
+
+''\VisitId'' is a class with IDs only. It starts like this:
+
+#Code id=VisitId syntax=Java <<---
+@XmlRootElement(name="visitId")
+@Embeddable
+public class VisitId implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @Column(name="from_zip_area", nullable = false)
+    private Long fromZipArea;
+
+    @Column(name="to_city", nullable = false)
+    private Long toCity;
+
+    ...
+---
+
+Note that ''\VisitId'' is a DTO, and thus it is annotated with
+''\@XmlRootElement''. It is also used as an embedded Id, thus JPA
+requires the annotation ''@Embeddable''.
+
+Here is a case where we directly use part of an entity as a DTO, but
+if you think about it, this is only a generalization. For ''Visit'',
+''\VisitId'' is the type of its ID, and we always expose the type of
+IDs, only that the type is normally ''Long'' and therefore does not
+look suspicious.
+
+In order to be able to use ''\VisitId'' as a JPA entity's ID, we have
+to define ''hashCode()'' and ''equals()'', thus I have generated them
+in Eclipse using "__Source / Generate hashCode() and equals
+...__". 
+
+''\VisitId'' is not an entity class, but it must be contained in
+''persistence.xml''. If it is not, you get a funny error in ''Visit'',
+stating that "__\VisitId is not mapped as embeddable__", which is
+clearly wrong. The ''@Embeddable'' annotation is there, only the error
+message is wrong, it would have to be "__\VisitId is not contained in
+the persistence unit__" or something like that.
+
+Also note the two constructors. For the purpose of serialization we
+need a parameterless constructor, for ''getId()'' and ''setId()'' in
+''Visit'', we need a constructor with values for the two fields.
+
+In ''City'' we have one opposite end of the association
+
+#Code id=CityVisits syntax=Java <<---
+@OneToMany(mappedBy="toCity")
+private List<Visit> visits;
+---
+
+and the other opposite end is defined in ''Zip'':
+
+#Code id=CityVisits syntax=Java <<---
+@OneToMany(mappedBy="fromZipArea")
+private List<Visit> visits;
+---
+
+The pattern always goes like this. After the same pattern you could
+have a complex relation between three tables. In that case the
+embedded ID would contain three ID fields (encapsulate the foreign
+keys), the constructor would take three parameters, we would have
+bi-directional associations towards all three participating entities,
+but otherwise it would be the same.
+
+**** Create / modification users and timestamps
+
+All four entity classes have some fields automatically set by the code
+that Azzyzt JEE Tools generate:
+
+#Code id=createModifyTimestampUser syntax=Java <<---
+@CreateTimestamp
+@Temporal(TemporalType.TIMESTAMP)
+@Column(name="create_timestamp")
+private Calendar createTimestamp;
+
+@ModificationTimestamp
+@Temporal(TemporalType.TIMESTAMP)
+@Column(name="modification_timestamp")
+private Calendar modificationTimestamp;
+
+@CreateUser
+@Column(name="create_user")
+private String createUser;
+
+@ModificationUser
+@Column(name="modification_user")
+private String modificationUser;
+---
+
+In order to demonstrate your options for timestamps, I have defined
+them in ''Zip'' as ''java.util.Date''
+
+#Code id=createModifyTimestampDate syntax=Java <<---
+@CreateTimestamp
+@Temporal(TemporalType.TIMESTAMP)
+@Column(name="create_timestamp")
+private Date createTimestamp;
+
+@ModificationTimestamp
+@Temporal(TemporalType.TIMESTAMP)
+@Column(name="modification_timestamp")
+private Date modificationTimestamp;
+---
+
+and finally in ''Visit'' as string. This is not uncommon in legacy
+databases, and because there is no standard string representation that
+we can rely on, we have to specify the format as a standard format
+string as documented for ''java.text.SimpleDateFormat''.
+
+#Code id=createModifyTimestampDate syntax=Java <<---
+@CreateTimestamp(format="yyyy-MM-dd-HHmmss.SSS")
+@Column(name="create_timestamp")
+private String createTimestamp;
+
+@ModificationTimestamp(format="yyyy-MM-dd-HHmmss.SSS")
+@Column(name="modification_timestamp")
+private String modificationTimestamp;
+---
+
+Create timestamps could be easily set via database defaults, for
+modification timestamps you could use database triggers, but doing it
+programmatically, we can make sure that they are __only__ set
+automatically, it's more portable this way, and it gives Azzyzt a tad
+more meta information to work with :)
+
+Here we are, that's our entity model.
+
+
+** Generating a base application
+
+Once you have entities, you can generate code. In order to do this,
+use "__Azzyzt / Start code generator__" from the context menu of the EJB
+project. That's it :)
+
+
+** Structure of the generated code
+
+In our example, the result of code generation looks like this:
+
+#Verbatim <<---
+cookbookEAR
+|
+|-- EarContent
+`-- lib
+    |-- org.azzyzt.jee.runtime.jar
+    `-- org.azzyzt.jee.runtime.site.jar
+
+cookbookEJB
+|
+|-- ejbModule
+|   |-- com
+|   |   `-- manessinger
+|   |       `-- cookbook
+|   |           |-- entity
+|   |           |   |-- City.java
+|   |           |   |-- Country.java
+|   |           |   |-- Visit.java
+|   |           |   `-- Zip.java
+|   |           `-- service
+|   |               `-- HelloTestBean.java
+|   `-- META-INF
+|       |-- ejb-jar.xml
+|       |-- MANIFEST.MF
+|       |-- persistence.xml
+|       `-- sun-ejb-jar.xml
+|
+`-- generated
+    `-- com
+        `-- manessinger
+            `-- cookbook
+                |-- conv
+                |   |-- CityConv.java
+                |   |-- CountryConv.java
+                |   |-- VisitConv.java
+                |   `-- ZipConv.java
+                |-- eao
+                |   `-- GenericEao.java
+                |-- meta
+                |   |-- InvocationRegistry.java
+                |   |-- SiteAdapter.java
+                |   |-- TransactionRollbackHandler.java
+                |   |-- TypeMetaInfo.java
+                |   `-- ValidAssociationPaths.java
+                `-- service
+                    |-- CityFullBean.java
+                    |-- CityRestrictedBean.java
+                    |-- CountryFullBean.java
+                    |-- CountryRestrictedBean.java
+                    |-- ModifyMultiBean.java
+                    |-- VisitFullBean.java
+                    |-- VisitRestrictedBean.java
+                    |-- ZipFullBean.java
+                    `-- ZipRestrictedBean.java
+
+cookbookEJBClient
+|-- ejbModule
+|   |-- com
+|   |   `-- manessinger
+|   |       `-- cookbook
+|   |           `-- entity
+|   |               `-- VisitId.java
+|   `-- META-INF
+|       `-- MANIFEST.MF
+|
+`-- generated
+    `-- com
+        `-- manessinger
+            `-- cookbook
+                |-- dto
+                |   |-- CityDto.java
+                |   |-- CountryDto.java
+                |   |-- DeleteWrapper.java
+                |   |-- Dto.java
+                |   |-- StoreDelete.java
+                |   |-- StoreWrapper.java
+                |   |-- VisitDto.java
+                |   `-- ZipDto.java
+                `-- service
+                    |-- CityFullInterface.java
+                    |-- CityRestrictedInterface.java
+                    |-- CountryFullInterface.java
+                    |-- CountryRestrictedInterface.java
+                    |-- ModifyMultiInterface.java
+                    |-- VisitFullInterface.java
+                    |-- VisitRestrictedInterface.java
+                    |-- ZipFullInterface.java
+                    `-- ZipRestrictedInterface.java
+
+cookbookServlets
+|-- generated
+|   `-- com
+|       `-- manessinger
+|           `-- cookbook
+|               `-- service
+|                   |-- CityFullDelegator.java
+|                   |-- CityRestrictedDelegator.java
+|                   |-- CountryFullDelegator.java
+|                   |-- CountryRestrictedDelegator.java
+|                   |-- ModifyMultiDelegator.java
+|                   |-- RESTExceptionMapper.java
+|                   |-- RESTInterceptor.java
+|                   |-- RESTServlet.java
+|                   |-- VisitFullDelegator.java
+|                   |-- VisitRestrictedDelegator.java
+|                   |-- ZipFullDelegator.java
+|                   `-- ZipRestrictedDelegator.java
+|-- src
+`-- WebContent
+    |-- index.jsp
+    |-- META-INF
+    |   `-- MANIFEST.MF
+    `-- WEB-INF
+        |-- lib
+        `-- sun-web.xml
+---
+
+Quite a lot of code, and this is only for four tables. Imagine a real
+project with dozens or hundreds of tables. Sure, this could all be
+useless rubbish, so let's look at what we can do with it :)
+
+
+* Using the generated code
+
+The first step is to deploy the EAR project. Note please, that you
+have to modify ''persistence.xml'' to refer to a ''jta-data-source'',
+and that this data source must be defined in the application
+server. The
+[[http://programming.manessinger.com/tutorials/an-eclipse-glassfish-java-ee-6-tutorial/][Eclipse / \GlassFish / Java EE 6 Tutorial]] has a section titled "__Specifying
+the database, testing, SQL log__", that shows how to do this in
+\GlassFish. The sample ''persistence.xml'' from
+''doc/cookbook/src/cookbookEJB/ejbModule/META-INF'' is already set up
+correctly. In fact, after creating the azzyzted project, copying over
+the enitites, refreshing the projects and rebuilding all, and then
+finally generating code, you are ready to go.
+
+You deploy the application by first starting the Server from Eclipse's
+"__Servers__" view. When the server runs, select "__Add and Remove
+...__" from the context menu of the server. Select ''cookbookEAR''
+from the box labeled "__Available__" and move it with "__Add__" to the
+box labeled "__Configured__". Press "__Finish__" and wait until
+the server is synchronized. 
+
+Now that the application is deployed, you can call the services.
+
+For each table/entity Azzyzt has created a DTO (EJBClient), two EJBs,
+one for full (rw) and one for restricted (r) access, corresponding
+remote interfaces in the EJBClient project, and corresponding REST
+wrappers around the beans (Servlet project). Additionally we get a
+\ModifyMultiBean, a \ModifyMultiInterface and a corresponding REST
+wrapper.
+
+** SOAP
+
+Here are some URLs of WSDLs (service descriptions of SOAP services)
+for the generated service beans, assuming \GlassFish runs on port
+8080:
+
+  [[http://localhost:8080/cookbook/CityFullBean?wsdl]]
+
+  [[http://localhost:8080/cookbook/CityRestrictedBean?wsdl]]
+
+  [[http://localhost:8080/cookbook/CountryFullBean?wsdl]]
+
+  [[http://localhost:8080/cookbook/CountryRestrictedBean?wsdl]]
+
+  [[http://localhost:8080/cookbook/ZipFullBean?wsdl]]
+
+  [[http://localhost:8080/cookbook/ZipRestrictedBean?wsdl]]
+
+  [[http://localhost:8080/cookbook/ModifyMultiBean?wsdl]]
+
+You can use these WSDLs to create client stubs for access via SOAP.
+
+
+** REST
+
+Get the WADL description of the REST services from
+
+  [[http://localhost:8080/cookbookServlets/REST/application.wadl]]
+
+Try the services for yourself, for instance with
+[[http://www.soapui.org][soapUI]]. Open soapUI, create a new project
+from the context menu of "__Projects__" in the tree view on the left
+pane. Enter "''cookbook - REST''" as the project name and paste the
+WADL URL into "__Initial WSDL/WADL__". Press "__OK__" and soapUI will
+create all REST resources with one sample request each. 
+
+Look at the generated tree. The soapUI project has one service, named
+just like the project. Below this service, there are resources, two
+for each entity, one named like the entity, one named with a suffix
+"''Restricted''". They wrap the full and the restricted
+beans. Below each resource you find the operations that it
+supports. For the restricted variants these are
+
+  ''all()'' :: Delivers a list of all objects of that class. Useful if
+      you intend to put the result into a set or a map. The typical
+      application would be a client-side cache of a small table of
+      values used for display. This is always a GET request.
+
+  ''byId(id)'' :: Takes an ID and delivers the object with that
+      ID. For single-valued IDs this is a GET request with the ID as
+      URL parameter named ''id'', for embedded IDs it is a POST
+      request. 
+
+  ''list(query_spec)'' :: Takes a __query specification__ and delivers
+      all objects of the class, that match the query
+      specification. This is always a POST request.
+
+The non-restricted resources have the same operations as the
+restricted, and additionally the following:
+
+  ''store(dto)'' :: Takes a DTO and stores the corresponding object.
+      If the object already exists in the database, this is an
+      ''UPDATE'', otherwise it is an ''INSERT''. Store returns a DTO
+      for the stored object, to give the client access to
+      server-generated content (IDs, timestamps, usernames, defaults
+      from the database). This is always a POST request.
+
+  ''delete(id)'' :: Takes an ID and deletes the corresponding
+      object. For single-valued IDs this is a GET request with the ID
+      as URL parameter named ''id'', for embedded IDs it is a POST
+      request.
+
+Additionally there is a resource called "''modifyMulti''". It has the
+operations
+
+  ''storeMulti(dtos)'' :: Takes a list of DTOs of any kind, stores
+      them and returns the same list of DTOs in the same order, with
+      server-generated values updated. This is a POST request.
+
+  ''deleteMulti(dtos)'' :: Takes a list of DTOs of any kind, and
+      deletes the corresponding objects. The only requirement for the
+      DTOs is to be of the correct type and have the ID set. All other
+      fields are ignored. This is a POST request.
+
+  ''storeDeleteMulti(storeDelete)'' :: Takes an object with two lists
+      of DTOs, one of objects to be stored, one of objects to be
+      deleted. This is a POST request.
+
+From the operations, drill down to the generated sample requests. Each
+operation will automatically have one request called "''Request 1''".
+
+* Examples for REST
+
+I assume that you use [[http://www.soapui.org][soapUI]] to work
+through the following examples. In soapUI you send a request by
+opening it (double click in the tree) and clicking on the green
+triangle in the upper left corner of the request sub-window. That's
+all you have to do for a parameterless GET request (only
+''all()''). The result of a request will always be in the right pane
+of the request sub-window. The URL for the request will already be
+correct, because the request has been generated from a WADL
+description.
+
+For GET requests with parameters, you already see the needed
+parameters in the left pane. This is only the case for "''byId''" and
+"''delete''", thus the name is always "''id''". Fill in the value,
+press ''<TAB>'' to get out of the value field (important, otherwise
+soapUI does not accept the value!) and send the request.
+
+For POST requests, the left pane has an upper and a lower part. Just
+copy the XML from the example and paste it into the lower left
+pane. Then send the request.
+
+** List of all countries
+
+Issue a GET request to any of the following URLs:
+
+  [[http://localhost:8080/cookbookServlets/REST/country/all]]
+
+  [[http://localhost:8080/cookbookServlets/REST/countryRestricted/all]]
+
+The result will be an unsorted list of all countries:
+
+#Code syntax=XML <<---
+<dtoes>
+   <country>
+      <createTimestamp>2011-05-19T14:49:15.975+02:00</createTimestamp>
+      <createUser>admin</createUser>
+      <id>1</id>
+      <modificationTimestamp>2011-05-19T14:49:15.975+02:00</modificationTimestamp>
+      <modificationUser>admin</modificationUser>
+      <name>Austria</name>
+   </country>
+   <country>
+      <createTimestamp>2011-05-19T14:49:16.016+02:00</createTimestamp>
+      <createUser>admin</createUser>
+      <id>2</id>
+      <modificationTimestamp>2011-05-19T14:49:16.016+02:00</modificationTimestamp>
+      <modificationUser>admin</modificationUser>
+      <name>Italy</name>
+   </country>
+   <country>
+      <createTimestamp>2011-05-19T14:49:16.037+02:00</createTimestamp>
+      <createUser>admin</createUser>
+      <id>3</id>
+      <modificationTimestamp>2011-05-19T14:49:16.037+02:00</modificationTimestamp>
+      <modificationUser>admin</modificationUser>
+      <name>USA</name>
+   </country>
+</dtoes>
+---
+
+** City with the ID 1
+
+A GET request to any of these URLs
+
+  [[http://localhost:8080/cookbookServlets/REST/city/byId?id=1]]
+
+  [[http://localhost:8080/cookbookServlets/REST/cityRestricted/byId?id=1]]
+
+delivers
+
+#Code syntax=XML <<---
+<city>
+   <countryId>1</countryId>
+   <createTimestamp>2011-05-19T14:49:16.057+02:00</createTimestamp>
+   <createUser>admin</createUser>
+   <id>1</id>
+   <modificationTimestamp>2011-05-19T14:49:16.057+02:00</modificationTimestamp>
+   <modificationUser>admin</modificationUser>
+   <name>Graz</name>
+</city>
+---
+
+** Sorted list of cities
+
+POST the following XML document
+
+#Code syntax=XML <<---
+<query_spec>
+   <orderBy>
+       <fieldName>country.id</fieldName>
+       <ascending>true</ascending>
+   </orderBy>
+   <orderBy>
+       <fieldName>name</fieldName>
+       <ascending>false</ascending>
+   </orderBy>
+</query_spec>
+---
+
+into one fo these URLs
+
+  [[http://localhost:8080/cookbookServlets/REST/city/list]]
+
+  [[http://localhost:8080/cookbookServlets/REST/cityRestricted/list]]
+
+to get a list of all cities, but sorted by the ID of their country
+ascending, and then alphabetically by their name descending. Here's
+the result:
+
+#Code syntax=XML <<---
+<dtoes>
+   <city>
+      <countryId>1</countryId>
+      <createTimestamp>2011-05-19T14:49:16.119+02:00</createTimestamp>
+      <createUser>admin</createUser>
+      <id>4</id>
+      <modificationTimestamp>2011-05-19T14:49:16.119+02:00</modificationTimestamp>
+      <modificationUser>admin</modificationUser>
+      <name>Wien</name>
+   </city>
+   <city>
+      <countryId>1</countryId>
+      <createTimestamp>2011-05-19T14:49:16.098+02:00</createTimestamp>
+      <createUser>admin</createUser>
+      <id>3</id>
+      <modificationTimestamp>2011-05-19T14:49:16.098+02:00</modificationTimestamp>
+      <modificationUser>admin</modificationUser>
+      <name>Salzburg</name>
+   </city>
+   <city>
+      <countryId>1</countryId>
+      <createTimestamp>2011-05-19T14:49:16.078+02:00</createTimestamp>
+      <createUser>admin</createUser>
+      <id>2</id>
+      <modificationTimestamp>2011-05-19T14:49:16.078+02:00</modificationTimestamp>
+      <modificationUser>admin</modificationUser>
+      <name>Linz</name>
+   </city>
+   <city>
+      <countryId>1</countryId>
+      <createTimestamp>2011-05-19T14:49:16.057+02:00</createTimestamp>
+      <createUser>admin</createUser>
+      <id>1</id>
+      <modificationTimestamp>2011-05-19T14:49:16.057+02:00</modificationTimestamp>
+      <modificationUser>admin</modificationUser>
+      <name>Graz</name>
+   </city>
+   <city>
+      <countryId>2</countryId>
+      <createTimestamp>2011-05-19T14:49:16.202+02:00</createTimestamp>
+      <createUser>admin</createUser>
+      <id>8</id>
+      <modificationTimestamp>2011-05-19T14:49:16.202+02:00</modificationTimestamp>
+      <modificationUser>admin</modificationUser>
+      <name>Venezia</name>
+   </city>
+   <city>
+      <countryId>2</countryId>
+      <createTimestamp>2011-05-19T14:49:16.181+02:00</createTimestamp>
+      <createUser>admin</createUser>
+      <id>7</id>
+      <modificationTimestamp>2011-05-19T14:49:16.181+02:00</modificationTimestamp>
+      <modificationUser>admin</modificationUser>
+      <name>Roma</name>
+   </city>
+   <city>
+      <countryId>2</countryId>
+      <createTimestamp>2011-05-19T14:49:16.160+02:00</createTimestamp>
+      <createUser>admin</createUser>
+      <id>6</id>
+      <modificationTimestamp>2011-05-19T14:49:16.160+02:00</modificationTimestamp>
+      <modificationUser>admin</modificationUser>
+      <name>Firenze</name>
+   </city>
+   <city>
+      <countryId>2</countryId>
+      <createTimestamp>2011-05-19T14:49:16.140+02:00</createTimestamp>
+      <createUser>admin</createUser>
+      <id>5</id>
+      <modificationTimestamp>2011-05-19T14:49:16.140+02:00</modificationTimestamp>
+      <modificationUser>admin</modificationUser>
+      <name>Bologna</name>
+   </city>
+   <city>
+      <countryId>3</countryId>
+      <createTimestamp>2011-05-19T14:49:16.284+02:00</createTimestamp>
+      <createUser>admin</createUser>
+      <id>12</id>
+      <modificationTimestamp>2011-05-19T14:49:16.284+02:00</modificationTimestamp>
+      <modificationUser>admin</modificationUser>
+      <name>Washington</name>
+   </city>
+   <city>
+      <countryId>3</countryId>
+      <createTimestamp>2011-05-19T14:49:16.263+02:00</createTimestamp>
+      <createUser>admin</createUser>
+      <id>11</id>
+      <modificationTimestamp>2011-05-19T14:49:16.263+02:00</modificationTimestamp>
+      <modificationUser>admin</modificationUser>
+      <name>New York</name>
+   </city>
+   <city>
+      <countryId>3</countryId>
+      <createTimestamp>2011-05-19T14:49:16.243+02:00</createTimestamp>
+      <createUser>admin</createUser>
+      <id>10</id>
+      <modificationTimestamp>2011-05-19T14:49:16.243+02:00</modificationTimestamp>
+      <modificationUser>admin</modificationUser>
+      <name>Los Angeles</name>
+   </city>
+   <city>
+      <countryId>3</countryId>
+      <createTimestamp>2011-05-19T14:49:16.222+02:00</createTimestamp>
+      <createUser>admin</createUser>
+      <id>9</id>
+      <modificationTimestamp>2011-05-19T14:49:16.222+02:00</modificationTimestamp>
+      <modificationUser>admin</modificationUser>
+      <name>Atlanta</name>
+   </city>
+</dtoes>
+---
+
+
+** Query with three conditions
+
+POST the following XML document
+
+#Code syntax=XML <<---
+<query_spec>
+   <expr type="AND">
+       <cond type="STRING" op="EQ" caseSensitive="true">
+          <fieldName>country.name</fieldName>
+          <value>Italy</value>
+       </cond>
+       <cond type="STRING" op="LIKE" negated="true" caseSensitive="false">
+          <fieldName>name</fieldName>
+          <value>r%</value>
+       </cond>
+       <cond type="LONG" op="EQ" negated="true">
+          <fieldName>id</fieldName>
+          <value>8</value>
+       </cond>
+   </expr>
+   <orderBy>
+       <fieldName>name</fieldName>
+       <ascending>true</ascending>
+   </orderBy>
+</query_spec>
+---
+
+into either of
+
+  [[http://localhost:8080/cookbookServlets/REST/city/list]]
+
+  [[http://localhost:8080/cookbookServlets/REST/cityRestricted/list]]
+
+to get a list of all cities, where the country name equals "__Italy__"
+and the city's name does not begin with "''r''" (regardless case, this
+excludes "''Roma''"), but not the city with the ID 8 (which would have
+been "''Venezia''").
+
+#Code syntax=XML <<---
+<dtoes>
+   <city>
+      <countryId>2</countryId>
+      <createTimestamp>2011-05-19T14:49:16.140+02:00</createTimestamp>
+      <createUser>admin</createUser>
+      <id>5</id>
+      <modificationTimestamp>2011-05-19T14:49:16.140+02:00</modificationTimestamp>
+      <modificationUser>admin</modificationUser>
+      <name>Bologna</name>
+   </city>
+   <city>
+      <countryId>2</countryId>
+      <createTimestamp>2011-05-19T14:49:16.160+02:00</createTimestamp>
+      <createUser>admin</createUser>
+      <id>6</id>
+      <modificationTimestamp>2011-05-19T14:49:16.160+02:00</modificationTimestamp>
+      <modificationUser>admin</modificationUser>
+      <name>Firenze</name>
+   </city>
+</dtoes>
+---
+
+The XML-based query language currently supports the unary expression
+of type "''NOT''", as well as the n-ary expressions of type "''AND''"
+and "''OR''".
+
+n-ary expressions may contain any number of expressions and conditions
+freely mixed. There is no limit to the level of nesting of
+expressions.
+
+Conditions have a type and an operator. Supported types are
+
+  ''STRING'', ''SHORT'', ''INTEGER'', ''LONG'', ''FLOAT'', ''DOUBLE''
+
+Supported operators are 
+
+  ''LIKE'', ''EQ'', ''LT'', ''LE'', ''GT'', ''GE''
+
+where "''LIKE''" is only supported for type "''STRING''".
+
+Field names in conditions or order by clauses can be cross-table
+references in the same dotted style as they are used in the Java
+Persistence Query Language (JPQL). Only references along mapped
+associations are valid. "''City''" has a field
+
+#Code id=CountryManyToOne syntax=Java <<---
+@ManyToOne
+private Country country;
+---
+
+and thus you can follow the association with "''country.name''".
+
+
+** Nested expressions
+
+An example of a query specification with nested expressions is this:
+
+#Code syntax=XML <<---
+<query_spec>
+   <expr type="OR">
+       <cond type="STRING" op="EQ" caseSensitive="true">
+          <fieldName>country.name</fieldName>
+          <value>Italy</value>
+       </cond>
+       <expr type="AND">
+           <cond type="STRING" op="LIKE" caseSensitive="false">
+              <fieldName>name</fieldName>
+              <value>l%</value>
+           </cond>
+           <cond type="LONG" op="EQ" negated="true">
+              <fieldName>id</fieldName>
+              <value>2</value>
+           </cond>
+       </expr>
+   </expr>
+   <orderBy>
+       <fieldName>name</fieldName>
+       <ascending>true</ascending>
+   </orderBy>
+</query_spec>
+---
+
+POST it into 
+
+  [[http://localhost:8080/cookbookServlets/REST/city/list]]
+
+  [[http://localhost:8080/cookbookServlets/REST/cityRestricted/list]]
+
+to get a list of all cities in Italy and all other cities beginning
+with "l" (regardless case), but not the one with ID 2 (which would
+have been "''Linz''").
+
+#Code syntax=XML <<---
+<dtoes>
+   <city>
+      <countryId>2</countryId>
+      <createTimestamp>2011-05-19T14:49:16.140+02:00</createTimestamp>
+      <createUser>admin</createUser>
+      <id>5</id>
+      <modificationTimestamp>2011-05-19T14:49:16.140+02:00</modificationTimestamp>
+      <modificationUser>admin</modificationUser>
+      <name>Bologna</name>
+   </city>
+   <city>
+      <countryId>2</countryId>
+      <createTimestamp>2011-05-19T14:49:16.160+02:00</createTimestamp>
+      <createUser>admin</createUser>
+      <id>6</id>
+      <modificationTimestamp>2011-05-19T14:49:16.160+02:00</modificationTimestamp>
+      <modificationUser>admin</modificationUser>
+      <name>Firenze</name>
+   </city>
+   <city>
+      <countryId>3</countryId>
+      <createTimestamp>2011-05-19T14:49:16.243+02:00</createTimestamp>
+      <createUser>admin</createUser>
+      <id>10</id>
+      <modificationTimestamp>2011-05-19T14:49:16.243+02:00</modificationTimestamp>
+      <modificationUser>admin</modificationUser>
+      <name>Los Angeles</name>
+   </city>
+   <city>
+      <countryId>2</countryId>
+      <createTimestamp>2011-05-19T14:49:16.181+02:00</createTimestamp>
+      <createUser>admin</createUser>
+      <id>7</id>
+      <modificationTimestamp>2011-05-19T14:49:16.181+02:00</modificationTimestamp>
+      <modificationUser>admin</modificationUser>
+      <name>Roma</name>
+   </city>
+   <city>
+      <countryId>2</countryId>
+      <createTimestamp>2011-05-19T14:49:16.202+02:00</createTimestamp>
+      <createUser>admin</createUser>
+      <id>8</id>
+      <modificationTimestamp>2011-05-19T14:49:16.202+02:00</modificationTimestamp>
+      <modificationUser>admin</modificationUser>
+      <name>Venezia</name>
+   </city>
+</dtoes>
+---
+
+
+** Store a new record
+
+So far we have not modified anything. Create and modification
+timestamps have been from the time of database initialization, create
+and modification user has been "''admin''", a value coded into
+''initialize_data.sql'', the script that you have used to initialize
+the empty tables with sample data.
+
+In order to store a new city, use this URL
+
+  [[http://localhost:8080/cookbookServlets/REST/city/store]]
+
+and POST an XML representation of a city, just as you may have got it
+from one of the reading operations, but in input data leave the ''id''
+empty. A new object will be created and its complete representetion,
+including server-generated fields, will be returned. Thus POSTing
+
+#Code syntax=XML <<---
+<city>
+   <countryId>2</countryId>
+   <id></id>
+   <name>Bilogna</name>
+</city>
+---
+
+may return
+
+#Code syntax=XML <<---
+<city>
+   <countryId>2</countryId>
+   <createTimestamp>2011-05-20T11:50:06.805+02:00</createTimestamp>
+   <createUser>anonymous</createUser>
+   <id>13</id>
+   <modificationTimestamp>2011-05-20T11:50:06.805+02:00</modificationTimestamp>
+   <modificationUser>anonymous</modificationUser>
+   <name>Bilogna</name>
+</city>
+---
+
+The new ''id'' will have been automatically allocated from a sequence.
+
+
+** Update a record, specify user
+
+You may have noticed, that "''Bilogna''" has been inserted with not
+only an ''id'' set on server side, it had also a create/modify
+timestamps set as well as creat/modify users. Both user names were set
+to "''anonymous''".
+
+The code generated by Azzyzt JEE Tools uses an extra EJB to figure out
+what the user name for a specific request is. I call this a __Site
+Adapter__, because it is used to encapsulate a site's authentication
+technology and policy.
+
+The site adapter that comes with Azzyzt JEE Tools is currently only
+involved for requests invoked via REST. What happens is, that the
+generic code passes the request data to the site adapter, and the site
+adapter tries to take the user name (which is expected to have been
+authenticated and authorized for access by a portal in front of the
+service) from an HTTP header called "''x-authenticate-userid''".
+
+In soapUI you can set HTTP headers from the request window. At the
+bottom of the left pane you find text "''Headers (0)''", and this text
+is actually a button. Click on it and the left pane splits
+horizontally. In the lower part you see an empty list of name/value
+pairs.
+
+Click the "''+''" to the left of the divider between upper XML input
+pane and header list. A dialog opens to ask you for the name of the
+new header. Enter "''x-authenticate-userid''" and press "''OK''". Now
+the "''value''" column of the new header is active. Enter your name or
+whatever you like. I enter "''andreas''". Don't forget to ''<TAB>''
+out of the value field before you send the request, otherwise the
+header will not be sent!
+
+Then  I  issue  another store  request,  but  this  time with  the  ID
+specified as  the one that  was returned for "''Bilogna''".  Let's say
+that instead of "''Bilogna''" (which does not exist in Italy) we really
+meant  "''Bologna''".  It's  the  beautiful  capital  of  the  Italian
+province __Emilia Romagna__. We are happy with the ID, but we want the
+name to be updated.
+
+POST the following XML
+
+#Code syntax=XML <<---
+<city>
+   <countryId>2</countryId>
+   <id>13</id>
+   <name>Bologna</name>
+</city>
+---
+
+into to rename "__Bilogna__" to "__Bologna__". This is the result,
+note the modification user and timestamp, while create user and
+timestamp have stayed unchanged.
+
+#Code syntax=XML <<---
+<city>
+   <countryId>2</countryId>
+   <createTimestamp>2011-05-20T11:50:06.805+02:00</createTimestamp>
+   <createUser>anonymous</createUser>
+   <id>13</id>
+   <modificationTimestamp>2011-05-20T12:45:06.038+02:00</modificationTimestamp>
+   <modificationUser>andreas</modificationUser>
+   <name>Bologna</name>
+</city>
+---
+
+
+** Delete a record
+
+Make a GET request to the following URL
+
+  [[http://localhost:8080/cookbookServlets/REST/city/delete?id=13]]
+
+to delete "''Bologna''", assuming its ID was indeed "''13''". The
+result will be
+
+#Code syntax=XML <<---
+<result>OK</result>
+---
+
+
+** Store multiple records in different tables
+
+Frequently one use case will generate more than one object, and in
+such a case we will want to store them either all together
+(transactionally safe) or not at all. As far as REST calls go, our
+unit of transaction is the call itself, thus we have to transport all
+objects as parameters of the same operation.
+
+Azzyzt JEE Tools generate two stateless session beans for each table,
+one for full, one for restricted access to records of that table, but
+so far we have not seen anything for mixed access or for only storing
+more than one object per call. The special stateless session bean
+''\ModifyMultiBean'' fills that gap. It offers three operations.
+
+POST the following XML
+
+#Code syntax=XML <<---
+<dtoes>
+   <country>
+      <id>-1</id>
+      <name>France</name>
+   </country>
+   <city>
+      <countryId>-1</countryId>
+      <id></id>
+      <name>Marseille</name>
+   </city>
+   <city>
+      <countryId>-1</countryId>
+      <id></id>
+      <name>Paris</name>
+   </city>
+   <city>
+      <countryId>-1</countryId>
+      <id></id>
+      <name>Rennes</name>
+   </city>
+</dtoes>
+---
+
+into
+
+  [[http://localhost:8080/cookbookServlets/REST/modifyMulti/storeMulti]]
+
+to store a new country named "''France''" and three of its cities,
+"''Marseille''", "''Paris''" and "''Rennes''". The result will be
+something like
+
+#Code syntax=XML <<---
+<dtoes>
+   <country>
+      <createTimestamp>2011-05-20T12:59:33.185+02:00</createTimestamp>
+      <createUser>andreas</createUser>
+      <id>4</id>
+      <modificationTimestamp>2011-05-20T12:59:33.185+02:00</modificationTimestamp>
+      <modificationUser>andreas</modificationUser>
+      <name>France</name>
+   </country>
+   <city>
+      <countryId>4</countryId>
+      <createTimestamp>2011-05-20T12:59:33.185+02:00</createTimestamp>
+      <createUser>andreas</createUser>
+      <id>14</id>
+      <modificationTimestamp>2011-05-20T12:59:33.185+02:00</modificationTimestamp>
+      <modificationUser>andreas</modificationUser>
+      <name>Marseille</name>
+   </city>
+   <city>
+      <countryId>4</countryId>
+      <createTimestamp>2011-05-20T12:59:33.185+02:00</createTimestamp>
+      <createUser>andreas</createUser>
+      <id>15</id>
+      <modificationTimestamp>2011-05-20T12:59:33.185+02:00</modificationTimestamp>
+      <modificationUser>andreas</modificationUser>
+      <name>Paris</name>
+   </city>
+   <city>
+      <countryId>4</countryId>
+      <createTimestamp>2011-05-20T12:59:33.185+02:00</createTimestamp>
+      <createUser>andreas</createUser>
+      <id>16</id>
+      <modificationTimestamp>2011-05-20T12:59:33.185+02:00</modificationTimestamp>
+      <modificationUser>andreas</modificationUser>
+      <name>Rennes</name>
+   </city>
+</dtoes>
+---
+
+Note that "''France''" did not exist before this call, thus we could
+not properly reference its ID (now "''4''", as seen in the
+result). Thus instead of leaving the ID empty, we have used a
+__negative proxy ID__. In our example we could have used proxy IDs for
+all objects in the argument list. This was not necessary though. We
+need proxy IDs only when we reference them from other objects in the
+same call.
+
+Proxy IDs have no meaning outside of the call. The only requirements
+are, that all defined proxy IDs within a call are distinct and that
+they must have been defined in the object list before they can be
+used. ''\ModifyMultiBean'' does not reorder objects, it stores them in
+the order they are given in the list of DTOs. Referencing a proxy ID
+that has not yet been defined in the list, makes the whole call fail
+with an ''\InvalidProxyIdException'', the transaction is rolled back
+and nothing is stored at all.
+
+Please note that you can freely mix inserts and updates in the same
+call to ''storeMulti(dtos)''. If it has and ID and an object with that
+ID exists, then it is an update, if no object with the ID exists, you
+will get an ''\EntityNotFoundException'', and if you don't send an ID,
+a new object is inserted.
+
+
+** Delete multiple records from different tables
+
+The second operation in ''\ModifyMultiBean'' deletes all in a list of objects.
+
+POST the following XML
+
+#Code syntax=XML <<---
+<dtoes>
+   <city>
+      <id>14</id>
+   </city>
+   <city>
+      <id>15</id>
+   </city>
+   <city>
+      <id>16</id>
+   </city>
+   <country>
+      <id>4</id>
+   </country>
+</dtoes>
+---
+
+into
+
+  [[http://localhost:8080/cookbookServlets/REST/modifyMulti/deleteMulti]]
+
+Again the result will be
+
+#Code syntax=XML <<---
+<result>OK</result>
+---
+
+and with only one transactional operation we got rid of France.
+
+
+** Store and/or delete multiple records in different tables
+
+The third operation in ''\ModifyMultiBean'' is slightly more
+complicated but also more powerful. It can insert/update/delete in one
+single call. Let's re-create France by inserting it again:
+
+One more time POST the following XML
+
+#Code syntax=XML <<---
+<dtoes>
+   <country>
+      <id>-1</id>
+      <name>France</name>
+   </country>
+   <city>
+      <countryId>-1</countryId>
+      <id></id>
+      <name>Marseille</name>
+   </city>
+   <city>
+      <countryId>-1</countryId>
+      <id></id>
+      <name>Paris</name>
+   </city>
+   <city>
+      <countryId>-1</countryId>
+      <id></id>
+      <name>Rennes</name>
+   </city>
+</dtoes>
+---
+
+into
+
+  [[http://localhost:8080/cookbookServlets/REST/modifyMulti/storeMulti]]
+
+and expect a result like
+
+#Code syntax=XML <<---
+<dtoes>
+   <country>
+      <createTimestamp>2011-05-20T13:44:14.648+02:00</createTimestamp>
+      <createUser>andreas</createUser>
+      <id>5</id>
+      <modificationTimestamp>2011-05-20T13:44:14.648+02:00</modificationTimestamp>
+      <modificationUser>andreas</modificationUser>
+      <name>France</name>
+   </country>
+   <city>
+      <countryId>5</countryId>
+      <createTimestamp>2011-05-20T13:44:14.648+02:00</createTimestamp>
+      <createUser>andreas</createUser>
+      <id>17</id>
+      <modificationTimestamp>2011-05-20T13:44:14.648+02:00</modificationTimestamp>
+      <modificationUser>andreas</modificationUser>
+      <name>Marseille</name>
+   </city>
+   <city>
+      <countryId>5</countryId>
+      <createTimestamp>2011-05-20T13:44:14.648+02:00</createTimestamp>
+      <createUser>andreas</createUser>
+      <id>18</id>
+      <modificationTimestamp>2011-05-20T13:44:14.648+02:00</modificationTimestamp>
+      <modificationUser>andreas</modificationUser>
+      <name>Paris</name>
+   </city>
+   <city>
+      <countryId>5</countryId>
+      <createTimestamp>2011-05-20T13:44:14.648+02:00</createTimestamp>
+      <createUser>andreas</createUser>
+      <id>19</id>
+      <modificationTimestamp>2011-05-20T13:44:14.648+02:00</modificationTimestamp>
+      <modificationUser>andreas</modificationUser>
+      <name>Rennes</name>
+   </city>
+</dtoes>
+---
+
+France and its cities have different IDs now, because IDs come from a
+database sequence and sequence values don't repeat. 
+
+Now we can delete France again and insert Egypt. POST the following XML
+
+#Code syntax=XML <<---
+<storedelete>
+   <delete>
+      <dtoes>
+         <city>
+            <id>17</id>
+         </city>
+         <city>
+            <id>18</id>
+         </city>
+         <city>
+            <id>19</id>
+         </city>
+         <country>
+            <id>5</id>
+         </country>
+      </dtoes>
+   </delete>
+   <store>
+      <dtoes>
+         <country>
+            <id>-1</id>
+            <name>Egypt</name>
+         </country>
+         <city>
+            <countryId>-1</countryId>
+            <id></id>
+            <name>Assuan</name>
+         </city>
+         <city>
+            <countryId>-1</countryId>
+            <id></id>
+            <name>Cairo</name>
+         </city>
+      </dtoes>
+   </store>
+</storedelete>
+---
+
+into
+
+  [[http://localhost:8080/cookbookServlets/REST/modifyMulti/storeDeleteMulti]]
+
+Make sure the first list, the list of objects to delete, contains the
+exact IDs that you got in the last step, i.e. the country ID of
+"''France''" and the IDs of its cities. The Result will be something like
+
+#Code syntax=XML <<---
+<dtoes>
+   <country>
+      <createTimestamp>2011-05-20T13:49:03.912+02:00</createTimestamp>
+      <createUser>andreas</createUser>
+      <id>6</id>
+      <modificationTimestamp>2011-05-20T13:49:03.912+02:00</modificationTimestamp>
+      <modificationUser>andreas</modificationUser>
+      <name>Egypt</name>
+   </country>
+   <city>
+      <countryId>6</countryId>
+      <createTimestamp>2011-05-20T13:49:03.912+02:00</createTimestamp>
+      <createUser>andreas</createUser>
+      <id>20</id>
+      <modificationTimestamp>2011-05-20T13:49:03.912+02:00</modificationTimestamp>
+      <modificationUser>andreas</modificationUser>
+      <name>Assuan</name>
+   </city>
+   <city>
+      <countryId>6</countryId>
+      <createTimestamp>2011-05-20T13:49:03.912+02:00</createTimestamp>
+      <createUser>andreas</createUser>
+      <id>21</id>
+      <modificationTimestamp>2011-05-20T13:49:03.912+02:00</modificationTimestamp>
+      <modificationUser>andreas</modificationUser>
+      <name>Cairo</name>
+   </city>
+</dtoes>
+---
+
+We have deleted all of "''France''" and created "''Egypt''", this time
+with two cities, "''Assuan''" and "''Cairo''".
+
+Again you can use the same operations to make updates. In fact you can
+mix creating new objects and updating others, that already exist.
+
+Each of the two lists could have been left empty, reducing the
+operation "''storeDeletMulti()''" to a more complicated version of
+either "''storeMulti()''" or "''deleteMulti()''", or if both lists are
+empty, to a very complicated no-op.
+
+** A visit from Austria to Luxor
+
+Remember the strange entity ''Visit''? It represents a many-to-many
+association between ZIP areas and cities, meaning that a number of
+visitors from a certain ZIP area have visited a certain city. The
+number of visitors augments the join table and so do our usual
+create/modification timestamps/users, only that this time the
+timestamps are actually strings. Additionally the join table has no
+explicit ID, thus we had to use an embedded ID.
+
+Let's pretend that we just got statistical data. Five visitors from
+the Austrian ZIP area Graz-Webling have visited Luxor in Egypt. This
+is a case for ''storeMulti()'' and for using negative proxy IDs.
+
+POST the following XML
+
+#Code syntax=XML <<---
+<dtoes>
+   <city>
+      <countryId>6</countryId>
+      <id>-1</id>
+      <name>Luxor</name>
+   </city>
+   <visit>
+      <id>
+         <fromZipArea>1</fromZipArea>
+         <toCity>-1</toCity>
+      </id>
+      <numberOfVisitors>5</numberOfVisitors>
+   </visit>
+</dtoes>
+---
+
+into
+
+  [[http://localhost:8080/cookbookServlets/REST/modifyMulti/storeMulti]]
+
+The result is
+
+#Code syntax=XML <<---
+<dtoes>
+   <city>
+      <countryId>6</countryId>
+      <createTimestamp>2011-05-20T15:31:33.887+02:00</createTimestamp>
+      <createUser>andreas</createUser>
+      <id>22</id>
+      <modificationTimestamp>2011-05-20T15:31:33.887+02:00</modificationTimestamp>
+      <modificationUser>andreas</modificationUser>
+      <name>Luxor</name>
+   </city>
+   <visit>
+      <createTimestamp>2011-05-20-153133.887</createTimestamp>
+      <createUser>andreas</createUser>
+      <id>
+         <fromZipArea>1</fromZipArea>
+         <toCity>22</toCity>
+      </id>
+      <modificationTimestamp>2011-05-20-153133.887</modificationTimestamp>
+      <modificationUser>andreas</modificationUser>
+      <numberOfVisitors>5</numberOfVisitors>
+   </visit>
+</dtoes>
+---
+
+
+
+* Miscellanea
+
+** Variants of the query specification
+
+REST is just one way to access the services. The XML format of query
+specifications was chosen to be easily creatable from Adobe Flash
+clients. When the services are accessed via SOAP or CORBA, the
+"''list()''" methods take an object of type ''QuerySpec'' as
+parameter. Alternatively a second method "''listByXML()''" is
+generated, and those methods again take XML in form of a string
+parameter. The XML format is the same as for REST.
+
+
+* Licenses
+
+#Verbatim <<---
+ Licensed under the EUPL, Version 1.1 or as soon they
+ will be approved by the European Commission - subsequent
+ versions of the EUPL (the "Licence");
+ You may not use this work except in compliance with the
+ Licence.
+ 
+ For convenience a plain text copy of the English version 
+ of the Licence can be found in the file LICENCE.txt in
+ the top-level directory of this software distribution.
+ 
+ You may obtain a copy of the Licence in any of 22 European
+ Languages at:
+
+ http://www.osor.eu/eupl
+
+ Unless required by applicable law or agreed to in
+ writing, software distributed under the Licence is
+ distributed on an "AS IS" basis,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ express or implied.
+ See the Licence for the specific language governing
+ permissions and limitations under the Licence.
+---
+
+For the purpose of generating code, Azzyzt JEE Tools make use of and
+bundles a copy of [[http://www.stringtemplate.org/][\StringTemplate]],
+which is
+ 
+#Verbatim <<---
+ Copyright (c) 2008, Terence Parr
+ All rights reserved.
+ Redistribution and use in source and binary forms, with or 
+ without modification, are permitted provided that the 
+ following conditions are met:
+ 
+ Redistributions of source code must retain the above copyright 
+ notice, this list of conditions and the following disclaimer.
+ 
+ Redistributions in binary form must reproduce the above copyright 
+ notice, this list of conditions and the following disclaimer in 
+ the documentation and/or other materials provided with the distribution.
+ 
+ Neither the name of the author nor the names of its contributors 
+ may be used to endorse or promote products derived from this software 
+ without specific prior written permission.
+ 
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS 
+ FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE 
+ COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, 
+ INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
+ BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; 
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
+ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT 
+ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN 
+ ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
+ POSSIBILITY OF SUCH DAMAGE.
+---
+
+This documentation was created using [[http://deplate.sourceforge.net/][Deplate]].
+
+%
+% 
+% Local Variables:
+% mode:text
+% mode:auto-fill
+% End:
