@@ -52,6 +52,10 @@ public class Visit extends EntityBase<VisitId> implements Serializable {
 	@JoinColumn(name="to_city", insertable=false, updatable=false)
 	private City toCity;
 	
+	@ManyToOne
+	@JoinColumn(name="lang_used")
+	private Language languageUsedByGuide;
+	
 	public VisitId getId() {
 		if (id == null) {
 			return null;
@@ -121,5 +125,13 @@ public class Visit extends EntityBase<VisitId> implements Serializable {
 
 	public void setToCity(City toCity) {
 		this.toCity = toCity;
+	}
+
+	public void setLanguageUsedByGuide(Language languageUsedByGuide) {
+		this.languageUsedByGuide = languageUsedByGuide;
+	}
+
+	public Language getLanguageUsedByGuide() {
+		return languageUsedByGuide;
 	}
 }

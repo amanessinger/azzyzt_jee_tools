@@ -46,7 +46,6 @@ public class IdTranslator {
 				continue;
 			}
 			if (!Number.class.isAssignableFrom(f.getType())) {
-				System.err.println(f.getType().getName()+" can't be assigned to Number, skipping field");
 				continue;
 			}
 			/*
@@ -59,7 +58,6 @@ public class IdTranslator {
 				f.setAccessible(true);
 				proxy = (Number)f.get(embeddedId);
 				if (proxy == null || proxy.longValue() >= 0) {
-					System.err.println(f.getDeclaringClass().getName()+": skipping because proxy is null or >= 0");
 					continue;
 				}
 				if (!table.containsKey(proxy)) {

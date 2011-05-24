@@ -1,4 +1,4 @@
-HTML = readme.html using_azzyzt.html developing_azzyzt.html
+HTML = changelog.html readme.html using_azzyzt.html developing_azzyzt.html
 README  = ../README.txt
 
 %.html : %.viki

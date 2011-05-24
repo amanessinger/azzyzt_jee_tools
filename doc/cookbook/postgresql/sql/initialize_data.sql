@@ -48,3 +48,12 @@ VALUES (NEXTVAL('zip_id_seq'), (SELECT id FROM country WHERE name = 'Italy'),
 INSERT INTO zip (id, country_id, code, name, create_user, modification_user) 
 VALUES (NEXTVAL('zip_id_seq'), (SELECT id FROM country WHERE name = 'USA'), 
        '20001-6000', 'Metropolitan Washington Airports Authority', 'admin', 'admin');
+
+INSERT INTO lang_table (lang_code, lang_name)
+VALUES ('de_AT', 'Deutsch (Österreich)');
+
+INSERT INTO lang_table (lang_code, lang_name)
+VALUES ('it_IT', 'Italiano');
+
+INSERT INTO lang_table (lang_code, lang_name)
+VALUES ('en_US', 'English (US)');

@@ -1,7 +1,7 @@
 #VAR: fmt=~html(site|slides): css=highlight.css,layout-deplate.css cssInclude=true
 #VAR: tableStyle=formal
 
-#VAR: version=1.1.0
+#VAR: version=1.1.1
 
 * Azzyzt JEE Tools
 #OPT: plain!
@@ -18,7 +18,7 @@ Tools.
 Copyright (c) 2011, Municipiality of Vienna, Austria
 Licensed under the EUPL, Version 1.1 or subsequent versions
 
- !!! This file is outdated!
+ !!! This file is outdated and does not reflect the current release!
 
 ** Developing or modifying Azzyzt JEE Tools
 

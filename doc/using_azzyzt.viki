@@ -1,7 +1,7 @@
 #VAR: fmt=~html(site|slides): css=highlight.css,layout-deplate.css cssInclude=true
 #VAR: tableStyle=formal
 
-#VAR: version=1.1.0
+#VAR: version=1.1.1
 
 * Azzyzt JEE Tools
 #OPT: plain!
@@ -98,6 +98,7 @@ doc/cookbook
     |       |           `-- entity
     |       |               |-- City.java
     |       |               |-- Country.java
+    |       |               |-- Language.java
     |       |               |-- Visit.java
     |       |               `-- Zip.java
     |       `-- META-INF
@@ -388,6 +389,7 @@ doc/cookbook/src
 |       |           `-- entity
 |       |               |-- City.java
 |       |               |-- Country.java
+|       |               |-- Language.java
 |       |               |-- Visit.java
 |       |               `-- Zip.java
 |       `-- META-INF
@@ -413,13 +415,16 @@ use "__Project / Clean ... / Clean all projects__" and it will go
 away. I believe this to be an error in Eclipse.
 
 The sample database is pretty simple. We have have countries, cities,
-zips and visits from a zip code area to a certain city. A __Country__ has
-cities and each __City__ is in a certain country. A country has a
-number of __Zip__ areas and each ZIP area belongs to a certain
-country. ZIPs don't necessarily correspond to cities. __Country__,
-__City__ and __Zip__ are easy cases. The corresponding tables each
-have an ID taken from a sequence, and the only relationships that we
-need to map, can be modeled using ''\@OneToMany'' and ''\@ManyToOne''.
+zips, visits from a zip code area to a certain city, and he language
+used by the guide supplied to the visitors. 
+
+A __Country__ has cities and each __City__ is in a certain country. A
+country has a number of __Zip__ areas and each ZIP area belongs to a
+certain country. ZIPs don't necessarily correspond to
+cities. __Country__, __City__ and __Zip__ are easy cases. The
+corresponding tables each have an ID taken from a sequence, and the
+only relationships that we need to map, can be modeled using
+''\@OneToMany'' and ''\@ManyToOne''.
 
 **** A complicated association
 
@@ -448,7 +453,16 @@ To cover this common and not well documented case (at least it took me
 some time to find anything on the Internet and figure it out),
 __Visit__ has an extra attribute ''Long numberOfVisitors'' that acts
 as a counter. Think of a system where we have to collect some
-anonymized statistics about visits.
+anonymized statistics about visits. Another extra attribute
+
+#Code id=VisitLanguage syntax=Java <<---
+@ManyToOne
+@JoinColumn(name="lang_used")
+private Language languageUsedByGuide;
+---
+
+represents the language used by the visitors' guide. We map it as an
+association. 
 
 The corresponding database table has no explicit ID, thus we have to
 use the idiom of an __embedded ID__. The embedded ID is a separate
@@ -569,8 +583,8 @@ but otherwise it would be the same.
 
 **** Create / modification users and timestamps
 
-All four entity classes have some fields automatically set by the code
-that Azzyzt JEE Tools generate:
+All entity classes but ''Language'' have some fields automatically set
+by the code that Azzyzt JEE Tools generate:
 
 #Code id=createModifyTimestampUser syntax=Java <<---
 @CreateTimestamp
@@ -628,6 +642,24 @@ programmatically, we can make sure that they are __only__ set
 automatically, it's more portable this way, and it gives Azzyzt a tad
 more meta information to work with :)
 
+**** A simple lookup table
+
+In the case of ''Language'' I have not used automatically set
+fields. The underlying table is a typical example of a lookup
+table. You find that in most databases that were not explicitly
+designed for access by object-oriented languages. The ID is not
+generated, it is a simple string, in our case a language code like it
+is used in locale specifications. The only other attribute is the long
+name of the language.
+
+Using such tables may be a tad less efficient, but it actually brings
+a big advantage as well: it makes databases more readable. A foreign
+key in a visit record can be understood without looking up the value
+in the language table.
+
+Even if you don't agree, there is no way around the fact that we
+stumble upon this pattern in practically every legacy database.
+
 Here we are, that's our entity model.
 
 
@@ -659,6 +691,7 @@ cookbookEJB
 |   |           |-- entity
 |   |           |   |-- City.java
 |   |           |   |-- Country.java
+|   |           |   |-- Language.java
 |   |           |   |-- Visit.java
 |   |           |   `-- Zip.java
 |   |           `-- service
@@ -676,6 +709,7 @@ cookbookEJB
                 |-- conv
                 |   |-- CityConv.java
                 |   |-- CountryConv.java
+                |   |-- LanguageConv.java
                 |   |-- VisitConv.java
                 |   `-- ZipConv.java
                 |-- eao
@@ -691,6 +725,8 @@ cookbookEJB
                     |-- CityRestrictedBean.java
                     |-- CountryFullBean.java
                     |-- CountryRestrictedBean.java
+                    |-- LanguageFullBean.java
+                    |-- LanguageRestrictedBean.java
                     |-- ModifyMultiBean.java
                     |-- VisitFullBean.java
                     |-- VisitRestrictedBean.java
@@ -716,6 +752,7 @@ cookbookEJBClient
                 |   |-- CountryDto.java
                 |   |-- DeleteWrapper.java
                 |   |-- Dto.java
+                |   |-- LanguageDto.java
                 |   |-- StoreDelete.java
                 |   |-- StoreWrapper.java
                 |   |-- VisitDto.java
@@ -725,6 +762,8 @@ cookbookEJBClient
                     |-- CityRestrictedInterface.java
                     |-- CountryFullInterface.java
                     |-- CountryRestrictedInterface.java
+                    |-- LanguageFullInterface.java
+                    |-- LanguageRestrictedInterface.java
                     |-- ModifyMultiInterface.java
                     |-- VisitFullInterface.java
                     |-- VisitRestrictedInterface.java
@@ -741,6 +780,8 @@ cookbookServlets
 |                   |-- CityRestrictedDelegator.java
 |                   |-- CountryFullDelegator.java
 |                   |-- CountryRestrictedDelegator.java
+|                   |-- LanguageFullDelegator.java
+|                   |-- LanguageRestrictedDelegator.java
 |                   |-- ModifyMultiDelegator.java
 |                   |-- RESTExceptionMapper.java
 |                   |-- RESTInterceptor.java
@@ -759,7 +800,7 @@ cookbookServlets
         `-- sun-web.xml
 ---
 
-Quite a lot of code, and this is only for four tables. Imagine a real
+Quite a lot of code, and this is only for five tables. Imagine a real
 project with dozens or hundreds of tables. Sure, this could all be
 useless rubbish, so let's look at what we can do with it :)
 
@@ -807,6 +848,14 @@ for the generated service beans, assuming \GlassFish runs on port
   [[http://localhost:8080/cookbook/CountryFullBean?wsdl]]
 
   [[http://localhost:8080/cookbook/CountryRestrictedBean?wsdl]]
+
+  [[http://localhost:8080/cookbook/LanguageFullBean?wsdl]]
+
+  [[http://localhost:8080/cookbook/LanguageRestrictedBean?wsdl]]
+
+  [[http://localhost:8080/cookbook/VisitFullBean?wsdl]]
+
+  [[http://localhost:8080/cookbook/VisitRestrictedBean?wsdl]]
 
   [[http://localhost:8080/cookbook/ZipFullBean?wsdl]]
 
@@ -1305,14 +1354,15 @@ In order to store a new city, use this URL
 
 and POST an XML representation of a city, just as you may have got it
 from one of the reading operations, but in input data leave the ''id''
-empty. A new object will be created and its complete representetion,
-including server-generated fields, will be returned. Thus POSTing
+and the server-generated fields empty. A new object will be created
+and its complete representation, including server-generated fields,
+will be returned. Thus POSTing
 
 #Code syntax=XML <<---
 <city>
    <countryId>2</countryId>
    <id></id>
-   <name>Bilogna</name>
+   <name>Udinw</name>
 </city>
 ---
 
@@ -1326,7 +1376,7 @@ may return
    <id>13</id>
    <modificationTimestamp>2011-05-20T11:50:06.805+02:00</modificationTimestamp>
    <modificationUser>anonymous</modificationUser>
-   <name>Bilogna</name>
+   <name>Udinw</name>
 </city>
 ---
 
@@ -1335,7 +1385,9 @@ The new ''id'' will have been automatically allocated from a sequence.
 
 ** Update a record, specify user
 
-You may have noticed, that "''Bilogna''" has been inserted with not
+*** User names
+
+You may have noticed, that "''Udinw''" has been inserted with not
 only an ''id'' set on server side, it had also a create/modify
 timestamps set as well as creat/modify users. Both user names were set
 to "''anonymous''".
@@ -1350,7 +1402,29 @@ involved for requests invoked via REST. What happens is, that the
 generic code passes the request data to the site adapter, and the site
 adapter tries to take the user name (which is expected to have been
 authenticated and authorized for access by a portal in front of the
-service) from an HTTP header called "''x-authenticate-userid''".
+service) from an HTTP header. The header's name defaults to
+"''x-authenticate-userid''". This happens to be what we use
+internally, but the name can be overridden by setting a custom string
+resource in the application server.
+
+The
+[[http://programming.manessinger.com/tutorials/an-eclipse-glassfish-java-ee-6-tutorial/][Eclipse / \GlassFish / Java EE 6 Tutorial]] has a section titled "__Configuration via JNDI Custom Resources__", that shows how to set custom resources in
+\GlassFish. 
+
+The JNDI name of the resource has to be
+"''custom/stringvalues/http/header/username''", its type must be
+''java.lang.String'' and it has to have a property with name
+"''value''" and the value of the property should be whatever your HTTP
+header is called, for instance "''x-portal-username''".
+
+While we are at it, "''anonymous''", as the name of the username when
+no header is given, is also only a default. There is a similar
+override via a JNDI string resource. The name of the resource must be
+"''custom/stringvalues/username/anonymous''". Again you need to define
+a property with name "''value''", having the string as value, that you
+want to use, for instance "''unknown''".
+
+ !!! After creating or changing those string resources, you have to restart the application!
 
 In soapUI you can set HTTP headers from the request window. At the
 bottom of the left pane you find text "''Headers (0)''", and this text
@@ -1366,10 +1440,19 @@ whatever you like. I enter "''andreas''". Don't forget to ''<TAB>''
 out of the value field before you send the request, otherwise the
 header will not be sent!
 
+Running through our portal would always automatically set the header,
+but at home or on the train I have no portal, thus I can either
+manually set the header for every request, or I can fake it by setting
+the string resource "''custom/stringvalues/username/anonymous''" in
+the server to "''andreas''". This is what I have made while creating
+this tutorial.
+
+*** Updating the record
+
 Then  I  issue  another store  request,  but  this  time with  the  ID
-specified as  the one that  was returned for "''Bilogna''".  Let's say
-that instead of "''Bilogna''" (which does not exist in Italy) we really
-meant  "''Bologna''".  It's  the  beautiful  capital  of  the  Italian
+specified as  the one that  was returned for "''Udinw''".  Let's say
+that instead of "''Udinw''" (which does not exist in Italy) we really
+meant  "''Udine''".  It's  the  beautiful  capital  of  the  Italian
 province __Emilia Romagna__. We are happy with the ID, but we want the
 name to be updated.
 
@@ -1379,11 +1462,11 @@ POST the following XML
 <city>
    <countryId>2</countryId>
    <id>13</id>
-   <name>Bologna</name>
+   <name>Udine</name>
 </city>
 ---
 
-into to rename "__Bilogna__" to "__Bologna__". This is the result,
+into to rename "__Udinw__" to "__Udine__". This is the result,
 note the modification user and timestamp, while create user and
 timestamp have stayed unchanged.
 
@@ -1395,7 +1478,7 @@ timestamp have stayed unchanged.
    <id>13</id>
    <modificationTimestamp>2011-05-20T12:45:06.038+02:00</modificationTimestamp>
    <modificationUser>andreas</modificationUser>
-   <name>Bologna</name>
+   <name>Udine</name>
 </city>
 ---
 
@@ -1406,7 +1489,7 @@ Make a GET request to the following URL
 
   [[http://localhost:8080/cookbookServlets/REST/city/delete?id=13]]
 
-to delete "''Bologna''", assuming its ID was indeed "''13''". The
+to delete "''Udine''", assuming its ID was indeed "''13''". The
 result will be
 
 #Code syntax=XML <<---
@@ -1739,14 +1822,23 @@ empty, to a very complicated no-op.
 Remember the strange entity ''Visit''? It represents a many-to-many
 association between ZIP areas and cities, meaning that a number of
 visitors from a certain ZIP area have visited a certain city. The
-number of visitors augments the join table and so do our usual
-create/modification timestamps/users, only that this time the
-timestamps are actually strings. Additionally the join table has no
-explicit ID, thus we had to use an embedded ID.
+number of visitors and the language used by the guide augment the join
+table and so do our usual create/modification timestamps/users, only
+that this time the timestamps are actually strings. Additionally the
+join table has no explicit ID, thus we had to use an embedded ID.
 
 Let's pretend that we just got statistical data. Five visitors from
-the Austrian ZIP area Graz-Webling have visited Luxor in Egypt. This
-is a case for ''storeMulti()'' and for using negative proxy IDs.
+the Austrian ZIP area Graz-Webling have visited Luxor in Egypt. The
+guide's language was British English. 
+
+We don't have "''Luxor''" so far. This is a case for ''storeMulti()''
+and for using negative proxy IDs. The database was initialized to have
+"''en_US''", but given Egypt's British heritage, it seems perfectly
+plausible that our guide uses British English. We don't have that
+language either, so we store it in the same operation. Languages have
+string IDs, thus we don't need a proxy ID for the language. The only
+requirement is, that it is in the list in a position before the DTO
+that uses it.
 
 POST the following XML
 
@@ -1757,12 +1849,17 @@ POST the following XML
       <id>-1</id>
       <name>Luxor</name>
    </city>
+   <language>
+      <id>en_UK</id>
+      <languageName>English (UK)</languageName>
+   </language>
    <visit>
       <id>
          <fromZipArea>1</fromZipArea>
          <toCity>-1</toCity>
       </id>
       <numberOfVisitors>5</numberOfVisitors>
+      <languageUsedByGuideId>en_UK</languageUsedByGuideId>
    </visit>
 </dtoes>
 ---
@@ -1777,27 +1874,31 @@ The result is
 <dtoes>
    <city>
       <countryId>6</countryId>
-      <createTimestamp>2011-05-20T15:31:33.887+02:00</createTimestamp>
+      <createTimestamp>2011-05-24T15:06:31.618+02:00</createTimestamp>
       <createUser>andreas</createUser>
       <id>22</id>
-      <modificationTimestamp>2011-05-20T15:31:33.887+02:00</modificationTimestamp>
+      <modificationTimestamp>2011-05-24T15:06:31.618+02:00</modificationTimestamp>
       <modificationUser>andreas</modificationUser>
       <name>Luxor</name>
    </city>
+   <language>
+      <id>en_UK</id>
+      <languageName>English (UK)</languageName>
+   </language>
    <visit>
-      <createTimestamp>2011-05-20-153133.887</createTimestamp>
+      <createTimestamp>2011-05-24-150631.618</createTimestamp>
       <createUser>andreas</createUser>
       <id>
          <fromZipArea>1</fromZipArea>
          <toCity>22</toCity>
       </id>
-      <modificationTimestamp>2011-05-20-153133.887</modificationTimestamp>
+      <languageUsedByGuideId>en_UK</languageUsedByGuideId>
+      <modificationTimestamp>2011-05-24-150631.618</modificationTimestamp>
       <modificationUser>andreas</modificationUser>
       <numberOfVisitors>5</numberOfVisitors>
    </visit>
 </dtoes>
 ---
-
 
 
 * Miscellanea

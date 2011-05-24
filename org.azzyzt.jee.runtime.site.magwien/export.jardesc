@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="WINDOWS-1252" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <jardesc>
     <jar path="org.azzyzt.jee.runtime.site.magwien.fragment/lib/org.azzyzt.jee.runtime.site.jar"/>
     <options buildIfNeeded="true" compress="true" descriptionLocation="/org.azzyzt.jee.runtime.site.magwien/export.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="true" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
@@ -12,8 +12,10 @@
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="true" exportOutputFolder="false">
         <file path="/org.azzyzt.jee.runtime.site.magwien/.project"/>
-        <folder path="/org.azzyzt.jee.runtime.site.magwien/build"/>
         <file path="/org.azzyzt.jee.runtime.site.magwien/.classpath"/>
+        <folder path="/org.azzyzt.jee.runtime.site.magwien/build"/>
+        <file path="/org.azzyzt.jee.runtime.site.magwien/export.jardesc"/>
+        <file path="/org.azzyzt.jee.runtime.site.magwien/.gitignore"/>
         <javaElement handleIdentifier="=org.azzyzt.jee.runtime.site.magwien/ejbModule"/>
     </selectedElements>
 </jardesc>

@@ -250,4 +250,8 @@ public class MetaEntity extends MetaClass {
 			|| (isUsingModificationTimestampField() && modificationTimestampField.isStringField());
 	}
 
+	public boolean isProxyIdPossible() {
+		return idField.isNumericFieldCanBeNegative();
+	}
+	
 }

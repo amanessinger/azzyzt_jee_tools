@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 <meta name="language" content="en">
-<meta name="date" content="2011-05-22T20:50:38">
+<meta name="date" content="2011-05-24T15:12:25">
 <meta name="generator" content="deplate.rb 0.8.5">
 <link rel="start" href="using_azzyzt.html" title="Frontpage">
 <link rel="chapter" href="using_azzyzt.html#hd001" title="Azzyzt JEE Tools">
@@ -810,7 +810,7 @@ span.progress {
 <h1 id="hd001"><a name="file000"></a>Azzyzt JEE Tools</h1>
 
 <div class="important"><p class="important">
-Release 1.1.0
+Release 1.1.1
 </p></div>
 
 <p>Azzyzt JEE Tools is a collection of software tools helping software 
@@ -828,7 +828,7 @@ EUPL, Version 1.1 or subsequent versions</p>
 
 <p>If you just want to use Azzyzt JEE Tools (as opposed to modify and build 
 them), the recommended way to install the software is via an Eclipse 
-update site. As of release 1.1.0, there are two update site URLs, one 
+update site. As of release 1.1.1, there are two update site URLs, one 
 for the edition used by the Municipiality of Vienna, Austria, the other 
 a generic version. The URLs are</p>
 
@@ -909,6 +909,7 @@ doc/cookbook
 &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;entity
 &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;City.java
 &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;Country.java
+&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;Language.java
 &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;Visit.java
 &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;Zip.java
 &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;META-INF
@@ -1199,7 +1200,7 @@ entity fields:</p>
         <code>InvocationMetaInfo</code> being generated at the entry point into 
         the service, and being passed on via the standard 
         <code>javax.transaction.TransactionSynchronizationRegistry</code>
-        <br class="itempara" />As of release 1.1.0 this is only partially implemented. It works for 
+        <br class="itempara" />As of release 1.1.1 this is only partially implemented. It works for 
         REST but not for SOAP and CORBA, and from a service accessed via REST, 
         it currently wouldn&rsquo;t be passed on to backend services accessed 
         via REST or SOAP. The crucial knowledge about how to extract user 
@@ -1237,6 +1238,7 @@ doc/cookbook/src
 |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;entity
 |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;City.java
 |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;Country.java
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;Language.java
 |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;Visit.java
 |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;Zip.java
 |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;META-INF
@@ -1269,8 +1271,10 @@ projects</em>&rdquo; and it will go away. I believe this to be an error
 in Eclipse.</p>
 
 <p>The sample database is pretty simple. We have have countries, cities, 
-zips and visits from a zip code area to a certain city. A 
-<em>Country</em> has cities and each <em>City</em> is in a certain 
+zips, visits from a zip code area to a certain city, and he language 
+used by the guide supplied to the visitors.</p>
+
+<p>A <em>Country</em> has cities and each <em>City</em> is in a certain 
 country. A country has a number of <em>Zip</em> areas and each ZIP area 
 belongs to a certain country. ZIPs don&rsquo;t necessarily correspond to 
 cities. <em>Country</em>, <em>City</em> and <em>Zip</em> are easy cases. 
@@ -1307,7 +1311,18 @@ some time to find anything on the Internet and figure it out),
 <em>Visit</em> has an extra attribute 
 <code>Long&nbsp;numberOfVisitors</code> that acts as a counter. Think of 
 a system where we have to collect some anonymized statistics about 
-visits.</p>
+visits. Another extra attribute</p>
+
+<a name="VisitLanguage"></a>
+<div class="code">
+<pre>
+&#64;ManyToOne
+&#64;<span class="hl kwd">JoinColumn</span><span class="hl sym">(</span>name<span class="hl sym">=</span><span class="hl str">&quot;lang_used&quot;</span><span class="hl sym">)</span>
+<span class="hl kwa">private</span> Language languageUsedByGuide<span class="hl sym">;</span>
+</pre>
+</div>
+<p>represents the language used by the visitors&rsquo; guide. We map it as 
+an association.</p>
 
 <p>The corresponding database table has no explicit ID, thus we have to use 
 the idiom of an <em>embedded ID</em>. The embedded ID is a separate 
@@ -1445,8 +1460,8 @@ would be the same.</p>
 
 <h4 id="hd003002002002">3.2.2.2&nbsp;Create / modification users and timestamps</h4>
 
-<p>All four entity classes have some fields automatically set by the code 
-that Azzyzt JEE Tools generate:</p>
+<p>All entity classes but <code>Language</code> have some fields 
+automatically set by the code that Azzyzt JEE Tools generate:</p>
 
 <a name="createModifyTimestampUser"></a>
 <div class="code">
@@ -1509,6 +1524,26 @@ programmatically, we can make sure that they are <em>only</em> set
 automatically, it&rsquo;s more portable this way, and it gives Azzyzt a 
 tad more meta information to work with :)</p>
 
+
+
+<h4 id="hd003002002003">3.2.2.3&nbsp;A simple lookup table</h4>
+
+<p>In the case of <code>Language</code> I have not used automatically set 
+fields. The underlying table is a typical example of a lookup table. You 
+find that in most databases that were not explicitly designed for access 
+by object-oriented languages. The ID is not generated, it is a simple 
+string, in our case a language code like it is used in locale 
+specifications. The only other attribute is the long name of the 
+language.</p>
+
+<p>Using such tables may be a tad less efficient, but it actually brings a 
+big advantage as well: it makes databases more readable. A foreign key 
+in a visit record can be understood without looking up the value in the 
+language table.</p>
+
+<p>Even if you don&rsquo;t agree, there is no way around the fact that we 
+stumble upon this pattern in practically every legacy database.</p>
+
 <p>Here we are, that&rsquo;s our entity model.</p>
 
 
@@ -1542,6 +1577,7 @@ cookbookEJB
 |&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;entity
 |&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;|--&nbsp;City.java
 |&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;|--&nbsp;Country.java
+|&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;|--&nbsp;Language.java
 |&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;|--&nbsp;Visit.java
 |&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;`--&nbsp;Zip.java
 |&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;service
@@ -1559,6 +1595,7 @@ cookbookEJB
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;conv
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;|--&nbsp;CityConv.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;|--&nbsp;CountryConv.java
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;|--&nbsp;LanguageConv.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;|--&nbsp;VisitConv.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;`--&nbsp;ZipConv.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;eao
@@ -1574,6 +1611,8 @@ cookbookEJB
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;CityRestrictedBean.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;CountryFullBean.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;CountryRestrictedBean.java
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;LanguageFullBean.java
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;LanguageRestrictedBean.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;ModifyMultiBean.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;VisitFullBean.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;VisitRestrictedBean.java
@@ -1599,6 +1638,7 @@ cookbookEJBClient
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;|--&nbsp;CountryDto.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;|--&nbsp;DeleteWrapper.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;|--&nbsp;Dto.java
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;|--&nbsp;LanguageDto.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;|--&nbsp;StoreDelete.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;|--&nbsp;StoreWrapper.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;|--&nbsp;VisitDto.java
@@ -1608,6 +1648,8 @@ cookbookEJBClient
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;CityRestrictedInterface.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;CountryFullInterface.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;CountryRestrictedInterface.java
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;LanguageFullInterface.java
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;LanguageRestrictedInterface.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;ModifyMultiInterface.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;VisitFullInterface.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;VisitRestrictedInterface.java
@@ -1624,6 +1666,8 @@ cookbookServlets
 |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;CityRestrictedDelegator.java
 |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;CountryFullDelegator.java
 |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;CountryRestrictedDelegator.java
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;LanguageFullDelegator.java
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;LanguageRestrictedDelegator.java
 |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;ModifyMultiDelegator.java
 |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;RESTExceptionMapper.java
 |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;RESTInterceptor.java
@@ -1642,7 +1686,7 @@ cookbookServlets
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;sun-web.xml
 </pre>
 
-<p>Quite a lot of code, and this is only for four tables. Imagine a real 
+<p>Quite a lot of code, and this is only for five tables. Imagine a real 
 project with dozens or hundreds of tables. Sure, this could all be 
 useless rubbish, so let&rsquo;s look at what we can do with it :)</p>
 
@@ -1695,11 +1739,19 @@ the generated service beans, assuming GlassFish runs on port 8080:</p>
 
 <p><span class="remote"><a href="http://localhost:8080/cookbook/CountryRestrictedBean?wsdl" class="remote">http://localhost:8080/cookbook/CountryRestrictedBean?wsdl</a></span><a name="idx0012"></a></p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbook/ZipFullBean?wsdl" class="remote">http://localhost:8080/cookbook/ZipFullBean?wsdl</a></span><a name="idx0013"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbook/LanguageFullBean?wsdl" class="remote">http://localhost:8080/cookbook/LanguageFullBean?wsdl</a></span><a name="idx0013"></a></p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbook/ZipRestrictedBean?wsdl" class="remote">http://localhost:8080/cookbook/ZipRestrictedBean?wsdl</a></span><a name="idx0014"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbook/LanguageRestrictedBean?wsdl" class="remote">http://localhost:8080/cookbook/LanguageRestrictedBean?wsdl</a></span><a name="idx0014"></a></p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbook/ModifyMultiBean?wsdl" class="remote">http://localhost:8080/cookbook/ModifyMultiBean?wsdl</a></span><a name="idx0015"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbook/VisitFullBean?wsdl" class="remote">http://localhost:8080/cookbook/VisitFullBean?wsdl</a></span><a name="idx0015"></a></p>
+
+<p><span class="remote"><a href="http://localhost:8080/cookbook/VisitRestrictedBean?wsdl" class="remote">http://localhost:8080/cookbook/VisitRestrictedBean?wsdl</a></span><a name="idx0016"></a></p>
+
+<p><span class="remote"><a href="http://localhost:8080/cookbook/ZipFullBean?wsdl" class="remote">http://localhost:8080/cookbook/ZipFullBean?wsdl</a></span><a name="idx0017"></a></p>
+
+<p><span class="remote"><a href="http://localhost:8080/cookbook/ZipRestrictedBean?wsdl" class="remote">http://localhost:8080/cookbook/ZipRestrictedBean?wsdl</a></span><a name="idx0018"></a></p>
+
+<p><span class="remote"><a href="http://localhost:8080/cookbook/ModifyMultiBean?wsdl" class="remote">http://localhost:8080/cookbook/ModifyMultiBean?wsdl</a></span><a name="idx0019"></a></p>
 
 <p>You can use these WSDLs to create client stubs for access via SOAP.</p>
 
@@ -1709,10 +1761,10 @@ the generated service beans, assuming GlassFish runs on port 8080:</p>
 
 <p>Get the WADL description of the REST services from</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/application.wadl" class="remote">http://localhost:8080/cookbookServlets/REST/application.wadl</a></span><a name="idx0016"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/application.wadl" class="remote">http://localhost:8080/cookbookServlets/REST/application.wadl</a></span><a name="idx0020"></a></p>
 
 <p>Try the services for yourself, for instance with 
-<span class="remote"><a href="http://www.soapui.org" class="remote">soapUI</a></span><a name="idx0017"></a>. 
+<span class="remote"><a href="http://www.soapui.org" class="remote">soapUI</a></span><a name="idx0021"></a>. 
 Open soapUI, create a new project from the context menu of 
 &ldquo;<em>Projects</em>&rdquo; in the tree view on the left pane. Enter 
 &ldquo;<code>cookbook&nbsp;-&nbsp;REST</code>&rdquo; as the project name 
@@ -1800,7 +1852,7 @@ operation will automatically have one request called
 <h1 id="hd005">5&nbsp;Examples for REST</h1>
 
 <p>I assume that you use 
-<span class="remote"><a href="http://www.soapui.org" class="remote">soapUI</a></span><a name="idx0018"></a> 
+<span class="remote"><a href="http://www.soapui.org" class="remote">soapUI</a></span><a name="idx0022"></a> 
 to work through the following examples. In soapUI you send a request by 
 opening it (double click in the tree) and clicking on the green triangle 
 in the upper left corner of the request sub-window. That&rsquo;s all you 
@@ -1826,9 +1878,9 @@ Then send the request.</p>
 
 <p>Issue a GET request to any of the following URLs:</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/country/all" class="remote">http://localhost:8080/cookbookServlets/REST/country/all</a></span><a name="idx0019"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/country/all" class="remote">http://localhost:8080/cookbookServlets/REST/country/all</a></span><a name="idx0023"></a></p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/countryRestricted/all" class="remote">http://localhost:8080/cookbookServlets/REST/countryRestricted/all</a></span><a name="idx0020"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/countryRestricted/all" class="remote">http://localhost:8080/cookbookServlets/REST/countryRestricted/all</a></span><a name="idx0024"></a></p>
 
 <p>The result will be an unsorted list of all countries:</p>
 
@@ -1839,8 +1891,7 @@ Then send the request.</p>
       <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">15.975</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
       <span class="hl kwa">&lt;createUser&gt;</span>admin<span class="hl kwa">&lt;/createUser&gt;</span>
       <span class="hl kwa">&lt;id&gt;</span><span class="hl num">1</span><span class="hl kwa">&lt;/id&gt;</span>
-      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">15.975</span>+<span class="hl num">02</span>:<span class="hl num">00</span>&lt;
-      /modificationTimestamp<span class="hl kwa">&gt;</span>
+      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">15.975</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
       <span class="hl kwa">&lt;modificationUser&gt;</span>admin<span class="hl kwa">&lt;/modificationUser&gt;</span>
       <span class="hl kwa">&lt;name&gt;</span>Austria<span class="hl kwa">&lt;/name&gt;</span>
    <span class="hl kwa">&lt;/country&gt;</span>
@@ -1848,8 +1899,7 @@ Then send the request.</p>
       <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.016</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
       <span class="hl kwa">&lt;createUser&gt;</span>admin<span class="hl kwa">&lt;/createUser&gt;</span>
       <span class="hl kwa">&lt;id&gt;</span><span class="hl num">2</span><span class="hl kwa">&lt;/id&gt;</span>
-      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.016</span>+<span class="hl num">02</span>:<span class="hl num">00</span>&lt;
-      /modificationTimestamp<span class="hl kwa">&gt;</span>
+      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.016</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
       <span class="hl kwa">&lt;modificationUser&gt;</span>admin<span class="hl kwa">&lt;/modificationUser&gt;</span>
       <span class="hl kwa">&lt;name&gt;</span>Italy<span class="hl kwa">&lt;/name&gt;</span>
    <span class="hl kwa">&lt;/country&gt;</span>
@@ -1857,8 +1907,7 @@ Then send the request.</p>
       <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.037</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
       <span class="hl kwa">&lt;createUser&gt;</span>admin<span class="hl kwa">&lt;/createUser&gt;</span>
       <span class="hl kwa">&lt;id&gt;</span><span class="hl num">3</span><span class="hl kwa">&lt;/id&gt;</span>
-      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.037</span>+<span class="hl num">02</span>:<span class="hl num">00</span>&lt;
-      /modificationTimestamp<span class="hl kwa">&gt;</span>
+      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.037</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
       <span class="hl kwa">&lt;modificationUser&gt;</span>admin<span class="hl kwa">&lt;/modificationUser&gt;</span>
       <span class="hl kwa">&lt;name&gt;</span>USA<span class="hl kwa">&lt;/name&gt;</span>
    <span class="hl kwa">&lt;/country&gt;</span>
@@ -1871,9 +1920,9 @@ Then send the request.</p>
 
 <p>A GET request to any of these URLs</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/byId?id=1" class="remote">http://localhost:8080/cookbookServlets/REST/city/byId?id=1</a></span><a name="idx0021"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/byId?id=1" class="remote">http://localhost:8080/cookbookServlets/REST/city/byId?id=1</a></span><a name="idx0025"></a></p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/cityRestricted/byId?id=1" class="remote">http://localhost:8080/cookbookServlets/REST/cityRestricted/byId?id=1</a></span><a name="idx0022"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/cityRestricted/byId?id=1" class="remote">http://localhost:8080/cookbookServlets/REST/cityRestricted/byId?id=1</a></span><a name="idx0026"></a></p>
 
 <p>delivers</p>
 
@@ -1912,9 +1961,9 @@ Then send the request.</p>
 </div>
 <p>into one fo these URLs</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/list" class="remote">http://localhost:8080/cookbookServlets/REST/city/list</a></span><a name="idx0023"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/list" class="remote">http://localhost:8080/cookbookServlets/REST/city/list</a></span><a name="idx0027"></a></p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/cityRestricted/list" class="remote">http://localhost:8080/cookbookServlets/REST/cityRestricted/list</a></span><a name="idx0024"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/cityRestricted/list" class="remote">http://localhost:8080/cookbookServlets/REST/cityRestricted/list</a></span><a name="idx0028"></a></p>
 
 <p>to get a list of all cities, but sorted by the ID of their country 
 ascending, and then alphabetically by their name descending. 
@@ -1928,8 +1977,7 @@ Here&rsquo;s the result:</p>
       <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.119</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
       <span class="hl kwa">&lt;createUser&gt;</span>admin<span class="hl kwa">&lt;/createUser&gt;</span>
       <span class="hl kwa">&lt;id&gt;</span><span class="hl num">4</span><span class="hl kwa">&lt;/id&gt;</span>
-      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.119</span>+<span class="hl num">02</span>:<span class="hl num">00</span>&lt;
-      /modificationTimestamp<span class="hl kwa">&gt;</span>
+      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.119</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
       <span class="hl kwa">&lt;modificationUser&gt;</span>admin<span class="hl kwa">&lt;/modificationUser&gt;</span>
       <span class="hl kwa">&lt;name&gt;</span>Wien<span class="hl kwa">&lt;/name&gt;</span>
    <span class="hl kwa">&lt;/city&gt;</span>
@@ -1938,8 +1986,7 @@ Here&rsquo;s the result:</p>
       <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.098</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
       <span class="hl kwa">&lt;createUser&gt;</span>admin<span class="hl kwa">&lt;/createUser&gt;</span>
       <span class="hl kwa">&lt;id&gt;</span><span class="hl num">3</span><span class="hl kwa">&lt;/id&gt;</span>
-      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.098</span>+<span class="hl num">02</span>:<span class="hl num">00</span>&lt;
-      /modificationTimestamp<span class="hl kwa">&gt;</span>
+      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.098</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
       <span class="hl kwa">&lt;modificationUser&gt;</span>admin<span class="hl kwa">&lt;/modificationUser&gt;</span>
       <span class="hl kwa">&lt;name&gt;</span>Salzburg<span class="hl kwa">&lt;/name&gt;</span>
    <span class="hl kwa">&lt;/city&gt;</span>
@@ -1948,8 +1995,7 @@ Here&rsquo;s the result:</p>
       <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.078</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
       <span class="hl kwa">&lt;createUser&gt;</span>admin<span class="hl kwa">&lt;/createUser&gt;</span>
       <span class="hl kwa">&lt;id&gt;</span><span class="hl num">2</span><span class="hl kwa">&lt;/id&gt;</span>
-      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.078</span>+<span class="hl num">02</span>:<span class="hl num">00</span>&lt;
-      /modificationTimestamp<span class="hl kwa">&gt;</span>
+      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.078</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
       <span class="hl kwa">&lt;modificationUser&gt;</span>admin<span class="hl kwa">&lt;/modificationUser&gt;</span>
       <span class="hl kwa">&lt;name&gt;</span>Linz<span class="hl kwa">&lt;/name&gt;</span>
    <span class="hl kwa">&lt;/city&gt;</span>
@@ -1958,8 +2004,7 @@ Here&rsquo;s the result:</p>
       <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.057</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
       <span class="hl kwa">&lt;createUser&gt;</span>admin<span class="hl kwa">&lt;/createUser&gt;</span>
       <span class="hl kwa">&lt;id&gt;</span><span class="hl num">1</span><span class="hl kwa">&lt;/id&gt;</span>
-      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.057</span>+<span class="hl num">02</span>:<span class="hl num">00</span>&lt;
-      /modificationTimestamp<span class="hl kwa">&gt;</span>
+      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.057</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
       <span class="hl kwa">&lt;modificationUser&gt;</span>admin<span class="hl kwa">&lt;/modificationUser&gt;</span>
       <span class="hl kwa">&lt;name&gt;</span>Graz<span class="hl kwa">&lt;/name&gt;</span>
    <span class="hl kwa">&lt;/city&gt;</span>
@@ -1968,8 +2013,7 @@ Here&rsquo;s the result:</p>
       <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.202</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
       <span class="hl kwa">&lt;createUser&gt;</span>admin<span class="hl kwa">&lt;/createUser&gt;</span>
       <span class="hl kwa">&lt;id&gt;</span><span class="hl num">8</span><span class="hl kwa">&lt;/id&gt;</span>
-      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.202</span>+<span class="hl num">02</span>:<span class="hl num">00</span>&lt;
-      /modificationTimestamp<span class="hl kwa">&gt;</span>
+      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.202</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
       <span class="hl kwa">&lt;modificationUser&gt;</span>admin<span class="hl kwa">&lt;/modificationUser&gt;</span>
       <span class="hl kwa">&lt;name&gt;</span>Venezia<span class="hl kwa">&lt;/name&gt;</span>
    <span class="hl kwa">&lt;/city&gt;</span>
@@ -1978,8 +2022,7 @@ Here&rsquo;s the result:</p>
       <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.181</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
       <span class="hl kwa">&lt;createUser&gt;</span>admin<span class="hl kwa">&lt;/createUser&gt;</span>
       <span class="hl kwa">&lt;id&gt;</span><span class="hl num">7</span><span class="hl kwa">&lt;/id&gt;</span>
-      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.181</span>+<span class="hl num">02</span>:<span class="hl num">00</span>&lt;
-      /modificationTimestamp<span class="hl kwa">&gt;</span>
+      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.181</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
       <span class="hl kwa">&lt;modificationUser&gt;</span>admin<span class="hl kwa">&lt;/modificationUser&gt;</span>
       <span class="hl kwa">&lt;name&gt;</span>Roma<span class="hl kwa">&lt;/name&gt;</span>
    <span class="hl kwa">&lt;/city&gt;</span>
@@ -1988,8 +2031,7 @@ Here&rsquo;s the result:</p>
       <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.160</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
       <span class="hl kwa">&lt;createUser&gt;</span>admin<span class="hl kwa">&lt;/createUser&gt;</span>
       <span class="hl kwa">&lt;id&gt;</span><span class="hl num">6</span><span class="hl kwa">&lt;/id&gt;</span>
-      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.160</span>+<span class="hl num">02</span>:<span class="hl num">00</span>&lt;
-      /modificationTimestamp<span class="hl kwa">&gt;</span>
+      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.160</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
       <span class="hl kwa">&lt;modificationUser&gt;</span>admin<span class="hl kwa">&lt;/modificationUser&gt;</span>
       <span class="hl kwa">&lt;name&gt;</span>Firenze<span class="hl kwa">&lt;/name&gt;</span>
    <span class="hl kwa">&lt;/city&gt;</span>
@@ -1998,8 +2040,7 @@ Here&rsquo;s the result:</p>
       <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.140</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
       <span class="hl kwa">&lt;createUser&gt;</span>admin<span class="hl kwa">&lt;/createUser&gt;</span>
       <span class="hl kwa">&lt;id&gt;</span><span class="hl num">5</span><span class="hl kwa">&lt;/id&gt;</span>
-      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.140</span>+<span class="hl num">02</span>:<span class="hl num">00</span>&lt;
-      /modificationTimestamp<span class="hl kwa">&gt;</span>
+      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.140</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
       <span class="hl kwa">&lt;modificationUser&gt;</span>admin<span class="hl kwa">&lt;/modificationUser&gt;</span>
       <span class="hl kwa">&lt;name&gt;</span>Bologna<span class="hl kwa">&lt;/name&gt;</span>
    <span class="hl kwa">&lt;/city&gt;</span>
@@ -2008,8 +2049,7 @@ Here&rsquo;s the result:</p>
       <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.284</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
       <span class="hl kwa">&lt;createUser&gt;</span>admin<span class="hl kwa">&lt;/createUser&gt;</span>
       <span class="hl kwa">&lt;id&gt;</span><span class="hl num">12</span><span class="hl kwa">&lt;/id&gt;</span>
-      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.284</span>+<span class="hl num">02</span>:<span class="hl num">00</span>&lt;
-      /modificationTimestamp<span class="hl kwa">&gt;</span>
+      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.284</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
       <span class="hl kwa">&lt;modificationUser&gt;</span>admin<span class="hl kwa">&lt;/modificationUser&gt;</span>
       <span class="hl kwa">&lt;name&gt;</span>Washington<span class="hl kwa">&lt;/name&gt;</span>
    <span class="hl kwa">&lt;/city&gt;</span>
@@ -2018,8 +2058,7 @@ Here&rsquo;s the result:</p>
       <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.263</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
       <span class="hl kwa">&lt;createUser&gt;</span>admin<span class="hl kwa">&lt;/createUser&gt;</span>
       <span class="hl kwa">&lt;id&gt;</span><span class="hl num">11</span><span class="hl kwa">&lt;/id&gt;</span>
-      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.263</span>+<span class="hl num">02</span>:<span class="hl num">00</span>&lt;
-      /modificationTimestamp<span class="hl kwa">&gt;</span>
+      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.263</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
       <span class="hl kwa">&lt;modificationUser&gt;</span>admin<span class="hl kwa">&lt;/modificationUser&gt;</span>
       <span class="hl kwa">&lt;name&gt;</span>New York<span class="hl kwa">&lt;/name&gt;</span>
    <span class="hl kwa">&lt;/city&gt;</span>
@@ -2028,8 +2067,7 @@ Here&rsquo;s the result:</p>
       <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.243</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
       <span class="hl kwa">&lt;createUser&gt;</span>admin<span class="hl kwa">&lt;/createUser&gt;</span>
       <span class="hl kwa">&lt;id&gt;</span><span class="hl num">10</span><span class="hl kwa">&lt;/id&gt;</span>
-      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.243</span>+<span class="hl num">02</span>:<span class="hl num">00</span>&lt;
-      /modificationTimestamp<span class="hl kwa">&gt;</span>
+      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.243</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
       <span class="hl kwa">&lt;modificationUser&gt;</span>admin<span class="hl kwa">&lt;/modificationUser&gt;</span>
       <span class="hl kwa">&lt;name&gt;</span>Los Angeles<span class="hl kwa">&lt;/name&gt;</span>
    <span class="hl kwa">&lt;/city&gt;</span>
@@ -2038,8 +2076,7 @@ Here&rsquo;s the result:</p>
       <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.222</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
       <span class="hl kwa">&lt;createUser&gt;</span>admin<span class="hl kwa">&lt;/createUser&gt;</span>
       <span class="hl kwa">&lt;id&gt;</span><span class="hl num">9</span><span class="hl kwa">&lt;/id&gt;</span>
-      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.222</span>+<span class="hl num">02</span>:<span class="hl num">00</span>&lt;
-      /modificationTimestamp<span class="hl kwa">&gt;</span>
+      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.222</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
       <span class="hl kwa">&lt;modificationUser&gt;</span>admin<span class="hl kwa">&lt;/modificationUser&gt;</span>
       <span class="hl kwa">&lt;name&gt;</span>Atlanta<span class="hl kwa">&lt;/name&gt;</span>
    <span class="hl kwa">&lt;/city&gt;</span>
@@ -2078,9 +2115,9 @@ Here&rsquo;s the result:</p>
 </div>
 <p>into either of</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/list" class="remote">http://localhost:8080/cookbookServlets/REST/city/list</a></span><a name="idx0025"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/list" class="remote">http://localhost:8080/cookbookServlets/REST/city/list</a></span><a name="idx0029"></a></p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/cityRestricted/list" class="remote">http://localhost:8080/cookbookServlets/REST/cityRestricted/list</a></span><a name="idx0026"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/cityRestricted/list" class="remote">http://localhost:8080/cookbookServlets/REST/cityRestricted/list</a></span><a name="idx0030"></a></p>
 
 <p>to get a list of all cities, where the country name equals 
 &ldquo;<em>Italy</em>&rdquo; and the city&rsquo;s name does not begin 
@@ -2096,8 +2133,7 @@ would have been &ldquo;<code>Venezia</code>&rdquo;).</p>
       <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.140</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
       <span class="hl kwa">&lt;createUser&gt;</span>admin<span class="hl kwa">&lt;/createUser&gt;</span>
       <span class="hl kwa">&lt;id&gt;</span><span class="hl num">5</span><span class="hl kwa">&lt;/id&gt;</span>
-      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.140</span>+<span class="hl num">02</span>:<span class="hl num">00</span>&lt;
-      /modificationTimestamp<span class="hl kwa">&gt;</span>
+      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.140</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
       <span class="hl kwa">&lt;modificationUser&gt;</span>admin<span class="hl kwa">&lt;/modificationUser&gt;</span>
       <span class="hl kwa">&lt;name&gt;</span>Bologna<span class="hl kwa">&lt;/name&gt;</span>
    <span class="hl kwa">&lt;/city&gt;</span>
@@ -2106,8 +2142,7 @@ would have been &ldquo;<code>Venezia</code>&rdquo;).</p>
       <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.160</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
       <span class="hl kwa">&lt;createUser&gt;</span>admin<span class="hl kwa">&lt;/createUser&gt;</span>
       <span class="hl kwa">&lt;id&gt;</span><span class="hl num">6</span><span class="hl kwa">&lt;/id&gt;</span>
-      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.160</span>+<span class="hl num">02</span>:<span class="hl num">00</span>&lt;
-      /modificationTimestamp<span class="hl kwa">&gt;</span>
+      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.160</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
       <span class="hl kwa">&lt;modificationUser&gt;</span>admin<span class="hl kwa">&lt;/modificationUser&gt;</span>
       <span class="hl kwa">&lt;name&gt;</span>Firenze<span class="hl kwa">&lt;/name&gt;</span>
    <span class="hl kwa">&lt;/city&gt;</span>
@@ -2183,9 +2218,9 @@ associations are valid. &ldquo;<code>City</code>&rdquo; has a field</p>
 </div>
 <p>POST it into</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/list" class="remote">http://localhost:8080/cookbookServlets/REST/city/list</a></span><a name="idx0027"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/list" class="remote">http://localhost:8080/cookbookServlets/REST/city/list</a></span><a name="idx0031"></a></p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/cityRestricted/list" class="remote">http://localhost:8080/cookbookServlets/REST/cityRestricted/list</a></span><a name="idx0028"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/cityRestricted/list" class="remote">http://localhost:8080/cookbookServlets/REST/cityRestricted/list</a></span><a name="idx0032"></a></p>
 
 <p>to get a list of all cities in Italy and all other cities beginning with 
 &ldquo;l&rdquo; (regardless case), but not the one with ID 2 (which 
@@ -2199,8 +2234,7 @@ would have been &ldquo;<code>Linz</code>&rdquo;).</p>
       <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.140</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
       <span class="hl kwa">&lt;createUser&gt;</span>admin<span class="hl kwa">&lt;/createUser&gt;</span>
       <span class="hl kwa">&lt;id&gt;</span><span class="hl num">5</span><span class="hl kwa">&lt;/id&gt;</span>
-      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.140</span>+<span class="hl num">02</span>:<span class="hl num">00</span>&lt;
-      /modificationTimestamp<span class="hl kwa">&gt;</span>
+      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.140</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
       <span class="hl kwa">&lt;modificationUser&gt;</span>admin<span class="hl kwa">&lt;/modificationUser&gt;</span>
       <span class="hl kwa">&lt;name&gt;</span>Bologna<span class="hl kwa">&lt;/name&gt;</span>
    <span class="hl kwa">&lt;/city&gt;</span>
@@ -2209,8 +2243,7 @@ would have been &ldquo;<code>Linz</code>&rdquo;).</p>
       <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.160</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
       <span class="hl kwa">&lt;createUser&gt;</span>admin<span class="hl kwa">&lt;/createUser&gt;</span>
       <span class="hl kwa">&lt;id&gt;</span><span class="hl num">6</span><span class="hl kwa">&lt;/id&gt;</span>
-      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.160</span>+<span class="hl num">02</span>:<span class="hl num">00</span>&lt;
-      /modificationTimestamp<span class="hl kwa">&gt;</span>
+      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.160</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
       <span class="hl kwa">&lt;modificationUser&gt;</span>admin<span class="hl kwa">&lt;/modificationUser&gt;</span>
       <span class="hl kwa">&lt;name&gt;</span>Firenze<span class="hl kwa">&lt;/name&gt;</span>
    <span class="hl kwa">&lt;/city&gt;</span>
@@ -2219,8 +2252,7 @@ would have been &ldquo;<code>Linz</code>&rdquo;).</p>
       <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.243</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
       <span class="hl kwa">&lt;createUser&gt;</span>admin<span class="hl kwa">&lt;/createUser&gt;</span>
       <span class="hl kwa">&lt;id&gt;</span><span class="hl num">10</span><span class="hl kwa">&lt;/id&gt;</span>
-      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.243</span>+<span class="hl num">02</span>:<span class="hl num">00</span>&lt;
-      /modificationTimestamp<span class="hl kwa">&gt;</span>
+      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.243</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
       <span class="hl kwa">&lt;modificationUser&gt;</span>admin<span class="hl kwa">&lt;/modificationUser&gt;</span>
       <span class="hl kwa">&lt;name&gt;</span>Los Angeles<span class="hl kwa">&lt;/name&gt;</span>
    <span class="hl kwa">&lt;/city&gt;</span>
@@ -2229,8 +2261,7 @@ would have been &ldquo;<code>Linz</code>&rdquo;).</p>
       <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.181</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
       <span class="hl kwa">&lt;createUser&gt;</span>admin<span class="hl kwa">&lt;/createUser&gt;</span>
       <span class="hl kwa">&lt;id&gt;</span><span class="hl num">7</span><span class="hl kwa">&lt;/id&gt;</span>
-      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.181</span>+<span class="hl num">02</span>:<span class="hl num">00</span>&lt;
-      /modificationTimestamp<span class="hl kwa">&gt;</span>
+      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.181</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
       <span class="hl kwa">&lt;modificationUser&gt;</span>admin<span class="hl kwa">&lt;/modificationUser&gt;</span>
       <span class="hl kwa">&lt;name&gt;</span>Roma<span class="hl kwa">&lt;/name&gt;</span>
    <span class="hl kwa">&lt;/city&gt;</span>
@@ -2239,8 +2270,7 @@ would have been &ldquo;<code>Linz</code>&rdquo;).</p>
       <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.202</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
       <span class="hl kwa">&lt;createUser&gt;</span>admin<span class="hl kwa">&lt;/createUser&gt;</span>
       <span class="hl kwa">&lt;id&gt;</span><span class="hl num">8</span><span class="hl kwa">&lt;/id&gt;</span>
-      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.202</span>+<span class="hl num">02</span>:<span class="hl num">00</span>&lt;
-      /modificationTimestamp<span class="hl kwa">&gt;</span>
+      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">19</span>T14:<span class="hl num">49</span>:<span class="hl num">16.202</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
       <span class="hl kwa">&lt;modificationUser&gt;</span>admin<span class="hl kwa">&lt;/modificationUser&gt;</span>
       <span class="hl kwa">&lt;name&gt;</span>Venezia<span class="hl kwa">&lt;/name&gt;</span>
    <span class="hl kwa">&lt;/city&gt;</span>
@@ -2259,20 +2289,20 @@ used to initialize the empty tables with sample data.</p>
 
 <p>In order to store a new city, use this URL</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/store" class="remote">http://localhost:8080/cookbookServlets/REST/city/store</a></span><a name="idx0029"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/store" class="remote">http://localhost:8080/cookbookServlets/REST/city/store</a></span><a name="idx0033"></a></p>
 
 <p>and POST an XML representation of a city, just as you may have got it 
 from one of the reading operations, but in input data leave the 
-<code>id</code> empty. A new object will be created and its complete 
-representetion, including server-generated fields, will be returned. 
-Thus POSTing</p>
+<code>id</code> and the server-generated fields empty. A new object will 
+be created and its complete representation, including server-generated 
+fields, will be returned. Thus POSTing</p>
 
 <div class="code">
 <pre>
 <span class="hl kwa">&lt;city&gt;</span>
    <span class="hl kwa">&lt;countryId&gt;</span><span class="hl num">2</span><span class="hl kwa">&lt;/countryId&gt;</span>
    <span class="hl kwa">&lt;id&gt;&lt;/id&gt;</span>
-   <span class="hl kwa">&lt;name&gt;</span>Bilogna<span class="hl kwa">&lt;/name&gt;</span>
+   <span class="hl kwa">&lt;name&gt;</span>Udinw<span class="hl kwa">&lt;/name&gt;</span>
 <span class="hl kwa">&lt;/city&gt;</span>
 </pre>
 </div>
@@ -2287,7 +2317,7 @@ Thus POSTing</p>
    <span class="hl kwa">&lt;id&gt;</span><span class="hl num">13</span><span class="hl kwa">&lt;/id&gt;</span>
    <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">20</span>T11:<span class="hl num">50</span>:<span class="hl num">06.805</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
    <span class="hl kwa">&lt;modificationUser&gt;</span>anonymous<span class="hl kwa">&lt;/modificationUser&gt;</span>
-   <span class="hl kwa">&lt;name&gt;</span>Bilogna<span class="hl kwa">&lt;/name&gt;</span>
+   <span class="hl kwa">&lt;name&gt;</span>Udinw<span class="hl kwa">&lt;/name&gt;</span>
 <span class="hl kwa">&lt;/city&gt;</span>
 </pre>
 </div>
@@ -2298,7 +2328,10 @@ sequence.</p>
 
 <h2 id="hd005007">5.7&nbsp;Update a record, specify user</h2>
 
-<p>You may have noticed, that &ldquo;<code>Bilogna</code>&rdquo; has been 
+
+<h3 id="hd005007001">5.7.1&nbsp;User names</h3>
+
+<p>You may have noticed, that &ldquo;<code>Udinw</code>&rdquo; has been 
 inserted with not only an <code>id</code> set on server side, it had 
 also a create/modify timestamps set as well as creat/modify users. Both 
 user names were set to &ldquo;<code>anonymous</code>&rdquo;.</p>
@@ -2313,8 +2346,37 @@ involved for requests invoked via REST. What happens is, that the
 generic code passes the request data to the site adapter, and the site 
 adapter tries to take the user name (which is expected to have been 
 authenticated and authorized for access by a portal in front of the 
-service) from an HTTP header called 
-&ldquo;<code>x-authenticate-userid</code>&rdquo;.</p>
+service) from an HTTP header. The header&rsquo;s name defaults to 
+&ldquo;<code>x-authenticate-userid</code>&rdquo;. This happens to be 
+what we use internally, but the name can be overridden by setting a 
+custom string resource in the application server.</p>
+
+<p>The 
+<span class="remote"><a href="http://programming.manessinger.com/tutorials/an-eclipse-glassfish-java-ee-6-tutorial/" class="remote">Eclipse 
+/ GlassFish / Java EE 6 Tutorial</a></span><a name="idx0034"></a> has a 
+section titled &ldquo;<em>Configuration via JNDI Custom 
+Resources</em>&rdquo;, that shows how to set custom resources in 
+GlassFish.</p>
+
+<p>The JNDI name of the resource has to be 
+&ldquo;<code>custom/stringvalues/http/header/username</code>&rdquo;, its 
+type must be <code>java.lang.String</code> and it has to have a property 
+with name &ldquo;<code>value</code>&rdquo; and the value of the property 
+should be whatever your HTTP header is called, for instance 
+&ldquo;<code>x-portal-username</code>&rdquo;.</p>
+
+<p>While we are at it, &ldquo;<code>anonymous</code>&rdquo;, as the name of 
+the username when no header is given, is also only a default. There is a 
+similar override via a JNDI string resource. The name of the resource 
+must be 
+&ldquo;<code>custom/stringvalues/username/anonymous</code>&rdquo;. Again 
+you need to define a property with name 
+&ldquo;<code>value</code>&rdquo;, having the string as value, that you 
+want to use, for instance &ldquo;<code>unknown</code>&rdquo;.</p>
+
+<div class="important"><p class="important">
+After creating or changing those string resources, you have to restart the application!
+</p></div>
 
 <p>In soapUI you can set HTTP headers from the request window. At the 
 bottom of the left pane you find text 
@@ -2332,11 +2394,23 @@ like. I enter &ldquo;<code>andreas</code>&rdquo;. Don&rsquo;t forget to
 <code>&lt;TAB&gt;</code> out of the value field before you send the 
 request, otherwise the header will not be sent!</p>
 
+<p>Running through our portal would always automatically set the header, 
+but at home or on the train I have no portal, thus I can either manually 
+set the header for every request, or I can fake it by setting the string 
+resource 
+&ldquo;<code>custom/stringvalues/username/anonymous</code>&rdquo; in the 
+server to &ldquo;<code>andreas</code>&rdquo;. This is what I have made 
+while creating this tutorial.</p>
+
+
+
+<h3 id="hd005007002">5.7.2&nbsp;Updating the record</h3>
+
 <p>Then  I  issue  another store  request,  but  this  time with  the  ID 
 specified as  the one that  was returned for 
-&ldquo;<code>Bilogna</code>&rdquo;.  Let&rsquo;s say that instead of 
-&ldquo;<code>Bilogna</code>&rdquo; (which does not exist in Italy) we 
-really meant  &ldquo;<code>Bologna</code>&rdquo;.  It&rsquo;s  the  
+&ldquo;<code>Udinw</code>&rdquo;.  Let&rsquo;s say that instead of 
+&ldquo;<code>Udinw</code>&rdquo; (which does not exist in Italy) we 
+really meant  &ldquo;<code>Udine</code>&rdquo;.  It&rsquo;s  the  
 beautiful  capital  of  the  Italian province <em>Emilia Romagna</em>. 
 We are happy with the ID, but we want the name to be updated.</p>
 
@@ -2347,14 +2421,14 @@ We are happy with the ID, but we want the name to be updated.</p>
 <span class="hl kwa">&lt;city&gt;</span>
    <span class="hl kwa">&lt;countryId&gt;</span><span class="hl num">2</span><span class="hl kwa">&lt;/countryId&gt;</span>
    <span class="hl kwa">&lt;id&gt;</span><span class="hl num">13</span><span class="hl kwa">&lt;/id&gt;</span>
-   <span class="hl kwa">&lt;name&gt;</span>Bologna<span class="hl kwa">&lt;/name&gt;</span>
+   <span class="hl kwa">&lt;name&gt;</span>Udine<span class="hl kwa">&lt;/name&gt;</span>
 <span class="hl kwa">&lt;/city&gt;</span>
 </pre>
 </div>
-<p>into to rename &ldquo;<em>Bilogna</em>&rdquo; to 
-&ldquo;<em>Bologna</em>&rdquo;. This is the result, note the 
-modification user and timestamp, while create user and timestamp have 
-stayed unchanged.</p>
+<p>into to rename &ldquo;<em>Udinw</em>&rdquo; to 
+&ldquo;<em>Udine</em>&rdquo;. This is the result, note the modification 
+user and timestamp, while create user and timestamp have stayed 
+unchanged.</p>
 
 <div class="code">
 <pre>
@@ -2365,7 +2439,7 @@ stayed unchanged.</p>
    <span class="hl kwa">&lt;id&gt;</span><span class="hl num">13</span><span class="hl kwa">&lt;/id&gt;</span>
    <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">20</span>T12:<span class="hl num">45</span>:<span class="hl num">06.038</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
    <span class="hl kwa">&lt;modificationUser&gt;</span>andreas<span class="hl kwa">&lt;/modificationUser&gt;</span>
-   <span class="hl kwa">&lt;name&gt;</span>Bologna<span class="hl kwa">&lt;/name&gt;</span>
+   <span class="hl kwa">&lt;name&gt;</span>Udine<span class="hl kwa">&lt;/name&gt;</span>
 <span class="hl kwa">&lt;/city&gt;</span>
 </pre>
 </div>
@@ -2375,9 +2449,9 @@ stayed unchanged.</p>
 
 <p>Make a GET request to the following URL</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/delete?id=13" class="remote">http://localhost:8080/cookbookServlets/REST/city/delete?id=13</a></span><a name="idx0030"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/delete?id=13" class="remote">http://localhost:8080/cookbookServlets/REST/city/delete?id=13</a></span><a name="idx0035"></a></p>
 
-<p>to delete &ldquo;<code>Bologna</code>&rdquo;, assuming its ID was indeed 
+<p>to delete &ldquo;<code>Udine</code>&rdquo;, assuming its ID was indeed 
 &ldquo;<code>13</code>&rdquo;. The result will be</p>
 
 <div class="code">
@@ -2430,7 +2504,7 @@ than one object per call. The special stateless session bean
 </div>
 <p>into</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/modifyMulti/storeMulti" class="remote">http://localhost:8080/cookbookServlets/REST/modifyMulti/storeMulti</a></span><a name="idx0031"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/modifyMulti/storeMulti" class="remote">http://localhost:8080/cookbookServlets/REST/modifyMulti/storeMulti</a></span><a name="idx0036"></a></p>
 
 <p>to store a new country named &ldquo;<code>France</code>&rdquo; and three 
 of its cities, &ldquo;<code>Marseille</code>&rdquo;, 
@@ -2444,8 +2518,7 @@ The result will be something like</p>
       <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">20</span>T12:<span class="hl num">59</span>:<span class="hl num">33.185</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
       <span class="hl kwa">&lt;createUser&gt;</span>andreas<span class="hl kwa">&lt;/createUser&gt;</span>
       <span class="hl kwa">&lt;id&gt;</span><span class="hl num">4</span><span class="hl kwa">&lt;/id&gt;</span>
-      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">20</span>T12:<span class="hl num">59</span>:<span class="hl num">33.185</span>+<span class="hl num">02</span>:<span class="hl num">00</span>&lt;
-      /modificationTimestamp<span class="hl kwa">&gt;</span>
+      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">20</span>T12:<span class="hl num">59</span>:<span class="hl num">33.185</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
       <span class="hl kwa">&lt;modificationUser&gt;</span>andreas<span class="hl kwa">&lt;/modificationUser&gt;</span>
       <span class="hl kwa">&lt;name&gt;</span>France<span class="hl kwa">&lt;/name&gt;</span>
    <span class="hl kwa">&lt;/country&gt;</span>
@@ -2454,8 +2527,7 @@ The result will be something like</p>
       <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">20</span>T12:<span class="hl num">59</span>:<span class="hl num">33.185</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
       <span class="hl kwa">&lt;createUser&gt;</span>andreas<span class="hl kwa">&lt;/createUser&gt;</span>
       <span class="hl kwa">&lt;id&gt;</span><span class="hl num">14</span><span class="hl kwa">&lt;/id&gt;</span>
-      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">20</span>T12:<span class="hl num">59</span>:<span class="hl num">33.185</span>+<span class="hl num">02</span>:<span class="hl num">00</span>&lt;
-      /modificationTimestamp<span class="hl kwa">&gt;</span>
+      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">20</span>T12:<span class="hl num">59</span>:<span class="hl num">33.185</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
       <span class="hl kwa">&lt;modificationUser&gt;</span>andreas<span class="hl kwa">&lt;/modificationUser&gt;</span>
       <span class="hl kwa">&lt;name&gt;</span>Marseille<span class="hl kwa">&lt;/name&gt;</span>
    <span class="hl kwa">&lt;/city&gt;</span>
@@ -2464,8 +2536,7 @@ The result will be something like</p>
       <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">20</span>T12:<span class="hl num">59</span>:<span class="hl num">33.185</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
       <span class="hl kwa">&lt;createUser&gt;</span>andreas<span class="hl kwa">&lt;/createUser&gt;</span>
       <span class="hl kwa">&lt;id&gt;</span><span class="hl num">15</span><span class="hl kwa">&lt;/id&gt;</span>
-      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">20</span>T12:<span class="hl num">59</span>:<span class="hl num">33.185</span>+<span class="hl num">02</span>:<span class="hl num">00</span>&lt;
-      /modificationTimestamp<span class="hl kwa">&gt;</span>
+      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">20</span>T12:<span class="hl num">59</span>:<span class="hl num">33.185</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
       <span class="hl kwa">&lt;modificationUser&gt;</span>andreas<span class="hl kwa">&lt;/modificationUser&gt;</span>
       <span class="hl kwa">&lt;name&gt;</span>Paris<span class="hl kwa">&lt;/name&gt;</span>
    <span class="hl kwa">&lt;/city&gt;</span>
@@ -2474,8 +2545,7 @@ The result will be something like</p>
       <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">20</span>T12:<span class="hl num">59</span>:<span class="hl num">33.185</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
       <span class="hl kwa">&lt;createUser&gt;</span>andreas<span class="hl kwa">&lt;/createUser&gt;</span>
       <span class="hl kwa">&lt;id&gt;</span><span class="hl num">16</span><span class="hl kwa">&lt;/id&gt;</span>
-      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">20</span>T12:<span class="hl num">59</span>:<span class="hl num">33.185</span>+<span class="hl num">02</span>:<span class="hl num">00</span>&lt;
-      /modificationTimestamp<span class="hl kwa">&gt;</span>
+      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">20</span>T12:<span class="hl num">59</span>:<span class="hl num">33.185</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
       <span class="hl kwa">&lt;modificationUser&gt;</span>andreas<span class="hl kwa">&lt;/modificationUser&gt;</span>
       <span class="hl kwa">&lt;name&gt;</span>Rennes<span class="hl kwa">&lt;/name&gt;</span>
    <span class="hl kwa">&lt;/city&gt;</span>
@@ -2534,7 +2604,7 @@ list of objects.</p>
 </div>
 <p>into</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/modifyMulti/deleteMulti" class="remote">http://localhost:8080/cookbookServlets/REST/modifyMulti/deleteMulti</a></span><a name="idx0032"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/modifyMulti/deleteMulti" class="remote">http://localhost:8080/cookbookServlets/REST/modifyMulti/deleteMulti</a></span><a name="idx0037"></a></p>
 
 <p>Again the result will be</p>
 
@@ -2582,7 +2652,7 @@ single call. Let&rsquo;s re-create France by inserting it again:</p>
 </div>
 <p>into</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/modifyMulti/storeMulti" class="remote">http://localhost:8080/cookbookServlets/REST/modifyMulti/storeMulti</a></span><a name="idx0033"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/modifyMulti/storeMulti" class="remote">http://localhost:8080/cookbookServlets/REST/modifyMulti/storeMulti</a></span><a name="idx0038"></a></p>
 
 <p>and expect a result like</p>
 
@@ -2593,8 +2663,7 @@ single call. Let&rsquo;s re-create France by inserting it again:</p>
       <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">20</span>T13:<span class="hl num">44</span>:<span class="hl num">14.648</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
       <span class="hl kwa">&lt;createUser&gt;</span>andreas<span class="hl kwa">&lt;/createUser&gt;</span>
       <span class="hl kwa">&lt;id&gt;</span><span class="hl num">5</span><span class="hl kwa">&lt;/id&gt;</span>
-      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">20</span>T13:<span class="hl num">44</span>:<span class="hl num">14.648</span>+<span class="hl num">02</span>:<span class="hl num">00</span>&lt;
-      /modificationTimestamp<span class="hl kwa">&gt;</span>
+      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">20</span>T13:<span class="hl num">44</span>:<span class="hl num">14.648</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
       <span class="hl kwa">&lt;modificationUser&gt;</span>andreas<span class="hl kwa">&lt;/modificationUser&gt;</span>
       <span class="hl kwa">&lt;name&gt;</span>France<span class="hl kwa">&lt;/name&gt;</span>
    <span class="hl kwa">&lt;/country&gt;</span>
@@ -2603,8 +2672,7 @@ single call. Let&rsquo;s re-create France by inserting it again:</p>
       <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">20</span>T13:<span class="hl num">44</span>:<span class="hl num">14.648</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
       <span class="hl kwa">&lt;createUser&gt;</span>andreas<span class="hl kwa">&lt;/createUser&gt;</span>
       <span class="hl kwa">&lt;id&gt;</span><span class="hl num">17</span><span class="hl kwa">&lt;/id&gt;</span>
-      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">20</span>T13:<span class="hl num">44</span>:<span class="hl num">14.648</span>+<span class="hl num">02</span>:<span class="hl num">00</span>&lt;
-      /modificationTimestamp<span class="hl kwa">&gt;</span>
+      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">20</span>T13:<span class="hl num">44</span>:<span class="hl num">14.648</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
       <span class="hl kwa">&lt;modificationUser&gt;</span>andreas<span class="hl kwa">&lt;/modificationUser&gt;</span>
       <span class="hl kwa">&lt;name&gt;</span>Marseille<span class="hl kwa">&lt;/name&gt;</span>
    <span class="hl kwa">&lt;/city&gt;</span>
@@ -2613,8 +2681,7 @@ single call. Let&rsquo;s re-create France by inserting it again:</p>
       <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">20</span>T13:<span class="hl num">44</span>:<span class="hl num">14.648</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
       <span class="hl kwa">&lt;createUser&gt;</span>andreas<span class="hl kwa">&lt;/createUser&gt;</span>
       <span class="hl kwa">&lt;id&gt;</span><span class="hl num">18</span><span class="hl kwa">&lt;/id&gt;</span>
-      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">20</span>T13:<span class="hl num">44</span>:<span class="hl num">14.648</span>+<span class="hl num">02</span>:<span class="hl num">00</span>&lt;
-      /modificationTimestamp<span class="hl kwa">&gt;</span>
+      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">20</span>T13:<span class="hl num">44</span>:<span class="hl num">14.648</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
       <span class="hl kwa">&lt;modificationUser&gt;</span>andreas<span class="hl kwa">&lt;/modificationUser&gt;</span>
       <span class="hl kwa">&lt;name&gt;</span>Paris<span class="hl kwa">&lt;/name&gt;</span>
    <span class="hl kwa">&lt;/city&gt;</span>
@@ -2623,8 +2690,7 @@ single call. Let&rsquo;s re-create France by inserting it again:</p>
       <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">20</span>T13:<span class="hl num">44</span>:<span class="hl num">14.648</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
       <span class="hl kwa">&lt;createUser&gt;</span>andreas<span class="hl kwa">&lt;/createUser&gt;</span>
       <span class="hl kwa">&lt;id&gt;</span><span class="hl num">19</span><span class="hl kwa">&lt;/id&gt;</span>
-      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">20</span>T13:<span class="hl num">44</span>:<span class="hl num">14.648</span>+<span class="hl num">02</span>:<span class="hl num">00</span>&lt;
-      /modificationTimestamp<span class="hl kwa">&gt;</span>
+      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">20</span>T13:<span class="hl num">44</span>:<span class="hl num">14.648</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
       <span class="hl kwa">&lt;modificationUser&gt;</span>andreas<span class="hl kwa">&lt;/modificationUser&gt;</span>
       <span class="hl kwa">&lt;name&gt;</span>Rennes<span class="hl kwa">&lt;/name&gt;</span>
    <span class="hl kwa">&lt;/city&gt;</span>
@@ -2678,7 +2744,7 @@ database sequence and sequence values don&rsquo;t repeat.</p>
 </div>
 <p>into</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/modifyMulti/storeDeleteMulti" class="remote">http://localhost:8080/cookbookServlets/REST/modifyMulti/storeDeleteMulti</a></span><a name="idx0034"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/modifyMulti/storeDeleteMulti" class="remote">http://localhost:8080/cookbookServlets/REST/modifyMulti/storeDeleteMulti</a></span><a name="idx0039"></a></p>
 
 <p>Make sure the first list, the list of objects to delete, contains the 
 exact IDs that you got in the last step, i.e. the country ID of 
@@ -2692,8 +2758,7 @@ will be something like</p>
       <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">20</span>T13:<span class="hl num">49</span>:<span class="hl num">03.912</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
       <span class="hl kwa">&lt;createUser&gt;</span>andreas<span class="hl kwa">&lt;/createUser&gt;</span>
       <span class="hl kwa">&lt;id&gt;</span><span class="hl num">6</span><span class="hl kwa">&lt;/id&gt;</span>
-      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">20</span>T13:<span class="hl num">49</span>:<span class="hl num">03.912</span>+<span class="hl num">02</span>:<span class="hl num">00</span>&lt;
-      /modificationTimestamp<span class="hl kwa">&gt;</span>
+      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">20</span>T13:<span class="hl num">49</span>:<span class="hl num">03.912</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
       <span class="hl kwa">&lt;modificationUser&gt;</span>andreas<span class="hl kwa">&lt;/modificationUser&gt;</span>
       <span class="hl kwa">&lt;name&gt;</span>Egypt<span class="hl kwa">&lt;/name&gt;</span>
    <span class="hl kwa">&lt;/country&gt;</span>
@@ -2702,8 +2767,7 @@ will be something like</p>
       <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">20</span>T13:<span class="hl num">49</span>:<span class="hl num">03.912</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
       <span class="hl kwa">&lt;createUser&gt;</span>andreas<span class="hl kwa">&lt;/createUser&gt;</span>
       <span class="hl kwa">&lt;id&gt;</span><span class="hl num">20</span><span class="hl kwa">&lt;/id&gt;</span>
-      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">20</span>T13:<span class="hl num">49</span>:<span class="hl num">03.912</span>+<span class="hl num">02</span>:<span class="hl num">00</span>&lt;
-      /modificationTimestamp<span class="hl kwa">&gt;</span>
+      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">20</span>T13:<span class="hl num">49</span>:<span class="hl num">03.912</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
       <span class="hl kwa">&lt;modificationUser&gt;</span>andreas<span class="hl kwa">&lt;/modificationUser&gt;</span>
       <span class="hl kwa">&lt;name&gt;</span>Assuan<span class="hl kwa">&lt;/name&gt;</span>
    <span class="hl kwa">&lt;/city&gt;</span>
@@ -2712,8 +2776,7 @@ will be something like</p>
       <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">20</span>T13:<span class="hl num">49</span>:<span class="hl num">03.912</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
       <span class="hl kwa">&lt;createUser&gt;</span>andreas<span class="hl kwa">&lt;/createUser&gt;</span>
       <span class="hl kwa">&lt;id&gt;</span><span class="hl num">21</span><span class="hl kwa">&lt;/id&gt;</span>
-      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">20</span>T13:<span class="hl num">49</span>:<span class="hl num">03.912</span>+<span class="hl num">02</span>:<span class="hl num">00</span>&lt;
-      /modificationTimestamp<span class="hl kwa">&gt;</span>
+      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">20</span>T13:<span class="hl num">49</span>:<span class="hl num">03.912</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
       <span class="hl kwa">&lt;modificationUser&gt;</span>andreas<span class="hl kwa">&lt;/modificationUser&gt;</span>
       <span class="hl kwa">&lt;name&gt;</span>Cairo<span class="hl kwa">&lt;/name&gt;</span>
    <span class="hl kwa">&lt;/city&gt;</span>
@@ -2740,15 +2803,24 @@ a very complicated no-op.</p>
 <p>Remember the strange entity <code>Visit</code>? It represents a 
 many-to-many association between ZIP areas and cities, meaning that a 
 number of visitors from a certain ZIP area have visited a certain city. 
-The number of visitors augments the join table and so do our usual 
-create/modification timestamps/users, only that this time the timestamps 
-are actually strings. Additionally the join table has no explicit ID, 
-thus we had to use an embedded ID.</p>
+The number of visitors and the language used by the guide augment the 
+join table and so do our usual create/modification timestamps/users, 
+only that this time the timestamps are actually strings. Additionally 
+the join table has no explicit ID, thus we had to use an embedded ID.</p>
 
 <p>Let&rsquo;s pretend that we just got statistical data. Five visitors 
-from the Austrian ZIP area Graz-Webling have visited Luxor in Egypt. 
-This is a case for <code>storeMulti()</code> and for using negative 
-proxy IDs.</p>
+from the Austrian ZIP area Graz-Webling have visited Luxor in Egypt. The 
+guide&rsquo;s language was British English.</p>
+
+<p>We don&rsquo;t have &ldquo;<code>Luxor</code>&rdquo; so far. This is a 
+case for <code>storeMulti()</code> and for using negative proxy IDs. The 
+database was initialized to have &ldquo;<code>en_US</code>&rdquo;, but 
+given Egypt&rsquo;s British heritage, it seems perfectly plausible that 
+our guide uses British English. We don&rsquo;t have that language 
+either, so we store it in the same operation. Languages have string IDs, 
+thus we don&rsquo;t need a proxy ID for the language. The only 
+requirement is, that it is in the list in a position before the DTO that 
+uses it.</p>
 
 <p>POST the following XML</p>
 
@@ -2760,19 +2832,24 @@ proxy IDs.</p>
       <span class="hl kwa">&lt;id&gt;</span>-<span class="hl num">1</span><span class="hl kwa">&lt;/id&gt;</span>
       <span class="hl kwa">&lt;name&gt;</span>Luxor<span class="hl kwa">&lt;/name&gt;</span>
    <span class="hl kwa">&lt;/city&gt;</span>
+   <span class="hl kwa">&lt;language&gt;</span>
+      <span class="hl kwa">&lt;id&gt;</span>en_UK<span class="hl kwa">&lt;/id&gt;</span>
+      <span class="hl kwa">&lt;languageName&gt;</span>English (UK)<span class="hl kwa">&lt;/languageName&gt;</span>
+   <span class="hl kwa">&lt;/language&gt;</span>
    <span class="hl kwa">&lt;visit&gt;</span>
       <span class="hl kwa">&lt;id&gt;</span>
          <span class="hl kwa">&lt;fromZipArea&gt;</span><span class="hl num">1</span><span class="hl kwa">&lt;/fromZipArea&gt;</span>
          <span class="hl kwa">&lt;toCity&gt;</span>-<span class="hl num">1</span><span class="hl kwa">&lt;/toCity&gt;</span>
       <span class="hl kwa">&lt;/id&gt;</span>
       <span class="hl kwa">&lt;numberOfVisitors&gt;</span><span class="hl num">5</span><span class="hl kwa">&lt;/numberOfVisitors&gt;</span>
+      <span class="hl kwa">&lt;languageUsedByGuideId&gt;</span>en_UK<span class="hl kwa">&lt;/languageUsedByGuideId&gt;</span>
    <span class="hl kwa">&lt;/visit&gt;</span>
 <span class="hl kwa">&lt;/dtoes&gt;</span>
 </pre>
 </div>
 <p>into</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/modifyMulti/storeMulti" class="remote">http://localhost:8080/cookbookServlets/REST/modifyMulti/storeMulti</a></span><a name="idx0035"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/modifyMulti/storeMulti" class="remote">http://localhost:8080/cookbookServlets/REST/modifyMulti/storeMulti</a></span><a name="idx0040"></a></p>
 
 <p>The result is</p>
 
@@ -2781,22 +2858,26 @@ proxy IDs.</p>
 <span class="hl kwa">&lt;dtoes&gt;</span>
    <span class="hl kwa">&lt;city&gt;</span>
       <span class="hl kwa">&lt;countryId&gt;</span><span class="hl num">6</span><span class="hl kwa">&lt;/countryId&gt;</span>
-      <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">20</span>T15:<span class="hl num">31</span>:<span class="hl num">33.887</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
+      <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">24</span>T15:<span class="hl num">06</span>:<span class="hl num">31.618</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
       <span class="hl kwa">&lt;createUser&gt;</span>andreas<span class="hl kwa">&lt;/createUser&gt;</span>
       <span class="hl kwa">&lt;id&gt;</span><span class="hl num">22</span><span class="hl kwa">&lt;/id&gt;</span>
-      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">20</span>T15:<span class="hl num">31</span>:<span class="hl num">33.887</span>+<span class="hl num">02</span>:<span class="hl num">00</span>&lt;
-      /modificationTimestamp<span class="hl kwa">&gt;</span>
+      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">24</span>T15:<span class="hl num">06</span>:<span class="hl num">31.618</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
       <span class="hl kwa">&lt;modificationUser&gt;</span>andreas<span class="hl kwa">&lt;/modificationUser&gt;</span>
       <span class="hl kwa">&lt;name&gt;</span>Luxor<span class="hl kwa">&lt;/name&gt;</span>
    <span class="hl kwa">&lt;/city&gt;</span>
+   <span class="hl kwa">&lt;language&gt;</span>
+      <span class="hl kwa">&lt;id&gt;</span>en_UK<span class="hl kwa">&lt;/id&gt;</span>
+      <span class="hl kwa">&lt;languageName&gt;</span>English (UK)<span class="hl kwa">&lt;/languageName&gt;</span>
+   <span class="hl kwa">&lt;/language&gt;</span>
    <span class="hl kwa">&lt;visit&gt;</span>
-      <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">20</span>-<span class="hl num">153133.887</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
+      <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">24</span>-<span class="hl num">150631.618</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
       <span class="hl kwa">&lt;createUser&gt;</span>andreas<span class="hl kwa">&lt;/createUser&gt;</span>
       <span class="hl kwa">&lt;id&gt;</span>
          <span class="hl kwa">&lt;fromZipArea&gt;</span><span class="hl num">1</span><span class="hl kwa">&lt;/fromZipArea&gt;</span>
          <span class="hl kwa">&lt;toCity&gt;</span><span class="hl num">22</span><span class="hl kwa">&lt;/toCity&gt;</span>
       <span class="hl kwa">&lt;/id&gt;</span>
-      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">20</span>-<span class="hl num">153133.887</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
+      <span class="hl kwa">&lt;languageUsedByGuideId&gt;</span>en_UK<span class="hl kwa">&lt;/languageUsedByGuideId&gt;</span>
+      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">24</span>-<span class="hl num">150631.618</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
       <span class="hl kwa">&lt;modificationUser&gt;</span>andreas<span class="hl kwa">&lt;/modificationUser&gt;</span>
       <span class="hl kwa">&lt;numberOfVisitors&gt;</span><span class="hl num">5</span><span class="hl kwa">&lt;/numberOfVisitors&gt;</span>
    <span class="hl kwa">&lt;/visit&gt;</span>
@@ -2850,7 +2931,7 @@ as for REST.</p>
 
 <p>For the purpose of generating code, Azzyzt JEE Tools make use of and 
 bundles a copy of 
-<span class="remote"><a href="http://www.stringtemplate.org/" class="remote">StringTemplate</a></span><a name="idx0036"></a>, 
+<span class="remote"><a href="http://www.stringtemplate.org/" class="remote">StringTemplate</a></span><a name="idx0041"></a>, 
 which is</p>
 
 <pre class="verbatim">
@@ -2886,7 +2967,7 @@ which is</p>
 </pre>
 
 <p>This documentation was created using 
-<span class="remote"><a href="http://deplate.sourceforge.net/" class="remote">Deplate</a></span><a name="idx0037"></a>.</p>
+<span class="remote"><a href="http://deplate.sourceforge.net/" class="remote">Deplate</a></span><a name="idx0042"></a>.</p>
 
 
 <!-- Start of StatCounter Code -->

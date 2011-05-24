@@ -50,18 +50,28 @@ CREATE TABLE zip
       REFERENCES country (id)
 );
 
+CREATE TABLE lang_table
+(
+  lang_code VARCHAR2(8) NOT NULL, 
+  lang_name VARCHAR2(100) NOT NULL, 
+  CONSTRAINT lang_table_pkey PRIMARY KEY (lang_code)
+);
+
 CREATE TABLE visit
 (
   from_zip_area NUMBER(19, 0) NOT NULL,
   to_city NUMBER(19, 0) NOT NULL,
+  number_of_visitors NUMBER(19, 0) NOT NULL,
+  lang_used VARCHAR2(8) NOT NULL, 
   create_timestamp VARCHAR2(21) DEFAULT '2011-05-19-081030.000',
   create_user VARCHAR2(255) DEFAULT 'anonymous',
   modification_timestamp VARCHAR2(21) DEFAULT '2011-05-19-081030.000',
   modification_user VARCHAR2(255) DEFAULT 'anonymous',
-  number_of_visitors NUMBER(19, 0) NOT NULL,
   CONSTRAINT visit_pkey PRIMARY KEY (from_zip_area, to_city),
   CONSTRAINT fk_visit_from_zip_area FOREIGN KEY (from_zip_area)
       REFERENCES zip (id),
   CONSTRAINT fk_visit_to_city FOREIGN KEY (to_city)
-      REFERENCES city (id)
+      REFERENCES city (id),
+  CONSTRAINT fk_visit_lang_used FOREIGN KEY (lang_used)
+      REFERENCES lang_table (lang_code)
 );

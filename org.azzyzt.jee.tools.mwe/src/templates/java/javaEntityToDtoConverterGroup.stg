@@ -115,7 +115,7 @@ throws EntityNotFoundException, EntityInstantiationException, InvalidIdException
     if (idTranslator != null) {
         idValue = (<entity.idField.fieldType.simpleName>)idTranslator.translate(idValue);
     }
-    <else>
+    <elseif(entity.proxyIdPossible)>
     <entity.idField.fieldType.simpleName> idProxyValue = null;
     if (idValue != null && idValue \< 0) {
         idProxyValue = idValue;
@@ -126,7 +126,7 @@ throws EntityNotFoundException, EntityInstantiationException, InvalidIdException
     <entity.simpleName> result = eao.findOrCreate(<entity.simpleName>.class, idValue);
     
     <if(entity.combinedId)>
-    <else>
+    <elseif(entity.proxyIdPossible)>
     if (idTranslator != null && idProxyValue != null) {
         idTranslator.addTranslation(idProxyValue, result.getId());
     }
@@ -198,9 +198,11 @@ fetchAssociatedEntities(field) ::= <<
 fetchSingleAssociatedEntity(field) ::= <<
 <field.fieldType.idField.fieldType.simpleName> <field.name>Value = in.get<field.ucName>Id();
 if (<field.name>Value != null) {
+    <if(field.ownerMdt.proxyIdPossible)>
     if (idTranslator != null) {
         <field.name>Value = (<field.fieldType.idField.fieldType.simpleName>)idTranslator.translate(<field.name>Value);
     }
+    <endif>
     <field.fieldType.SimpleName> entity = eao.findOrInvalidId(<field.fieldType.SimpleName>.class, <field.name>Value);
     result.set<field.ucName>(entity);
 }
@@ -223,9 +225,11 @@ List\<<field.fieldType.entityMemberType.idField.fieldType.simpleName>\> <field.n
 
 fetchEntitiesLoop(field, keytype, valuetype, idsName, entitiesName) ::= <<
 for (<keytype> id : <idsName>) {
+    <if(field.ownerMdt.proxyIdPossible)>
     if (idTranslator != null) {
         id = (<keytype>)idTranslator.translate(id);
     }
+    <endif>
     <valuetype> entity = eao.findOrInvalidId(<valuetype>.class, id);
     <if(field.fieldType.map)>
     <entitiesName>.put(id, entity)

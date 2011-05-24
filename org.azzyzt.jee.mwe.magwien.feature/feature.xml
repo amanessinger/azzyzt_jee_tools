@@ -2,7 +2,7 @@
 <feature
       id="org.azzyzt.jee.mwe.magwien.feature"
       label="Azzyzt JEE modeling with entities, magwien version"
-      version="1.1.0.qualifier"
+      version="1.1.1.qualifier"
       provider-name="azzyzt.org">
 
    <description url="http://www.azzyzt.org">
