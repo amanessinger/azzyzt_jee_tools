@@ -64,6 +64,7 @@ public class MetaStandardDefs {
 	public final MetaClass meta_Short;
 	public final MetaClass meta_Integer;
 	public final MetaClass meta_Long;
+	public final MetaClass meta_BigInteger;
 	public final MetaClass meta_Float;
 	public final MetaClass meta_Double;
 	
@@ -239,6 +240,7 @@ public class MetaStandardDefs {
 		meta_Character = MetaClass.forType(java.lang.Character.class);
 		meta_Short = MetaClass.forType(java.lang.Short.class);
 		meta_Integer = MetaClass.forType(java.lang.Integer.class);
+		meta_BigInteger = MetaClass.forType(java.math.BigInteger.class);
 		meta_Long = MetaClass.forType(java.lang.Long.class);
 		meta_Float = MetaClass.forType(java.lang.Float.class);
 		meta_Double = MetaClass.forType(java.lang.Double.class);

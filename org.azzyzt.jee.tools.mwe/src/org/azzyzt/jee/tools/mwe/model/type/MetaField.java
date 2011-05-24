@@ -215,6 +215,16 @@ public class MetaField implements Comparable<MetaField>, MetaAnnotatable {
 		return getFieldType().equals(MetaType.getStandardtypes().meta_String);
 	}
 
+	public boolean isNumericFieldCanBeNegative() {
+		return getFieldType().equals(MetaType.getStandardtypes().meta_short) 
+		|| getFieldType().equals(MetaType.getStandardtypes().meta_Short) 
+		|| getFieldType().equals(MetaType.getStandardtypes().meta_int) 
+		|| getFieldType().equals(MetaType.getStandardtypes().meta_Integer) 
+		|| getFieldType().equals(MetaType.getStandardtypes().meta_long) 
+		|| getFieldType().equals(MetaType.getStandardtypes().meta_Long) 
+		|| getFieldType().equals(MetaType.getStandardtypes().meta_BigInteger);
+	}
+
 	public String getGetterMetaAnnotationText() {
 		return getterMetaAnnotationText;
 	}
