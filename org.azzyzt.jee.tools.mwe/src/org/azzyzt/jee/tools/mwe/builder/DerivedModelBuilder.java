@@ -39,11 +39,13 @@ import org.azzyzt.jee.tools.mwe.model.type.MetaStandardDefs;
 
 public class DerivedModelBuilder {
 
-	protected final MetaModel masterModel;
-	protected final MetaModel targetModel;
-	protected final String targetPackageName;
-	protected final MetaStandardDefs std;
+	protected MetaModel masterModel;
+	protected MetaModel targetModel;
+	protected String targetPackageName;
+	protected MetaStandardDefs std;
 
+	public DerivedModelBuilder() { }
+	
 	public DerivedModelBuilder(MetaModel masterModel, String targetPackageName) {
 		super();
 		this.targetPackageName = targetPackageName;

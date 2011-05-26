@@ -27,10 +27,15 @@
 
 package org.azzyzt.jee.tools.mwe;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.azzyzt.jee.tools.mwe.builder.AzzyztantBeanBuilder;
+import org.azzyzt.jee.tools.mwe.builder.EntityEnumerator;
+import org.azzyzt.jee.tools.mwe.builder.TargetEnumerator;
+import org.azzyzt.jee.tools.mwe.exception.ToolError;
 import org.azzyzt.jee.tools.mwe.feature.CrudServiceBeansGeneratorFeature;
 import org.azzyzt.jee.tools.mwe.feature.CrudServiceRESTGeneratorFeature;
 import org.azzyzt.jee.tools.mwe.feature.DtoGeneratorFeature;
@@ -39,11 +44,13 @@ import org.azzyzt.jee.tools.mwe.feature.EntityModelBuilderFeature;
 import org.azzyzt.jee.tools.mwe.feature.Parameters;
 import org.azzyzt.jee.tools.mwe.feature.SingleTargetsGeneratorFeature;
 import org.azzyzt.jee.tools.mwe.feature.ModifyMultiGeneratorFeature;
+import org.azzyzt.jee.tools.mwe.identifiers.PackageTails;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
 import org.azzyzt.jee.tools.mwe.util.Log;
 import org.azzyzt.jee.tools.mwe.util.Log.Verbosity;
 import org.azzyzt.jee.tools.mwe.util.QueueLog;
 import org.azzyzt.jee.tools.mwe.util.StreamLog;
+import org.azzyzt.jee.tools.mwe.util.StringUtils;
 
 public class StandardProjectStructureGenerator {
 
@@ -77,21 +84,44 @@ public class StandardProjectStructureGenerator {
 		String rootPath = arguments.get(0);
         String projectBaseName = arguments.get(1);
         String projectPathPrefix = rootPath+projectBaseName;
+        String ejbUserSourceFolder = projectPathPrefix+"EJB/ejbModule";
         String ejbSourceFolder = projectPathPrefix+"EJB/generated";
         String ejbClientSourceFolder = projectPathPrefix+"EJBClient/generated";
         String restSourceFolder = projectPathPrefix+"Servlets/generated";
 
         Parameters parameters;
         int numberOfSourcesGenerated;
+
+        TargetEnumerator enumerator;
+        if (3 == arguments.size()) {
+            String persistenceUnitName = arguments.get(1);
+			enumerator = new EntityEnumerator(persistenceUnitName, logger);
+        } else {
+            enumerator = new EntityEnumerator(EntityEnumerator.PERSISTENCE_UNIT_WILDCARD, logger);
+        }
+        
+        MetaModel masterModel = MetaModel.createMasterModel(projectBaseName, logger);
+        
+        String userMetaDirName = determineUserMetaDirName(enumerator, logger);
+        String azzyztantSource = 
+        	ejbUserSourceFolder+
+        	"/"+
+        	StringUtils.packageToPath(userMetaDirName)+
+        	"/"+
+        	AzzyztantBeanBuilder.AZZYZTANT_BEAN_NAME+".java";
+        File azzyztantSourceFile = new File(azzyztantSource);
+        if (!azzyztantSourceFile.exists()) {
+        	logger.info(azzyztantSource+" not found, creating it");
+        } else {
+        	logger.info(azzyztantSource+" found");
+        }
         
         EntityModelBuilderFeature embf = new EntityModelBuilderFeature(logger);
         
 		parameters = embf.getParameters();
         parameters.byName(EntityModelBuilderFeature.PROJECT_BASE_NAME).setValue(projectBaseName);
-        if (3 == arguments.size()) {
-            parameters.byName(EntityModelBuilderFeature.PERSISTENCE_UNIT_NAME).setValue(arguments.get(1));
-        }
-        MetaModel masterModel = embf.build(parameters);
+        parameters.byName(EntityModelBuilderFeature.TARGET_ENUMERATOR).setValue(enumerator);
+		masterModel = embf.build(parameters);
 
         SingleTargetsGeneratorFeature singleTargetsGen = new SingleTargetsGeneratorFeature(masterModel);
         parameters = singleTargetsGen.getParameters();
@@ -132,6 +162,33 @@ public class StandardProjectStructureGenerator {
         parameters.byName(ModifyMultiGeneratorFeature.SOURCE_FOLDER_SERVLET_PROJECT).setValue(restSourceFolder);
         numberOfSourcesGenerated = smGen.generate(parameters);
         logger.info(numberOfSourcesGenerated+" store multi support files generated");
+	}
+
+	private static String determineUserMetaDirName(TargetEnumerator enumerator, Log logger) {
+		/*
+         * TODO Having the package name at hand would definitely help. Passing it into
+         * this generator would mean we have to store it in some project setting.
+         * Otherwise it is available only at project creation time. 
+         * 
+         * Here we rely on the project being azzyzted and the target enumerator having 
+         * a package name that contains a (not necessarily last) part "entity".  
+         */
+		String packagePrefix = null;
+        for (String s : enumerator.getTargetPackageNames()) {
+        	int indexOfEntity = s.indexOf(PackageTails.ENTITY, 0);
+        	if (indexOfEntity != -1) {
+        		packagePrefix = s.substring(0, indexOfEntity - 1);
+        		break;
+        	}
+        }
+        if (packagePrefix == null) {
+        	String msg = "Can't determine package prefix!";
+        	logger.error(msg);
+			throw new ToolError(msg);
+        }
+        packagePrefix = packagePrefix+"."+PackageTails.META;
+        
+        return packagePrefix;
 	}
 
 }

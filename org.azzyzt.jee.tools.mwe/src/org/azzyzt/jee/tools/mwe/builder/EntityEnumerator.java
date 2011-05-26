@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -43,6 +43,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
 import org.azzyzt.jee.tools.mwe.exception.ToolError;
+import org.azzyzt.jee.tools.mwe.util.Log;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -56,7 +57,7 @@ public class EntityEnumerator implements TargetEnumerator {
     private List<String> fullyQualifiedTargetNames = new ArrayList<String>();
     private Set<String> packageNames = new HashSet<String>();
 
-    public EntityEnumerator (String pUnitName) {
+    public EntityEnumerator (String pUnitName, Log logger) {
         this.persistenceUnitName = pUnitName;
         
         String resourceName = "META-INF/persistence.xml";
@@ -91,8 +92,11 @@ public class EntityEnumerator implements TargetEnumerator {
         			String pkg = fqtn.substring(0, fqtn.lastIndexOf("."));
         			packageNames.add(pkg);
         		}
+        		if (fullyQualifiedTargetNames.isEmpty()) {
+        			throw new ToolError("No entities found in persistence.xml");
+        		}
         	} catch (Exception e) {
-        		e.printStackTrace();
+        		logger.error(e.getMessage());
         		throw new ToolError(e);
         	}
         }

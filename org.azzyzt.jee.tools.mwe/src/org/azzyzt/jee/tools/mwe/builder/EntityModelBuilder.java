@@ -38,16 +38,10 @@ public class EntityModelBuilder {
 	private TargetEnumerator enumerator;
 	private String projectBaseName;
 
-    public EntityModelBuilder(String projectBaseName, Log logger) {
+    public EntityModelBuilder(String projectBaseName, TargetEnumerator enumerator, Log logger) {
     	this.projectBaseName = projectBaseName;
     	this.logger = logger;
-        enumerator = new EntityEnumerator(EntityEnumerator.PERSISTENCE_UNIT_WILDCARD);
-    }
-
-    public EntityModelBuilder(String projectBaseName, String persistenceUnitName, Log logger) {
-    	this.projectBaseName = projectBaseName;
-    	this.logger = logger;
-        enumerator = new EntityEnumerator(persistenceUnitName);
+    	this.enumerator = enumerator;
     }
 
     public MetaModel build() {

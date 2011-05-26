@@ -61,8 +61,6 @@ public class InvocationRegistryModelBuilder extends DerivedModelBuilder implemen
 			target.addMetaAnnotationInstance(mai);
 			mai = new MetaAnnotationInstance(std.javaxEjbStateless, target);
 			target.addMetaAnnotationInstance(mai);
-			mai = new MetaAnnotationInstance(std.javaxInterceptorInterceptor, target);
-			target.addMetaAnnotationInstance(mai);
 			
 			target.addReferencedForeignType(std.javaxEjbEJB);
 			target.addReferencedForeignType(std.javaxAnnotationResource);
