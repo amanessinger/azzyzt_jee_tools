@@ -39,11 +39,13 @@ import org.azzyzt.jee.tools.mwe.model.type.MetaStandardDefs;
 
 public class DerivedModelBuilder {
 
-	protected final MetaModel masterModel;
-	protected final MetaModel targetModel;
-	protected final String targetPackageName;
-	protected final MetaStandardDefs std;
+	protected MetaModel masterModel;
+	protected MetaModel targetModel;
+	protected String targetPackageName;
+	protected MetaStandardDefs std;
 
+	public DerivedModelBuilder() { }
+	
 	public DerivedModelBuilder(MetaModel masterModel, String targetPackageName) {
 		super();
 		this.targetPackageName = targetPackageName;
@@ -99,6 +101,17 @@ public class DerivedModelBuilder {
 		target.addField(sessionContextField);
 		target.addReferencedForeignType(sessionContext);
 		target.setProperty(ModelProperties.EJB_SESSION_CONTEXT, sessionContext);
+	}
+
+	protected void addAzzyztantField(MetaClass target) {
+		MetaDeclaredType azzyztant = (MetaDeclaredType)masterModel.getProperty(ModelProperties.AZZYZTANT);
+		MetaField azzyztantField = new MetaField(target, FieldNames.AZZYZTANT);
+		azzyztantField.setFieldType(azzyztant);
+		azzyztantField.setModifiers(std.mod_private);
+		azzyztantField.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxEjbEJB, target));
+		target.addField(azzyztantField);
+		target.addReferencedForeignType(azzyztant);
+		target.setProperty(ModelProperties.AZZYZTANT, azzyztant);
 	}
 
 	protected void addInvocationRegistryField(MetaClass target) {

@@ -42,6 +42,8 @@ import org.azzyzt.jee.tools.mwe.util.Log;
 
 public class MetaModel {
 	
+	public static final String MASTER_MODEL_NAME = "MASTER_MODEL_NAME";
+
 	private static MetaModel currentModel = null;
 	
 	private Set<String> packagesToFollow = new HashSet<String>();
@@ -55,6 +57,9 @@ public class MetaModel {
 	private String name;
 	private String projectBaseName;
 
+	public static MetaModel createMasterModel(String projectBaseName, Log logger) {
+		return new MetaModel(MASTER_MODEL_NAME, projectBaseName, logger);
+	}
 
     /**
      * Caution: the constructor automatically sets a model "current". Thus the pattern is,

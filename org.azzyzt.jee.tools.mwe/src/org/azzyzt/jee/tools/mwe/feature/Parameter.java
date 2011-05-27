@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -30,6 +30,7 @@ package org.azzyzt.jee.tools.mwe.feature;
 import java.io.File;
 import java.util.List;
 
+import org.azzyzt.jee.tools.mwe.builder.TargetEnumerator;
 import org.azzyzt.jee.tools.mwe.exception.ToolError;
 
 public class Parameter {
@@ -84,6 +85,11 @@ public class Parameter {
 		case ListString:
 			if (!(value instanceof List<?>)) {
 				throw new ToolError("Value for parameter "+name+" must be a list of strings but is a "+value.getClass().getName());
+			}
+			break;
+		case TargetEnumerator:
+			if (!(value instanceof TargetEnumerator)) {
+				throw new ToolError("Value for parameter "+name+" must be a TargetEnumerator but is a "+value.getClass().getName());
 			}
 			break;
 		default:

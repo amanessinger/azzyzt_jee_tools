@@ -2,6 +2,7 @@ package org.azzyzt.jee.tools.mwe.identifiers;
 
 public class FieldNames {
 
+	public static final String AZZYZTANT = ModelProperties.AZZYZTANT;
 	public static final String CONVERTER = "converter";
 	public static final String EAO = ModelProperties.EAO;
 	public static final String EJB_SESSION_CONTEXT = ModelProperties.EJB_SESSION_CONTEXT;

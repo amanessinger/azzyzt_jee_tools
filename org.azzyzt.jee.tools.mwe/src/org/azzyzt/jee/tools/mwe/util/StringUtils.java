@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -28,9 +28,7 @@
 package org.azzyzt.jee.tools.mwe.util;
 
 /**
- * Code blatantly copied from Skopje -{@link http://www.blackperl.com/java/skopje/}
- * @author advman
- *
+ * uc/lcFirst blatantly copied from Skopje -{@link http://www.blackperl.com/java/skopje/}
  */
 public class StringUtils {
 	
@@ -52,4 +50,7 @@ public class StringUtils {
     	}
     }
 
+    public static String packageToPath(String packageName) {
+    	return packageName.replace('.', '/');
+    }
 }

@@ -33,12 +33,14 @@ import javax.interceptor.InvocationContext;
 import javax.transaction.TransactionSynchronizationRegistry;
 
 import org.azzyzt.jee.runtime.util.SiteAdapterInterface;
+import org.azzyzt.jee.runtime.util.StringConverterInterface;
 
 public abstract class InvocationRegistryBase {
 
 	public abstract SiteAdapterInterface getSiteAdapter();
 	public abstract TransactionSynchronizationRegistry getTsr();
-
+	public abstract AzzyztantInterface getAzzyztant();
+	
 	public void registerRESTInvocation(InvocationContext ctx) {
 		TransactionSynchronizationRegistry tsr = getTsr();
 
@@ -47,6 +49,13 @@ public abstract class InvocationRegistryBase {
 		SiteAdapterInterface siteAdapter = getSiteAdapter();
 		if (siteAdapter != null) {
 			InvocationMetaInfo metaInfo = siteAdapter.fromRESTContext(ctx);
+			StringConverterInterface usernameConverter = getAzzyztant().getUsernameConverter();
+			if (usernameConverter != null) {
+				// call converter if supplied
+				metaInfo.setAuthenticatedUserName(
+						usernameConverter.convert(metaInfo.getAuthenticatedUserName())
+				);
+			}
 			tsr.putResource("invocationMetaInfo", metaInfo);
 		}
 	}
