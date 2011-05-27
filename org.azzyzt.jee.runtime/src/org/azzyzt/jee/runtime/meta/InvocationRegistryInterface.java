@@ -14,4 +14,6 @@ public interface InvocationRegistryInterface {
 	
 	public abstract Calendar getInvocationTimestamp();
 
+	public abstract AzzyztantInterface getAzzyztant();
+
 }

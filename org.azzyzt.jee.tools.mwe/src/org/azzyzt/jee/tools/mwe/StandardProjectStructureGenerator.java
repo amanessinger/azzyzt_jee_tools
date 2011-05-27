@@ -45,8 +45,10 @@ import org.azzyzt.jee.tools.mwe.feature.Parameters;
 import org.azzyzt.jee.tools.mwe.feature.SingleTargetsGeneratorFeature;
 import org.azzyzt.jee.tools.mwe.feature.ModifyMultiGeneratorFeature;
 import org.azzyzt.jee.tools.mwe.generator.JavaGenerator;
+import org.azzyzt.jee.tools.mwe.identifiers.ModelProperties;
 import org.azzyzt.jee.tools.mwe.identifiers.PackageTails;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
+import org.azzyzt.jee.tools.mwe.model.type.MetaClass;
 import org.azzyzt.jee.tools.mwe.util.Log;
 import org.azzyzt.jee.tools.mwe.util.Log.Verbosity;
 import org.azzyzt.jee.tools.mwe.util.QueueLog;
@@ -104,25 +106,9 @@ public class StandardProjectStructureGenerator {
         MetaModel masterModel = MetaModel.createMasterModel(projectBaseName, logger);
         
         String packagePrefix = determinePackagePrefix(enumerator, logger);
-        String azzyztantSource = 
-        	ejbUserSourceFolder+
-        	"/"+
-        	StringUtils.packageToPath(packagePrefix)+
-        	"/"+
-        	AzzyztantBeanBuilder.AZZYZTANT_BEAN_NAME+".java";
-        File azzyztantSourceFile = new File(azzyztantSource);
-        if (!azzyztantSourceFile.exists()) {
-        	logger.info(azzyztantSource+" not found, creating it");
-        	MetaModel targetModel = new AzzyztantBeanBuilder(masterModel, packagePrefix).build();
-        	JavaGenerator targetGen = new JavaGenerator(targetModel, ejbUserSourceFolder, "javaAzzyztantGroup");
-        	targetGen.setGenerateFields(false);
-        	targetGen.setGenerateDefaultConstructor(true);
-        	targetGen.setGenerateGettersSetters(false);
-    		numberOfSourcesGenerated = targetGen.generate();
-    		logger.info(numberOfSourcesGenerated+" Azzyztant file(s) generated");
-        } else {
-        	logger.info(azzyztantSource+" found");
-        }
+        
+        ensureAndAnalyzeAzzyztant(masterModel, ejbUserSourceFolder,
+				packagePrefix, logger);
         
         EntityModelBuilderFeature embf = new EntityModelBuilderFeature(logger);
         
@@ -172,6 +158,47 @@ public class StandardProjectStructureGenerator {
         logger.info(numberOfSourcesGenerated+" store multi support file(s) generated");
 	}
 
+	private static void ensureAndAnalyzeAzzyztant(
+			MetaModel masterModel,
+			String ejbUserSourceFolder, 
+			String packagePrefix, 
+			Log logger
+	) {
+        String metaPackagePrefix = packagePrefix+"."+PackageTails.META;
+
+        int numberOfSourcesGenerated;
+		String azzyztantSource = 
+        	ejbUserSourceFolder+
+        	"/"+
+        	StringUtils.packageToPath(metaPackagePrefix)+
+        	"/"+
+        	AzzyztantBeanBuilder.AZZYZTANT_BEAN_NAME+".java";
+        File azzyztantSourceFile = new File(azzyztantSource);
+        if (!azzyztantSourceFile.exists()) {
+        	logger.info(azzyztantSource+" not found, creating it");
+        	MetaModel targetModel = new AzzyztantBeanBuilder(masterModel, packagePrefix).build();
+        	JavaGenerator targetGen = new JavaGenerator(targetModel, ejbUserSourceFolder, "javaAzzyztantGroup");
+        	targetGen.setGenerateFields(false);
+        	targetGen.setGenerateDefaultConstructor(true);
+        	targetGen.setGenerateGettersSetters(false);
+    		numberOfSourcesGenerated = targetGen.generate();
+    		logger.info(numberOfSourcesGenerated+" Azzyztant file(s) generated");
+        } else {
+        	logger.info(azzyztantSource+" found");
+        }
+        
+        String fqAzzyztantName = metaPackagePrefix+"."+AzzyztantBeanBuilder.AZZYZTANT_BEAN_NAME;
+        try {
+			Class<?> azzyztantClazz = Class.forName(fqAzzyztantName);
+			MetaClass metaAzzyztant = MetaClass.forType(azzyztantClazz);
+			masterModel.follow(metaPackagePrefix);
+			masterModel.addMetaDeclaredTypeIfTarget(metaAzzyztant);
+			masterModel.setProperty(ModelProperties.AZZYZTANT, metaAzzyztant);
+		} catch (ClassNotFoundException e) {
+			throw new ToolError("Can't load "+fqAzzyztantName);
+		}
+	}
+
 	private static String determinePackagePrefix(TargetEnumerator enumerator, Log logger) {
 		/*
          * TODO Having the package name at hand would definitely help. Passing it into
@@ -194,7 +221,6 @@ public class StandardProjectStructureGenerator {
         	logger.error(msg);
 			throw new ToolError(msg);
         }
-        packagePrefix = packagePrefix+"."+PackageTails.META;
         
         return packagePrefix;
 	}

@@ -2,6 +2,7 @@ package org.azzyzt.jee.tools.mwe.identifiers;
 
 public class ModelProperties {
 
+	public static final String AZZYZTANT = "azzyztant";
 	public static final String CONV_FQ_NAME = "convFQName";
 	public static final String CONVERTER = "conv";
 	public static final String DELETE_WRAPPER_DTO = "deleteWrapperDto";

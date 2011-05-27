@@ -103,6 +103,17 @@ public class DerivedModelBuilder {
 		target.setProperty(ModelProperties.EJB_SESSION_CONTEXT, sessionContext);
 	}
 
+	protected void addAzzyztantField(MetaClass target) {
+		MetaDeclaredType azzyztant = (MetaDeclaredType)masterModel.getProperty(ModelProperties.AZZYZTANT);
+		MetaField azzyztantField = new MetaField(target, FieldNames.AZZYZTANT);
+		azzyztantField.setFieldType(azzyztant);
+		azzyztantField.setModifiers(std.mod_private);
+		azzyztantField.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxEjbEJB, target));
+		target.addField(azzyztantField);
+		target.addReferencedForeignType(azzyztant);
+		target.setProperty(ModelProperties.AZZYZTANT, azzyztant);
+	}
+
 	protected void addInvocationRegistryField(MetaClass target) {
 		MetaDeclaredType invocationRegistry = (MetaDeclaredType)masterModel.getProperty(ModelProperties.INVOCATION_REGISTRY);
 		MetaField invocationRegistryField = new MetaField(target, FieldNames.INVOCATION_REGISTRY);

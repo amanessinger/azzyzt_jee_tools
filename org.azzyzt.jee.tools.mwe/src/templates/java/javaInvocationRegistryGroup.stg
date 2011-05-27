@@ -2,7 +2,10 @@ group javaInvocationRegistryGroup : javaGroup;
 
 @javaClass.extra_methods() ::= <<
 @EJB SiteAdapterInterface siteAdapter;
+
 @Resource TransactionSynchronizationRegistry tsr;
+
+@EJB Azzyztant azzyztant;
 
 public InvocationRegistry() { }
 
@@ -14,6 +17,11 @@ public SiteAdapterInterface getSiteAdapter() {
 @Override
 public TransactionSynchronizationRegistry getTsr() {
 	return tsr;
+}
+
+@Override
+public AzzyztantInterface getAzzyztant() {
+    return azzyztant;
 }
 
 >>
