@@ -39,14 +39,11 @@ public class AzzyztantBeanBuilder extends DerivedModelBuilder implements Generic
 
 	public static final String AZZYZTANT_BEAN_NAME = "Azzyztant";
 	
-	private String targetPackageName;
-	private String simpleName;
 	private Log logger;
 	private String projectBaseName;
 
 	public AzzyztantBeanBuilder(String targetPackageName, Log logger) {
 		this.targetPackageName = targetPackageName;
-		this.simpleName = AZZYZTANT_BEAN_NAME;
 		this.logger = logger;
 	}
 	
@@ -60,6 +57,7 @@ public class AzzyztantBeanBuilder extends DerivedModelBuilder implements Generic
 			targetModel = new MetaModel(this.getClass().getSimpleName(), projectBaseName, logger);
 			std = new MetaStandardDefs();
 		}
+		String simpleName = AZZYZTANT_BEAN_NAME;
 		MetaClass target = MetaClass.forName(targetPackageName, simpleName);
 		target.setModifiers(std.mod_public);
 		target.addInterface(std.azzyztantInterface);

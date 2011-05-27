@@ -1,5 +1,9 @@
 group javaAzzyztantGroup : javaGroup;
 
+@javaClass.extra_class_comment_addendum() ::= <<
+<comment_snippet_generated_if_not_exists()>
+>>
+
 @javaClass.extra_fields() ::= <<
 /*
  * At runtime, azzyzted projects ask the site adapter for the name of the 

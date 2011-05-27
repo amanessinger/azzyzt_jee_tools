@@ -44,6 +44,7 @@ import org.azzyzt.jee.tools.mwe.feature.EntityModelBuilderFeature;
 import org.azzyzt.jee.tools.mwe.feature.Parameters;
 import org.azzyzt.jee.tools.mwe.feature.SingleTargetsGeneratorFeature;
 import org.azzyzt.jee.tools.mwe.feature.ModifyMultiGeneratorFeature;
+import org.azzyzt.jee.tools.mwe.generator.JavaGenerator;
 import org.azzyzt.jee.tools.mwe.identifiers.PackageTails;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
 import org.azzyzt.jee.tools.mwe.util.Log;
@@ -102,16 +103,23 @@ public class StandardProjectStructureGenerator {
         
         MetaModel masterModel = MetaModel.createMasterModel(projectBaseName, logger);
         
-        String userMetaDirName = determineUserMetaDirName(enumerator, logger);
+        String packagePrefix = determinePackagePrefix(enumerator, logger);
         String azzyztantSource = 
         	ejbUserSourceFolder+
         	"/"+
-        	StringUtils.packageToPath(userMetaDirName)+
+        	StringUtils.packageToPath(packagePrefix)+
         	"/"+
         	AzzyztantBeanBuilder.AZZYZTANT_BEAN_NAME+".java";
         File azzyztantSourceFile = new File(azzyztantSource);
         if (!azzyztantSourceFile.exists()) {
         	logger.info(azzyztantSource+" not found, creating it");
+        	MetaModel targetModel = new AzzyztantBeanBuilder(masterModel, packagePrefix).build();
+        	JavaGenerator targetGen = new JavaGenerator(targetModel, ejbUserSourceFolder, "javaAzzyztantGroup");
+        	targetGen.setGenerateFields(false);
+        	targetGen.setGenerateDefaultConstructor(true);
+        	targetGen.setGenerateGettersSetters(false);
+    		numberOfSourcesGenerated = targetGen.generate();
+    		logger.info(numberOfSourcesGenerated+" Azzyztant file(s) generated");
         } else {
         	logger.info(azzyztantSource+" found");
         }
@@ -128,19 +136,19 @@ public class StandardProjectStructureGenerator {
         parameters.byName(SingleTargetsGeneratorFeature.SOURCE_FOLDER_CLIENT_PROJECT).setValue(ejbClientSourceFolder);
         parameters.byName(SingleTargetsGeneratorFeature.SOURCE_FOLDER_EJB_PROJECT).setValue(ejbSourceFolder);
 		numberOfSourcesGenerated = singleTargetsGen.generate(parameters);
-		logger.info(numberOfSourcesGenerated+" eao files generated");
+		logger.info(numberOfSourcesGenerated+" eao file(s) generated");
 		
 		DtoGeneratorFeature dtoGen = new DtoGeneratorFeature(masterModel);
         parameters = dtoGen.getParameters();
         parameters.byName(DtoGeneratorFeature.SOURCE_FOLDER).setValue(ejbClientSourceFolder);
         numberOfSourcesGenerated = dtoGen.generate(parameters);
-        logger.info(numberOfSourcesGenerated+" dto files generated");
+        logger.info(numberOfSourcesGenerated+" dto file(s) generated");
         
         EntityDtoConverterGeneratorFeature convGen = new EntityDtoConverterGeneratorFeature(masterModel);
         parameters = convGen.getParameters();
         parameters.byName(EntityDtoConverterGeneratorFeature.SOURCE_FOLDER).setValue(ejbSourceFolder);
         numberOfSourcesGenerated = convGen.generate(parameters);
-		logger.info(numberOfSourcesGenerated+" converter files generated");
+		logger.info(numberOfSourcesGenerated+" converter file(s) generated");
 		
 		CrudServiceBeansGeneratorFeature svcGen = new CrudServiceBeansGeneratorFeature(masterModel);
 		parameters = svcGen.getParameters();
@@ -153,7 +161,7 @@ public class StandardProjectStructureGenerator {
 		parameters = restGen.getParameters();
         parameters.byName(CrudServiceRESTGeneratorFeature.SOURCE_FOLDER).setValue(restSourceFolder);
         numberOfSourcesGenerated = restGen.generate(parameters);
-        logger.info(numberOfSourcesGenerated+" REST wrapper files generated");
+        logger.info(numberOfSourcesGenerated+" REST wrapper file(s) generated");
         
         ModifyMultiGeneratorFeature smGen = new ModifyMultiGeneratorFeature(masterModel);
         parameters = smGen.getParameters();
@@ -161,10 +169,10 @@ public class StandardProjectStructureGenerator {
         parameters.byName(ModifyMultiGeneratorFeature.SOURCE_FOLDER_EJB_PROJECT).setValue(ejbSourceFolder);
         parameters.byName(ModifyMultiGeneratorFeature.SOURCE_FOLDER_SERVLET_PROJECT).setValue(restSourceFolder);
         numberOfSourcesGenerated = smGen.generate(parameters);
-        logger.info(numberOfSourcesGenerated+" store multi support files generated");
+        logger.info(numberOfSourcesGenerated+" store multi support file(s) generated");
 	}
 
-	private static String determineUserMetaDirName(TargetEnumerator enumerator, Log logger) {
+	private static String determinePackagePrefix(TargetEnumerator enumerator, Log logger) {
 		/*
          * TODO Having the package name at hand would definitely help. Passing it into
          * this generator would mean we have to store it in some project setting.

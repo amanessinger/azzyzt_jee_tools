@@ -6,7 +6,7 @@ package <mdt.packageName>;
 <mdt:importDeclarations()>
 
 /**
- * Generated class <mdt.fqName>
+ * Generated class <mdt.fqName><@extra_class_comment_addendum()>
  */
 <mdt:annotations()><@extra_class_annotations()><mdt.extraClassAnnotationsText><mdt.modifiers> class <mdt.simpleName><extendsClasses(mdt)><implementsInterfaces(mdt)> {
 
@@ -38,6 +38,14 @@ package <mdt.packageName>;
     <@extra_methods()>
 }
 >>
+
+comment_snippet_generated_if_not_exists() ::= <<
+
+ * 
+ * This class is only generated if it does not exist. It is intended to be 
+ * modified. 
+>>
+
 
 importDeclarations(mdt) ::= <<
 <mdt.referencedForeignTypes:import()><@extraImports()>
