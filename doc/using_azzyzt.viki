@@ -1901,6 +1901,98 @@ The result is
 ---
 
 
+* Customization of the generated code
+
+** Introducing your Azzyztant
+
+#Code id=AzzyztantAsGenerated syntax=Java <<---
+package com.manessinger.cookbook.meta;
+
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import org.azzyzt.jee.runtime.meta.AzzyztantInterface;
+import org.azzyzt.jee.runtime.util.StringConverterInterface;
+
+
+/**
+ * Generated class com.manessinger.cookbook.meta.Azzyztant
+ * 
+ * This class is only generated if it does not exist. It is intended to be 
+ * modified. 
+ */
+@LocalBean
+@Stateless
+public class Azzyztant implements AzzyztantInterface {
+
+    /*
+     * At runtime, azzyzted projects ask the site adapter for the name of the 
+     * user invoking a service. The site adapter is expected to return a name
+     * as supplied by a portal in front of the application server, or use any
+     * other site-specific means to find out who the user is. The problem is
+     * that sometimes user names have special formats (like a Windows domain
+     * in front of the actual user name), and some applications may need 
+     * another format (e.g. without domain name). Here's your chance to step
+     * in between site adapter and runtime library:
+     *
+     * 'usernameConverter' can be set to an instance of any class that implements
+     * StringConverterInterface.
+     *
+     * ATTENTION: keep this stateless, fast and thread-safe!!! 
+     * 
+     * This is actually a shared instance that, if not null, is called once 
+     * upon any invocation. The runtime won't try to synchronize its call to 
+     * 'convert()'. Neither should you.
+     */
+    private final StringConverterInterface usernameConverter = null;
+
+    public Azzyztant() { super(); }
+
+
+    @Override
+    public StringConverterInterface getUsernameConverter() {
+        return usernameConverter;
+    }
+
+}
+---
+
+
+** Transforming user names
+
+#Code id=UsernameConverter syntax=Java <<---
+package com.manessinger.cookbook.util;
+
+import org.azzyzt.jee.runtime.util.StringConverterInterface;
+
+/**
+ * Converter for usernames originating from clients in a Windows domain.
+ * It returns the username part without domain.
+ *
+ */
+public class UsernameConverter implements StringConverterInterface {
+
+    @Override
+    public String convert(String in) {
+        int backslashIndex = in.indexOf('\\');
+        if (backslashIndex != -1 && in.length() > backslashIndex + 1) {
+            return in.substring(backslashIndex + 1);
+        }
+        return in;
+    }
+
+}
+---
+
+#Code id=UsernameConverterAzzyztBefore syntax=Java <<---
+private final StringConverterInterface usernameConverter = null;
+---
+
+#Code id=UsernameConverterAzzyztAfter syntax=Java <<---
+private final StringConverterInterface usernameConverter = new UsernameConverter();
+---
+
+
+
 * Miscellanea
 
 ** Variants of the query specification
@@ -1912,7 +2004,6 @@ clients. When the services are accessed via SOAP or CORBA, the
 parameter. Alternatively a second method "''listByXML()''" is
 generated, and those methods again take XML in form of a string
 parameter. The XML format is the same as for REST.
-
 
 * Licenses
 

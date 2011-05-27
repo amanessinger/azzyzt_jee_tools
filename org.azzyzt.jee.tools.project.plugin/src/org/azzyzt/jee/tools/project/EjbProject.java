@@ -59,7 +59,15 @@ public class EjbProject extends JavaProject {
 		installServerSpecificFacets();
 		moveJreToEndOfClassPath();
 		fixFacets(context.getFacets().javaFacet, context.getFacets().ejbFacet);
-		createSubpackages(EJB_SRC_FOLDER_NAME, "entity", "service");
+		createSubpackages(EJB_SRC_FOLDER_NAME, "entity", "meta", "service");
+		
+		buildJavaClass(
+				EJB_SRC_FOLDER_NAME, 
+				context.getProjectBaseName(),
+				context.getPackageName()+".meta", 
+				"org.azzyzt.jee.tools.mwe.builder.AzzyztantBeanBuilder", 
+				"Creating Azzyztant", extraUrls
+		);
 		
 		buildJavaClass(
 				EJB_SRC_FOLDER_NAME, 

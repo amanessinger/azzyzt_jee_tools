@@ -178,6 +178,8 @@ public class MetaStandardDefs {
 	public final MetaInterface validAssociationPathsInterface;
 	public final MetaClass exceptionToSuccessMapper;
 	public final MetaClass idTranslator;
+	public final MetaInterface stringConverterInterface;
+	public final MetaInterface azzyztantInterface;
 	
 
 	public MetaStandardDefs() {
@@ -356,5 +358,7 @@ public class MetaStandardDefs {
 		validAssociationPathsInterface = MetaInterface.forType(org.azzyzt.jee.runtime.meta.ValidAssociactionPathsInterface.class);
 		exceptionToSuccessMapper = MetaClass.forType(org.azzyzt.jee.runtime.service.ExceptionToSuccessMapper.class);
 		idTranslator = MetaClass.forType(org.azzyzt.jee.runtime.eao.IdTranslator.class);
+		stringConverterInterface = MetaInterface.forType(org.azzyzt.jee.runtime.util.StringConverterInterface.class);
+		azzyztantInterface = MetaInterface.forType(org.azzyzt.jee.runtime.meta.AzzyztantInterface.class);
 	}
 }

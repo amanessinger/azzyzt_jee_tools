@@ -39,8 +39,8 @@ public class CrudServiceFullBeansModelBuilder extends DerivedModelBuilder implem
 
 	public static final String CLASS_SUFFIX = "FullBean";
 	
-	public CrudServiceFullBeansModelBuilder(MetaModel entityModel, String targetPackageName) {
-		super(entityModel, targetPackageName);
+	public CrudServiceFullBeansModelBuilder(MetaModel masterModel, String targetPackageName) {
+		super(masterModel, targetPackageName);
 	}
 
 	@Override

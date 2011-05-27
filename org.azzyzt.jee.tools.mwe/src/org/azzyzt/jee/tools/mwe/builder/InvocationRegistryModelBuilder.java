@@ -43,6 +43,8 @@ public class InvocationRegistryModelBuilder extends DerivedModelBuilder implemen
 	@Override
 	public MetaModel build() {
 		
+		MetaClass azzyztant = (MetaClass)masterModel.getProperty(ModelProperties.AZZYZTANT);
+		
 		for (MetaEntity me : masterModel.getTargetEntities()) {
 
 			// create MetaClass
@@ -61,13 +63,13 @@ public class InvocationRegistryModelBuilder extends DerivedModelBuilder implemen
 			target.addMetaAnnotationInstance(mai);
 			mai = new MetaAnnotationInstance(std.javaxEjbStateless, target);
 			target.addMetaAnnotationInstance(mai);
-			mai = new MetaAnnotationInstance(std.javaxInterceptorInterceptor, target);
-			target.addMetaAnnotationInstance(mai);
 			
 			target.addReferencedForeignType(std.javaxEjbEJB);
 			target.addReferencedForeignType(std.javaxAnnotationResource);
 			target.addReferencedForeignType(std.javaxTransactionTransactionSynchronizationRegistry);
 			target.addReferencedForeignType(std.siteAdapterInterface);
+			target.addReferencedForeignType(std.azzyztantInterface);
+			target.addReferencedForeignType(azzyztant);
 			
 			// TODO this implies order. We have to make sure that we call modifying builders in the right order. Dependencies?
 			masterModel.setProperty(ModelProperties.INVOCATION_REGISTRY, target);
