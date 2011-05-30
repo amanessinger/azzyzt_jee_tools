@@ -34,34 +34,29 @@ import org.azzyzt.jee.tools.mwe.util.Log;
 
 public class EntityModelBuilderFeature extends ModelBuilderFeature {
 	
-	public static final String PROJECT_BASE_NAME = "Project Base Name";
 	public static final String TARGET_ENUMERATOR = "Target Enumerator";
 
-	private Log logger;
+	private MetaModel masterModel;
 
-	public EntityModelBuilderFeature(Log logger) {
-		this.logger = logger;
+	public EntityModelBuilderFeature(MetaModel masterModel, Log logger) {
+		this.masterModel = masterModel;
 	}
 
 	@Override
 	public Parameters getParameters() {
 		Parameters parameters = new Parameters();
-		parameters.add(new Parameter(PROJECT_BASE_NAME, ParameterType.String, Parameter.IS_MANDATORY));
 		parameters.add(new Parameter(TARGET_ENUMERATOR, ParameterType.TargetEnumerator, Parameter.IS_MANDATORY));
 		return parameters;
 	}
 	
 	@Override
-	public MetaModel build(Parameters parameters) {
-		String projectBaseName;
+	public void build(Parameters parameters) {
 		TargetEnumerator targetEnumerator;
 		
-		projectBaseName = (String)parameters.byName(PROJECT_BASE_NAME).getValue();
 		targetEnumerator = (TargetEnumerator)parameters.byName(TARGET_ENUMERATOR).getValue();
 
-        EntityModelBuilder emb = new EntityModelBuilder(projectBaseName, targetEnumerator, logger);
-		MetaModel entityModel = emb.build();
-		return entityModel;
+        EntityModelBuilder emb = new EntityModelBuilder(masterModel, targetEnumerator);
+		emb.build();
 	}
 
 }

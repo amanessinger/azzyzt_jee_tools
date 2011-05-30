@@ -1,7 +1,7 @@
 #VAR: fmt=~html(site|slides): css=highlight.css,layout-deplate.css cssInclude=true
 #VAR: tableStyle=formal
 
-#VAR: version=1.1.1
+#VAR: version=1.2.0
 
 * Azzyzt JEE Tools
 #OPT: plain!
@@ -20,6 +20,9 @@ work through the tutorial in [[using_azzyzt.html]] in the source
 distribution's ''doc'' directory.
 
 For a change log see [[changelog.html]].
+
+The complete sources are on GitHub under
+[[https://github.com/amanessinger/azzyzt_jee_tools]].
 
 
 ** Current status
@@ -84,13 +87,11 @@ The plugins compile on Indigo M4, but currently no plugin for
 \GlassFish is available for Indigo, thus the configuration has not been
 tested. 
 
-Using JBOSS AS 6.0 as a runtime, generated code mostly compiles,
+Using JBOSS AS 6.0 as a runtime, generated code should compile.
 ''@Remote'' annotations on generated service bean interfaces have to
-be removed though, because JBOSS AS 6.0 only supports the JEE 6 web
-profile. No further testing with JBOSS AS 6.0 has been done
-yet. Eventually, things like whether ''@Remote'' annotations are
-generated or not, should become configurable, and there are other good
-uses for configurability as well.
+be suppressed using ''AzzyztGeneratorCutback.NoRemoteInterfaces'',
+because JBOSS AS 6.0 only supports the JEE 6 web profile. No further
+testing with JBOSS AS 6.0 has been done yet.
 
 The project generator (#1) already runs with Apache Geronimo v3.0-M1,
 but due to lacking support for REST, generated applications do not

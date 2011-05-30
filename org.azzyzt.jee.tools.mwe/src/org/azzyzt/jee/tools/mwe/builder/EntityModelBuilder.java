@@ -30,22 +30,19 @@ package org.azzyzt.jee.tools.mwe.builder;
 import java.util.List;
 
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
-import org.azzyzt.jee.tools.mwe.util.Log;
 
 public class EntityModelBuilder {
 
-	private Log logger;
 	private TargetEnumerator enumerator;
-	private String projectBaseName;
+	private MetaModel entityModel;
 
-    public EntityModelBuilder(String projectBaseName, TargetEnumerator enumerator, Log logger) {
-    	this.projectBaseName = projectBaseName;
-    	this.logger = logger;
+    public EntityModelBuilder(MetaModel model, TargetEnumerator enumerator) {
     	this.enumerator = enumerator;
+    	this.entityModel = model;
     }
 
     public MetaModel build() {
-        MetaModel entityModel = new MetaModel(this.getClass().getSimpleName(), projectBaseName, logger);
+        // MetaModel entityModel = new MetaModel(this.getClass().getSimpleName(), projectBaseName, logger);
         entityModel.excludeMethodsFromModel();
         entityModel.excludeStaticFieldsFromModel();
         for (String targetPackage : enumerator.getTargetPackageNames()) {

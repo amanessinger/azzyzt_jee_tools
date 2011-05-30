@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.azzyzt.jee.runtime.meta.AzzyztGeneratorCutback;
 import org.azzyzt.jee.tools.mwe.builder.AzzyztantBeanBuilder;
 import org.azzyzt.jee.tools.mwe.builder.EntityEnumerator;
 import org.azzyzt.jee.tools.mwe.builder.TargetEnumerator;
@@ -41,14 +42,18 @@ import org.azzyzt.jee.tools.mwe.feature.CrudServiceRESTGeneratorFeature;
 import org.azzyzt.jee.tools.mwe.feature.DtoGeneratorFeature;
 import org.azzyzt.jee.tools.mwe.feature.EntityDtoConverterGeneratorFeature;
 import org.azzyzt.jee.tools.mwe.feature.EntityModelBuilderFeature;
+import org.azzyzt.jee.tools.mwe.feature.ModifyMultiGeneratorFeature;
 import org.azzyzt.jee.tools.mwe.feature.Parameters;
 import org.azzyzt.jee.tools.mwe.feature.SingleTargetsGeneratorFeature;
-import org.azzyzt.jee.tools.mwe.feature.ModifyMultiGeneratorFeature;
+import org.azzyzt.jee.tools.mwe.generator.GeneratorOptions;
 import org.azzyzt.jee.tools.mwe.generator.JavaGenerator;
 import org.azzyzt.jee.tools.mwe.identifiers.ModelProperties;
 import org.azzyzt.jee.tools.mwe.identifiers.PackageTails;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
+import org.azzyzt.jee.tools.mwe.model.annotation.MetaAnnotationInstance;
 import org.azzyzt.jee.tools.mwe.model.type.MetaClass;
+import org.azzyzt.jee.tools.mwe.model.type.MetaStandardDefs;
+import org.azzyzt.jee.tools.mwe.model.type.MetaType;
 import org.azzyzt.jee.tools.mwe.util.Log;
 import org.azzyzt.jee.tools.mwe.util.Log.Verbosity;
 import org.azzyzt.jee.tools.mwe.util.QueueLog;
@@ -107,15 +112,15 @@ public class StandardProjectStructureGenerator {
         
         String packagePrefix = determinePackagePrefix(enumerator, logger);
         
-        ensureAndAnalyzeAzzyztant(masterModel, ejbUserSourceFolder,
-				packagePrefix, logger);
+		MetaClass azzyztant = ensureAzzyztant(masterModel, ejbUserSourceFolder, packagePrefix, logger);
+        GeneratorOptions go = analyzeAzzyztant(azzyztant);
+        masterModel.setGeneratorOptions(go);
         
-        EntityModelBuilderFeature embf = new EntityModelBuilderFeature(logger);
+        EntityModelBuilderFeature embf = new EntityModelBuilderFeature(masterModel, logger);
         
 		parameters = embf.getParameters();
-        parameters.byName(EntityModelBuilderFeature.PROJECT_BASE_NAME).setValue(projectBaseName);
         parameters.byName(EntityModelBuilderFeature.TARGET_ENUMERATOR).setValue(enumerator);
-		masterModel = embf.build(parameters);
+		embf.build(parameters);
 
         SingleTargetsGeneratorFeature singleTargetsGen = new SingleTargetsGeneratorFeature(masterModel);
         parameters = singleTargetsGen.getParameters();
@@ -158,7 +163,23 @@ public class StandardProjectStructureGenerator {
         logger.info(numberOfSourcesGenerated+" store multi support file(s) generated");
 	}
 
-	private static void ensureAndAnalyzeAzzyztant(
+	private static GeneratorOptions analyzeAzzyztant(MetaClass azzyztant) {
+		GeneratorOptions result = new GeneratorOptions();
+		MetaStandardDefs std = MetaType.getStandardtypes();
+		List<MetaAnnotationInstance> mais = azzyztant.getMetaAnnotationInstances();
+		for (MetaAnnotationInstance mai : mais) {
+			if (mai.getMetaAnnotation().equals(std.azzyztGeneratorOptions)) {
+				AzzyztGeneratorCutback[] cutbacks = 
+					(AzzyztGeneratorCutback[])mai.getRawValue("cutbacks");
+				for (AzzyztGeneratorCutback c : cutbacks) {
+					result.addCutback(c);
+				}
+			}
+		}
+		return result;
+	}
+
+	private static MetaClass ensureAzzyztant(
 			MetaModel masterModel,
 			String ejbUserSourceFolder, 
 			String packagePrefix, 
@@ -194,6 +215,7 @@ public class StandardProjectStructureGenerator {
 			masterModel.follow(metaPackagePrefix);
 			masterModel.addMetaDeclaredTypeIfTarget(metaAzzyztant);
 			masterModel.setProperty(ModelProperties.AZZYZTANT, metaAzzyztant);
+			return metaAzzyztant;
 		} catch (ClassNotFoundException e) {
 			throw new ToolError("Can't load "+fqAzzyztantName);
 		}

@@ -1,7 +1,7 @@
 #VAR: fmt=~html(site|slides): css=highlight.css,layout-deplate.css cssInclude=true
 #VAR: tableStyle=formal
 
-#VAR: version=1.1.1
+#VAR: version=1.2.0
 
 * Azzyzt JEE Tools
 #OPT: plain!
@@ -43,6 +43,12 @@ Once the feature is installed, make sure to have a Java EE 6 server
 instance configured. The server does not need to be running, but it
 must be configured, in order to make the runtime available.
 
+If you want to dig deeper, make your own changes, want to supply
+patches, etc, the complete sources are available on \GitHub under
+
+    [[https://github.com/amanessinger/azzyzt_jee_tools]]
+
+
 * The cookbook example
 
 If you remember my
@@ -52,8 +58,10 @@ expanded to show off some new features. All subsequent examples will
 reference the same database and the same entities.
 
 In the following I frequently reference a subdirectory ''doc'' of the
-Azzyzt source distribution. For your convenience, a compressed archive
-of this directory (including the sample sources) is available under
+[[https://github.com/amanessinger/azzyzt_jee_tools][Azzyzt source
+distribution]]. For your convenience and if you don't want to fork the
+source distribution, a compressed archive of this directory (including
+the sample sources) is available under
 
     [[http://azzyzt.manessinger.com/doc.zip]]
 

@@ -35,6 +35,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.azzyzt.jee.tools.mwe.exception.ToolError;
+import org.azzyzt.jee.tools.mwe.generator.GeneratorOptions;
 import org.azzyzt.jee.tools.mwe.model.type.MetaDeclaredType;
 import org.azzyzt.jee.tools.mwe.model.type.MetaEntity;
 import org.azzyzt.jee.tools.mwe.model.type.MetaType;
@@ -56,6 +57,7 @@ public class MetaModel {
 	private Log logger;
 	private String name;
 	private String projectBaseName;
+	private GeneratorOptions generatorOptions;
 
 	public static MetaModel createMasterModel(String projectBaseName, Log logger) {
 		return new MetaModel(MASTER_MODEL_NAME, projectBaseName, logger);
@@ -188,6 +190,14 @@ public class MetaModel {
 
 	public String getProjectBaseName() {
 		return projectBaseName;
+	}
+
+	public void setGeneratorOptions(GeneratorOptions generatorOptions) {
+		this.generatorOptions = generatorOptions;
+	}
+
+	public GeneratorOptions getGeneratorOptions() {
+		return generatorOptions;
 	}
 
 }

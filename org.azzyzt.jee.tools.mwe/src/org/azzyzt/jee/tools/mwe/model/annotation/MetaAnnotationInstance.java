@@ -94,6 +94,13 @@ public class MetaAnnotationInstance {
 		return elements.get(element);
 	}
 
+	public Object getRawValue(String element) {
+		if (!hasElement(element)) {
+			throw new ToolError("Element "+element+" is unsupported by "+metaAnnotation);
+		}
+		return unquotedlyValuedElements.get(element);
+	}
+
 	public String getName() {
 		return metaAnnotation.getSimpleName();
 	}
@@ -134,5 +141,9 @@ public class MetaAnnotationInstance {
 	public void setAnnotated(MetaAnnotatable annotated) {
 		this.annotated = annotated;
 		annotated.addReferencedForeignType(metaAnnotation);
+	}
+
+	public MetaAnnotation getMetaAnnotation() {
+		return metaAnnotation;
 	}
 }

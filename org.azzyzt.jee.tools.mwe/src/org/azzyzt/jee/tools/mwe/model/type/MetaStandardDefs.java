@@ -180,6 +180,8 @@ public class MetaStandardDefs {
 	public final MetaClass idTranslator;
 	public final MetaInterface stringConverterInterface;
 	public final MetaInterface azzyztantInterface;
+	public final MetaAnnotation azzyztGeneratorOptions;
+	public final MetaEnum azzyztGeneratorCutback;
 	
 
 	public MetaStandardDefs() {
@@ -360,5 +362,7 @@ public class MetaStandardDefs {
 		idTranslator = MetaClass.forType(org.azzyzt.jee.runtime.eao.IdTranslator.class);
 		stringConverterInterface = MetaInterface.forType(org.azzyzt.jee.runtime.util.StringConverterInterface.class);
 		azzyztantInterface = MetaInterface.forType(org.azzyzt.jee.runtime.meta.AzzyztantInterface.class);
+		azzyztGeneratorOptions = MetaAnnotation.forType(org.azzyzt.jee.runtime.annotation.AzzyztGeneratorOptions.class);
+		azzyztGeneratorCutback = MetaEnum.forType(org.azzyzt.jee.runtime.meta.AzzyztGeneratorCutback.class);
 	}
 }

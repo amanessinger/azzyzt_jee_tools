@@ -1,14 +1,33 @@
 #VAR: fmt=~html(site|slides): css=highlight.css,layout-deplate.css cssInclude=true
 #VAR: tableStyle=formal
 
-#VAR: version=1.1.1
+#VAR: version=1.2.0
 
 * Azzyzt JEE Tools
 #OPT: plain!
 
  !!! Release {version}
 
+** Changes in 1.2.0
+#OPT: plain!
+
+ - Added configuration options via ''Azzyztant''.
+
+ - Added runtime hook to ''Azzyztant'' for converting user names as
+   provided by the site adapter.
+
+ - Made @Remote interfaces optional via ''AzzyztGeneratorOptions'' and
+   ''AzzyztGeneratorCutback.NoRemoteInterfaces''. This means JBoss AS
+   6.0 should be a fully supported runtime. No tests with JBoss have
+   been conducted though, thus I expect some glitches.
+
+ - Made @WebService optional via ''AzzyztGeneratorOptions'' and
+   ''AzzyztGeneratorCutback.NoSoapServices''
+
+ - Added a Java program to bump Azzyzt's version
+
 ** Changes in 1.1.1
+#OPT: plain!
 
  - Fixed a bug where the generated converters would try proxy id
    substitution for string IDs. The generated code failed to compile
@@ -27,6 +46,7 @@
 
 
 ** Changes in 1.1.0
+#OPT: plain!
 
  - The "update()" operation was dropped. Basically it was a "store()"
    without result and also implemented as such.
