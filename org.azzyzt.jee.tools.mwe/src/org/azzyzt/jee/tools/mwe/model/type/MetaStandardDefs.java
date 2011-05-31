@@ -116,6 +116,7 @@ public class MetaStandardDefs {
 	public final MetaAnnotation javaxPersistenceManyToMany;
 	public final MetaAnnotation javaxPersistencePrePersist;
 	public final MetaAnnotation javaxPersistencePreUpdate;
+	public final MetaAnnotation javaxPersistenceEmbeddable;
 	
 	public final MetaAnnotation javaxJwsWebService;
 	
@@ -180,6 +181,8 @@ public class MetaStandardDefs {
 	public final MetaClass idTranslator;
 	public final MetaInterface stringConverterInterface;
 	public final MetaInterface azzyztantInterface;
+	public final MetaAnnotation azzyztGeneratorOptions;
+	public final MetaEnum azzyztGeneratorCutback;
 	
 
 	public MetaStandardDefs() {
@@ -294,6 +297,7 @@ public class MetaStandardDefs {
 		javaxPersistenceManyToMany = MetaAnnotation.forType(javax.persistence.ManyToMany.class);
 		javaxPersistencePrePersist = MetaAnnotation.forType(javax.persistence.PrePersist.class);
 		javaxPersistencePreUpdate = MetaAnnotation.forType(javax.persistence.PreUpdate.class);
+		javaxPersistenceEmbeddable = MetaAnnotation.forType(javax.persistence.Embeddable.class);
 		
 		javaxJwsWebService = MetaAnnotation.forType(javax.jws.WebService.class);
 		
@@ -360,5 +364,7 @@ public class MetaStandardDefs {
 		idTranslator = MetaClass.forType(org.azzyzt.jee.runtime.eao.IdTranslator.class);
 		stringConverterInterface = MetaInterface.forType(org.azzyzt.jee.runtime.util.StringConverterInterface.class);
 		azzyztantInterface = MetaInterface.forType(org.azzyzt.jee.runtime.meta.AzzyztantInterface.class);
+		azzyztGeneratorOptions = MetaAnnotation.forType(org.azzyzt.jee.runtime.annotation.AzzyztGeneratorOptions.class);
+		azzyztGeneratorCutback = MetaEnum.forType(org.azzyzt.jee.runtime.meta.AzzyztGeneratorCutback.class);
 	}
 }

@@ -35,6 +35,9 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.azzyzt.jee.tools.mwe.exception.ToolError;
+import org.azzyzt.jee.tools.mwe.generator.GeneratorOptions;
+import org.azzyzt.jee.tools.mwe.model.annotation.MetaAnnotatable;
+import org.azzyzt.jee.tools.mwe.model.type.MetaClass;
 import org.azzyzt.jee.tools.mwe.model.type.MetaDeclaredType;
 import org.azzyzt.jee.tools.mwe.model.type.MetaEntity;
 import org.azzyzt.jee.tools.mwe.model.type.MetaType;
@@ -50,12 +53,14 @@ public class MetaModel {
 	private List<Class<?>> targetClazzes  = new ArrayList<Class<?>>();
 	private Set<MetaDeclaredType> targetMetaDeclaredTypes = new HashSet<MetaDeclaredType>();
 	private Set<MetaEntity> targetEntities = new HashSet<MetaEntity>();
+	private Set<MetaClass> embeddables = new HashSet<MetaClass>();
 	private boolean isIncludingMethods = true;
 	private boolean isIncludingStaticFields = true;
 	private Properties properties = new Properties(); // may be set by a synthesizing builder
 	private Log logger;
 	private String name;
 	private String projectBaseName;
+	private GeneratorOptions generatorOptions;
 
 	public static MetaModel createMasterModel(String projectBaseName, Log logger) {
 		return new MetaModel(MASTER_MODEL_NAME, projectBaseName, logger);
@@ -188,6 +193,25 @@ public class MetaModel {
 
 	public String getProjectBaseName() {
 		return projectBaseName;
+	}
+
+	public void setGeneratorOptions(GeneratorOptions generatorOptions) {
+		this.generatorOptions = generatorOptions;
+	}
+
+	public GeneratorOptions getGeneratorOptions() {
+		return generatorOptions;
+	}
+
+	public boolean addEmbeddable(MetaAnnotatable embeddable) {
+		if (!(embeddable instanceof MetaClass)) {
+			throw new ToolError("Embeddable "+embeddable+" should be a MetaClass but is not");
+		}
+		return embeddables.add((MetaClass)embeddable);
+	}
+
+	public Set<MetaClass> getEmbeddables() {
+		return embeddables;
 	}
 
 }

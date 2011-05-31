@@ -27,11 +27,13 @@
 
 package org.azzyzt.jee.tools.mwe.model.type;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import org.azzyzt.jee.runtime.annotation.Internal;
 import org.azzyzt.jee.tools.mwe.model.annotation.MetaAnnotatable;
 import org.azzyzt.jee.tools.mwe.model.annotation.MetaAnnotation;
 import org.azzyzt.jee.tools.mwe.model.annotation.MetaAnnotationInstance;
@@ -45,6 +47,7 @@ public class MetaField implements Comparable<MetaField>, MetaAnnotatable {
     private MetaType fieldType;
     private MetaModifiers modifiers; 
 	private List<MetaAnnotationInstance> metaAnnotationInstances = new ArrayList<MetaAnnotationInstance>();
+	private boolean isInternal = false;
 	
 	/* 
 	 * Either use lists of actual annotation instances to put on getters/setters, or synthesize
@@ -112,6 +115,14 @@ public class MetaField implements Comparable<MetaField>, MetaAnnotatable {
 		this.modifiers = modifiers;
 	}
 	
+	public boolean isInternal() {
+		return isInternal;
+	}
+
+	public void setInternal(boolean isInternal) {
+		this.isInternal = isInternal;
+	}
+
 	@Override
 	public String toString() {
 		return "MetaField [id=" + id + "]";
@@ -134,6 +145,11 @@ public class MetaField implements Comparable<MetaField>, MetaAnnotatable {
 
 	public void processAnnotations(Field fld) {
 		setMetaAnnotationInstances(MetaAnnotation.toInstances(this, fld.getAnnotations()));
+		for (Annotation fa : fld.getAnnotations()) {
+			if (fa.annotationType().equals(Internal.class)) {
+				setInternal(true);
+			}
+		}
 	}
 
 	@Override

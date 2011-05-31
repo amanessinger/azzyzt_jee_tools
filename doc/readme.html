@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 <meta name="language" content="en">
-<meta name="date" content="2011-05-27T14:08:23">
+<meta name="date" content="2011-05-30T20:59:40">
 <meta name="generator" content="deplate.rb 0.8.5">
 <link rel="start" href="readme.html" title="Frontpage">
 <link rel="chapter" href="readme.html#hd001" title="Azzyzt JEE Tools">
@@ -803,7 +803,7 @@ span.progress {
 <h1 id="hd001"><a name="file000"></a>Azzyzt JEE Tools</h1>
 
 <div class="important"><p class="important">
-Release 1.1.1
+Release 1.2.0
 </p></div>
 
 <p>Azzyzt JEE Tools is a collection of software tools helping software 
@@ -821,10 +821,14 @@ in the source distribution&rsquo;s <code>doc</code> directory.</p>
 <p>For a change log see 
 <a href="changelog.html">changelog.html</a><a name="idx002"></a>.</p>
 
+<p>The complete sources are on 
+<a href="GitHub.html">GitHub</a><a name="idx003"></a> under 
+<span class="remote"><a href="https://github.com/amanessinger/azzyzt_jee_tools" class="remote">https://github.com/amanessinger/azzyzt_jee_tools</a></span><a name="idx004"></a>.</p>
+
 
 <h2 id="hd001001">1.1&nbsp;Current status</h2>
 
-<p>As of release 1.1.1, Azzyzt JEE Tools consists of three main parts:</p>
+<p>As of release 1.2.0, Azzyzt JEE Tools consists of three main parts:</p>
 
 <ol class="Ordered numeric">
     <li class="Ordered-1 Ordered">
@@ -859,7 +863,7 @@ in the source distribution&rsquo;s <code>doc</code> directory.</p>
 <p>The structure of azzyzted projects and the structure of generated code 
 evolved from the work on 
 <span class="remote"><a href="http://programming.manessinger.com/tutorials/an-eclipse-glassfish-java-ee-6-tutorial/" class="remote">An 
-Eclipse / GlassFish / Java EE 6 Tutorial</a></span><a name="idx003"></a> 
+Eclipse / GlassFish / Java EE 6 Tutorial</a></span><a name="idx005"></a> 
 and on usage of that tutorial in a subsequent internal training class 
 for developers at the Municipiality of Vienna, Austria.</p>
 
@@ -896,20 +900,19 @@ command line utility.</p>
 
 <p>Eclipse is always understood as the generic bundle 
 <span class="remote"><a href="http://www.eclipse.org/downloads/" class="remote">Eclipse 
-IDE for Java EE Developers</a></span><a name="idx004"></a>. Other 
+IDE for Java EE Developers</a></span><a name="idx006"></a>. Other 
 distributions may contain the required plugins and may work, but they 
 were not tested.</p>
 
 <p>The plugins compile on Indigo M4, but currently no plugin for GlassFish 
 is available for Indigo, thus the configuration has not been tested.</p>
 
-<p>Using JBOSS AS 6.0 as a runtime, generated code mostly compiles, 
+<p>Using JBOSS AS 6.0 as a runtime, generated code should compile. 
 <code>@Remote</code> annotations on generated service bean interfaces 
-have to be removed though, because JBOSS AS 6.0 only supports the JEE 6 
-web profile. No further testing with JBOSS AS 6.0 has been done yet. 
-Eventually, things like whether <code>@Remote</code> annotations are 
-generated or not, should become configurable, and there are other good 
-uses for configurability as well.</p>
+have to be suppressed using 
+<code>AzzyztGeneratorCutback.NoRemoteInterfaces</code>, because JBOSS AS 
+6.0 only supports the JEE 6 web profile. No further testing with JBOSS 
+AS 6.0 has been done yet.</p>
 
 <p>The project generator (#1) already runs with Apache Geronimo v3.0-M1, 
 but due to lacking support for REST, generated applications do not 
@@ -924,10 +927,10 @@ runtimes, etc. Of course bug fixes are welcome as well.</p>
 
 <p>Azzyzt JEE Tools were developed by 
 <span class="remote"><a href="http://programming.manessinger.com" class="remote">Andreas 
-Manessinger</a></span><a name="idx005"></a> for the 
+Manessinger</a></span><a name="idx007"></a> for the 
 <span class="remote"><a href="http://www.wien.gv.at/english/administration/ict/" class="remote">Municipal 
 Department 14 - Automated Data Processing, Information and 
-Communications Technology</a></span><a name="idx006"></a> (MA 14) of the 
+Communications Technology</a></span><a name="idx008"></a> (MA 14) of the 
 City of Vienna, Austria</p>
 
 
@@ -961,7 +964,7 @@ City of Vienna, Austria</p>
 
 <p>For the purpose of generating code, Azzyzt JEE Tools make use of and 
 bundles a copy of 
-<span class="remote"><a href="http://www.stringtemplate.org/" class="remote">StringTemplate</a></span><a name="idx007"></a>, 
+<span class="remote"><a href="http://www.stringtemplate.org/" class="remote">StringTemplate</a></span><a name="idx009"></a>, 
 which is</p>
 
 <pre class="verbatim">
@@ -997,7 +1000,7 @@ which is</p>
 </pre>
 
 <p>This documentation was created using 
-<span class="remote"><a href="http://deplate.sourceforge.net/" class="remote">Deplate</a></span><a name="idx008"></a>.</p>
+<span class="remote"><a href="http://deplate.sourceforge.net/" class="remote">Deplate</a></span><a name="idx0010"></a>.</p>
 
 
 <!-- Start of StatCounter Code -->

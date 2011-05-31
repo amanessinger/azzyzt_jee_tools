@@ -27,6 +27,7 @@
 
 package org.azzyzt.jee.tools.mwe.builder;
 
+import org.azzyzt.jee.runtime.meta.AzzyztGeneratorCutback;
 import org.azzyzt.jee.tools.mwe.identifiers.ModelProperties;
 import org.azzyzt.jee.tools.mwe.identifiers.PackageTails;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
@@ -62,9 +63,11 @@ public class CrudServiceRestrictedBeansModelBuilder extends DerivedModelBuilder 
 			target.setModifiers(std.mod_public);
 			target.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxEjbLocalBean, target));
 			target.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxEjbStateless, target));
-			MetaAnnotationInstance mai = new MetaAnnotationInstance(std.javaxJwsWebService, target);
-			mai.setElement("serviceName", masterModel.getProjectBaseName());
-			target.addMetaAnnotationInstance(mai);
+			if (!masterModel.getGeneratorOptions().hasCutback(AzzyztGeneratorCutback.NoSoapServices)) {
+				MetaAnnotationInstance mai = new MetaAnnotationInstance(std.javaxJwsWebService, target);
+				mai.setElement("serviceName", masterModel.getProjectBaseName());
+				target.addMetaAnnotationInstance(mai);
+			}
 			
 			target.addReferencedForeignType(dtoBase);
 			target.addReferencedForeignType(dto);

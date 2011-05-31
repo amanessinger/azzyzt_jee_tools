@@ -44,7 +44,7 @@ import org.azzyzt.jee.tools.mwe.model.annotation.MetaAnnotation;
 
 public abstract class MetaType {
 
-	private static final MetaStandardDefs standardTypes = new MetaStandardDefs();
+	private static MetaStandardDefs standardTypes;
 	
 	private MetaTypeId id;
 	private String name;
@@ -332,6 +332,9 @@ public abstract class MetaType {
 	}
 
 	public static MetaStandardDefs getStandardtypes() {
+		if (standardTypes == null) {
+			standardTypes = new MetaStandardDefs();
+		}
 		return standardTypes;
 	}
 }

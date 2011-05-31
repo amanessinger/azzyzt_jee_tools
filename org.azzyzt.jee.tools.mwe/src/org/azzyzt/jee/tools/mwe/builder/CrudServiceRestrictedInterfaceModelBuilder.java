@@ -27,6 +27,7 @@
 
 package org.azzyzt.jee.tools.mwe.builder;
 
+import org.azzyzt.jee.runtime.meta.AzzyztGeneratorCutback;
 import org.azzyzt.jee.tools.mwe.identifiers.ModelProperties;
 import org.azzyzt.jee.tools.mwe.identifiers.PackageTails;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
@@ -58,7 +59,9 @@ public class CrudServiceRestrictedInterfaceModelBuilder extends DerivedModelBuil
 			MetaInterface target = MetaInterface.forName(packageName, simpleName);
 			me.setProperty("svcRestrictedInterface", target);
 			target.setModifiers(std.mod_public);
-			target.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxEjbRemote, target));
+			if (!masterModel.getGeneratorOptions().hasCutback(AzzyztGeneratorCutback.NoRemoteInterfaces)) {
+				target.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxEjbRemote, target));
+			}
 			
 			target.addReferencedForeignType(dtoBase);
 			target.addReferencedForeignType(dto);

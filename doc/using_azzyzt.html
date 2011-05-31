@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 <meta name="language" content="en">
-<meta name="date" content="2011-05-27T14:11:00">
+<meta name="date" content="2011-05-31T18:53:27">
 <meta name="generator" content="deplate.rb 0.8.5">
 <link rel="start" href="using_azzyzt.html" title="Frontpage">
 <link rel="chapter" href="using_azzyzt.html#hd001" title="Azzyzt JEE Tools">
@@ -811,7 +811,7 @@ span.progress {
 <h1 id="hd001"><a name="file000"></a>Azzyzt JEE Tools</h1>
 
 <div class="important"><p class="important">
-Release 1.1.1
+Release 1.2.0
 </p></div>
 
 <p>Azzyzt JEE Tools is a collection of software tools helping software 
@@ -829,7 +829,7 @@ EUPL, Version 1.1 or subsequent versions</p>
 
 <p>If you just want to use Azzyzt JEE Tools (as opposed to modify and build 
 them), the recommended way to install the software is via an Eclipse 
-update site. As of release 1.1.1, there are two update site URLs, one 
+update site. As of release 1.2.0, there are two update site URLs, one 
 for the edition used by the Municipiality of Vienna, Austria, the other 
 a generic version. The URLs are</p>
 
@@ -851,27 +851,35 @@ Eclipse p2.</p>
 instance configured. The server does not need to be running, but it must 
 be configured, in order to make the runtime available.</p>
 
+<p>If you want to dig deeper, make your own changes, want to supply 
+patches, etc, the complete sources are available on GitHub under</p>
+
+<p><span class="remote"><a href="https://github.com/amanessinger/azzyzt_jee_tools" class="remote">https://github.com/amanessinger/azzyzt_jee_tools</a></span><a name="idx004"></a></p>
+
 
 
 <h1 id="hd003">3&nbsp;The cookbook example</h1>
 
 <p>If you remember my 
 <span class="remote"><a href="http://programming.manessinger.com/tutorials/an-eclipse-glassfish-java-ee-6-tutorial/" class="remote">Eclipse 
-/ GlassFish / Java EE 6 Tutorial</a></span><a name="idx004"></a>, here 
+/ GlassFish / Java EE 6 Tutorial</a></span><a name="idx005"></a>, here 
 we will use more or less the same application, just slightly expanded to 
 show off some new features. All subsequent examples will reference the 
 same database and the same entities.</p>
 
 <p>In the following I frequently reference a subdirectory <code>doc</code> 
-of the Azzyzt source distribution. For your convenience, a compressed 
-archive of this directory (including the sample sources) is available 
-under</p>
+of the 
+<span class="remote"><a href="https://github.com/amanessinger/azzyzt_jee_tools" class="remote">Azzyzt 
+source distribution</a></span><a name="idx006"></a>. For your 
+convenience and if you don&rsquo;t want to fork the source distribution, 
+a compressed archive of this directory (including the sample sources) is 
+available under</p>
 
-<p><span class="remote"><a href="http://azzyzt.manessinger.com/doc.zip" class="remote">http://azzyzt.manessinger.com/doc.zip</a></span><a name="idx005"></a></p>
+<p><span class="remote"><a href="http://azzyzt.manessinger.com/doc.zip" class="remote">http://azzyzt.manessinger.com/doc.zip</a></span><a name="idx007"></a></p>
 
 <p>and additionally the extracted content is available under</p>
 
-<p><span class="remote"><a href="http://azzyzt.manessinger.com/doc/" class="remote">http://azzyzt.manessinger.com/doc/</a></span><a name="idx006"></a></p>
+<p><span class="remote"><a href="http://azzyzt.manessinger.com/doc/" class="remote">http://azzyzt.manessinger.com/doc/</a></span><a name="idx008"></a></p>
 
 <p>If you want to follow the examples given, you should first set up a 
 database. The subdirectory <code>doc/cookbook</code> of the Azzyzt 
@@ -927,7 +935,7 @@ doc/cookbook
 
 <p>On the same level as <code>README.txt</code> you find one directory for 
 each database that the tutorial supports. Note, it&rsquo;s not that Java 
-EE 6 or <a href="GlassFish.html">GlassFish</a><a name="idx007"></a> or 
+EE 6 or <a href="GlassFish.html">GlassFish</a><a name="idx009"></a> or 
 Azzyzt don&rsquo;t support other databases, it&rsquo;s just that 
 I&rsquo;ve not tested the tutorial with anything else.</p>
 
@@ -1049,6 +1057,8 @@ cookbookEJB
 |&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;`--&nbsp;manessinger
 |&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;cookbook
 |&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;entity
+|&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;meta
+|&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;`--&nbsp;Azzyztant.java
 |&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;service
 |&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;HelloTestBean.java
 |&nbsp;&nbsp;&nbsp;`--&nbsp;META-INF
@@ -1077,10 +1087,10 @@ cookbookServlets
 </pre>
 
 <p>&ldquo;<code>com.manessinger.cookbook.service.HelloTestBean</code>&rdquo; 
-is the only generated class that will ever be generated into a source 
-folder meant to hold manually written code. You can keep it or throw it 
-away. It is only generated upon project creation and is meant to make 
-the project instantly deployable.</p>
+is one of the two generated classes that will ever be generated into a 
+source folder meant to hold manually written code. You can keep it or 
+throw it away. It is only generated upon project creation and is meant 
+to make the project instantly deployable and callable.</p>
 
 <p>The bean has one (predictable) method</p>
 
@@ -1101,6 +1111,10 @@ the project instantly deployable.</p>
 <p>Start the server, deploy the EAR (&ldquo;<em>Add and Remove</em>&rdquo; 
 from the context menu of the server) and try it via the service test 
 client built into the GlassFish Administration Console.</p>
+
+<p>The second class that is generated into the user folder is 
+&ldquo;<code>com.manessinger.cookbook.meta.Azzyztant</code>&rdquo;. It 
+is explained later, when we talk about customization.</p>
 
 
 
@@ -1201,7 +1215,7 @@ entity fields:</p>
         <code>InvocationMetaInfo</code> being generated at the entry point into 
         the service, and being passed on via the standard 
         <code>javax.transaction.TransactionSynchronizationRegistry</code>
-        <br class="itempara" />As of release 1.1.1 this is only partially implemented. It works for 
+        <br class="itempara" />As of release 1.2.0 this is only partially implemented. It works for 
         REST but not for SOAP and CORBA, and from a service accessed via REST, 
         it currently wouldn&rsquo;t be passed on to backend services accessed 
         via REST or SOAP. The crucial knowledge about how to extract user 
@@ -1581,6 +1595,8 @@ cookbookEJB
 |&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;|--&nbsp;Language.java
 |&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;|--&nbsp;Visit.java
 |&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;`--&nbsp;Zip.java
+|&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;meta
+|&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;`--&nbsp;Azzyztant.java
 |&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;service
 |&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;HelloTestBean.java
 |&nbsp;&nbsp;&nbsp;`--&nbsp;META-INF
@@ -1700,7 +1716,7 @@ to modify <code>persistence.xml</code> to refer to a
 <code>jta-data-source</code>, and that this data source must be defined 
 in the application server. The 
 <span class="remote"><a href="http://programming.manessinger.com/tutorials/an-eclipse-glassfish-java-ee-6-tutorial/" class="remote">Eclipse 
-/ GlassFish / Java EE 6 Tutorial</a></span><a name="idx008"></a> has a 
+/ GlassFish / Java EE 6 Tutorial</a></span><a name="idx0010"></a> has a 
 section titled &ldquo;<em>Specifying the database, testing, SQL 
 log</em>&rdquo;, that shows how to do this in GlassFish. The sample 
 <code>persistence.xml</code> from 
@@ -1732,27 +1748,27 @@ ModifyMultiBean, a ModifyMultiInterface and a corresponding REST wrapper.</p>
 <p>Here are some URLs of WSDLs (service descriptions of SOAP services) for 
 the generated service beans, assuming GlassFish runs on port 8080:</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbook/CityFullBean?wsdl" class="remote">http://localhost:8080/cookbook/CityFullBean?wsdl</a></span><a name="idx009"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbook/CityFullBean?wsdl" class="remote">http://localhost:8080/cookbook/CityFullBean?wsdl</a></span><a name="idx0011"></a></p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbook/CityRestrictedBean?wsdl" class="remote">http://localhost:8080/cookbook/CityRestrictedBean?wsdl</a></span><a name="idx0010"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbook/CityRestrictedBean?wsdl" class="remote">http://localhost:8080/cookbook/CityRestrictedBean?wsdl</a></span><a name="idx0012"></a></p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbook/CountryFullBean?wsdl" class="remote">http://localhost:8080/cookbook/CountryFullBean?wsdl</a></span><a name="idx0011"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbook/CountryFullBean?wsdl" class="remote">http://localhost:8080/cookbook/CountryFullBean?wsdl</a></span><a name="idx0013"></a></p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbook/CountryRestrictedBean?wsdl" class="remote">http://localhost:8080/cookbook/CountryRestrictedBean?wsdl</a></span><a name="idx0012"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbook/CountryRestrictedBean?wsdl" class="remote">http://localhost:8080/cookbook/CountryRestrictedBean?wsdl</a></span><a name="idx0014"></a></p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbook/LanguageFullBean?wsdl" class="remote">http://localhost:8080/cookbook/LanguageFullBean?wsdl</a></span><a name="idx0013"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbook/LanguageFullBean?wsdl" class="remote">http://localhost:8080/cookbook/LanguageFullBean?wsdl</a></span><a name="idx0015"></a></p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbook/LanguageRestrictedBean?wsdl" class="remote">http://localhost:8080/cookbook/LanguageRestrictedBean?wsdl</a></span><a name="idx0014"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbook/LanguageRestrictedBean?wsdl" class="remote">http://localhost:8080/cookbook/LanguageRestrictedBean?wsdl</a></span><a name="idx0016"></a></p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbook/VisitFullBean?wsdl" class="remote">http://localhost:8080/cookbook/VisitFullBean?wsdl</a></span><a name="idx0015"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbook/VisitFullBean?wsdl" class="remote">http://localhost:8080/cookbook/VisitFullBean?wsdl</a></span><a name="idx0017"></a></p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbook/VisitRestrictedBean?wsdl" class="remote">http://localhost:8080/cookbook/VisitRestrictedBean?wsdl</a></span><a name="idx0016"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbook/VisitRestrictedBean?wsdl" class="remote">http://localhost:8080/cookbook/VisitRestrictedBean?wsdl</a></span><a name="idx0018"></a></p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbook/ZipFullBean?wsdl" class="remote">http://localhost:8080/cookbook/ZipFullBean?wsdl</a></span><a name="idx0017"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbook/ZipFullBean?wsdl" class="remote">http://localhost:8080/cookbook/ZipFullBean?wsdl</a></span><a name="idx0019"></a></p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbook/ZipRestrictedBean?wsdl" class="remote">http://localhost:8080/cookbook/ZipRestrictedBean?wsdl</a></span><a name="idx0018"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbook/ZipRestrictedBean?wsdl" class="remote">http://localhost:8080/cookbook/ZipRestrictedBean?wsdl</a></span><a name="idx0020"></a></p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbook/ModifyMultiBean?wsdl" class="remote">http://localhost:8080/cookbook/ModifyMultiBean?wsdl</a></span><a name="idx0019"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbook/ModifyMultiBean?wsdl" class="remote">http://localhost:8080/cookbook/ModifyMultiBean?wsdl</a></span><a name="idx0021"></a></p>
 
 <p>You can use these WSDLs to create client stubs for access via SOAP.</p>
 
@@ -1762,10 +1778,10 @@ the generated service beans, assuming GlassFish runs on port 8080:</p>
 
 <p>Get the WADL description of the REST services from</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/application.wadl" class="remote">http://localhost:8080/cookbookServlets/REST/application.wadl</a></span><a name="idx0020"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/application.wadl" class="remote">http://localhost:8080/cookbookServlets/REST/application.wadl</a></span><a name="idx0022"></a></p>
 
 <p>Try the services for yourself, for instance with 
-<span class="remote"><a href="http://www.soapui.org" class="remote">soapUI</a></span><a name="idx0021"></a>. 
+<span class="remote"><a href="http://www.soapui.org" class="remote">soapUI</a></span><a name="idx0023"></a>. 
 Open soapUI, create a new project from the context menu of 
 &ldquo;<em>Projects</em>&rdquo; in the tree view on the left pane. Enter 
 &ldquo;<code>cookbook&nbsp;-&nbsp;REST</code>&rdquo; as the project name 
@@ -1853,7 +1869,7 @@ operation will automatically have one request called
 <h1 id="hd005">5&nbsp;Examples for REST</h1>
 
 <p>I assume that you use 
-<span class="remote"><a href="http://www.soapui.org" class="remote">soapUI</a></span><a name="idx0022"></a> 
+<span class="remote"><a href="http://www.soapui.org" class="remote">soapUI</a></span><a name="idx0024"></a> 
 to work through the following examples. In soapUI you send a request by 
 opening it (double click in the tree) and clicking on the green triangle 
 in the upper left corner of the request sub-window. That&rsquo;s all you 
@@ -1879,9 +1895,9 @@ Then send the request.</p>
 
 <p>Issue a GET request to any of the following URLs:</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/country/all" class="remote">http://localhost:8080/cookbookServlets/REST/country/all</a></span><a name="idx0023"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/country/all" class="remote">http://localhost:8080/cookbookServlets/REST/country/all</a></span><a name="idx0025"></a></p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/countryRestricted/all" class="remote">http://localhost:8080/cookbookServlets/REST/countryRestricted/all</a></span><a name="idx0024"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/countryRestricted/all" class="remote">http://localhost:8080/cookbookServlets/REST/countryRestricted/all</a></span><a name="idx0026"></a></p>
 
 <p>The result will be an unsorted list of all countries:</p>
 
@@ -1921,9 +1937,9 @@ Then send the request.</p>
 
 <p>A GET request to any of these URLs</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/byId?id=1" class="remote">http://localhost:8080/cookbookServlets/REST/city/byId?id=1</a></span><a name="idx0025"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/byId?id=1" class="remote">http://localhost:8080/cookbookServlets/REST/city/byId?id=1</a></span><a name="idx0027"></a></p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/cityRestricted/byId?id=1" class="remote">http://localhost:8080/cookbookServlets/REST/cityRestricted/byId?id=1</a></span><a name="idx0026"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/cityRestricted/byId?id=1" class="remote">http://localhost:8080/cookbookServlets/REST/cityRestricted/byId?id=1</a></span><a name="idx0028"></a></p>
 
 <p>delivers</p>
 
@@ -1962,9 +1978,9 @@ Then send the request.</p>
 </div>
 <p>into one fo these URLs</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/list" class="remote">http://localhost:8080/cookbookServlets/REST/city/list</a></span><a name="idx0027"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/list" class="remote">http://localhost:8080/cookbookServlets/REST/city/list</a></span><a name="idx0029"></a></p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/cityRestricted/list" class="remote">http://localhost:8080/cookbookServlets/REST/cityRestricted/list</a></span><a name="idx0028"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/cityRestricted/list" class="remote">http://localhost:8080/cookbookServlets/REST/cityRestricted/list</a></span><a name="idx0030"></a></p>
 
 <p>to get a list of all cities, but sorted by the ID of their country 
 ascending, and then alphabetically by their name descending. 
@@ -2116,9 +2132,9 @@ Here&rsquo;s the result:</p>
 </div>
 <p>into either of</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/list" class="remote">http://localhost:8080/cookbookServlets/REST/city/list</a></span><a name="idx0029"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/list" class="remote">http://localhost:8080/cookbookServlets/REST/city/list</a></span><a name="idx0031"></a></p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/cityRestricted/list" class="remote">http://localhost:8080/cookbookServlets/REST/cityRestricted/list</a></span><a name="idx0030"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/cityRestricted/list" class="remote">http://localhost:8080/cookbookServlets/REST/cityRestricted/list</a></span><a name="idx0032"></a></p>
 
 <p>to get a list of all cities, where the country name equals 
 &ldquo;<em>Italy</em>&rdquo; and the city&rsquo;s name does not begin 
@@ -2219,9 +2235,9 @@ associations are valid. &ldquo;<code>City</code>&rdquo; has a field</p>
 </div>
 <p>POST it into</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/list" class="remote">http://localhost:8080/cookbookServlets/REST/city/list</a></span><a name="idx0031"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/list" class="remote">http://localhost:8080/cookbookServlets/REST/city/list</a></span><a name="idx0033"></a></p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/cityRestricted/list" class="remote">http://localhost:8080/cookbookServlets/REST/cityRestricted/list</a></span><a name="idx0032"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/cityRestricted/list" class="remote">http://localhost:8080/cookbookServlets/REST/cityRestricted/list</a></span><a name="idx0034"></a></p>
 
 <p>to get a list of all cities in Italy and all other cities beginning with 
 &ldquo;l&rdquo; (regardless case), but not the one with ID 2 (which 
@@ -2290,7 +2306,7 @@ used to initialize the empty tables with sample data.</p>
 
 <p>In order to store a new city, use this URL</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/store" class="remote">http://localhost:8080/cookbookServlets/REST/city/store</a></span><a name="idx0033"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/store" class="remote">http://localhost:8080/cookbookServlets/REST/city/store</a></span><a name="idx0035"></a></p>
 
 <p>and POST an XML representation of a city, just as you may have got it 
 from one of the reading operations, but in input data leave the 
@@ -2354,7 +2370,7 @@ custom string resource in the application server.</p>
 
 <p>The 
 <span class="remote"><a href="http://programming.manessinger.com/tutorials/an-eclipse-glassfish-java-ee-6-tutorial/" class="remote">Eclipse 
-/ GlassFish / Java EE 6 Tutorial</a></span><a name="idx0034"></a> has a 
+/ GlassFish / Java EE 6 Tutorial</a></span><a name="idx0036"></a> has a 
 section titled &ldquo;<em>Configuration via JNDI Custom 
 Resources</em>&rdquo;, that shows how to set custom resources in 
 GlassFish.</p>
@@ -2450,7 +2466,7 @@ unchanged.</p>
 
 <p>Make a GET request to the following URL</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/delete?id=13" class="remote">http://localhost:8080/cookbookServlets/REST/city/delete?id=13</a></span><a name="idx0035"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/city/delete?id=13" class="remote">http://localhost:8080/cookbookServlets/REST/city/delete?id=13</a></span><a name="idx0037"></a></p>
 
 <p>to delete &ldquo;<code>Udine</code>&rdquo;, assuming its ID was indeed 
 &ldquo;<code>13</code>&rdquo;. The result will be</p>
@@ -2505,7 +2521,7 @@ than one object per call. The special stateless session bean
 </div>
 <p>into</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/modifyMulti/storeMulti" class="remote">http://localhost:8080/cookbookServlets/REST/modifyMulti/storeMulti</a></span><a name="idx0036"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/modifyMulti/storeMulti" class="remote">http://localhost:8080/cookbookServlets/REST/modifyMulti/storeMulti</a></span><a name="idx0038"></a></p>
 
 <p>to store a new country named &ldquo;<code>France</code>&rdquo; and three 
 of its cities, &ldquo;<code>Marseille</code>&rdquo;, 
@@ -2605,7 +2621,7 @@ list of objects.</p>
 </div>
 <p>into</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/modifyMulti/deleteMulti" class="remote">http://localhost:8080/cookbookServlets/REST/modifyMulti/deleteMulti</a></span><a name="idx0037"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/modifyMulti/deleteMulti" class="remote">http://localhost:8080/cookbookServlets/REST/modifyMulti/deleteMulti</a></span><a name="idx0039"></a></p>
 
 <p>Again the result will be</p>
 
@@ -2653,7 +2669,7 @@ single call. Let&rsquo;s re-create France by inserting it again:</p>
 </div>
 <p>into</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/modifyMulti/storeMulti" class="remote">http://localhost:8080/cookbookServlets/REST/modifyMulti/storeMulti</a></span><a name="idx0038"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/modifyMulti/storeMulti" class="remote">http://localhost:8080/cookbookServlets/REST/modifyMulti/storeMulti</a></span><a name="idx0040"></a></p>
 
 <p>and expect a result like</p>
 
@@ -2745,7 +2761,7 @@ database sequence and sequence values don&rsquo;t repeat.</p>
 </div>
 <p>into</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/modifyMulti/storeDeleteMulti" class="remote">http://localhost:8080/cookbookServlets/REST/modifyMulti/storeDeleteMulti</a></span><a name="idx0039"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/modifyMulti/storeDeleteMulti" class="remote">http://localhost:8080/cookbookServlets/REST/modifyMulti/storeDeleteMulti</a></span><a name="idx0041"></a></p>
 
 <p>Make sure the first list, the list of objects to delete, contains the 
 exact IDs that you got in the last step, i.e. the country ID of 
@@ -2850,7 +2866,7 @@ uses it.</p>
 </div>
 <p>into</p>
 
-<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/modifyMulti/storeMulti" class="remote">http://localhost:8080/cookbookServlets/REST/modifyMulti/storeMulti</a></span><a name="idx0040"></a></p>
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/modifyMulti/storeMulti" class="remote">http://localhost:8080/cookbookServlets/REST/modifyMulti/storeMulti</a></span><a name="idx0042"></a></p>
 
 <p>The result is</p>
 
@@ -2891,6 +2907,17 @@ uses it.</p>
 
 
 <h2 id="hd006001">6.1&nbsp;Introducing your Azzyztant</h2>
+
+<p>There are cases when we want to influence either what features are 
+generated, or how the generated features behave at runtime. The idea is, 
+to create a central class, that controls both. We call this class the 
+&ldquo;<em>Azzyztant</em>&rdquo;.</p>
+
+<p>From release 1.2.0 on, azzyzted projects are generated with a default 
+<code>Azzyztant</code> in a sub-package <code>meta</code> within the 
+<code>ejbModule</code> source folder of the EJB project, i.e. parallel 
+to the <code>entity</code> package. This is how the 
+<code>Azzyztant</code> is created:</p>
 
 <a name="AzzyztantAsGenerated"></a>
 <div class="code">
@@ -2949,6 +2976,38 @@ uses it.</p>
 
 <h2 id="hd006002">6.2&nbsp;Transforming user names</h2>
 
+<p>The <code>Azzyztant</code> has a final field 
+<code>usernameConverter</code> and a getter method for it. At runtime, 
+when the generated application tries to determine the name of the 
+calling user, the supplied site adapter evaluates an HTTP header that is 
+supposed to have been set by an authenticating/authorizing portal in 
+front of the application. We have learned that the name of this header 
+is even customizable via a string resource definition in the server, but 
+that does not yet mean all is well. What about the content of this 
+header?</p>
+
+<p>In many organizations user names are prefixed by a Windows domain 
+(&ldquo;<code>domain\username</code>&rdquo;), but imagine a legacy 
+database that is used not only by our generated services, but also by 
+some legacy applications. For some reports they may want to join tables 
+on the create or modification user field, but expect the names to be 
+without the domain (or wholly in upper-case, or &hellip; you get the 
+problem).</p>
+
+<p>What Azzyzt JEE Tools generate is an application, but it is also a 
+framework, and like in all frameworks, there is sometimes the need to 
+have a hook into otherwise fully automatic mechanisms. The site adapter 
+automatically determines the user&rsquo;s name and passes it on to the 
+persistence system, only that we would want a hook in between, where we 
+could modify the name that is passed on. <code>Azzyztant</code> is the 
+place where such hooks will be put from now on.</p>
+
+<p>In our case, we want to specify a non-null 
+<code>usernameConverter</code>. In order to do this, we create a class 
+that implements the interface <code>StringConverterInterface</code>. I 
+suggest creating a sub-package <code>util</code> in the EJB project, and 
+there we could create the converter like this:</p>
+
 <a name="UsernameConverter"></a>
 <div class="code">
 <pre>
@@ -2975,18 +3034,98 @@ uses it.</p>
 <span class="hl sym">}</span>
 </pre>
 </div>
+<p>It has to implement the single method 
+<code>String&nbsp;convert(String&nbsp;in)</code>, and in this case the 
+method returns either the non-empty suffix after the first backslash, or 
+just the input. Now in <code>Azzyztant</code>, instead of specifying the 
+<code>usernameConverter</code> as <code>null</code>,</p>
+
 <a name="UsernameConverterAzzyztBefore"></a>
 <div class="code">
 <pre>
 <span class="hl kwa">private final</span> StringConverterInterface usernameConverter <span class="hl sym">=</span> null<span class="hl sym">;</span>
 </pre>
 </div>
+<p>we specify it as an instance of our class:</p>
+
 <a name="UsernameConverterAzzyztAfter"></a>
 <div class="code">
 <pre>
 <span class="hl kwa">private final</span> StringConverterInterface usernameConverter <span class="hl sym">=</span> <span class="hl kwa">new</span> <span class="hl kwd">UsernameConverter</span><span class="hl sym">();</span>
 </pre>
 </div>
+<p>Please note that this is a shared instance between all threads of your 
+application, but of course the supplied code is thread-safe, so it does 
+not matter.</p>
+
+
+
+<h2 id="hd006003">6.3&nbsp;Cutting back on features</h2>
+
+<p>Up to release 1.1.1, the generated code did not compile against the 
+JBoss AS 6.0 runtime, because the interfaces generated in the client 
+project are annotated with <code>@Remote</code>, and 
+<code>@Remote</code> is not part of the Java EE 6 web profile. On the 
+other hand, <code>@Remote</code> is only needed if you want to call your 
+services via CORBA/IIOP, and very often this will not be the case. Web 
+services are in fashion, so why should we tie the code to GlassFish 
+only, just to be able to potentially use something that we know we 
+won&rsquo;t use anyway? Some users may want it though, and thus we like 
+<code>@Remote</code> on interfaces to be a configurable feature.</p>
+
+<p>The same could be said of access via SOAP or via REST. If you 
+don&rsquo;t use it in your application, why should Azzyzt generate it?</p>
+
+<p>In order to cut back on unused features, you can put an annotation on 
+the <code>Azzyztant</code>:</p>
+
+<div class="code">
+<pre>
+<span class="hl kwa">package</span> com<span class="hl sym">.</span>manessinger<span class="hl sym">.</span>cookbook<span class="hl sym">.</span>meta<span class="hl sym">;</span>
+
+<span class="hl kwa">import</span> javax<span class="hl sym">.</span>ejb<span class="hl sym">.</span>LocalBean<span class="hl sym">;</span>
+<span class="hl kwa">import</span> javax<span class="hl sym">.</span>ejb<span class="hl sym">.</span>Stateless<span class="hl sym">;</span>
+
+<span class="hl kwa">import</span> org<span class="hl sym">.</span>azzyzt<span class="hl sym">.</span>jee<span class="hl sym">.</span>runtime<span class="hl sym">.</span>annotation<span class="hl sym">.</span>AzzyztGeneratorOptions<span class="hl sym">;</span>
+<span class="hl kwa">import</span> org<span class="hl sym">.</span>azzyzt<span class="hl sym">.</span>jee<span class="hl sym">.</span>runtime<span class="hl sym">.</span>meta<span class="hl sym">.</span>AzzyztGeneratorCutback<span class="hl sym">;</span>
+<span class="hl kwa">import</span> org<span class="hl sym">.</span>azzyzt<span class="hl sym">.</span>jee<span class="hl sym">.</span>runtime<span class="hl sym">.</span>meta<span class="hl sym">.</span>AzzyztantInterface<span class="hl sym">;</span>
+<span class="hl kwa">import</span> org<span class="hl sym">.</span>azzyzt<span class="hl sym">.</span>jee<span class="hl sym">.</span>runtime<span class="hl sym">.</span>util<span class="hl sym">.</span>StringConverterInterface<span class="hl sym">;</span>
+
+
+&#64;LocalBean
+&#64;Stateless
+&#64;<span class="hl kwd">AzzyztGeneratorOptions</span><span class="hl sym">(</span>
+        cutbacks <span class="hl sym">= {</span>
+                AzzyztGeneratorCutback<span class="hl sym">.</span>NoRemoteInterfaces<span class="hl sym">,</span> 
+                AzzyztGeneratorCutback<span class="hl sym">.</span>NoSoapServices<span class="hl sym">,</span>
+        <span class="hl sym">}</span>
+<span class="hl sym">)</span>
+<span class="hl kwa">public class</span> Azzyztant <span class="hl kwa">implements</span> AzzyztantInterface <span class="hl sym">{</span>
+
+    <span class="hl kwa">private final</span> StringConverterInterface usernameConverter <span class="hl sym">=</span> null<span class="hl sym">;</span>
+
+    <span class="hl kwa">public</span> <span class="hl kwd">Azzyztant</span><span class="hl sym">() {</span> <span class="hl kwa">super</span><span class="hl sym">(); }</span>
+
+
+    &#64;Override
+    <span class="hl kwa">public</span> StringConverterInterface <span class="hl kwd">getUsernameConverter</span><span class="hl sym">() {</span>
+        <span class="hl kwa">return</span> usernameConverter<span class="hl sym">;</span>
+    <span class="hl sym">}</span>
+
+<span class="hl sym">}</span>
+</pre>
+</div>
+<p>For brevity I have removed the generated comments, but otherwise it is 
+the same class as generated, with one exception: There is an annotation 
+<code>@AzzyztGeneratorOptions</code> on the class, that defined the 
+cutbacks. In this case we specify, that we want no <code>@Remote</code> 
+and no <code>@WebService</code> annotations. The resulting applications 
+will only be reachable via REST.</p>
+
+<p>For the time being, these are the only cutbacks available, others will 
+follow, and there will also be additional options, not only cutbacks. In 
+any case, the <code>Azzyztant</code> is the place where options go.</p>
+
 
 
 <h1 id="hd007">7&nbsp;Miscellanea</h1>
@@ -3034,7 +3173,7 @@ as for REST.</p>
 
 <p>For the purpose of generating code, Azzyzt JEE Tools make use of and 
 bundles a copy of 
-<span class="remote"><a href="http://www.stringtemplate.org/" class="remote">StringTemplate</a></span><a name="idx0041"></a>, 
+<span class="remote"><a href="http://www.stringtemplate.org/" class="remote">StringTemplate</a></span><a name="idx0043"></a>, 
 which is</p>
 
 <pre class="verbatim">
@@ -3070,7 +3209,7 @@ which is</p>
 </pre>
 
 <p>This documentation was created using 
-<span class="remote"><a href="http://deplate.sourceforge.net/" class="remote">Deplate</a></span><a name="idx0042"></a>.</p>
+<span class="remote"><a href="http://deplate.sourceforge.net/" class="remote">Deplate</a></span><a name="idx0044"></a>.</p>
 
 
 <!-- Start of StatCounter Code -->
