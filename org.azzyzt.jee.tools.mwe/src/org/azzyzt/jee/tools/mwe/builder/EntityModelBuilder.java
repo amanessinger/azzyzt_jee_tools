@@ -27,30 +27,82 @@
 
 package org.azzyzt.jee.tools.mwe.builder;
 
+import java.lang.reflect.Method;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import org.azzyzt.jee.tools.mwe.exception.ToolError;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
+import org.azzyzt.jee.tools.mwe.model.type.MetaClass;
+import org.azzyzt.jee.tools.mwe.model.type.MetaField;
+import org.azzyzt.jee.tools.mwe.util.Log;
+import org.azzyzt.jee.tools.mwe.util.StringUtils;
 
 public class EntityModelBuilder {
 
 	private TargetEnumerator enumerator;
 	private MetaModel entityModel;
+	private Log logger;
+	
 
     public EntityModelBuilder(MetaModel model, TargetEnumerator enumerator) {
     	this.enumerator = enumerator;
     	this.entityModel = model;
+    	logger = model.getLogger();
     }
 
     public MetaModel build() {
-        // MetaModel entityModel = new MetaModel(this.getClass().getSimpleName(), projectBaseName, logger);
         entityModel.excludeMethodsFromModel();
         entityModel.excludeStaticFieldsFromModel();
         for (String targetPackage : enumerator.getTargetPackageNames()) {
         	entityModel.follow(targetPackage);
         }
         List<String> entityNames = enumerator.getFullyQualifiedTargetNames();
-        entityModel.build(entityNames);        
+        entityModel.build(entityNames);
+        
+        for (MetaClass mc : entityModel.getEmbeddables()) {
+        	validate(mc);
+        }
+        
+        for (MetaClass mc : entityModel.getTargetEntities()) {
+        	validate(mc);
+        }
+        
         return entityModel;
     }
+
+	private void validate(MetaClass mc) {
+		
+		Class<?> ownerClazz = mc.getClazz();
+		if (ownerClazz == null) {
+			String msg = "MetaClass "+mc.getFqName()+" was synthesized, can't validate class object";
+			logger.error(msg);
+			throw new ToolError(msg);
+		}
+		Method[] methods = ownerClazz.getMethods();
+		Set<String> methodNames = new HashSet<String>();
+		for (Method m : methods) {
+			methodNames.add(m.getName());
+		}
+
+		List<MetaField> fields = mc.getFields();
+		for (MetaField f : fields) {
+			
+			if (f.isInternal()) continue;
+			
+			
+			String baseName = StringUtils.ucFirst(f.getName());
+			String[] getterSetterName = { "get"+baseName, "set"+baseName };
+
+			for (String name : getterSetterName) {
+				if (!methodNames.contains(name)) {
+					String msg = "Validation error: "+mc.getFqName()+" does not have a method "+name+"()";
+					logger.error(msg);
+					throw new ToolError(msg);
+				}
+			}
+		}
+	}
 
 }

@@ -26,6 +26,12 @@
 
  - Added a Java program to bump Azzyzt's version
 
+ - Added basic validation to entities and embeddables. Generating now
+   fails unless every non-internal field has a default
+   getter/setter. For entities we would get a compile error in the
+   converter anyway, but there are hard-to-detect cases where embedded
+   IDs fail to serialize a field. This is now caught at generation time.
+
 ** Changes in 1.1.1
 #OPT: plain!
 

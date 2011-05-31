@@ -220,6 +220,8 @@ cookbookEJB
 |   |   `-- manessinger
 |   |       `-- cookbook
 |   |           |-- entity
+|   |           |-- meta
+|   |           |   `-- Azzyztant.java
 |   |           `-- service
 |   |               `-- HelloTestBean.java
 |   `-- META-INF
@@ -247,11 +249,11 @@ cookbookServlets
         `-- sun-web.xml
 ---
 
-"''com.manessinger.cookbook.service.HelloTestBean''" is the only
-generated class that will ever be generated into a source folder meant
+"''com.manessinger.cookbook.service.HelloTestBean''" is one of the two
+generated classes that will ever be generated into a source folder meant
 to hold manually written code. You can keep it or throw it away. It is
 only generated upon project creation and is meant to make the project
-instantly deployable.
+instantly deployable and callable.
 
 The bean has one (predictable) method 
 #Code id=HelloTestBean syntax=Java <<---
@@ -269,6 +271,10 @@ public class HelloTestBean {
 Start the server, deploy the EAR ("__Add and Remove__" from the context
 menu of the server) and try it via the service test client built into
 the \GlassFish Administration Console.
+
+The second class that is generated into the user folder is
+"''com.manessinger.cookbook.meta.Azzyztant''". It is explained later,
+when we talk about customization.
 
 
 ** Azzyzted Modeling With Entities
@@ -702,6 +708,8 @@ cookbookEJB
 |   |           |   |-- Language.java
 |   |           |   |-- Visit.java
 |   |           |   `-- Zip.java
+|   |           |-- meta
+|   |           |   `-- Azzyztant.java
 |   |           `-- service
 |   |               `-- HelloTestBean.java
 |   `-- META-INF
@@ -1913,6 +1921,16 @@ The result is
 
 ** Introducing your Azzyztant
 
+There are cases when we want to influence either what features are
+generated, or how the generated features behave at runtime. The idea
+is, to create a central class, that controls both. We call this class
+the "__Azzyztant__".
+
+From release 1.2.0 on, azzyzted projects are generated with a default
+''Azzyztant'' in a sub-package ''meta'' within the ''ejbModule''
+source folder of the EJB project, i.e. parallel to the ''entity''
+package. This is how the ''Azzyztant'' is created:
+
 #Code id=AzzyztantAsGenerated syntax=Java <<---
 package com.manessinger.cookbook.meta;
 
@@ -1967,6 +1985,36 @@ public class Azzyztant implements AzzyztantInterface {
 
 ** Transforming user names
 
+The ''Azzyztant'' has a final field ''usernameConverter'' and a getter
+method for it. At runtime, when the generated application tries to
+determine the name of the calling user, the supplied site adapter
+evaluates an HTTP header that is supposed to have been set by an
+authenticating/authorizing portal in front of the application. We have
+learned that the name of this header is even customizable via a string
+resource definition in the server, but that does not yet mean all is
+well. What about the content of this header?
+
+In many organizations user names are prefixed by a Windows domain
+("''domain\\username''"), but imagine a legacy database that is used
+not only by our generated services, but also by some legacy
+applications. For some reports they may want to join tables on the
+create or modification user field, but expect the names to be without
+the domain (or wholly in upper-case, or ... you get the problem).
+
+What Azzyzt JEE Tools generate is an application, but it is also a
+framework, and like in all frameworks, there is sometimes the need to
+have a hook into otherwise fully automatic mechanisms. The site
+adapter automatically determines the user's name and passes it on to
+the persistence system, only that we would want a hook in between,
+where we could modify the name that is passed on. ''Azzyztant'' is the
+place where such hooks will be put from now on.
+
+In our case, we want to specify a non-null ''usernameConverter''. In
+order to do this, we create a class that implements the interface
+''StringConverterInterface''. I suggest creating a sub-package
+''util'' in the EJB project, and there we could create the converter
+like this:
+
 #Code id=UsernameConverter syntax=Java <<---
 package com.manessinger.cookbook.util;
 
@@ -1991,14 +2039,91 @@ public class UsernameConverter implements StringConverterInterface {
 }
 ---
 
+It has to implement the single method ''String convert(String in)'',
+and in this case the method returns either the non-empty suffix after
+the first backslash, or just the input. Now in ''Azzyztant'', instead
+of specifying the ''usernameConverter'' as ''null'',
+
 #Code id=UsernameConverterAzzyztBefore syntax=Java <<---
 private final StringConverterInterface usernameConverter = null;
 ---
+
+we specify it as an instance of our class:
 
 #Code id=UsernameConverterAzzyztAfter syntax=Java <<---
 private final StringConverterInterface usernameConverter = new UsernameConverter();
 ---
 
+Please note that this is a shared instance between all threads of your
+application, but of course the supplied code is thread-safe, so it
+does not matter.
+
+
+** Cutting back on features
+
+Up to release 1.1.1, the generated code did not compile against the
+JBoss AS 6.0 runtime, because the interfaces generated in the client
+project are annotated with ''@Remote'', and ''@Remote'' is not part of
+the Java EE 6 web profile. On the other hand, ''@Remote'' is only
+needed if you want to call your services via CORBA/IIOP, and very
+often this will not be the case. Web services are in fashion, so why
+should we tie the code to \GlassFish only, just to be able to
+potentially use something that we know we won't use anyway? Some users
+may want it though, and thus we like ''@Remote'' on interfaces to be a
+configurable feature.
+
+The same could be said of access via SOAP or via REST. If you don't
+use it in your application, why should Azzyzt generate it?
+
+In order to cut back on unused features, you can put an annotation on
+the ''Azzyztant'':
+
+#Code id=AzzyztantAsGenerated syntax=Java <<---
+package com.manessinger.cookbook.meta;
+
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+
+import org.azzyzt.jee.runtime.annotation.AzzyztGeneratorOptions;
+import org.azzyzt.jee.runtime.meta.AzzyztGeneratorCutback;
+import org.azzyzt.jee.runtime.meta.AzzyztantInterface;
+import org.azzyzt.jee.runtime.util.StringConverterInterface;
+
+
+@LocalBean
+@Stateless
+@AzzyztGeneratorOptions(
+        cutbacks = {
+                AzzyztGeneratorCutback.NoRemoteInterfaces, 
+                AzzyztGeneratorCutback.NoSoapServices,
+        }
+)
+public class Azzyztant implements AzzyztantInterface {
+
+    private final StringConverterInterface usernameConverter = null;
+
+    public Azzyztant() { super(); }
+
+
+    @Override
+    public StringConverterInterface getUsernameConverter() {
+        return usernameConverter;
+    }
+
+}
+---
+
+For brevity I have removed the generated comments, but otherwise it is
+the same class as generated, with one exception: There is an
+annotation ''@\AzzyztGeneratorOptions'' on the class, that defined the
+cutbacks. In this case we specify, that we want no ''@Remote'' and no
+''@\WebService'' annotations. The resulting applications will only be
+reachable via REST.
+
+For the time being, these are the only cutbacks available, others will
+follow, and there will also be additional options, not only
+cutbacks. In any case, the ''Azzyztant'' is the place where options
+go.
 
 
 * Miscellanea

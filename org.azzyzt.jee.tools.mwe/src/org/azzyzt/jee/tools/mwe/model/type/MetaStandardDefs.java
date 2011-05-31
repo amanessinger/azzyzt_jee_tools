@@ -116,6 +116,7 @@ public class MetaStandardDefs {
 	public final MetaAnnotation javaxPersistenceManyToMany;
 	public final MetaAnnotation javaxPersistencePrePersist;
 	public final MetaAnnotation javaxPersistencePreUpdate;
+	public final MetaAnnotation javaxPersistenceEmbeddable;
 	
 	public final MetaAnnotation javaxJwsWebService;
 	
@@ -296,6 +297,7 @@ public class MetaStandardDefs {
 		javaxPersistenceManyToMany = MetaAnnotation.forType(javax.persistence.ManyToMany.class);
 		javaxPersistencePrePersist = MetaAnnotation.forType(javax.persistence.PrePersist.class);
 		javaxPersistencePreUpdate = MetaAnnotation.forType(javax.persistence.PreUpdate.class);
+		javaxPersistenceEmbeddable = MetaAnnotation.forType(javax.persistence.Embeddable.class);
 		
 		javaxJwsWebService = MetaAnnotation.forType(javax.jws.WebService.class);
 		

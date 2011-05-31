@@ -39,7 +39,6 @@ import javax.persistence.OneToOne;
 
 import org.azzyzt.jee.runtime.annotation.CreateTimestamp;
 import org.azzyzt.jee.runtime.annotation.CreateUser;
-import org.azzyzt.jee.runtime.annotation.Internal;
 import org.azzyzt.jee.runtime.annotation.ModificationTimestamp;
 import org.azzyzt.jee.runtime.annotation.ModificationUser;
 import org.azzyzt.jee.tools.mwe.exception.ToolError;
@@ -52,7 +51,6 @@ import org.azzyzt.jee.tools.mwe.model.association.MetaOneToOne;
 public class MetaEntityField extends MetaField {
 
 	private boolean isIdField = false;
-	private boolean isInternal = false;
 	private boolean isCreateUserField = false;
 	private boolean isModificationUserField = false;
 	private boolean isCreateTimestampField = false;
@@ -83,14 +81,6 @@ public class MetaEntityField extends MetaField {
 		this.isIdField = isIdField;
 	}
 
-	public boolean isInternal() {
-		return isInternal;
-	}
-
-	public void setInternal(boolean isInternal) {
-		this.isInternal = isInternal;
-	}
-
 	public boolean isHoldingAssociationEndpoint() {
 		return associationEndpoint != null;
 	}
@@ -110,9 +100,7 @@ public class MetaEntityField extends MetaField {
 		for (Annotation fa : fld.getAnnotations()) {
 			// We could use the already constructed MetaAnnotationInstances, but this is easier
 			MetaEntity metaEntity = (MetaEntity)getOwnerMdt();
-			if (fa.annotationType().equals(Internal.class)) {
-				setInternal(true);
-			} else if (fa.annotationType().equals(CreateUser.class)) {
+			if (fa.annotationType().equals(CreateUser.class)) {
 				// we need this to be a String
 				if (! isStringField() ) {
 					String msg = "Field attributed with @CreateUser must be a string";

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -39,9 +39,11 @@ import java.util.Map;
 import java.util.Set;
 
 import org.azzyzt.jee.tools.mwe.exception.ToolError;
+import org.azzyzt.jee.tools.mwe.model.MetaModel;
 import org.azzyzt.jee.tools.mwe.model.type.MetaArray;
 import org.azzyzt.jee.tools.mwe.model.type.MetaDeclaredType;
 import org.azzyzt.jee.tools.mwe.model.type.MetaEnum;
+import org.azzyzt.jee.tools.mwe.model.type.MetaStandardDefs;
 import org.azzyzt.jee.tools.mwe.model.type.MetaType;
 import org.azzyzt.jee.tools.mwe.model.type.MetaTypeRegistry;
 
@@ -70,6 +72,12 @@ public class MetaAnnotation extends MetaDeclaredType {
 					if (!metaAnnotation.isStaticallyAnalyzed()) {
 						metaAnnotation.postConstructionAnalysis(annotationType);
 					}
+					
+					MetaStandardDefs std = MetaType.getStandardtypes();
+					if (metaAnnotation.equals(std.javaxPersistenceEmbeddable)) {
+						MetaModel.getCurrentModel().addEmbeddable(annotated);
+					}
+					
 					annotated.addReferencedForeignType(metaAnnotation);
 					MetaAnnotationInstance mai = new MetaAnnotationInstance(metaAnnotation, annotated);
 					for (MetaAnnotationElement mae : metaAnnotation.getElements()) {
@@ -148,7 +156,6 @@ public class MetaAnnotation extends MetaDeclaredType {
 			String elementName = m.getName();
 			mae.setName(elementName);
 			mae.setMethod(m);
-			// System.out.println("@"+clazz.getSimpleName()+" - "+elementName);
 			try {
 				Type elementType = m.getGenericReturnType();
 				MetaType elementMetaType = MetaType.forType(elementType);
