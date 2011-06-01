@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.azzyzt.jee.tools.mwe.projectgen.ProjectGen;
+import org.azzyzt.jee.tools.project.AzzyztToolsProject;
 import org.azzyzt.jee.tools.project.Context;
 import org.azzyzt.jee.tools.project.DynamicWebProject;
 import org.azzyzt.jee.tools.project.EarProject;
@@ -68,16 +69,23 @@ public class NewAzzyztedProjectWorker {
 		
 		if (!context.isValid()) throw new CoreException(context.getErrorStatus());
 		
-		context.getMonitor().beginTask("Generating azzyzted project "+context.getEarProjectName(), 100);
+		context.getMonitor().beginTask("Generating azzyzted project "+context.getProjectBaseName(), 100);
 		
 		try {
 			advanceProgress(0, "Make sure Azzyzt is installed in the workspace");
 			
+			new AzzyztToolsProject(
+					ProjectGen.AZZYZT_RELEASE, 
+					ProjectGen.getJeeToolsMweJarUrl(), 
+					ProjectGen.getToolsLibJarUrls(), 
+					context
+			);
+			
+			advanceProgress(10, "Create EAR project");
+			
 			Map<String, URL> runtimeJars = new HashMap<String, URL>();
 			runtimeJars.put(ProjectGen.JEE_RUNTIME_JAR, ProjectGen.getJeeRuntimeJarUrl());
 			runtimeJars.put(ProjectGen.JEE_RUNTIME_SITE_JAR, ProjectGen.getJeeRuntimeSiteJarUrl());
-			
-			advanceProgress(10, "Create EAR project");
 			
 			// We crash upon EAR facet creation if the EAR has been created implicitly. Do it now.
 

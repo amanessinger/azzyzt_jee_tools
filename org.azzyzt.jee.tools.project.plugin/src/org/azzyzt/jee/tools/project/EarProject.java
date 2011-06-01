@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -28,7 +28,6 @@
 package org.azzyzt.jee.tools.project;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,7 +36,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.azzyzt.jee.tools.common.Util;
-import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -56,7 +54,7 @@ import org.eclipse.wst.common.componentcore.resources.IVirtualReference;
 import org.eclipse.wst.common.frameworks.datamodel.DataModelFactory;
 import org.eclipse.wst.common.frameworks.datamodel.IDataModel;
 
-public class EarProject extends Project {
+public class EarProject extends FacetedProject {
 
 	/*
 	 *  defined but not accessible in 
@@ -173,11 +171,4 @@ public class EarProject extends Project {
 		earCmp.setReferences(references.toArray(new IVirtualReference[references.size()]));
 	}
 
-	private void copyFromUrlToFolder(IContainer iContainer, URL content, String fileName) 
-	throws IOException, CoreException 
-	{
-		InputStream in = content.openConnection().getInputStream();
-		iContainer.getFile(new Path(fileName)).create(in, true, getContext().getSubMonitor());
-	}
-	
 }

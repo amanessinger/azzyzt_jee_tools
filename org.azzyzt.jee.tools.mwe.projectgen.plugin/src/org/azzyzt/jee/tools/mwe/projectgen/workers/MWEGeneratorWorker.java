@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -31,6 +31,7 @@ import java.net.URL;
 
 import org.azzyzt.jee.tools.common.Util;
 import org.azzyzt.jee.tools.mwe.projectgen.ProjectGen;
+import org.azzyzt.jee.tools.project.AzzyztToolsProject;
 import org.azzyzt.jee.tools.project.Context;
 import org.azzyzt.jee.tools.project.ProjectUtil;
 import org.eclipse.core.resources.IProject;
@@ -66,9 +67,19 @@ public class MWEGeneratorWorker {
 				);
 			}
 			String projectBaseName = prjName.substring(0, prjName.length() - 3);
+
 			Context context = new Context();
 			context.setProjectBaseName(projectBaseName);
+			context.setMonitor(monitor);
+			context.setValid(true);
 			
+			new AzzyztToolsProject(
+					ProjectGen.AZZYZT_RELEASE, 
+					ProjectGen.getJeeToolsMweJarUrl(), 
+					ProjectGen.getToolsLibJarUrls(), 
+					context
+			);
+
 			URL[] classPathEntries = ProjectUtil.classPathURLsForToolMainClass(prj, ProjectGen.extraURLsForToolMainClass());
 			String fqMainClassName = "org.azzyzt.jee.tools.mwe.StandardProjectStructureGenerator";
 			IWorkspace workspace = ResourcesPlugin.getWorkspace();

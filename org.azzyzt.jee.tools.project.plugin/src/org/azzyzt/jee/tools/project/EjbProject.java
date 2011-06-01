@@ -87,7 +87,7 @@ public class EjbProject extends JavaProject {
 	private void installEJBFacet(EarProject ear) 
 	throws CoreException 
 	{
-		IDataModel config = (IDataModel) Project.createConfigObject(getContext().getFacets().ejbFacetVersion);
+		IDataModel config = (IDataModel) FacetedProject.createConfigObject(getContext().getFacets().ejbFacetVersion);
 
 		Boolean addToEar = (ear != null);
 		boolean createClientProject = getContext().getCreateEjbClient() && addToEar;
@@ -108,7 +108,7 @@ public class EjbProject extends JavaProject {
 		installFacet(getContext().getFacets().ejbFacetVersion, config);
 		
 		if (createClientProject) {
-			Project cp = new Project(getContext().getEjbClientProjectName(), getContext());
+			FacetedProject cp = new FacetedProject(getContext().getEjbClientProjectName(), getContext());
 			client = JavaProject.asJavaProject(cp);
 			client.createFolderPathIfNeeded(GENERATED_SRC_FOLDER_NAME);
 			client.addFolderToClassPath(createFolderPathIfNeeded(GENERATED_SRC_FOLDER_NAME));

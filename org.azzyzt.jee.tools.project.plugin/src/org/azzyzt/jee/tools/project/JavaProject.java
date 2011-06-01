@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -46,7 +46,7 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jst.common.project.facet.core.JavaFacetInstallConfig;
 import org.eclipse.wst.common.frameworks.datamodel.IDataModel;
 
-public class JavaProject extends Project {
+public class JavaProject extends FacetedProject {
 	
 	public static final String GENERATED_SRC_FOLDER_NAME = "generated";
 	public static final String DWP_SRC_FOLDER_NAME = "src";
@@ -60,7 +60,7 @@ public class JavaProject extends Project {
 		return (IJavaProject)p.getP().getNature(JavaCore.NATURE_ID);
 	}
 
-	protected static JavaProject asJavaProject(Project p) throws CoreException {
+	protected static JavaProject asJavaProject(FacetedProject p) throws CoreException {
 		JavaProject jp = new JavaProject();
 		jp.setP(p.getP());
 		jp.setFp(p.getFp());
@@ -82,7 +82,7 @@ public class JavaProject extends Project {
 	protected void installJavaFacet()
 	throws CoreException 
 	{
-		JavaFacetInstallConfig config = (JavaFacetInstallConfig) Project.createConfigObject(getContext().getFacets().javaFacetVersion);
+		JavaFacetInstallConfig config = (JavaFacetInstallConfig) FacetedProject.createConfigObject(getContext().getFacets().javaFacetVersion);
 		List<IPath> sourceFolderPaths = new ArrayList<IPath>();
 		for (String sourceFolderName : sourceFolderNames) {
 			sourceFolderPaths.add((IPath) new Path(sourceFolderName));
@@ -95,7 +95,7 @@ public class JavaProject extends Project {
 	protected void installJpaFacet() 
 	throws CoreException 
 	{
-		IDataModel config = (IDataModel) Project.createConfigObject(getContext().getFacets().jpaFacetVersion);
+		IDataModel config = (IDataModel) FacetedProject.createConfigObject(getContext().getFacets().jpaFacetVersion);
 		
 		installFacet(getContext().getFacets().jpaFacetVersion, config);
 
@@ -143,7 +143,7 @@ public class JavaProject extends Project {
 					offset = 1;
 				} else {
 					Common.getDefault().log(
-							"Project "+getP().getName()+" has more than one JRE class path entry!!"
+							"FacetedProject "+getP().getName()+" has more than one JRE class path entry!!"
 					);
 					newRawClassPath[i - offset] = cpe;
 				}
