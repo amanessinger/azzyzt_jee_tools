@@ -51,6 +51,9 @@ public class VersionBumper {
 	private static final String VIKI_LINE_PREFIX = "#VAR: version=";
 	private static final String VIKI_LINE_REGEXP = "^"+VIKI_LINE_PREFIX+DOTTED_VERSION_EXPR;
 	
+	private static final String AZZYZT_RELEASE_LINE_PREFIX = "public static final String AZZYZT_RELEASE = \"";
+	private static final String AZZYZT_RELEASE_LINE_REGEXP = "^\\s*"+AZZYZT_RELEASE_LINE_PREFIX+DOTTED_VERSION_EXPR+"\";";
+	
 	private static final String[] SITES = {
 		"azzyzt_generic/site.xml",
 		"azzyzt_magwien/site.xml",
@@ -71,6 +74,9 @@ public class VersionBumper {
 	
 	private static final String VIKI_DIR = "doc";
 	private static final String VIKI_EXT = ".viki";
+	
+	private static final String AZZYZT_RELEASE_JAVA_SOURCE = 
+		"org.azzyzt.jee.tools.mwe.projectgen.plugin/src/org/azzyzt/jee/tools/mwe/projectgen/ProjectGen.java";
 
 	private static final DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 
@@ -100,6 +106,7 @@ public class VersionBumper {
 			bumpTextTo(manifest, MANIFEST_LINE_REGEXP, MANIFEST_LINE_PREFIX+qualifiedVersion, 1);
 		}
 		bumpTextsTo(VIKI_DIR, VIKI_EXT, VIKI_LINE_REGEXP, VIKI_LINE_PREFIX+newVersion, 1);
+		bumpTextTo(AZZYZT_RELEASE_JAVA_SOURCE, AZZYZT_RELEASE_LINE_REGEXP, "    "+AZZYZT_RELEASE_LINE_PREFIX+newVersion+"\";", 1);
 	}
 
 	private static void bumpXMLTo(String filename, String xpathExpression, String[] targetAttributes, String suffix, String newVersion) {

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -46,6 +46,9 @@ public class ProjectGen extends AbstractUIPlugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.azzyzt.jee.tools.mwe.projectgen"; //$NON-NLS-1$
+
+	// Azzyzt release. Don't edit it, this is set automatically by VersionBumper
+    public static final String AZZYZT_RELEASE = "1.2.0";
 	
 	// The ID of the associated nature
 	public static final String AZZYZTED_NATURE_ID = "org.azzyzt.jee.mwe.nature.id"; //$NON-NLS-1$

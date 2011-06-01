@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -71,17 +71,19 @@ public class NewAzzyztedProjectWorker {
 		context.getMonitor().beginTask("Generating azzyzted project "+context.getEarProjectName(), 100);
 		
 		try {
-			advanceProgress(0, "Create EAR project");
+			advanceProgress(0, "Make sure Azzyzt is installed in the workspace");
 			
-			// We crash upon EAR facet creation if the EAR has been created implicitly. Do it now.
-
 			Map<String, URL> runtimeJars = new HashMap<String, URL>();
 			runtimeJars.put(ProjectGen.JEE_RUNTIME_JAR, ProjectGen.getJeeRuntimeJarUrl());
 			runtimeJars.put(ProjectGen.JEE_RUNTIME_SITE_JAR, ProjectGen.getJeeRuntimeSiteJarUrl());
 			
+			advanceProgress(10, "Create EAR project");
+			
+			// We crash upon EAR facet creation if the EAR has been created implicitly. Do it now.
+
 			EarProject ear = EarProject.create(context.getEarProjectName(), context, runtimeJars, (Project[])null);
 			
-			advanceProgress(10, "Create EJB project");
+			advanceProgress(20, "Create EJB project");
 			
 			EjbProject ejb =
 				new EjbProject(
