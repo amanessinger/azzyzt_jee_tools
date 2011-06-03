@@ -76,7 +76,7 @@ public class Project {
 		iContainer.getFile(new Path(fileName)).create(in, true, getContext().getSubMonitor());
 	}
 
-	protected void refresh() 
+	public void refresh() 
 	throws CoreException 
 	{
 		p.refreshLocal(IResource.DEPTH_INFINITE, context.getSubMonitor());
