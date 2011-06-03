@@ -18,6 +18,7 @@ public class Project {
 	private String name;
 	protected Context context;
 	protected IProject p;
+	private boolean isNewlyCreated = false;
 
 	public Project() {
 		super();
@@ -32,6 +33,7 @@ public class Project {
 		p = context.getRoot().getProject(name);
 
 		if (!p.exists()) {
+			isNewlyCreated = true;
 			IProjectDescription dsc = context.getWorkspace().newProjectDescription(name);
 			p.create(dsc, context.getSubMonitor());
 		}
@@ -110,6 +112,10 @@ public class Project {
 
 	public Context getContext() {
 		return context;
+	}
+
+	public boolean isNewlyCreated() {
+		return isNewlyCreated;
 	}
 
 }
