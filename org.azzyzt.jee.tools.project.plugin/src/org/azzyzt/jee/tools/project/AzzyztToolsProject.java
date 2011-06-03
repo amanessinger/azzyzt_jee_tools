@@ -16,26 +16,32 @@ public class AzzyztToolsProject extends Project {
 	private static final String PROJECT_NAME = "azzyzt_tools";
 	
 	private static final String DEVELOPMENT_FOLDER_NAME = "DEVELOPMENT";
+	private static final String RUNTIME_SUB_FOLDER_NAME = "runtime";
 	
 	private String azzyztVersion;
+	private String versionFolderName;
 	private IFolder versionFolderPath;
+	
 	private URL mweUrl;
 	private List<URL> libUrls;
+	private URL runtimeUrl;
+	private URL runtimeSiteUrl;	
 
 	private boolean inDevelopmentMode = Platform.inDevelopmentMode();
-	
-	public AzzyztToolsProject(String azzyztVersion, URL mweUrl, List<URL> libUrls, Context context) 
+
+	public AzzyztToolsProject(String azzyztVersion, URL mweUrl, List<URL> libUrls, URL runtimeUrl, URL runtimeSiteUrl, Context context) 
 	throws CoreException {
 		super(PROJECT_NAME, context);
 		this.azzyztVersion = azzyztVersion;
 		this.mweUrl = mweUrl;
 		this.libUrls = libUrls;
+		this.runtimeUrl = runtimeUrl;
+		this.runtimeSiteUrl = runtimeSiteUrl;
 		buildIfNecessary();
 	}
 
 	private void buildIfNecessary() 
 	throws CoreException {
-		String versionFolderName;
 		if (inDevelopmentMode) {
 			versionFolderName = DEVELOPMENT_FOLDER_NAME;
 		} else {
@@ -44,21 +50,38 @@ public class AzzyztToolsProject extends Project {
 		versionFolderPath = createFolderForPathIfNeeded(new Path(versionFolderName));
 		List<URL> urlsToCopy = new ArrayList<URL>(libUrls);
 		urlsToCopy.add(0, mweUrl);
+		copyToFolder(urlsToCopy, null);
+		
+		urlsToCopy.clear();
+		urlsToCopy.add(runtimeUrl);
+		urlsToCopy.add(runtimeSiteUrl);
+		copyToFolder(urlsToCopy, RUNTIME_SUB_FOLDER_NAME);
+	}
+
+	private void copyToFolder(List<URL> urlsToCopy, String subfolder) 
+	throws CoreException 
+	{
+		IFolder folderPath;
+		if (subfolder == null) {
+			folderPath = versionFolderPath;
+		} else {
+			folderPath = createFolderForPathIfNeeded(new Path(versionFolderName+"/"+subfolder));
+		}
 		for (URL u : urlsToCopy) {
 			String filename = u.toExternalForm();
 			filename = filename.substring(filename.lastIndexOf('/') + 1);
 			// always copy in development mode, otherwise if it does not exist
-			boolean fileExists = versionFolderPath.exists(new Path(filename));
+			boolean fileExists = folderPath.exists(new Path(filename));
 			if (inDevelopmentMode || !fileExists) {
 				try {
 					if (fileExists) {
 						// delete old dev version
-						versionFolderPath.findMember(filename).delete(true, getContext().getSubMonitor());
+						folderPath.findMember(filename).delete(true, getContext().getSubMonitor());
 					}
-					copyFromUrlToFolder(versionFolderPath, u, filename);
-					System.err.println("Copied "+filename+" to "+versionFolderPath);
+					copyFromUrlToFolder(folderPath, u, filename);
+					System.err.println("Copied "+filename+" to "+folderPath);
 				} catch (IOException e) {
-					throw Util.createCoreException("Can't install runtime libraries into EAR project", e);
+					throw Util.createCoreException("Can't install libraries into EAR project", e);
 				}
 			}
 		}

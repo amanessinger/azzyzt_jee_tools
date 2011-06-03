@@ -78,6 +78,8 @@ public class NewAzzyztedProjectWorker {
 					ProjectGen.AZZYZT_RELEASE, 
 					ProjectGen.getJeeToolsMweJarUrl(), 
 					ProjectGen.getToolsLibJarUrls(), 
+					ProjectGen.getJeeRuntimeJarUrl(),
+					ProjectGen.getJeeRuntimeSiteJarUrl(),
 					context
 			);
 			

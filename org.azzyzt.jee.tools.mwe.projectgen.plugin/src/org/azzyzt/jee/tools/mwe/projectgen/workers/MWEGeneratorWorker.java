@@ -81,6 +81,8 @@ public class MWEGeneratorWorker {
 					ProjectGen.AZZYZT_RELEASE, 
 					ProjectGen.getJeeToolsMweJarUrl(), 
 					ProjectGen.getToolsLibJarUrls(), 
+					ProjectGen.getJeeRuntimeJarUrl(),
+					ProjectGen.getJeeRuntimeSiteJarUrl(),
 					context
 			);
 			
