@@ -27,6 +27,9 @@
 
 package org.azzyzt.jee.tools.project;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -56,13 +59,16 @@ import org.eclipse.wst.common.frameworks.datamodel.IDataModel;
 
 public class EarProject extends FacetedProject {
 
+	private static final String EAR_CONTENT_META_INF = "EarContent/META-INF";
+	private static final String VERSION_MARKER_FILE = EAR_CONTENT_META_INF+"/azzyzt.xml";
+	
 	/*
 	 *  defined but not accessible in 
 	 *  org.eclipse.wst.common.componentcore.internal.resources.VirtualArchiveComponent.LIBARCHIVETYPE
 	 */
 	private static final String LIBARCHIVETYPE = "lib";
 
-	public static EarProject create(String name, Context context, Map<String, URL> runtimeJars, Project...projects) 
+	public static EarProject create(String azzyztVersion, String name, Context context, Map<String, URL> runtimeJars, Project...projects) 
 	throws CoreException 
 	{
 		EarProject ear = new EarProject(name, context);
@@ -71,11 +77,12 @@ public class EarProject extends FacetedProject {
 		ear.installServerSpecificFacets();
 		ear.fixFacets(IJ2EEFacetConstants.ENTERPRISE_APPLICATION_FACET);
 		ear.installRuntimeLibsIntoEar(runtimeJars);
+		ear.installVersionMarker(azzyztVersion);
 		
 		return ear;
 	}
 	
-	private EarProject(String name, Context context) 
+	public EarProject(String name, Context context) 
 	throws CoreException 
 	{
 		super(name, context);
@@ -171,4 +178,23 @@ public class EarProject extends FacetedProject {
 		earCmp.setReferences(references.toArray(new IVirtualReference[references.size()]));
 	}
 
+	private void installVersionMarker(String azzyztVersion) 
+	throws CoreException 
+	{
+		createFolderForPathIfNeeded(new Path(EAR_CONTENT_META_INF));
+		File azzyztVersionMarker = new File(getP().getLocationURI().getPath() + "/" + VERSION_MARKER_FILE);
+		try {
+			BufferedWriter writer = new BufferedWriter(new FileWriter(azzyztVersionMarker));
+			writer.write("<azzyzted_project>\n");
+			writer.write("  <azzyzt_version>");
+			writer.write(azzyztVersion);
+			writer.write("</azzyzt_version>\n");
+			writer.write("</azzyzted_project>\n");
+			writer.close();
+			refresh();
+		} catch (IOException e) {
+			throw Util.createCoreException("Can't create "+azzyztVersionMarker, e);
+		}
+	}
 }
+

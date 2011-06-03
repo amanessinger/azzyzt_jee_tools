@@ -91,7 +91,7 @@ public class NewAzzyztedProjectWorker {
 			
 			// We crash upon EAR facet creation if the EAR has been created implicitly. Do it now.
 
-			EarProject ear = EarProject.create(context.getEarProjectName(), context, runtimeJars, (Project[])null);
+			EarProject ear = EarProject.create(ProjectGen.AZZYZT_RELEASE, context.getEarProjectName(), context, runtimeJars, (Project[])null);
 			
 			advanceProgress(20, "Create EJB project");
 			
