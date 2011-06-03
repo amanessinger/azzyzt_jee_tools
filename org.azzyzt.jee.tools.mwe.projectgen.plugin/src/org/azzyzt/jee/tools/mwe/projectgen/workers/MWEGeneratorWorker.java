@@ -77,7 +77,7 @@ public class MWEGeneratorWorker {
 			context.setMonitor(monitor);
 			context.setValid(true);
 			
-			new AzzyztToolsProject(
+			AzzyztToolsProject azzyztToolsProject = new AzzyztToolsProject(
 					ProjectGen.AZZYZT_RELEASE, 
 					ProjectGen.getJeeToolsMweJarUrl(), 
 					ProjectGen.getToolsLibJarUrls(), 
@@ -98,7 +98,7 @@ public class MWEGeneratorWorker {
 					root.getLocation()+""+IPath.SEPARATOR,
 					projectBaseName
 			};
-			URL[] classPathEntries = ProjectUtil.classPathURLsForToolMainClass(prj, ProjectGen.extraURLsForToolMainClass());
+			URL[] classPathEntries = ProjectUtil.classPathURLsForToolMainClass(prj, azzyztToolsProject.extraURLsForToolMainClass());
 
 			String fqMainClassName = "org.azzyzt.jee.tools.mwe.PrerequisiteGenerator";
 			Util.callExternalMainClass("Ensure we have all prerequisites", classPathEntries, fqMainClassName, args);

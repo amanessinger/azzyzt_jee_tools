@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.net.URL;
 
 import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -69,11 +70,16 @@ public class Project {
 		return f;
 	}
 
-	protected void copyFromUrlToFolder(IContainer iContainer, URL content, String fileName)
+	protected URL copyFromUrlToFolder(IContainer iContainer, URL content, String fileName)
 	throws IOException, CoreException 
 	{
 		InputStream in = content.openConnection().getInputStream();
-		iContainer.getFile(new Path(fileName)).create(in, true, getContext().getSubMonitor());
+		IFile f = iContainer.getFile(new Path(fileName));
+		f.create(in, true, getContext().getSubMonitor());
+		
+		URL targetURL = f.getLocationURI().toURL();
+		
+		return targetURL;
 	}
 
 	public void refresh() 

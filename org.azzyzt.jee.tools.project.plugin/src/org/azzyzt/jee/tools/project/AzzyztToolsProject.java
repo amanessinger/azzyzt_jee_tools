@@ -26,6 +26,8 @@ public class AzzyztToolsProject extends Project {
 	private List<URL> libUrls;
 	private URL runtimeUrl;
 	private URL runtimeSiteUrl;	
+	
+	private List<URL> localExtraUrls = new ArrayList<URL>();
 
 	private boolean inDevelopmentMode = Platform.inDevelopmentMode();
 
@@ -78,13 +80,17 @@ public class AzzyztToolsProject extends Project {
 						// delete old dev version
 						folderPath.findMember(filename).delete(true, getContext().getSubMonitor());
 					}
-					copyFromUrlToFolder(folderPath, u, filename);
-					System.err.println("Copied "+filename+" to "+folderPath);
+					URL localUrl = copyFromUrlToFolder(folderPath, u, filename);
+					localExtraUrls.add(localUrl);
 				} catch (IOException e) {
 					throw Util.createCoreException("Can't install libraries into EAR project", e);
 				}
 			}
 		}
+	}
+
+	public List<URL> extraURLsForToolMainClass() {
+		return localExtraUrls;
 	}
 
 	

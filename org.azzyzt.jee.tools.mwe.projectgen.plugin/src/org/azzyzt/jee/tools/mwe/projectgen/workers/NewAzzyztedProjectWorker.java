@@ -74,7 +74,7 @@ public class NewAzzyztedProjectWorker {
 		try {
 			advanceProgress(0, "Make sure Azzyzt is installed in the workspace");
 			
-			new AzzyztToolsProject(
+			AzzyztToolsProject azzyztToolsProject = new AzzyztToolsProject(
 					ProjectGen.AZZYZT_RELEASE, 
 					ProjectGen.getJeeToolsMweJarUrl(), 
 					ProjectGen.getToolsLibJarUrls(), 
@@ -101,7 +101,7 @@ public class NewAzzyztedProjectWorker {
 						ear, 
 						new ArrayList<JavaProject>(),
 						Arrays.asList(ProjectGen.AZZYZTED_NATURE_ID),
-						ProjectGen.extraURLsForToolMainClass()
+						azzyztToolsProject.extraURLsForToolMainClass()
 				);
 	
 			advanceProgress(70, "Creating servlet project");

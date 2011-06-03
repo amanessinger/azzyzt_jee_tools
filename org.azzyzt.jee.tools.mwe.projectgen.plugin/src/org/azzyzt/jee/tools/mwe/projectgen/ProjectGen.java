@@ -190,14 +190,5 @@ public class ProjectGen extends AbstractUIPlugin {
 	public static List<URL> getToolsLibJarUrls() {
 		return toolsLibJarUrls;
 	}
-
-	public static List<URL> extraURLsForToolMainClass() {
-		List<URL> extraUrls = new ArrayList<URL>();
-		extraUrls.add(getJeeToolsMweJarUrl());
-		extraUrls.add(getJeeRuntimeJarUrl());
-		extraUrls.add(getJeeRuntimeSiteJarUrl());
-		extraUrls.addAll(getToolsLibJarUrls());
-		return extraUrls;
-	}
 	
 }
