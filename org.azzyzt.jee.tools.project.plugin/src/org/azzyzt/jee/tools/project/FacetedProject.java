@@ -51,9 +51,15 @@ public class FacetedProject extends Project {
 
 		fp = ProjectFacetsManager.create(p, true, context.getSubMonitor());
 		
-		// associate runtime, we need it for all project types
-		fp.setTargetedRuntimes(context.getTargetRuntimes(), null);
-		fp.setPrimaryRuntime(context.getSelectedRuntime(), null);
+		if (context.getSelectedRuntime() != null) {
+			/*
+			 *  associate runtime, we need it for all project types. Upon project creation, 
+			 *  we get a selected runtime, if we merely open an existing project, runtimes
+			 *  are already set
+			 */
+			fp.setTargetedRuntimes(context.getTargetRuntimes(), null);
+			fp.setPrimaryRuntime(context.getSelectedRuntime(), null);
+		}
 	}
 
 	protected void installFacet(

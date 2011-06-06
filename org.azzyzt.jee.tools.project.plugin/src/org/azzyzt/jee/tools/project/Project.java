@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
+import org.azzyzt.jee.tools.common.Common;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -72,11 +73,18 @@ public class Project {
 		return f;
 	}
 
-	protected URL copyFromUrlToFolder(IContainer iContainer, URL content, String fileName)
+	protected URL copyFromUrlToFolder(IContainer folderPath, URL content, String filename)
 	throws IOException, CoreException 
 	{
+		boolean fileExists = folderPath.exists(new Path(filename));
+		if (fileExists) {
+			// may be an old dev version
+			folderPath.findMember(filename).delete(true, getContext().getSubMonitor());
+			Common.getDefault().log("Old file "+filename+" deleted");
+		}
+		Common.getDefault().log("Copying "+content+" to "+filename);
 		InputStream in = content.openConnection().getInputStream();
-		IFile f = iContainer.getFile(new Path(fileName));
+		IFile f = folderPath.getFile(new Path(filename));
 		f.create(in, true, getContext().getSubMonitor());
 		
 		URL targetURL = f.getLocationURI().toURL();

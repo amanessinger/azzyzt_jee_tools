@@ -34,6 +34,7 @@ import org.azzyzt.jee.tools.common.Util;
 import org.azzyzt.jee.tools.mwe.projectgen.ProjectGen;
 import org.azzyzt.jee.tools.project.AzzyztToolsProject;
 import org.azzyzt.jee.tools.project.Context;
+import org.azzyzt.jee.tools.project.EarProject;
 import org.azzyzt.jee.tools.project.EjbProject;
 import org.azzyzt.jee.tools.project.Project;
 import org.azzyzt.jee.tools.project.ProjectUtil;
@@ -86,7 +87,7 @@ public class MWEGeneratorWorker {
 					context
 			);
 			
-			fixLegacyProjects();
+			fixAndUpdateLegacyProjects();
 
 			/*
 			 * Two steps follow now: First we make sure prerequisites exist, then we load our model,
@@ -127,9 +128,16 @@ public class MWEGeneratorWorker {
 		}
 	}
 
-	private void fixLegacyProjects() 
+	private void fixAndUpdateLegacyProjects() 
 	throws CoreException 
 	{
+		// update EAR libraries to current version 
+		new EarProject(
+				ProjectGen.AZZYZT_RELEASE, 
+				context.getEarProjectName(), 
+				context, ProjectGen.getAllRuntimeJarUrls()
+		);
+		
 		// pre-1.2.0 did not have a "meta" package in EJB user folder
 		Project ejbProject = new Project(context.getEjbProjectName(), context);
 		String ejbDir = ejbProject.getP().getLocation().toString();

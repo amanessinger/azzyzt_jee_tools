@@ -1,12 +1,14 @@
 package org.azzyzt.jee.tools.project;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.azzyzt.jee.tools.common.Util;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
@@ -72,18 +74,26 @@ public class AzzyztToolsProject extends Project {
 		for (URL u : urlsToCopy) {
 			String filename = u.toExternalForm();
 			filename = filename.substring(filename.lastIndexOf('/') + 1);
-			// always copy in development mode, otherwise if it does not exist
-			boolean fileExists = folderPath.exists(new Path(filename));
+			/*
+			 * Always copy in development mode, otherwise if it does not exist,
+			 * in any case remember it in localExtraUrls
+			 */
+			Path fileSubPath = new Path(filename);
+			boolean fileExists = folderPath.exists(fileSubPath);
 			if (inDevelopmentMode || !fileExists) {
 				try {
-					if (fileExists) {
-						// delete old dev version
-						folderPath.findMember(filename).delete(true, getContext().getSubMonitor());
-					}
 					URL localUrl = copyFromUrlToFolder(folderPath, u, filename);
 					localExtraUrls.add(localUrl);
 				} catch (IOException e) {
 					throw Util.createCoreException("Can't install libraries into EAR project", e);
+				}
+			} else {
+				IResource fileResource = folderPath.findMember(fileSubPath);
+				try {
+					URL localUrl = fileResource.getLocationURI().toURL();
+					localExtraUrls.add(localUrl);
+				} catch (MalformedURLException e) {
+					throw Util.createCoreException("Can't enumerate libraries of EAR project", e);
 				}
 			}
 		}

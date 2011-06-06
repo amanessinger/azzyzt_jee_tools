@@ -32,7 +32,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -48,7 +50,7 @@ public class ProjectGen extends AbstractUIPlugin {
 	public static final String PLUGIN_ID = "org.azzyzt.jee.tools.mwe.projectgen"; //$NON-NLS-1$
 
 	// Azzyzt release. Don't edit it, this is set automatically by VersionBumper
-    public static final String AZZYZT_RELEASE = "1.2.0";
+    public static final String AZZYZT_RELEASE = "1.2.1";
 	
 	// The ID of the associated nature
 	public static final String AZZYZTED_NATURE_ID = "org.azzyzt.jee.mwe.nature.id"; //$NON-NLS-1$
@@ -173,6 +175,13 @@ public class ProjectGen extends AbstractUIPlugin {
 			|| jeeRuntimeSiteJarUrl != null 
 			|| jeeToolsMweJarUrl != null
 			;
+	}
+
+	public static Map<String, URL> getAllRuntimeJarUrls() {
+		Map<String, URL> runtimeJars = new HashMap<String, URL>();
+		runtimeJars.put(JEE_RUNTIME_JAR, getJeeRuntimeJarUrl());
+		runtimeJars.put(JEE_RUNTIME_SITE_JAR, getJeeRuntimeSiteJarUrl());
+		return runtimeJars;
 	}
 
 	public static URL getJeeRuntimeJarUrl() {

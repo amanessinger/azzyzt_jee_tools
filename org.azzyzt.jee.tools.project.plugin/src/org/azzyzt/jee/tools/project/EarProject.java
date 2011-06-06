@@ -35,14 +35,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.azzyzt.jee.tools.common.Common;
 import org.azzyzt.jee.tools.common.Util;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -72,45 +71,34 @@ public class EarProject extends FacetedProject {
 	private static final String LIBARCHIVETYPE = "lib";
 	
 	private AzzyztProperties azzyztProperties = null;
-	private boolean needsRuntimeLibrariesCopied = false;
+	private boolean isRuntimeLibraryOutOfDate = false;
 
-	public static EarProject create(String azzyztVersion, String name, Context context, Map<String, URL> runtimeJars, Project...projects) 
-	throws CoreException 
-	{
-		EarProject ear = new EarProject(azzyztVersion, name, context);
-		
-		if (ear.isNewlyCreated()) {
-			ear.installEARFacet(projects);
-			ear.installServerSpecificFacets();
-			ear.fixFacets(IJ2EEFacetConstants.ENTERPRISE_APPLICATION_FACET);
-		}
-		if (ear.needsRuntimeLibrariesCopied) {
-			ear.installRuntimeLibsIntoEar(runtimeJars);
-		}
-		
-		return ear;
-	}
-	
-	public EarProject(String azzyztVersion, String name, Context context) 
+	public EarProject(String azzyztVersion, String name, Context context, Map<String, URL> runtimeJars) 
 	throws CoreException 
 	{
 		super(name, context);
+		
 		ensureAzzyztProperties(azzyztVersion);
+		
+		if (isNewlyCreated()) {
+			installEARFacet();
+			installServerSpecificFacets();
+			fixFacets(IJ2EEFacetConstants.ENTERPRISE_APPLICATION_FACET);
+		}
+		
+		if (isRuntimeLibraryOutOfDate()) {
+			installRuntimeLibsIntoEar(runtimeJars);
+		}
 	}
 
-	private void installEARFacet(Project... projects) throws CoreException {
-		IProject[] iProjects = new IProject[0];
-		if (projects != null) {
-			iProjects = new IProject[projects.length];
-			for (int i = 0; i < projects.length; i++) {
-				iProjects[i] = projects[i].getP();
-			}
-		}
+	private void installEARFacet() 
+	throws CoreException 
+	{
 		IDataModel config = (IDataModel) createConfigObject(getContext().getFacets().earFacetVersion);
 		
 		config.setProperty(
 				IEarFacetInstallDataModelProperties.J2EE_PROJECTS_LIST, 
-				Arrays.asList(iProjects)
+				Collections.EMPTY_LIST
 		);
 		config.setProperty(
 				IEarFacetInstallDataModelProperties.JAVA_PROJECT_LIST,
@@ -203,17 +191,24 @@ public class EarProject extends FacetedProject {
 			 *  It's either new or a legacy project, in any case we install 
 			 *  new libraries and set the version to current
 			 */
-			needsRuntimeLibrariesCopied = true;
+			isRuntimeLibraryOutOfDate = true;
+			Common.getDefault().log("No azzyztPropertiesFile, assuming libraries out of date");
 			
 			azzyztProperties = new AzzyztProperties(azzyztVersion);
 			savePropertiesToFile(azzyztPropertiesFile);
 		} else {
 			readPropertiesFromFile(azzyztPropertiesFile);
-			if (!azzyztProperties.getVersion().equals(azzyztVersion)) {
+			String versionFound = azzyztProperties.getVersion();
+			if (!versionFound.equals(azzyztVersion)) {
 				/*
 				 * TODO This is a forced, automatic upgrade. Give choice to user.
 				 */
-				needsRuntimeLibrariesCopied = true;
+				isRuntimeLibraryOutOfDate = true;
+				Common.getDefault().log("versionFound ("+versionFound+") != azzyztVersion ("+azzyztVersion+"), assuming libraries out of date");
+				azzyztProperties.setVersion(azzyztVersion);
+				savePropertiesToFile(azzyztPropertiesFile);
+			} else {
+				Common.getDefault().log("versionFound ("+versionFound+") == azzyztVersion ("+azzyztVersion+"), assuming libraries are current");
 			}
 		}
 	}
@@ -250,6 +245,10 @@ public class EarProject extends FacetedProject {
 
 	public String createdWithAzzyztVersion() {
 		return azzyztProperties.getVersion();
+	}
+
+	public boolean isRuntimeLibraryOutOfDate() {
+		return isRuntimeLibraryOutOfDate;
 	}
 }
 

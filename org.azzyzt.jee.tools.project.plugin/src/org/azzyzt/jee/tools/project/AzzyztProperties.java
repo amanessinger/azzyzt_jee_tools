@@ -37,7 +37,7 @@ public class AzzyztProperties {
     				expr, doc,
     				XPathConstants.NODESET);
     		if (nodes.getLength() == 1) {
-    			String azzyztVersion = nodes.item(0).getNodeValue();
+    			String azzyztVersion = nodes.item(0).getTextContent();
     			result.setVersion(azzyztVersion);
     			return result;
     		}
