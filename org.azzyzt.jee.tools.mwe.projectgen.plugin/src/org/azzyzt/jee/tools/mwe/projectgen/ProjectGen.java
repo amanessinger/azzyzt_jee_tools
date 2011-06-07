@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -32,7 +32,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -46,6 +48,9 @@ public class ProjectGen extends AbstractUIPlugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.azzyzt.jee.tools.mwe.projectgen"; //$NON-NLS-1$
+
+	// Azzyzt release. Don't edit it, this is set automatically by VersionBumper
+    public static final String AZZYZT_RELEASE = "1.2.1";
 	
 	// The ID of the associated nature
 	public static final String AZZYZTED_NATURE_ID = "org.azzyzt.jee.mwe.nature.id"; //$NON-NLS-1$
@@ -172,6 +177,13 @@ public class ProjectGen extends AbstractUIPlugin {
 			;
 	}
 
+	public static Map<String, URL> getAllRuntimeJarUrls() {
+		Map<String, URL> runtimeJars = new HashMap<String, URL>();
+		runtimeJars.put(JEE_RUNTIME_JAR, getJeeRuntimeJarUrl());
+		runtimeJars.put(JEE_RUNTIME_SITE_JAR, getJeeRuntimeSiteJarUrl());
+		return runtimeJars;
+	}
+
 	public static URL getJeeRuntimeJarUrl() {
 		return jeeRuntimeJarUrl;
 	}
@@ -186,15 +198,6 @@ public class ProjectGen extends AbstractUIPlugin {
 
 	public static List<URL> getToolsLibJarUrls() {
 		return toolsLibJarUrls;
-	}
-
-	public static List<URL> extraURLsForToolMainClass() {
-		List<URL> extraUrls = new ArrayList<URL>();
-		extraUrls.add(getJeeToolsMweJarUrl());
-		extraUrls.add(getJeeRuntimeJarUrl());
-		extraUrls.add(getJeeRuntimeSiteJarUrl());
-		extraUrls.addAll(getToolsLibJarUrls());
-		return extraUrls;
 	}
 	
 }

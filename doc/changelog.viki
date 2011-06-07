@@ -1,12 +1,36 @@
 #VAR: fmt=~html(site|slides): css=highlight.css,layout-deplate.css cssInclude=true
 #VAR: tableStyle=formal
 
-#VAR: version=1.2.0
+#VAR: version=1.2.1
 
 * Azzyzt JEE Tools
 #OPT: plain!
 
  !!! Release {version}
+
+** Changes in 1.2.1
+#OPT: plain!
+
+ - Upgrading plugins now works. 1.2.0 failed to upgrade projects
+   created with 1.1.1 or earlier. You had to save your entities and
+   other self-written code, create a new azzyzted project, copy back
+   the saved code and generate anew.
+
+ - Code generator, support and runtime libraries are now copied to an
+   automatically created project ''azzyzt_tools'', and there into a
+   subdirectory called like the version of Azzyzt,
+   e.g. ''azzyzt_zools/1.2.1''. Tools are run form there and no more
+   from the JARs embedded into the plugin. Eventually this will allow
+   us to run an old code generator from a new plugin.
+
+ - ''EarContent/META-INF/azzyzt.xml'' is a new configuration file. At
+   the moment it only contains the version of Azzyzt that was used to
+   create the project or to generate code, but eventually it will be
+   our central place for meta information.
+
+ - At the moment all upgrades are automatic and immediate. As soon as
+   you generate code in a project created by an older version of
+   Azzyzt, the project is upgraded.
 
 ** Changes in 1.2.0
 #OPT: plain!

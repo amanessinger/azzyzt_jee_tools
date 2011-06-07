@@ -27,7 +27,6 @@
 
 package org.azzyzt.jee.tools.mwe;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -46,7 +45,6 @@ import org.azzyzt.jee.tools.mwe.feature.ModifyMultiGeneratorFeature;
 import org.azzyzt.jee.tools.mwe.feature.Parameters;
 import org.azzyzt.jee.tools.mwe.feature.SingleTargetsGeneratorFeature;
 import org.azzyzt.jee.tools.mwe.generator.GeneratorOptions;
-import org.azzyzt.jee.tools.mwe.generator.JavaGenerator;
 import org.azzyzt.jee.tools.mwe.identifiers.ModelProperties;
 import org.azzyzt.jee.tools.mwe.identifiers.PackageTails;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
@@ -56,11 +54,18 @@ import org.azzyzt.jee.tools.mwe.model.type.MetaStandardDefs;
 import org.azzyzt.jee.tools.mwe.model.type.MetaType;
 import org.azzyzt.jee.tools.mwe.util.Log;
 import org.azzyzt.jee.tools.mwe.util.Log.Verbosity;
+import org.azzyzt.jee.tools.mwe.util.ProjectTools;
 import org.azzyzt.jee.tools.mwe.util.QueueLog;
 import org.azzyzt.jee.tools.mwe.util.StreamLog;
-import org.azzyzt.jee.tools.mwe.util.StringUtils;
 
-public class StandardProjectStructureGenerator {
+public class StandardCodeGenerator {
+	
+	/*
+	 * When loading Azzyztant, it may be that it has just been created by PrerequisiteGenerator.
+	 * There will have been a refresh of the project afterwards, but the compiler may not yet
+	 * be done compiling. Thus we try loading until we succeed or this number of seconds is up.
+	 */
+	private static int MAX_NUMBER_OF_SECONDS_TO_WAIT_FOR_COMPILATION_OF_AZZYZTANT = 30;
 
 	public static void main(String[] args) {
         doWork(args, new StreamLog());
@@ -85,14 +90,13 @@ public class StandardProjectStructureGenerator {
 			}
 		}
 		if (arguments.size() < 2) {
-			logger.error("usage: StandardProjectStructureGenerator <root_path> <project_prefix> [<persistence_unit_name>]");
+			logger.error("usage: StandardCodeGenerator <root_path> <project_prefix> [<persistence_unit_name>]");
             return;
         }
 
 		String rootPath = arguments.get(0);
         String projectBaseName = arguments.get(1);
         String projectPathPrefix = rootPath+projectBaseName;
-        String ejbUserSourceFolder = projectPathPrefix+"EJB/ejbModule";
         String ejbSourceFolder = projectPathPrefix+"EJB/generated";
         String ejbClientSourceFolder = projectPathPrefix+"EJBClient/generated";
         String restSourceFolder = projectPathPrefix+"Servlets/generated";
@@ -110,9 +114,9 @@ public class StandardProjectStructureGenerator {
         
         MetaModel masterModel = MetaModel.createMasterModel(projectBaseName, logger);
         
-        String packagePrefix = determinePackagePrefix(enumerator, logger);
+        String packagePrefix = ProjectTools.determinePackagePrefix(enumerator, logger);
         
-		MetaClass azzyztant = ensureAzzyztant(masterModel, ejbUserSourceFolder, packagePrefix, logger);
+		MetaClass azzyztant = loadAzzyztant(masterModel, packagePrefix, logger);
         GeneratorOptions go = analyzeAzzyztant(azzyztant);
         masterModel.setGeneratorOptions(go);
         
@@ -179,72 +183,34 @@ public class StandardProjectStructureGenerator {
 		return result;
 	}
 
-	private static MetaClass ensureAzzyztant(
+	private static MetaClass loadAzzyztant(
 			MetaModel masterModel,
-			String ejbUserSourceFolder, 
 			String packagePrefix, 
 			Log logger
 	) {
         String metaPackagePrefix = packagePrefix+"."+PackageTails.META;
-
-        int numberOfSourcesGenerated;
-		String azzyztantSource = 
-        	ejbUserSourceFolder+
-        	"/"+
-        	StringUtils.packageToPath(metaPackagePrefix)+
-        	"/"+
-        	AzzyztantBeanBuilder.AZZYZTANT_BEAN_NAME+".java";
-        File azzyztantSourceFile = new File(azzyztantSource);
-        if (!azzyztantSourceFile.exists()) {
-        	logger.info(azzyztantSource+" not found, creating it");
-        	MetaModel targetModel = new AzzyztantBeanBuilder(masterModel, packagePrefix).build();
-        	JavaGenerator targetGen = new JavaGenerator(targetModel, ejbUserSourceFolder, "javaAzzyztantGroup");
-        	targetGen.setGenerateFields(false);
-        	targetGen.setGenerateDefaultConstructor(true);
-        	targetGen.setGenerateGettersSetters(false);
-    		numberOfSourcesGenerated = targetGen.generate();
-    		logger.info(numberOfSourcesGenerated+" Azzyztant file(s) generated");
-        } else {
-        	logger.info(azzyztantSource+" found");
-        }
-        
-        String fqAzzyztantName = metaPackagePrefix+"."+AzzyztantBeanBuilder.AZZYZTANT_BEAN_NAME;
-        try {
-			Class<?> azzyztantClazz = Class.forName(fqAzzyztantName);
-			MetaClass metaAzzyztant = MetaClass.forType(azzyztantClazz);
-			masterModel.follow(metaPackagePrefix);
-			masterModel.addMetaDeclaredTypeIfTarget(metaAzzyztant);
-			masterModel.setProperty(ModelProperties.AZZYZTANT, metaAzzyztant);
-			return metaAzzyztant;
-		} catch (ClassNotFoundException e) {
-			throw new ToolError("Can't load "+fqAzzyztantName);
-		}
-	}
-
-	private static String determinePackagePrefix(TargetEnumerator enumerator, Log logger) {
-		/*
-         * TODO Having the package name at hand would definitely help. Passing it into
-         * this generator would mean we have to store it in some project setting.
-         * Otherwise it is available only at project creation time. 
-         * 
-         * Here we rely on the project being azzyzted and the target enumerator having 
-         * a package name that contains a (not necessarily last) part "entity".  
-         */
-		String packagePrefix = null;
-        for (String s : enumerator.getTargetPackageNames()) {
-        	int indexOfEntity = s.indexOf(PackageTails.ENTITY, 0);
-        	if (indexOfEntity != -1) {
-        		packagePrefix = s.substring(0, indexOfEntity - 1);
-        		break;
-        	}
-        }
-        if (packagePrefix == null) {
-        	String msg = "Can't determine package prefix!";
-        	logger.error(msg);
-			throw new ToolError(msg);
-        }
-        
-        return packagePrefix;
+		String fqAzzyztantName = metaPackagePrefix+"."+AzzyztantBeanBuilder.AZZYZTANT_BEAN_NAME;
+		
+		long start = System.currentTimeMillis();
+		do {
+	        try {
+				Class<?> azzyztantClazz = Class.forName(fqAzzyztantName);
+				MetaClass metaAzzyztant = MetaClass.forType(azzyztantClazz);
+				masterModel.follow(metaPackagePrefix);
+				masterModel.addMetaDeclaredTypeIfTarget(metaAzzyztant);
+				masterModel.setProperty(ModelProperties.AZZYZTANT, metaAzzyztant);
+				return metaAzzyztant;
+			} catch (ClassNotFoundException e) {
+				try {
+					logger.info("Generated class "+fqAzzyztantName+" not yet compiled, trying to load again in a second ...");
+					Thread.sleep(1000);
+				} catch (InterruptedException e1) { }
+			}
+		} while (System.currentTimeMillis() - start < MAX_NUMBER_OF_SECONDS_TO_WAIT_FOR_COMPILATION_OF_AZZYZTANT * 1000);
+		
+		String msg = "Generated class "+fqAzzyztantName+" can't be loaded, giving up";
+		logger.info(msg);
+		throw new ToolError(msg);
 	}
 
 }

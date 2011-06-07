@@ -35,4 +35,8 @@ public class InternalErrorException extends TranslatableException {
 		super("Internal Error", detailMessage);
 	}
 
+	public InternalErrorException(String detailMessage, Exception e) {
+		super("Internal Error", detailMessage, e);
+	}
+
 }

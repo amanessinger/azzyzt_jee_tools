@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.azzyzt.jee.mwe.magwien.feature_1.2.0.201105311855.jar" id="org.azzyzt.jee.mwe.magwien.feature" version="1.2.0.201105311855">
+   <feature url="features/org.azzyzt.jee.mwe.magwien.feature_1.2.1.201106061537.jar" id="org.azzyzt.jee.mwe.magwien.feature" version="1.2.1.201106061537">
       <category name="org.azzyzt.jee.tools.mwe"/>
    </feature>
    <category-def name="org.azzyzt.jee.tools.mwe" label="Azzyzt">
