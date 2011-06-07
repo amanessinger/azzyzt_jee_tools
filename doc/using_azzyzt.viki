@@ -171,12 +171,17 @@ a server. Do so from the Servers view with "__New / Server__".
 In the context of this tutorial, the project base name is
 "''cookbook''", the package name is
 "''com.manessinger.cookbook''". Try this and you will end up with the
-following four projects:
+following five projects:
 
+ - ''azzyzt_tools''
  - ''cookbookEAR''
  - ''cookbookEJB''
  - ''cookbookEJBClient''
  - ''cookbookServlets''
+
+"''azzyzt_tools''" is used by Azzyzt itself. In a later version it
+will become useful for you as well, for now I ask you to simply let it
+alone :)
 
 The EAR project is an Enterprise Application Project, basically a
 wrapper around the three Java projects. The artifact of an EAR project
@@ -208,8 +213,19 @@ In our case the following directories and files will be generated
 initially:
 
 #Verbatim <<---
+azzyzt_tools
+`-- 1.2.1
+    |-- antlr-2.7.7.jar
+    |-- org.azzyzt.jee.tools.mwe.jar
+    |-- runtime
+    |   |-- org.azzyzt.jee.runtime.jar
+    |   `-- org.azzyzt.jee.runtime.site.jar
+    `-- stringtemplate-3.2.1.jar
+
 cookbookEAR
 |-- EarContent
+|   `-- META-INF
+|       `-- azzyzt.xml
 `-- lib
     |-- org.azzyzt.jee.runtime.jar
     `-- org.azzyzt.jee.runtime.site.jar

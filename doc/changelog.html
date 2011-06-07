@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 <meta name="language" content="en">
-<meta name="date" content="2011-05-31T15:25:55">
+<meta name="date" content="2011-06-07T11:51:31">
 <meta name="generator" content="deplate.rb 0.8.5">
 <link rel="start" href="changelog.html" title="Frontpage">
 <link rel="chapter" href="changelog.html#hd001" title="Azzyzt JEE Tools">
@@ -803,11 +803,43 @@ span.progress {
 <h1 id="hd001"><a name="file000"></a>Azzyzt JEE Tools</h1>
 
 <div class="important"><p class="important">
-Release 1.2.0
+Release 1.2.1
 </p></div>
 
 
-<h2 id="hd001001">Changes in 1.2.0</h2>
+<h2 id="hd001001">Changes in 1.2.1</h2>
+
+<ul class="Itemize">
+    <li class="Itemize-1 Itemize dash">
+        Upgrading plugins now works. 1.2.0 failed to upgrade projects created 
+        with 1.1.1 or earlier. You had to save your entities and other 
+        self-written code, create a new azzyzted project, copy back the saved 
+        code and generate anew.
+    </li>
+    <li class="Itemize-1 Itemize dash">
+        Code generator, support and runtime libraries are now copied to an 
+        automatically created project <code>azzyzt_tools</code>, and there into 
+        a subdirectory called like the version of Azzyzt, e.g. 
+        <code>azzyzt_zools/1.2.1</code>. Tools are run form there and no more 
+        from the JARs embedded into the plugin. Eventually this will allow us to 
+        run an old code generator from a new plugin.
+    </li>
+    <li class="Itemize-1 Itemize dash">
+        <code>EarContent/META-INF/azzyzt.xml</code> is a new configuration file. 
+        At the moment it only contains the version of Azzyzt that was used to 
+        create the project or to generate code, but eventually it will be our 
+        central place for meta information.
+    </li>
+    <li class="Itemize-1 Itemize dash">
+        At the moment all upgrades are automatic and immediate. As soon as you 
+        generate code in a project created by an older version of Azzyzt, the 
+        project is upgraded.
+    </li>
+</ul>
+
+
+
+<h2 id="hd001002">Changes in 1.2.0</h2>
 
 <ul class="Itemize">
     <li class="Itemize-1 Itemize dash">
@@ -842,7 +874,7 @@ Release 1.2.0
 
 
 
-<h2 id="hd001002">Changes in 1.1.1</h2>
+<h2 id="hd001003">Changes in 1.1.1</h2>
 
 <ul class="Itemize">
     <li class="Itemize-1 Itemize dash">
@@ -870,7 +902,7 @@ Release 1.2.0
 
 
 
-<h2 id="hd001003">Changes in 1.1.0</h2>
+<h2 id="hd001004">Changes in 1.1.0</h2>
 
 <ul class="Itemize">
     <li class="Itemize-1 Itemize dash">
