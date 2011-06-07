@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -27,20 +27,17 @@
 
 package org.azzyzt.jee.tools.mwe.projectgen.workers;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.azzyzt.jee.tools.mwe.projectgen.ProjectGen;
+import org.azzyzt.jee.tools.project.AzzyztToolsProject;
 import org.azzyzt.jee.tools.project.Context;
 import org.azzyzt.jee.tools.project.DynamicWebProject;
 import org.azzyzt.jee.tools.project.EarProject;
 import org.azzyzt.jee.tools.project.EjbProject;
 import org.azzyzt.jee.tools.project.JavaProject;
-import org.azzyzt.jee.tools.project.Project;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
@@ -68,20 +65,29 @@ public class NewAzzyztedProjectWorker {
 		
 		if (!context.isValid()) throw new CoreException(context.getErrorStatus());
 		
-		context.getMonitor().beginTask("Generating azzyzted project "+context.getEarProjectName(), 100);
+		context.getMonitor().beginTask("Generating azzyzted project "+context.getProjectBaseName(), 100);
 		
 		try {
-			advanceProgress(0, "Create EAR project");
+			advanceProgress(0, "Make sure Azzyzt is installed in the workspace");
 			
-			// We crash upon EAR facet creation if the EAR has been created implicitly. Do it now.
-
-			Map<String, URL> runtimeJars = new HashMap<String, URL>();
-			runtimeJars.put(ProjectGen.JEE_RUNTIME_JAR, ProjectGen.getJeeRuntimeJarUrl());
-			runtimeJars.put(ProjectGen.JEE_RUNTIME_SITE_JAR, ProjectGen.getJeeRuntimeSiteJarUrl());
+			AzzyztToolsProject azzyztToolsProject = new AzzyztToolsProject(
+					ProjectGen.AZZYZT_RELEASE, 
+					ProjectGen.getJeeToolsMweJarUrl(), 
+					ProjectGen.getToolsLibJarUrls(), 
+					ProjectGen.getJeeRuntimeJarUrl(),
+					ProjectGen.getJeeRuntimeSiteJarUrl(),
+					context
+			);
 			
-			EarProject ear = EarProject.create(context.getEarProjectName(), context, runtimeJars, (Project[])null);
+			advanceProgress(10, "Create EAR project");
 			
-			advanceProgress(10, "Create EJB project");
+			EarProject ear = new EarProject(
+					ProjectGen.AZZYZT_RELEASE, 
+					context.getEarProjectName(), 
+					context, ProjectGen.getAllRuntimeJarUrls()
+			);
+			
+			advanceProgress(20, "Create EJB project");
 			
 			EjbProject ejb =
 				new EjbProject(
@@ -89,7 +95,7 @@ public class NewAzzyztedProjectWorker {
 						ear, 
 						new ArrayList<JavaProject>(),
 						Arrays.asList(ProjectGen.AZZYZTED_NATURE_ID),
-						ProjectGen.extraURLsForToolMainClass()
+						azzyztToolsProject.extraURLsForToolMainClass()
 				);
 	
 			advanceProgress(70, "Creating servlet project");

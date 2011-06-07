@@ -1,7 +1,7 @@
 #VAR: fmt=~html(site|slides): css=highlight.css,layout-deplate.css cssInclude=true
 #VAR: tableStyle=formal
 
-#VAR: version=1.2.0
+#VAR: version=1.2.1
 
 * Azzyzt JEE Tools
 #OPT: plain!

@@ -65,7 +65,9 @@ class MainRunner implements Runnable {
 	public void run() {
 		ClassLoader newLoader = createClassLoader(classPathEntries);
 		
-		String errMsg = "Invoking sideEntrance on class "+fqMainClassName+" failed";
+		String msg = "Invoking sideEntrance on class "+fqMainClassName;
+		Common.getDefault().log(msg);
+		String errMsg = msg+" failed";
 		try {
 			Class<?> clazz = Class.forName(fqMainClassName, true, newLoader);
 			Method main = null;

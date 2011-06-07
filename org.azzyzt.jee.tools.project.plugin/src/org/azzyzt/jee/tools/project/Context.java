@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -86,7 +86,7 @@ public class Context {
 	
 	public String validate() {
 		if (projectBaseName == null || projectBaseName.isEmpty()) {
-			return "Project base name must not be empty";
+			return "FacetedProject base name must not be empty";
 		}
 		if (projectBaseName.replace('\\', '/').indexOf('/', 1) > 0) {
 			return projectBaseName+" must not contain directory separators";
@@ -111,7 +111,7 @@ public class Context {
 				servletProjectName)
 		) {
 			if (isExistingProject(name)) {
-				return "Project "+name+" already exists";
+				return "FacetedProject "+name+" already exists";
 			}
 		}
 		return null;
@@ -242,4 +242,5 @@ public class Context {
 	public Boolean getCreateEjbClient() {
 		return createEjbClient;
 	}
+
 }

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -74,7 +74,7 @@ public class NewAzzyztedProjectWizardPage extends WizardPage {
 	 */
 	public NewAzzyztedProjectWizardPage(ISelection selection) {
 		super("wizardPage");
-		setTitle("Azzyzted JEE Project");
+		setTitle("Azzyzted JEE FacetedProject");
 		setDescription("This wizard creates a new azzyzted JEE project consisting of EAR, EJB, EJB client and WAR.");
 		this.selection = selection; // FindBugs unused warning OK
 	}
@@ -89,7 +89,7 @@ public class NewAzzyztedProjectWizardPage extends WizardPage {
 		layout.numColumns = 2;
 		layout.verticalSpacing = 9;
 		Label label = new Label(container, SWT.NULL);
-		label.setText("&Project base name:");
+		label.setText("&FacetedProject base name:");
 
 		projectBaseNameText = new Text(container, SWT.BORDER | SWT.SINGLE);
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);

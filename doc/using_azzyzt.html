@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 <meta name="language" content="en">
-<meta name="date" content="2011-05-31T18:53:27">
+<meta name="date" content="2011-06-07T12:37:14">
 <meta name="generator" content="deplate.rb 0.8.5">
 <link rel="start" href="using_azzyzt.html" title="Frontpage">
 <link rel="chapter" href="using_azzyzt.html#hd001" title="Azzyzt JEE Tools">
@@ -811,7 +811,7 @@ span.progress {
 <h1 id="hd001"><a name="file000"></a>Azzyzt JEE Tools</h1>
 
 <div class="important"><p class="important">
-Release 1.2.0
+Release 1.2.1
 </p></div>
 
 <p>Azzyzt JEE Tools is a collection of software tools helping software 
@@ -829,7 +829,7 @@ EUPL, Version 1.1 or subsequent versions</p>
 
 <p>If you just want to use Azzyzt JEE Tools (as opposed to modify and build 
 them), the recommended way to install the software is via an Eclipse 
-update site. As of release 1.2.0, there are two update site URLs, one 
+update site. As of release 1.2.1, there are two update site URLs, one 
 for the edition used by the Municipiality of Vienna, Austria, the other 
 a generic version. The URLs are</p>
 
@@ -995,9 +995,12 @@ Server</em>&rdquo;.</p>
 <p>In the context of this tutorial, the project base name is 
 &ldquo;<code>cookbook</code>&rdquo;, the package name is 
 &ldquo;<code>com.manessinger.cookbook</code>&rdquo;. Try this and you 
-will end up with the following four projects:</p>
+will end up with the following five projects:</p>
 
 <ul class="Itemize">
+    <li class="Itemize-1 Itemize dash">
+        <code>azzyzt_tools</code>
+    </li>
     <li class="Itemize-1 Itemize dash">
         <code>cookbookEAR</code>
     </li>
@@ -1011,6 +1014,10 @@ will end up with the following four projects:</p>
         <code>cookbookServlets</code>
     </li>
 </ul>
+
+<p>&ldquo;<code>azzyzt_tools</code>&rdquo; is used by Azzyzt itself. In a 
+later version it will become useful for you as well, for now I ask you 
+to simply let it alone :)</p>
 
 <p>The EAR project is an Enterprise Application Project, basically a 
 wrapper around the three Java projects. The artifact of an EAR project 
@@ -1045,8 +1052,19 @@ manually written code.</p>
 initially:</p>
 
 <pre class="verbatim">
+azzyzt_tools
+`--&nbsp;1.2.1
+&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;antlr-2.7.7.jar
+&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;org.azzyzt.jee.tools.mwe.jar
+&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;runtime
+&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;|--&nbsp;org.azzyzt.jee.runtime.jar
+&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;`--&nbsp;org.azzyzt.jee.runtime.site.jar
+&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;stringtemplate-3.2.1.jar
+
 cookbookEAR
 |--&nbsp;EarContent
+|&nbsp;&nbsp;&nbsp;`--&nbsp;META-INF
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;azzyzt.xml
 `--&nbsp;lib
 &nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;org.azzyzt.jee.runtime.jar
 &nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;org.azzyzt.jee.runtime.site.jar
@@ -1215,7 +1233,7 @@ entity fields:</p>
         <code>InvocationMetaInfo</code> being generated at the entry point into 
         the service, and being passed on via the standard 
         <code>javax.transaction.TransactionSynchronizationRegistry</code>
-        <br class="itempara" />As of release 1.2.0 this is only partially implemented. It works for 
+        <br class="itempara" />As of release 1.2.1 this is only partially implemented. It works for 
         REST but not for SOAP and CORBA, and from a service accessed via REST, 
         it currently wouldn&rsquo;t be passed on to backend services accessed 
         via REST or SOAP. The crucial knowledge about how to extract user 
