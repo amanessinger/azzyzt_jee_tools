@@ -98,13 +98,13 @@ CREATE TABLE visit
 (
   from_zip_area bigint NOT NULL,
   to_city bigint NOT NULL,
-  number_of_visitors bigint NOT NULL,
   lang_used character varying(8) NOT NULL, 
+  total_number_of_visitors bigint NOT NULL,
   create_timestamp character varying(21) DEFAULT '2011-05-19-081030.000'::character varying,
   create_user character varying(255) DEFAULT 'anonymous'::character varying,
   modification_timestamp character varying(21) DEFAULT '2011-05-19-081030.000'::character varying,
   modification_user character varying(255) DEFAULT 'anonymous'::character varying,
-  CONSTRAINT visit_pkey PRIMARY KEY (from_zip_area, to_city),
+  CONSTRAINT visit_pkey PRIMARY KEY (from_zip_area, to_city, lang_used),
   CONSTRAINT fk_visit_from_zip_area FOREIGN KEY (from_zip_area)
       REFERENCES zip (id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION,

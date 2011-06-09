@@ -18,14 +18,18 @@ public class VisitId implements Serializable {
 	@Column(name="to_city", nullable = false)
 	private Long toCity;
 
+	@Column(name="lang_used", nullable = false)
+	private String langUsed;
+
 	public VisitId() {
 		super();
 	}
 	
-	public VisitId(Long fromZipArea, Long toCity) {
+	public VisitId(Long fromZipArea, Long toCity, String langUsed) {
 		super();
 		this.fromZipArea = fromZipArea;
 		this.toCity = toCity;
+		this.langUsed = langUsed;
 	}
 
 	public Long getFromZipArea() {
@@ -44,12 +48,22 @@ public class VisitId implements Serializable {
 		this.toCity = toCity;
 	}
 
+	public void setLangUsed(String langUsed) {
+		this.langUsed = langUsed;
+	}
+
+	public String getLangUsed() {
+		return langUsed;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result
 				+ ((fromZipArea == null) ? 0 : fromZipArea.hashCode());
+		result = prime * result
+				+ ((langUsed == null) ? 0 : langUsed.hashCode());
 		result = prime * result + ((toCity == null) ? 0 : toCity.hashCode());
 		return result;
 	}
@@ -68,6 +82,11 @@ public class VisitId implements Serializable {
 				return false;
 		} else if (!fromZipArea.equals(other.fromZipArea))
 			return false;
+		if (langUsed == null) {
+			if (other.langUsed != null)
+				return false;
+		} else if (!langUsed.equals(other.langUsed))
+			return false;
 		if (toCity == null) {
 			if (other.toCity != null)
 				return false;
@@ -75,5 +94,5 @@ public class VisitId implements Serializable {
 			return false;
 		return true;
 	}
-	
+
 }

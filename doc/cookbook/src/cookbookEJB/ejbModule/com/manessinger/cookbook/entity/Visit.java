@@ -25,8 +25,8 @@ public class Visit extends EntityBase<VisitId> implements Serializable {
 	@EmbeddedId
 	private VisitId id;
 	
-	@Column(name="number_of_visitors")
-	private Long numberOfVisitors;
+	@Column(name="total_number_of_visitors")
+	private Long totalNumberOfVisitors;
 
 	@CreateTimestamp(format="yyyy-MM-dd-HHmmss.SSS")
 	@Column(name="create_timestamp")
@@ -52,15 +52,15 @@ public class Visit extends EntityBase<VisitId> implements Serializable {
 	@JoinColumn(name="to_city", insertable=false, updatable=false)
 	private City toCity;
 	
-	@ManyToOne
-	@JoinColumn(name="lang_used")
+	@Internal @ManyToOne
+	@JoinColumn(name="lang_used", insertable=false, updatable=false)
 	private Language languageUsedByGuide;
 	
 	public VisitId getId() {
 		if (id == null) {
 			return null;
 		}
-		VisitId result = new VisitId(id.getFromZipArea(), id.getToCity());
+		VisitId result = new VisitId(id.getFromZipArea(), id.getToCity(), id.getLangUsed());
 		return result;
 	}
 
@@ -68,15 +68,15 @@ public class Visit extends EntityBase<VisitId> implements Serializable {
 		if (id == null) {
 			return;
 		}
-		this.id = new VisitId(id.getFromZipArea(), id.getToCity());
+		this.id = new VisitId(id.getFromZipArea(), id.getToCity(), id.getLangUsed());
 	}
 
-	public Long getNumberOfVisitors() {
-		return numberOfVisitors;
+	public Long getTotalNumberOfVisitors() {
+		return totalNumberOfVisitors;
 	}
 
-	public void setNumberOfVisitors(Long numberOfVisitors) {
-		this.numberOfVisitors = numberOfVisitors;
+	public void setTotalNumberOfVisitors(Long totalNumberOfVisitors) {
+		this.totalNumberOfVisitors = totalNumberOfVisitors;
 	}
 
 	public String getCreateTimestamp() {

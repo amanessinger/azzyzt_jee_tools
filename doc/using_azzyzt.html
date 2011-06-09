@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 <meta name="language" content="en">
-<meta name="date" content="2011-06-07T12:37:14">
+<meta name="date" content="2011-06-09T14:32:10">
 <meta name="generator" content="deplate.rb 0.8.5">
 <link rel="start" href="using_azzyzt.html" title="Frontpage">
 <link rel="chapter" href="using_azzyzt.html#hd001" title="Azzyzt JEE Tools">
@@ -1304,8 +1304,8 @@ projects</em>&rdquo; and it will go away. I believe this to be an error
 in Eclipse.</p>
 
 <p>The sample database is pretty simple. We have have countries, cities, 
-zips, visits from a zip code area to a certain city, and he language 
-used by the guide supplied to the visitors.</p>
+zips, visits from a zip code area to a certain city, guided using a 
+certain language, and all languages used by guides.</p>
 
 <p>A <em>Country</em> has cities and each <em>City</em> is in a certain 
 country. A country has a number of <em>Zip</em> areas and each ZIP area 
@@ -1318,16 +1318,19 @@ only relationships that we need to map, can be modeled using
 
 <h4 id="hd003002002001">3.2.2.1&nbsp;A complicated association</h4>
 
-<p><em>Visit</em> is a more complicated case. It maps a many-to-many 
-association between <em>City</em> and <em>Zip</em>. A city can be the 
-target of visits from many ZIP areas and different people from a certain 
-ZIP area will visit many cities.</p>
+<p><em>Visit</em> is a more complicated case. It maps a three-ended 
+many-to-many association between <em>City</em>, <em>Zip</em> and 
+<em>Language</em>. A city can be the target of visits from many ZIP 
+areas and different people from a certain ZIP area will visit many 
+cities.</p>
 
 <p>Although JPA supports <code>@ManyToMany</code>, we can&rsquo;t use it. 
-<code>@ManyToMany</code> assumes a simple join table containing no extra 
-attributes. In such a case, the table would not need to be mapped at 
-all, we would just have to map the <code>@ManyToMany</code> associations 
-in <em>City</em> and <em>Zip</em>.</p>
+<code>@ManyToMany</code> is for mapping an association between only two 
+entities and also assumes a simple join table containing no extra 
+attributes. In such a case, for instance between only <em>City</em> and 
+<em>Zip</em>, the join table would not need to be mapped at all, we 
+would just have to map the <code>@ManyToMany</code> associations in 
+<em>City</em> and <em>Zip</em>.</p>
 
 <p>When a join table has additional attributes, you always need to map it 
 as an entity. This is easiest when it has its own ID attribute, 
@@ -1342,20 +1345,9 @@ object-relational mapping.</p>
 <p>To cover this common and not well documented case (at least it took me 
 some time to find anything on the Internet and figure it out), 
 <em>Visit</em> has an extra attribute 
-<code>Long&nbsp;numberOfVisitors</code> that acts as a counter. Think of 
-a system where we have to collect some anonymized statistics about 
-visits. Another extra attribute</p>
-
-<a name="VisitLanguage"></a>
-<div class="code">
-<pre>
-&#64;ManyToOne
-&#64;<span class="hl kwd">JoinColumn</span><span class="hl sym">(</span>name<span class="hl sym">=</span><span class="hl str">&quot;lang_used&quot;</span><span class="hl sym">)</span>
-<span class="hl kwa">private</span> Language languageUsedByGuide<span class="hl sym">;</span>
-</pre>
-</div>
-<p>represents the language used by the visitors&rsquo; guide. We map it as 
-an association.</p>
+<code>Long&nbsp;totalNumberOfVisitors</code> that acts as a counter. 
+Think of a system where we have to collect some anonymized statistics 
+about visits and langauges.</p>
 
 <p>The corresponding database table has no explicit ID, thus we have to use 
 the idiom of an <em>embedded ID</em>. The embedded ID is a separate 
@@ -1380,7 +1372,7 @@ as</p>
     <span class="hl kwa">if</span> <span class="hl sym">(</span>id <span class="hl sym">==</span> null<span class="hl sym">) {</span>
         <span class="hl kwa">return</span> null<span class="hl sym">;</span>
     <span class="hl sym">}</span>
-    VisitId result <span class="hl sym">=</span> <span class="hl kwa">new</span> <span class="hl kwd">VisitId</span><span class="hl sym">(</span>id<span class="hl sym">.</span><span class="hl kwd">getFromZipArea</span><span class="hl sym">(),</span> id<span class="hl sym">.</span><span class="hl kwd">getToCity</span><span class="hl sym">());</span>
+    VisitId result <span class="hl sym">=</span> <span class="hl kwa">new</span> <span class="hl kwd">VisitId</span><span class="hl sym">(</span>id<span class="hl sym">.</span><span class="hl kwd">getFromZipArea</span><span class="hl sym">(),</span> id<span class="hl sym">.</span><span class="hl kwd">getToCity</span><span class="hl sym">(),</span> id<span class="hl sym">.</span><span class="hl kwd">getLangUsed</span><span class="hl sym">());</span>
     <span class="hl kwa">return</span> result<span class="hl sym">;</span>
 <span class="hl sym">}</span>
 
@@ -1388,11 +1380,11 @@ as</p>
     <span class="hl kwa">if</span> <span class="hl sym">(</span>id <span class="hl sym">==</span> null<span class="hl sym">) {</span>
         <span class="hl kwa">return</span><span class="hl sym">;</span>
     <span class="hl sym">}</span>
-    <span class="hl kwa">this</span><span class="hl sym">.</span>id <span class="hl sym">=</span> <span class="hl kwa">new</span> <span class="hl kwd">VisitId</span><span class="hl sym">(</span>id<span class="hl sym">.</span><span class="hl kwd">getFromZipArea</span><span class="hl sym">(),</span> id<span class="hl sym">.</span><span class="hl kwd">getToCity</span><span class="hl sym">());</span>
+    <span class="hl kwa">this</span><span class="hl sym">.</span>id <span class="hl sym">=</span> <span class="hl kwa">new</span> <span class="hl kwd">VisitId</span><span class="hl sym">(</span>id<span class="hl sym">.</span><span class="hl kwd">getFromZipArea</span><span class="hl sym">(),</span> id<span class="hl sym">.</span><span class="hl kwd">getToCity</span><span class="hl sym">(),</span> id<span class="hl sym">.</span><span class="hl kwd">getLangUsed</span><span class="hl sym">());</span>
 <span class="hl sym">}</span>
 </pre>
 </div>
-<p>Additionally we have two <code>@ManyToOne</code> associations.</p>
+<p>Additionally we have three <code>@ManyToOne</code> associations.</p>
 
 <a name="VisitAssociations"></a>
 <div class="code">
@@ -1404,6 +1396,10 @@ as</p>
 &#64;Internal &#64;ManyToOne
 &#64;<span class="hl kwd">JoinColumn</span><span class="hl sym">(</span>name<span class="hl sym">=</span><span class="hl str">&quot;to_city&quot;</span><span class="hl sym">,</span> insertable<span class="hl sym">=</span>false<span class="hl sym">,</span> updatable<span class="hl sym">=</span>false<span class="hl sym">)</span>
 <span class="hl kwa">private</span> City toCity<span class="hl sym">;</span>
+
+&#64;Internal &#64;ManyToOne
+&#64;<span class="hl kwd">JoinColumn</span><span class="hl sym">(</span>name<span class="hl sym">=</span><span class="hl str">&quot;lang_used&quot;</span><span class="hl sym">,</span> insertable<span class="hl sym">=</span>false<span class="hl sym">,</span> updatable<span class="hl sym">=</span>false<span class="hl sym">)</span>
+<span class="hl kwa">private</span> Language languageUsedByGuide<span class="hl sym">;</span>
 </pre>
 </div>
 <p>We have explicitly named the join columns, because their names 
@@ -1414,8 +1410,9 @@ actually written to the database are inside the embedded ID class
 
 <p>We have also used Azzyzt&rsquo;s <code>@Internal</code> annotation, thus 
 these association attributes will not be contained in generated DTOs 
-(but the embedded ID will). The two association attributes just need to 
-be there to give us the information, that there is an association at all.</p>
+(but the embedded ID will). The three association attributes just need 
+to be there to give us the information, that there is an association at 
+all.</p>
 
 <p><code>VisitId</code> is a class with IDs only. It starts like this:</p>
 
@@ -1433,6 +1430,9 @@ be there to give us the information, that there is an association at all.</p>
 
     &#64;<span class="hl kwd">Column</span><span class="hl sym">(</span>name<span class="hl sym">=</span><span class="hl str">&quot;to_city&quot;</span><span class="hl sym">,</span> nullable <span class="hl sym">=</span> false<span class="hl sym">)</span>
     <span class="hl kwa">private</span> <span class="hl kwc">Long</span> toCity<span class="hl sym">;</span>
+
+    &#64;<span class="hl kwd">Column</span><span class="hl sym">(</span>name<span class="hl sym">=</span><span class="hl str">&quot;lang_used&quot;</span><span class="hl sym">,</span> nullable <span class="hl sym">=</span> false<span class="hl sym">)</span>
+    <span class="hl kwa">private</span> <span class="hl kwc">String</span> langUsed<span class="hl sym">;</span>
 
     <span class="hl sym">...</span>
 </pre>
@@ -1463,7 +1463,7 @@ persistence unit</em>&rdquo; or something like that.</p>
 <p>Also note the two constructors. For the purpose of serialization we need 
 a parameterless constructor, for <code>getId()</code> and 
 <code>setId()</code> in <code>Visit</code>, we need a constructor with 
-values for the two fields.</p>
+values for the three fields.</p>
 
 <p>In <code>City</code> we have one opposite end of the association</p>
 
@@ -1474,20 +1474,29 @@ values for the two fields.</p>
 <span class="hl kwa">private</span> <span class="hl kwc">List</span><span class="hl sym">&lt;</span>Visit<span class="hl sym">&gt;</span> visits<span class="hl sym">;</span>
 </pre>
 </div>
-<p>and the other opposite end is defined in <code>Zip</code>:</p>
+<p>the second opposite end is defined in <code>Zip</code></p>
 
+<a name="ZipVisits"></a>
 <div class="code">
 <pre>
 &#64;<span class="hl kwd">OneToMany</span><span class="hl sym">(</span>mappedBy<span class="hl sym">=</span><span class="hl str">&quot;fromZipArea&quot;</span><span class="hl sym">)</span>
 <span class="hl kwa">private</span> <span class="hl kwc">List</span><span class="hl sym">&lt;</span>Visit<span class="hl sym">&gt;</span> visits<span class="hl sym">;</span>
 </pre>
 </div>
+<p>and the third in <code>Language</code></p>
+
+<a name="LanguageVisits"></a>
+<div class="code">
+<pre>
+&#64;<span class="hl kwd">OneToMany</span><span class="hl sym">(</span>mappedBy<span class="hl sym">=</span><span class="hl str">&quot;languageUsedByGuide&quot;</span><span class="hl sym">)</span>
+<span class="hl kwa">private</span> <span class="hl kwc">List</span><span class="hl sym">&lt;</span>Visit<span class="hl sym">&gt;</span> visits<span class="hl sym">;</span>
+</pre>
+</div>
 <p>The pattern always goes like this. After the same pattern you could have 
-a complex relation between three tables. In that case the embedded ID 
-would contain three ID fields (encapsulate the foreign keys), the 
-constructor would take three parameters, we would have bi-directional 
-associations towards all three participating entities, but otherwise it 
-would be the same.</p>
+a complex relation between two or four or any number of tables. The 
+embedded ID always contains all ID fields (encapsulates the foreign 
+keys), the constructor always takes parameters for all IDs, we always 
+have bi-directional associations towards all participating entities.</p>
 
 
 
@@ -2875,9 +2884,9 @@ uses it.</p>
       <span class="hl kwa">&lt;id&gt;</span>
          <span class="hl kwa">&lt;fromZipArea&gt;</span><span class="hl num">1</span><span class="hl kwa">&lt;/fromZipArea&gt;</span>
          <span class="hl kwa">&lt;toCity&gt;</span>-<span class="hl num">1</span><span class="hl kwa">&lt;/toCity&gt;</span>
+         <span class="hl kwa">&lt;langUsed&gt;</span>en_UK<span class="hl kwa">&lt;/langUsed&gt;</span>
       <span class="hl kwa">&lt;/id&gt;</span>
-      <span class="hl kwa">&lt;numberOfVisitors&gt;</span><span class="hl num">5</span><span class="hl kwa">&lt;/numberOfVisitors&gt;</span>
-      <span class="hl kwa">&lt;languageUsedByGuideId&gt;</span>en_UK<span class="hl kwa">&lt;/languageUsedByGuideId&gt;</span>
+      <span class="hl kwa">&lt;totalNumberOfVisitors&gt;</span><span class="hl num">5</span><span class="hl kwa">&lt;/totalNumberOfVisitors&gt;</span>
    <span class="hl kwa">&lt;/visit&gt;</span>
 <span class="hl kwa">&lt;/dtoes&gt;</span>
 </pre>
@@ -2893,10 +2902,10 @@ uses it.</p>
 <span class="hl kwa">&lt;dtoes&gt;</span>
    <span class="hl kwa">&lt;city&gt;</span>
       <span class="hl kwa">&lt;countryId&gt;</span><span class="hl num">6</span><span class="hl kwa">&lt;/countryId&gt;</span>
-      <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">24</span>T15:<span class="hl num">06</span>:<span class="hl num">31.618</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
+      <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">06</span>-<span class="hl num">09</span>T14:<span class="hl num">23</span>:<span class="hl num">00.463</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
       <span class="hl kwa">&lt;createUser&gt;</span>andreas<span class="hl kwa">&lt;/createUser&gt;</span>
       <span class="hl kwa">&lt;id&gt;</span><span class="hl num">22</span><span class="hl kwa">&lt;/id&gt;</span>
-      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">24</span>T15:<span class="hl num">06</span>:<span class="hl num">31.618</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
+      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">06</span>-<span class="hl num">09</span>T14:<span class="hl num">23</span>:<span class="hl num">00.463</span>+<span class="hl num">02</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
       <span class="hl kwa">&lt;modificationUser&gt;</span>andreas<span class="hl kwa">&lt;/modificationUser&gt;</span>
       <span class="hl kwa">&lt;name&gt;</span>Luxor<span class="hl kwa">&lt;/name&gt;</span>
    <span class="hl kwa">&lt;/city&gt;</span>
@@ -2905,18 +2914,58 @@ uses it.</p>
       <span class="hl kwa">&lt;languageName&gt;</span>English (UK)<span class="hl kwa">&lt;/languageName&gt;</span>
    <span class="hl kwa">&lt;/language&gt;</span>
    <span class="hl kwa">&lt;visit&gt;</span>
-      <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">24</span>-<span class="hl num">150631.618</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
+      <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">06</span>-<span class="hl num">09</span>-<span class="hl num">142300.463</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
       <span class="hl kwa">&lt;createUser&gt;</span>andreas<span class="hl kwa">&lt;/createUser&gt;</span>
       <span class="hl kwa">&lt;id&gt;</span>
          <span class="hl kwa">&lt;fromZipArea&gt;</span><span class="hl num">1</span><span class="hl kwa">&lt;/fromZipArea&gt;</span>
+         <span class="hl kwa">&lt;langUsed&gt;</span>en_UK<span class="hl kwa">&lt;/langUsed&gt;</span>
          <span class="hl kwa">&lt;toCity&gt;</span><span class="hl num">22</span><span class="hl kwa">&lt;/toCity&gt;</span>
       <span class="hl kwa">&lt;/id&gt;</span>
-      <span class="hl kwa">&lt;languageUsedByGuideId&gt;</span>en_UK<span class="hl kwa">&lt;/languageUsedByGuideId&gt;</span>
-      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">05</span>-<span class="hl num">24</span>-<span class="hl num">150631.618</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
+      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">06</span>-<span class="hl num">09</span>-<span class="hl num">142300.463</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
       <span class="hl kwa">&lt;modificationUser&gt;</span>andreas<span class="hl kwa">&lt;/modificationUser&gt;</span>
-      <span class="hl kwa">&lt;numberOfVisitors&gt;</span><span class="hl num">5</span><span class="hl kwa">&lt;/numberOfVisitors&gt;</span>
+      <span class="hl kwa">&lt;totalNumberOfVisitors&gt;</span><span class="hl num">5</span><span class="hl kwa">&lt;/totalNumberOfVisitors&gt;</span>
    <span class="hl kwa">&lt;/visit&gt;</span>
 <span class="hl kwa">&lt;/dtoes&gt;</span>
+</pre>
+</div>
+
+
+<h2 id="hd0050013">5.13&nbsp;Deleting the visit</h2>
+
+<p>We&rsquo;ve already covered deleting multiple objects, but we had no 
+example with an embedded ID. Let&rsquo;s delete the visit to Luxor, 
+Luxor itself and the language used.</p>
+
+<p>POST the following XML</p>
+
+<div class="code">
+<pre>
+<span class="hl kwa">&lt;dtoes&gt;</span>
+   <span class="hl kwa">&lt;visit&gt;</span>
+      <span class="hl kwa">&lt;id&gt;</span>
+         <span class="hl kwa">&lt;fromZipArea&gt;</span><span class="hl num">1</span><span class="hl kwa">&lt;/fromZipArea&gt;</span>
+         <span class="hl kwa">&lt;langUsed&gt;</span>en_UK<span class="hl kwa">&lt;/langUsed&gt;</span>
+         <span class="hl kwa">&lt;toCity&gt;</span><span class="hl num">22</span><span class="hl kwa">&lt;/toCity&gt;</span>
+      <span class="hl kwa">&lt;/id&gt;</span>
+   <span class="hl kwa">&lt;/visit&gt;</span>
+   <span class="hl kwa">&lt;city&gt;</span>
+      <span class="hl kwa">&lt;id&gt;</span><span class="hl num">22</span><span class="hl kwa">&lt;/id&gt;</span>
+   <span class="hl kwa">&lt;/city&gt;</span>
+   <span class="hl kwa">&lt;language&gt;</span>
+      <span class="hl kwa">&lt;id&gt;</span>en_UK<span class="hl kwa">&lt;/id&gt;</span>
+   <span class="hl kwa">&lt;/language&gt;</span>
+<span class="hl kwa">&lt;/dtoes&gt;</span>
+</pre>
+</div>
+<p>into</p>
+
+<p><span class="remote"><a href="http://localhost:8080/cookbookServlets/REST/modifyMulti/deleteMulti" class="remote">http://localhost:8080/cookbookServlets/REST/modifyMulti/deleteMulti</a></span><a name="idx0043"></a></p>
+
+<p>Again the result will be</p>
+
+<div class="code">
+<pre>
+<span class="hl kwa">&lt;result&gt;</span>OK<span class="hl kwa">&lt;/result&gt;</span>
 </pre>
 </div>
 
@@ -3191,7 +3240,7 @@ as for REST.</p>
 
 <p>For the purpose of generating code, Azzyzt JEE Tools make use of and 
 bundles a copy of 
-<span class="remote"><a href="http://www.stringtemplate.org/" class="remote">StringTemplate</a></span><a name="idx0043"></a>, 
+<span class="remote"><a href="http://www.stringtemplate.org/" class="remote">StringTemplate</a></span><a name="idx0044"></a>, 
 which is</p>
 
 <pre class="verbatim">
@@ -3227,7 +3276,7 @@ which is</p>
 </pre>
 
 <p>This documentation was created using 
-<span class="remote"><a href="http://deplate.sourceforge.net/" class="remote">Deplate</a></span><a name="idx0044"></a>.</p>
+<span class="remote"><a href="http://deplate.sourceforge.net/" class="remote">Deplate</a></span><a name="idx0045"></a>.</p>
 
 
 <!-- Start of StatCounter Code -->

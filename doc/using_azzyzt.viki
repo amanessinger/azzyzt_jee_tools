@@ -445,8 +445,8 @@ use "__Project / Clean ... / Clean all projects__" and it will go
 away. I believe this to be an error in Eclipse.
 
 The sample database is pretty simple. We have have countries, cities,
-zips, visits from a zip code area to a certain city, and he language
-used by the guide supplied to the visitors. 
+zips, visits from a zip code area to a certain city, guided using a
+certain language, and all languages used by guides. 
 
 A __Country__ has cities and each __City__ is in a certain country. A
 country has a number of __Zip__ areas and each ZIP area belongs to a
@@ -458,16 +458,18 @@ only relationships that we need to map, can be modeled using
 
 **** A complicated association
 
-__Visit__ is a more complicated case. It maps a many-to-many
-association between __City__ and __Zip__. A city can be the target of
-visits from many ZIP areas and different people from a certain ZIP area will
-visit many cities.
+__Visit__ is a more complicated case. It maps a three-ended
+many-to-many association between __City__, __Zip__ and __Language__. A
+city can be the target of visits from many ZIP areas and different
+people from a certain ZIP area will visit many cities.
 
 Although JPA supports ''\@ManyToMany'', we can't use
-it. ''\@ManyToMany'' assumes a simple join table containing no extra
-attributes. In such a case, the table would not need to be mapped at
-all, we would just have to map the ''\@ManyToMany'' associations in
-__City__ and __Zip__.
+it. ''\@ManyToMany'' is for mapping an association between only two
+entities and also assumes a simple join table containing no extra
+attributes. In such a case, for instance between only __City__ and
+__Zip__, the join table would not need to be mapped at all, we would
+just have to map the ''\@ManyToMany'' associations in __City__ and
+__Zip__.
 
 When a join table has additional attributes, you always need to map it
 as an entity. This is easiest when it has its own ID attribute,
@@ -481,18 +483,9 @@ object-relational mapping.
 
 To cover this common and not well documented case (at least it took me
 some time to find anything on the Internet and figure it out),
-__Visit__ has an extra attribute ''Long numberOfVisitors'' that acts
+__Visit__ has an extra attribute ''Long totalNumberOfVisitors'' that acts
 as a counter. Think of a system where we have to collect some
-anonymized statistics about visits. Another extra attribute
-
-#Code id=VisitLanguage syntax=Java <<---
-@ManyToOne
-@JoinColumn(name="lang_used")
-private Language languageUsedByGuide;
----
-
-represents the language used by the visitors' guide. We map it as an
-association. 
+anonymized statistics about visits and langauges. 
 
 The corresponding database table has no explicit ID, thus we have to
 use the idiom of an __embedded ID__. The embedded ID is a separate
@@ -512,7 +505,7 @@ public VisitId getId() {
     if (id == null) {
         return null;
     }
-    VisitId result = new VisitId(id.getFromZipArea(), id.getToCity());
+    VisitId result = new VisitId(id.getFromZipArea(), id.getToCity(), id.getLangUsed());
     return result;
 }
 
@@ -520,11 +513,11 @@ public void setId(VisitId id) {
     if (id == null) {
         return;
     }
-    this.id = new VisitId(id.getFromZipArea(), id.getToCity());
+    this.id = new VisitId(id.getFromZipArea(), id.getToCity(), id.getLangUsed());
 }
 ---
 
-Additionally we have two ''\@ManyToOne'' associations.
+Additionally we have three ''\@ManyToOne'' associations.
 
 #Code id=VisitAssociations syntax=Java <<---
 @Internal @ManyToOne
@@ -534,6 +527,10 @@ private Zip fromZipArea;
 @Internal @ManyToOne
 @JoinColumn(name="to_city", insertable=false, updatable=false)
 private City toCity;
+
+@Internal @ManyToOne
+@JoinColumn(name="lang_used", insertable=false, updatable=false)
+private Language languageUsedByGuide;
 ---
 
 We have explicitly named the join columns, because their names can't
@@ -543,8 +540,9 @@ written to the database are inside the embedded ID class ''VisitId''.
 
 We have also used Azzyzt's ''@Internal'' annotation, thus these
 association attributes will not be contained in generated DTOs (but
-the embedded ID will). The two association attributes just need to be
-there to give us the information, that there is an association at all.
+the embedded ID will). The three association attributes just need to
+be there to give us the information, that there is an association at
+all.
 
 ''\VisitId'' is a class with IDs only. It starts like this:
 
@@ -560,6 +558,9 @@ public class VisitId implements Serializable {
 
     @Column(name="to_city", nullable = false)
     private Long toCity;
+
+    @Column(name="lang_used", nullable = false)
+    private String langUsed;
 
     ...
 ---
@@ -588,7 +589,7 @@ the persistence unit__" or something like that.
 
 Also note the two constructors. For the purpose of serialization we
 need a parameterless constructor, for ''getId()'' and ''setId()'' in
-''Visit'', we need a constructor with values for the two fields.
+''Visit'', we need a constructor with values for the three fields.
 
 In ''City'' we have one opposite end of the association
 
@@ -597,19 +598,26 @@ In ''City'' we have one opposite end of the association
 private List<Visit> visits;
 ---
 
-and the other opposite end is defined in ''Zip'':
+the second opposite end is defined in ''Zip''
 
-#Code id=CityVisits syntax=Java <<---
+#Code id=ZipVisits syntax=Java <<---
 @OneToMany(mappedBy="fromZipArea")
 private List<Visit> visits;
 ---
 
+and the third in ''Language''
+
+#Code id=LanguageVisits syntax=Java <<---
+@OneToMany(mappedBy="languageUsedByGuide")
+private List<Visit> visits;
+---
+
 The pattern always goes like this. After the same pattern you could
-have a complex relation between three tables. In that case the
-embedded ID would contain three ID fields (encapsulate the foreign
-keys), the constructor would take three parameters, we would have
-bi-directional associations towards all three participating entities,
-but otherwise it would be the same.
+have a complex relation between two or four or any number of
+tables. The embedded ID always contains all ID fields (encapsulates
+the foreign keys), the constructor always takes parameters for all
+IDs, we always have bi-directional associations towards all
+participating entities.
 
 **** Create / modification users and timestamps
 
@@ -1889,9 +1897,9 @@ POST the following XML
       <id>
          <fromZipArea>1</fromZipArea>
          <toCity>-1</toCity>
+         <langUsed>en_UK</langUsed>
       </id>
-      <numberOfVisitors>5</numberOfVisitors>
-      <languageUsedByGuideId>en_UK</languageUsedByGuideId>
+      <totalNumberOfVisitors>5</totalNumberOfVisitors>
    </visit>
 </dtoes>
 ---
@@ -1906,10 +1914,10 @@ The result is
 <dtoes>
    <city>
       <countryId>6</countryId>
-      <createTimestamp>2011-05-24T15:06:31.618+02:00</createTimestamp>
+      <createTimestamp>2011-06-09T14:23:00.463+02:00</createTimestamp>
       <createUser>andreas</createUser>
       <id>22</id>
-      <modificationTimestamp>2011-05-24T15:06:31.618+02:00</modificationTimestamp>
+      <modificationTimestamp>2011-06-09T14:23:00.463+02:00</modificationTimestamp>
       <modificationUser>andreas</modificationUser>
       <name>Luxor</name>
    </city>
@@ -1918,18 +1926,54 @@ The result is
       <languageName>English (UK)</languageName>
    </language>
    <visit>
-      <createTimestamp>2011-05-24-150631.618</createTimestamp>
+      <createTimestamp>2011-06-09-142300.463</createTimestamp>
       <createUser>andreas</createUser>
       <id>
          <fromZipArea>1</fromZipArea>
+         <langUsed>en_UK</langUsed>
          <toCity>22</toCity>
       </id>
-      <languageUsedByGuideId>en_UK</languageUsedByGuideId>
-      <modificationTimestamp>2011-05-24-150631.618</modificationTimestamp>
+      <modificationTimestamp>2011-06-09-142300.463</modificationTimestamp>
       <modificationUser>andreas</modificationUser>
-      <numberOfVisitors>5</numberOfVisitors>
+      <totalNumberOfVisitors>5</totalNumberOfVisitors>
    </visit>
 </dtoes>
+---
+
+** Deleting the visit
+
+We've already covered deleting multiple objects, but we had no example
+with an embedded ID. Let's delete the visit to Luxor, Luxor itself and
+the language used.
+
+POST the following XML
+
+#Code syntax=XML <<---
+<dtoes>
+   <visit>
+      <id>
+         <fromZipArea>1</fromZipArea>
+         <langUsed>en_UK</langUsed>
+         <toCity>22</toCity>
+      </id>
+   </visit>
+   <city>
+      <id>22</id>
+   </city>
+   <language>
+      <id>en_UK</id>
+   </language>
+</dtoes>
+---
+
+into
+
+  [[http://localhost:8080/cookbookServlets/REST/modifyMulti/deleteMulti]]
+
+Again the result will be
+
+#Code syntax=XML <<---
+<result>OK</result>
 ---
 
 

@@ -1,10 +1,12 @@
 package com.manessinger.cookbook.entity;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.azzyzt.jee.runtime.entity.EntityBase;
@@ -21,6 +23,9 @@ public class Language extends EntityBase<String> implements Serializable {
 	@Column(name="lang_name")
 	private String languageName;
 	
+    @OneToMany(mappedBy="languageUsedByGuide")
+	private List<Visit> visits;
+    
 	@Override
 	public String getId() {
 		return id;
@@ -37,6 +42,14 @@ public class Language extends EntityBase<String> implements Serializable {
 
 	public void setLanguageName(String languageName) {
 		this.languageName = languageName;
+	}
+
+	public List<Visit> getVisits() {
+		return visits;
+	}
+
+	public void setVisits(List<Visit> visits) {
+		this.visits = visits;
 	}
 
 }
