@@ -99,6 +99,7 @@ public class CrudServiceRESTFullModelBuilder extends DerivedModelBuilder impleme
 			target.setProperty(ModelProperties.SVC_BEAN, svcBean);
 			target.setProperty(ModelProperties.ENTITY, me);
 			target.setProperty(ModelProperties.DTO, dto);
+			target.setProperty(ModelProperties.SVC_BEAN_METHOD_SUFFIX, "");
 		}
 		
 		

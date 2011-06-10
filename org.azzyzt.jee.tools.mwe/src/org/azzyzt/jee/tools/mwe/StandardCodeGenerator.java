@@ -152,12 +152,14 @@ public class StandardCodeGenerator {
         numberOfSourcesGenerated = svcGen.generate(parameters);
         logger.info(numberOfSourcesGenerated+" service beans and service interfaces generated");
 		
-		CrudServiceRESTGeneratorFeature restGen = new CrudServiceRESTGeneratorFeature(masterModel);
-		parameters = restGen.getParameters();
-        parameters.byName(CrudServiceRESTGeneratorFeature.SOURCE_FOLDER).setValue(restSourceFolder);
-        numberOfSourcesGenerated = restGen.generate(parameters);
-        logger.info(numberOfSourcesGenerated+" REST wrapper file(s) generated");
-        
+        if ((masterModel.isGeneratingRestXml() || masterModel.isGeneratingRestJson())) {
+			CrudServiceRESTGeneratorFeature restGen = new CrudServiceRESTGeneratorFeature(masterModel);
+			parameters = restGen.getParameters();
+	        parameters.byName(CrudServiceRESTGeneratorFeature.SOURCE_FOLDER).setValue(restSourceFolder);
+	        numberOfSourcesGenerated = restGen.generate(parameters);
+	        logger.info(numberOfSourcesGenerated+" REST wrapper file(s) generated");
+        }
+
         ModifyMultiGeneratorFeature smGen = new ModifyMultiGeneratorFeature(masterModel);
         parameters = smGen.getParameters();
         parameters.byName(ModifyMultiGeneratorFeature.SOURCE_FOLDER_CLIENT_PROJECT).setValue(ejbClientSourceFolder);

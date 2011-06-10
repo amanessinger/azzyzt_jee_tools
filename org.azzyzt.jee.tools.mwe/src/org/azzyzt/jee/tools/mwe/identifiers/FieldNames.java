@@ -10,8 +10,8 @@ public class FieldNames {
 	public static final String ID_TRANSLATOR = ModelProperties.ID_TRANSLATOR;
 	public static final String INVOCATION_REGISTRY = ModelProperties.INVOCATION_REGISTRY;
 	public static final String SVC_BEAN = ModelProperties.SVC_BEAN;
-	public static final String SVC_FULL_BEAN = ModelProperties.SVC_FULL_BEAN;
-	public static final String SVC_RESTRICTED_BEAN = ModelProperties.SVC_RESTRICTED_BEAN;
+	public static final String SVC_FULL_BEAN = "svcBean";
+	public static final String SVC_RESTRICTED_BEAN = SVC_FULL_BEAN;
 	public static final String TYPE_META_INFO = "tmi";
 	public static final String VALID_ASSOCIATION_PATHS = ModelProperties.VALID_ASSOCIATION_PATHS;
 

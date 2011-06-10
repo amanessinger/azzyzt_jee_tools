@@ -6,12 +6,15 @@ group javaRESTModifyMultiGroup : javaGroup;
 >>
 
 @javaClass.extra_methods() ::= <<
+<if(generator.masterModel.generatingRestXml)>
 <storeMultiHead()>
 <storeMultiBody()>
 <deleteMultiHead()>
 <deleteMultiBody()>
 <storeDeleteMultiHead()>
 <storeDeleteMultiBody()>
+
+<endif>
 >>
 
 storeMultiHead() ::= <<

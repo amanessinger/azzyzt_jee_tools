@@ -59,23 +59,27 @@ public class ModifyMultiGeneratorFeature extends GeneratorFeature {
 		
 		sourceFolder = (String)parameters.byName(SOURCE_FOLDER_CLIENT_PROJECT).getValue();
 		
-		MetaModel targetModel = new ModifyMultiInterfaceModelBuilder(getModel(), null).build();
-		JavaGenerator targetGen = new JavaGenerator(targetModel, sourceFolder, "javaModifyMultiGroup");
+		MetaModel masterModel = getMasterModel();
+		
+		MetaModel targetModel = new ModifyMultiInterfaceModelBuilder(getMasterModel(), null).build();
+		JavaGenerator targetGen = new JavaGenerator(targetModel, sourceFolder, "javaModifyMultiGroup", masterModel);
 		numberOfSourcesGenerated = targetGen.generate();
 		
 		sourceFolder = (String)parameters.byName(SOURCE_FOLDER_EJB_PROJECT).getValue();
 		
-		targetModel = new ModifyMultiBeanModelBuilder(getModel(), null).build();
-		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaModifyMultiGroup");
+		targetModel = new ModifyMultiBeanModelBuilder(getMasterModel(), null).build();
+		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaModifyMultiGroup", masterModel);
 		targetGen.setGenerateGettersSetters(false);
 		numberOfSourcesGenerated += targetGen.generate();
 				
 		sourceFolder = (String)parameters.byName(SOURCE_FOLDER_SERVLET_PROJECT).getValue();
 		
-		targetModel = new RESTModifyMultiModelBuilder(getModel(), null).build();
-		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaRESTModifyMultiGroup");
-		targetGen.setGenerateGettersSetters(false);
-		numberOfSourcesGenerated += targetGen.generate();
+        if ((masterModel.isGeneratingRestXml() || masterModel.isGeneratingRestJson())) {
+			targetModel = new RESTModifyMultiModelBuilder(getMasterModel(), null).build();
+			targetGen = new JavaGenerator(targetModel, sourceFolder, "javaRESTModifyMultiGroup", masterModel);
+			targetGen.setGenerateGettersSetters(false);
+			numberOfSourcesGenerated += targetGen.generate();
+        }
 				
 		return numberOfSourcesGenerated;
 	}

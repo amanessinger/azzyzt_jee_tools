@@ -48,9 +48,9 @@ public class CrudServiceRESTRestrictedModelBuilder extends DerivedModelBuilder i
 		MetaClass dtoBase = (MetaClass) masterModel.getProperty(ModelProperties.DTO_BASE);
 
 		for (MetaEntity me : masterModel.getTargetEntities()) {
-			MetaClass dto = (MetaClass) me.getProperty("dto");
-			MetaClass svcBean = (MetaClass) me.getProperty("svcRestrictedBean");
-			MetaClass restInterceptor = (MetaClass) masterModel.getProperty("rest_interceptor");
+			MetaClass dto = (MetaClass) me.getProperty(ModelProperties.DTO);
+			MetaClass svcBean = (MetaClass) me.getProperty(ModelProperties.SVC_RESTRICTED_BEAN);
+			MetaClass restInterceptor = (MetaClass) masterModel.getProperty(ModelProperties.REST_INTERCEPTOR);
 
 			// create MetaClass
 			String packageName = derivePackageNameFromEntityAndFollowPackage(me, PackageTails.SERVICE);
@@ -58,7 +58,7 @@ public class CrudServiceRESTRestrictedModelBuilder extends DerivedModelBuilder i
 			String pathString = simpleName.toLowerCase()+"Restricted";
 			simpleName += CLASS_SUFFIX;
 			MetaClass target = MetaClass.forName(packageName, simpleName);
-			me.setProperty("RESTRestrictedDelegator", target);
+			me.setProperty(ModelProperties.REST_RESTRICTED_DELEGATOR, target);
 			target.setModifiers(std.mod_public);
 			target.setSuperMetaClass(std.restDelegatorBase);
 			target.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxEjbStateless, target));
@@ -94,9 +94,10 @@ public class CrudServiceRESTRestrictedModelBuilder extends DerivedModelBuilder i
 
 			addRestrictedServiceBeanField(target, me);
 			
-			target.setProperty("svcBean", svcBean);
-			target.setProperty("entity", me);
-			target.setProperty("dto", dto);
+			target.setProperty(ModelProperties.SVC_BEAN, svcBean);
+			target.setProperty(ModelProperties.ENTITY, me);
+			target.setProperty(ModelProperties.DTO, dto);
+			target.setProperty(ModelProperties.SVC_BEAN_METHOD_SUFFIX, "_r");
 		}
 		
 		

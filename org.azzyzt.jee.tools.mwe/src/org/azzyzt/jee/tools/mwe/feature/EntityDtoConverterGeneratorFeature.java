@@ -53,8 +53,10 @@ public class EntityDtoConverterGeneratorFeature extends GeneratorFeature {
 		
 		sourceFolder = (String)parameters.byName(SOURCE_FOLDER).getValue();
 		
-		MetaModel targetModel = new EntityDtoConverterModelBuilder(getModel(), null).build();
-		JavaGenerator targetGen = new JavaGenerator(targetModel, sourceFolder, "javaEntityToDtoConverterGroup");
+		MetaModel masterModel = getMasterModel();
+		
+		MetaModel targetModel = new EntityDtoConverterModelBuilder(getMasterModel(), null).build();
+		JavaGenerator targetGen = new JavaGenerator(targetModel, sourceFolder, "javaEntityToDtoConverterGroup", masterModel);
 		targetGen.setGenerateGettersSetters(false);
 		numberOfSourcesGenerated = targetGen.generate();
 		

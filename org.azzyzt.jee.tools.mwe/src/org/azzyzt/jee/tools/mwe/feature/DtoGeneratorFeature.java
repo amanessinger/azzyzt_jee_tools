@@ -53,8 +53,10 @@ public class DtoGeneratorFeature extends GeneratorFeature {
 		
 		sourceFolder = (String)parameters.byName(SOURCE_FOLDER).getValue();
 		
-		MetaModel targetModel = new DtoModelBuilder(getModel(), null).build();
-		JavaGenerator targetGen = new JavaGenerator(targetModel, sourceFolder, "javaGroup");
+		MetaModel masterModel = getMasterModel();
+		
+		MetaModel targetModel = new DtoModelBuilder(getMasterModel(), null).build();
+		JavaGenerator targetGen = new JavaGenerator(targetModel, sourceFolder, "javaGroup", masterModel);
 		numberOfSourcesGenerated = targetGen.generate();
 		
 		return numberOfSourcesGenerated;

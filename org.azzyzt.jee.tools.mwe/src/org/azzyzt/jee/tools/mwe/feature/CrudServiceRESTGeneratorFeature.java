@@ -57,30 +57,32 @@ public class CrudServiceRESTGeneratorFeature extends GeneratorFeature {
 		
 		sourceFolder = (String)parameters.byName(SOURCE_FOLDER).getValue();
 		
-		MetaModel targetModel = new RESTInterceptorModelBuilder(getModel(), null).build();
-		JavaGenerator targetGen = new JavaGenerator(targetModel, sourceFolder, "javaRESTInterceptorGroup");
+		MetaModel masterModel = getMasterModel();
+		
+		MetaModel targetModel = new RESTInterceptorModelBuilder(getMasterModel(), null).build();
+		JavaGenerator targetGen = new JavaGenerator(targetModel, sourceFolder, "javaRESTInterceptorGroup", masterModel);
 		targetGen.setGenerateFields(false);
 		targetGen.setGenerateDefaultConstructor(false);
 		targetGen.setGenerateGettersSetters(false);
 		numberOfSourcesGenerated = targetGen.generate();
 		
-		targetModel = new CrudServiceRESTFullModelBuilder(getModel(), null).build();
-		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaRESTFullGroup");
+		targetModel = new CrudServiceRESTFullModelBuilder(getMasterModel(), null).build();
+		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaRESTFullGroup", masterModel);
 		targetGen.setGenerateGettersSetters(false);
 		numberOfSourcesGenerated += targetGen.generate();
 		
-		targetModel = new CrudServiceRESTRestrictedModelBuilder(getModel(), null).build();
-		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaRESTRestrictedGroup");
+		targetModel = new CrudServiceRESTRestrictedModelBuilder(getMasterModel(), null).build();
+		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaRESTRestrictedGroup", masterModel);
 		targetGen.setGenerateGettersSetters(false);
 		numberOfSourcesGenerated += targetGen.generate();
 		
-		targetModel = new RESTServletModelBuilder(getModel(), null).build();
-		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaGroup");
+		targetModel = new RESTServletModelBuilder(getMasterModel(), null).build();
+		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaGroup", masterModel);
 		targetGen.setGenerateGettersSetters(false);
 		numberOfSourcesGenerated += targetGen.generate();
 		
-		targetModel = new RESTExceptionMapperModelBuilder(getModel(), null).build();
-		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaGroup");
+		targetModel = new RESTExceptionMapperModelBuilder(getMasterModel(), null).build();
+		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaGroup", masterModel);
 		targetGen.setGenerateGettersSetters(false);
 		numberOfSourcesGenerated += targetGen.generate();
 		
