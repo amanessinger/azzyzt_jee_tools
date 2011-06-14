@@ -7,22 +7,32 @@ group javaRESTModifyMultiGroup : javaGroup;
 
 @javaClass.extra_methods() ::= <<
 <if(generator.masterModel.generatingRestXml)>
-<storeMultiHead()>
+<storeMultiHead(format="MediaType.APPLICATION_XML", suffix="")>
 <storeMultiBody()>
-<deleteMultiHead()>
-<deleteMultiBody()>
-<storeDeleteMultiHead()>
+<deleteMultiHead(format="MediaType.APPLICATION_XML", suffix="")>
+<deleteMultiBody(result="\<result\\>OK\</result\\>")>
+<storeDeleteMultiHead(format="MediaType.APPLICATION_XML", suffix="")>
+<storeDeleteMultiBody()>
+
+<endif>
+
+<if(generator.masterModel.generatingRestJson)>
+<storeMultiHead(format="MediaType.APPLICATION_JSON", suffix="Json")>
+<storeMultiBody()>
+<deleteMultiHead(format="MediaType.APPLICATION_JSON", suffix="Json")>
+<deleteMultiBody(result="{ result : \\\"OK\\\" }")>
+<storeDeleteMultiHead(format="MediaType.APPLICATION_JSON", suffix="Json")>
 <storeDeleteMultiBody()>
 
 <endif>
 >>
 
-storeMultiHead() ::= <<
+storeMultiHead(format, suffix) ::= <<
 @POST
-@Path("storeMulti")
-@Consumes(MediaType.APPLICATION_XML)
-@Produces(MediaType.APPLICATION_XML)
-public List\<Dto\> storeMulti(List\<Dto\> dtos)
+@Path("storeMulti<suffix>")
+@Consumes(<format>)
+@Produces(<format>)
+public List\<Dto\> storeMulti<suffix>(List\<Dto\> dtos)
     throws EntityNotFoundException, AccessDeniedException, EntityInstantiationException, 
            InvalidIdException, DuplicateProxyIdException, InvalidProxyIdException, InvalidArgumentException
 >>
@@ -34,30 +44,30 @@ storeMultiBody() ::= <<
 
 >>
 
-deleteMultiHead() ::= <<
+deleteMultiHead(format, suffix) ::= <<
 @POST
-@Path("deleteMulti")
-@Consumes(MediaType.APPLICATION_XML)
-@Produces(MediaType.APPLICATION_XML)
-public String deleteMulti(List\<Dto\> dtos)
+@Path("deleteMulti<suffix>")
+@Consumes(<format>)
+@Produces(<format>)
+public String deleteMulti<suffix>(List\<Dto\> dtos)
     throws EntityNotFoundException, AccessDeniedException, EntityInstantiationException, 
            InvalidIdException, InvalidArgumentException
 >>
 
-deleteMultiBody() ::= <<
+deleteMultiBody(result) ::= <<
 {    
     svcBean.deleteMulti(dtos);
-    return "\<result\>OK\</result\>";
+    return "<result>";
 }
 
 >>
 
-storeDeleteMultiHead() ::= <<
+storeDeleteMultiHead(format, suffix) ::= <<
 @POST
-@Path("storeDeleteMulti")
-@Consumes(MediaType.APPLICATION_XML)
-@Produces(MediaType.APPLICATION_XML)
-public List\<Dto\> storeDeleteMulti(StoreDelete storeDelete)
+@Path("storeDeleteMulti<suffix>")
+@Consumes(<format>)
+@Produces(<format>)
+public List\<Dto\> storeDeleteMulti<suffix>(StoreDelete storeDelete)
     throws EntityNotFoundException, AccessDeniedException, EntityInstantiationException, 
            InvalidIdException, DuplicateProxyIdException, InvalidProxyIdException, InvalidArgumentException
 >>
