@@ -13,4 +13,4 @@ $(README) : readme.viki
 	deplate -f plain -o $@ $<
 
 clean:
-	rm -f *_*[0-9].html *.XML code_* highlight.css *~
+	rm -f *_*[0-9].html *.XML *.dot code_* highlight.css *~

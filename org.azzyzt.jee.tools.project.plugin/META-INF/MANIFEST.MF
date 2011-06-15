@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Azzyzt JEE tools for manipulating faceted projects
 Bundle-SymbolicName: org.azzyzt.jee.tools.project
-Bundle-Version: 1.2.1.qualifier
+Bundle-Version: 1.2.2.qualifier
 Bundle-Activator: org.azzyzt.jee.tools.project.FacetedProjectTools
 Bundle-Vendor: azzyzt.org
 Require-Bundle: org.eclipse.ui;bundle-version="3.5.1",
