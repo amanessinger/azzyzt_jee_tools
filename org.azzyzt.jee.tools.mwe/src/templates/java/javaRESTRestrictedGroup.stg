@@ -6,61 +6,76 @@ group javaRESTRestrictedGroup : javaGroup;
 >>
 
 @javaClass.extra_methods() ::= <<
-<byIdHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>
-<byIdBody(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+<if(generator.masterModel.generatingRestXml)>
+<byIdHead(entity=mdt.properties.entity, dto=mdt.properties.dto, format="MediaType.APPLICATION_XML", suffix="")>
+<byIdBody(entity=mdt.properties.entity, dto=mdt.properties.dto, msuffix=mdt.properties.svcBeanMethodSuffix)>
 
-<allHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>
-<allBody(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+<allHead(entity=mdt.properties.entity, dto=mdt.properties.dto, format="MediaType.APPLICATION_XML", suffix="")>
+<allBody(entity=mdt.properties.entity, dto=mdt.properties.dto, msuffix=mdt.properties.svcBeanMethodSuffix)>
 
-<listHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>
-<listBody(entity=mdt.properties.entity, dto=mdt.properties.dto)>
->>
-
-byIdHead(entity, dto) ::= <<
-<if(entity.combinedId)>@POST<else>@GET<endif>
-@Path("byId")
-<if(entity.combinedId)>
-@Consumes(MediaType.APPLICATION_XML)
+<listHead(entity=mdt.properties.entity, dto=mdt.properties.dto, format="MediaType.APPLICATION_XML", suffix="")>
+<listBody(entity=mdt.properties.entity, dto=mdt.properties.dto, msuffix=mdt.properties.svcBeanMethodSuffix)>
 
 <endif>
-@Produces(MediaType.APPLICATION_XML)
-public <dto.simpleName> <entity.lcFirstSimpleName>ById(<if(entity.combinedId)><else>@QueryParam(value="id") <endif><dto.properties.idFieldType.simpleName> id)
+
+<if(generator.masterModel.generatingRestJson)>
+<byIdHead(entity=mdt.properties.entity, dto=mdt.properties.dto, format="MediaType.APPLICATION_JSON", suffix="Json")>
+<byIdBody(entity=mdt.properties.entity, dto=mdt.properties.dto, msuffix=mdt.properties.svcBeanMethodSuffix)>
+
+<allHead(entity=mdt.properties.entity, dto=mdt.properties.dto, format="MediaType.APPLICATION_JSON", suffix="Json")>
+<allBody(entity=mdt.properties.entity, dto=mdt.properties.dto, msuffix=mdt.properties.svcBeanMethodSuffix)>
+
+<listHead(entity=mdt.properties.entity, dto=mdt.properties.dto, format="MediaType.APPLICATION_JSON", suffix="Json")>
+<listBody(entity=mdt.properties.entity, dto=mdt.properties.dto, msuffix=mdt.properties.svcBeanMethodSuffix)>
+
+<endif>
+>>
+
+byIdHead(entity, dto, format, suffix) ::= <<
+<if(entity.combinedId)>@POST<else>@GET<endif>
+@Path("byId<suffix>")
+<if(entity.combinedId)>
+@Consumes(<format>)
+
+<endif>
+@Produces(<format>)
+public <dto.simpleName> <entity.lcFirstSimpleName>ById<suffix>(<if(entity.combinedId)><else>@QueryParam(value="id") <endif><dto.properties.idFieldType.simpleName> id)
     throws EntityNotFoundException, AccessDeniedException, EntityInstantiationException, InvalidIdException
 >>
 
-byIdBody(entity, dto) ::= <<
+byIdBody(entity, dto, msuffix) ::= <<
 {
     nocache();
-    return svcRestrictedBean.<entity.lcFirstSimpleName>ById_r(id);
+    return svcBean.<entity.lcFirstSimpleName>ById<msuffix>(id);
 }
 >>
 
-allHead(entity, dto) ::= <<
+allHead(entity, dto, format, suffix) ::= <<
 @GET
-@Path("all")
-@Produces(MediaType.APPLICATION_XML)
-public List\<<dto.superMetaClass.simpleName>\> <entity.lcFirstSimpleName>All()
+@Path("all<suffix>")
+@Produces(<format>)
+public List\<<dto.superMetaClass.simpleName>\> <entity.lcFirstSimpleName>All<suffix>()
     throws EntityNotFoundException, AccessDeniedException, EntityInstantiationException, InvalidIdException, InvalidFieldException, QuerySyntaxException, NotYetImplementedException
 >>
 
-allBody(entity, dto) ::= <<
+allBody(entity, dto, msuffix) ::= <<
 {
     nocache();
-    return svcRestrictedBean.<entity.lcFirstSimpleName>List_r(new QuerySpec());
+    return svcBean.<entity.lcFirstSimpleName>List<msuffix>(new QuerySpec());
 }
 >>
 
-listHead(entity, dto) ::= <<
+listHead(entity, dto, format, suffix) ::= <<
 @POST
-@Path("list")
-@Consumes(MediaType.APPLICATION_XML)
-@Produces(MediaType.APPLICATION_XML)
-public List\<<dto.superMetaClass.simpleName>\> <entity.lcFirstSimpleName>List(String querySpecXml)
+@Path("list<suffix>")
+@Consumes(<format>)
+@Produces(<format>)
+public List\<<dto.superMetaClass.simpleName>\> <entity.lcFirstSimpleName>List<suffix>(String querySpecXml)
     throws AccessDeniedException, InvalidFieldException, QuerySyntaxException, NotYetImplementedException
 >>
 
-listBody(entity, dto) ::= <<
+listBody(entity, dto, msuffix) ::= <<
 {
-    return svcRestrictedBean.<entity.lcFirstSimpleName>ListByXML_r(querySpecXml);
+    return svcBean.<entity.lcFirstSimpleName>ListByXML<msuffix>(querySpecXml);
 }
 >>

@@ -4,7 +4,7 @@ public enum AzzyztGeneratorCutback {
 	
 	NoRemoteInterfaces, 
 	NoSoapServices, 
-	// TODO support NoRestServicesXML, 
-	// TODO support JSON and then NoRestServicesJson,
+	NoRestServicesXml, 
+	NoRestServicesJson,
 
 }

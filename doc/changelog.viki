@@ -1,12 +1,27 @@
 #VAR: fmt=~html(site|slides): css=highlight.css,layout-deplate.css cssInclude=true
 #VAR: tableStyle=formal
 
-#VAR: version=1.2.1
+#VAR: version=1.2.2
 
 * Azzyzt JEE Tools
 #OPT: plain!
 
  !!! Release {version}
+
+** Changes in 1.2.2
+#OPT: plain!
+
+ - Support for JSON added. Query spec parameter for list operations is
+   intentionally still XML though.
+
+ - Two new cutbacks can be defined in Azzyztant:
+   ''NoRestServicesXml'' and ''NoRestServicesJson''. If both are
+   used, no REST code is generated at all, not even the servlet.
+
+ - A good one and a bad one: we now clean all ''generated'' folders
+   before generating code. This has become a necessity with
+   cutbacks. The drawback is, that we now have Apache Commons IO as an
+   additional bundled library.
 
 ** Changes in 1.2.1
 #OPT: plain!

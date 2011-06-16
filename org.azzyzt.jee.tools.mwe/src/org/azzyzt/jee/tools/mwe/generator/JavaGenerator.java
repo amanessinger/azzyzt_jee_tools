@@ -84,8 +84,8 @@ public class JavaGenerator extends SourceGenerator {
 	private boolean generateGettersSetters = true;
 	private boolean generateDefaultConstructor = true;
 	
-	public JavaGenerator(MetaModel model, String sourceFolder, String stringTemplateGroup) {
-        super(model, sourceFolder, stringTemplateGroup);
+	public JavaGenerator(MetaModel model, String sourceFolder, String stringTemplateGroup, MetaModel masterModel) {
+        super(model, masterModel, sourceFolder, stringTemplateGroup);
     }
 
 	@Override

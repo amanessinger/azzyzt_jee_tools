@@ -62,6 +62,8 @@ public class SingleTargetsGeneratorFeature extends GeneratorFeature {
 		
 		sourceFolder = (String)parameters.byName(SOURCE_FOLDER_EJB_PROJECT).getValue();
 		
+		MetaModel masterModel = getMasterModel();
+		
 		MetaModel targetModel;
 		JavaGenerator targetGen;
 		
@@ -79,8 +81,8 @@ public class SingleTargetsGeneratorFeature extends GeneratorFeature {
 		 * automatically, according to their needed and provided builders.
 		 */
 		
-		targetModel = new ValidAssociationPathsModelBuilder(getModel(), null).build();
-		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaValidAssociationPathGroup");
+		targetModel = new ValidAssociationPathsModelBuilder(getMasterModel(), null).build();
+		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaValidAssociationPathGroup", masterModel);
 		targetGen.setGenerateFields(false);
 		targetGen.setGenerateDefaultConstructor(true);
 		targetGen.setGenerateGettersSetters(false);
@@ -88,47 +90,47 @@ public class SingleTargetsGeneratorFeature extends GeneratorFeature {
 
 		sourceFolder = (String)parameters.byName(SOURCE_FOLDER_CLIENT_PROJECT).getValue();
 
-		targetModel = new DtoBaseModelBuilder(getModel(), null).build();
-		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaDtoBaseGroup");
+		targetModel = new DtoBaseModelBuilder(getMasterModel(), null).build();
+		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaDtoBaseGroup", masterModel);
 		targetGen.setGenerateFields(false);
 		targetGen.setGenerateDefaultConstructor(false);
 		targetGen.setGenerateGettersSetters(false);
 		numberOfSourcesGenerated += targetGen.generate();
 
-		targetModel = new StoreDeleteDtoModelBuilder(getModel(), null).build();
-		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaGroup");
+		targetModel = new StoreDeleteDtoModelBuilder(getMasterModel(), null).build();
+		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaGroup", masterModel);
 		numberOfSourcesGenerated += targetGen.generate();
 
 		sourceFolder = (String)parameters.byName(SOURCE_FOLDER_EJB_PROJECT).getValue();
 		
-		targetModel = new TypeMetaInfoModelBuilder(getModel(), null).build();
-		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaTypeMetaInfoGroup");
+		targetModel = new TypeMetaInfoModelBuilder(getMasterModel(), null).build();
+		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaTypeMetaInfoGroup", masterModel);
 		targetGen.setGenerateFields(false);
 		targetGen.setGenerateDefaultConstructor(false);
 		targetGen.setGenerateGettersSetters(false);
 		numberOfSourcesGenerated += targetGen.generate();
 
-		targetModel = new EaoModelBuilder(getModel(), null).build();
-		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaGenericEaoGroup");
+		targetModel = new EaoModelBuilder(getMasterModel(), null).build();
+		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaGenericEaoGroup", masterModel);
 		targetGen.setGenerateGettersSetters(false);
 		numberOfSourcesGenerated += targetGen.generate();
 		
-		targetModel = new InvocationRegistryModelBuilder(getModel(), null).build();
-		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaInvocationRegistryGroup");
+		targetModel = new InvocationRegistryModelBuilder(getMasterModel(), null).build();
+		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaInvocationRegistryGroup", masterModel);
 		targetGen.setGenerateFields(false);
 		targetGen.setGenerateDefaultConstructor(false);
 		targetGen.setGenerateGettersSetters(false);
 		numberOfSourcesGenerated += targetGen.generate();
 		
-		targetModel = new SiteAdapterModelBuilder(getModel(), null).build();
-		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaSiteAdapterGroup");
+		targetModel = new SiteAdapterModelBuilder(getMasterModel(), null).build();
+		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaSiteAdapterGroup", masterModel);
 		targetGen.setGenerateFields(false);
 		targetGen.setGenerateDefaultConstructor(false);
 		targetGen.setGenerateGettersSetters(false);
 		numberOfSourcesGenerated += targetGen.generate();
 
-		targetModel = new TransactionRollbackHandlerModelBuilder(getModel(), null).build();
-		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaTransactionRollbackHandlerGroup");
+		targetModel = new TransactionRollbackHandlerModelBuilder(getMasterModel(), null).build();
+		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaTransactionRollbackHandlerGroup", masterModel);
 		targetGen.setGenerateFields(true);
 		targetGen.setGenerateDefaultConstructor(false);
 		targetGen.setGenerateGettersSetters(false);

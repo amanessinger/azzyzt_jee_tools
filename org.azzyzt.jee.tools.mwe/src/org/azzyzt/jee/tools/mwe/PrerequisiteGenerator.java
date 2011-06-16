@@ -114,7 +114,7 @@ public class PrerequisiteGenerator {
         if (!azzyztantSourceFile.exists()) {
         	logger.info(azzyztantSource+" not found, creating it");
         	MetaModel targetModel = new AzzyztantBeanBuilder(masterModel, metaPackagePrefix).build();
-        	JavaGenerator targetGen = new JavaGenerator(targetModel, ejbUserSourceFolder, "javaAzzyztantGroup");
+        	JavaGenerator targetGen = new JavaGenerator(targetModel, ejbUserSourceFolder, "javaAzzyztantGroup", masterModel);
         	targetGen.setGenerateFields(false);
         	targetGen.setGenerateDefaultConstructor(true);
         	targetGen.setGenerateGettersSetters(false);

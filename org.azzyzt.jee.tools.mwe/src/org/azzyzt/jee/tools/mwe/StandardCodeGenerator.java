@@ -27,10 +27,13 @@
 
 package org.azzyzt.jee.tools.mwe;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.apache.commons.io.FileUtils;
 import org.azzyzt.jee.runtime.meta.AzzyztGeneratorCutback;
 import org.azzyzt.jee.tools.mwe.builder.AzzyztantBeanBuilder;
 import org.azzyzt.jee.tools.mwe.builder.EntityEnumerator;
@@ -97,9 +100,13 @@ public class StandardCodeGenerator {
 		String rootPath = arguments.get(0);
         String projectBaseName = arguments.get(1);
         String projectPathPrefix = rootPath+projectBaseName;
-        String ejbSourceFolder = projectPathPrefix+"EJB/generated";
-        String ejbClientSourceFolder = projectPathPrefix+"EJBClient/generated";
-        String restSourceFolder = projectPathPrefix+"Servlets/generated";
+        String ejbGeneratedSourceFolder = projectPathPrefix+"EJB/generated";
+        String ejbGeneratedClientSourceFolder = projectPathPrefix+"EJBClient/generated";
+        String restGeneratedSourceFolder = projectPathPrefix+"Servlets/generated";
+        
+        for (String sourceFolder : new String[]{ ejbGeneratedSourceFolder, ejbGeneratedClientSourceFolder, restGeneratedSourceFolder }) {
+        	cleanSourceFolder(sourceFolder);
+        }
 
         Parameters parameters;
         int numberOfSourcesGenerated;
@@ -128,43 +135,56 @@ public class StandardCodeGenerator {
 
         SingleTargetsGeneratorFeature singleTargetsGen = new SingleTargetsGeneratorFeature(masterModel);
         parameters = singleTargetsGen.getParameters();
-        parameters.byName(SingleTargetsGeneratorFeature.SOURCE_FOLDER_CLIENT_PROJECT).setValue(ejbClientSourceFolder);
-        parameters.byName(SingleTargetsGeneratorFeature.SOURCE_FOLDER_EJB_PROJECT).setValue(ejbSourceFolder);
+        parameters.byName(SingleTargetsGeneratorFeature.SOURCE_FOLDER_CLIENT_PROJECT).setValue(ejbGeneratedClientSourceFolder);
+        parameters.byName(SingleTargetsGeneratorFeature.SOURCE_FOLDER_EJB_PROJECT).setValue(ejbGeneratedSourceFolder);
 		numberOfSourcesGenerated = singleTargetsGen.generate(parameters);
 		logger.info(numberOfSourcesGenerated+" eao file(s) generated");
 		
 		DtoGeneratorFeature dtoGen = new DtoGeneratorFeature(masterModel);
         parameters = dtoGen.getParameters();
-        parameters.byName(DtoGeneratorFeature.SOURCE_FOLDER).setValue(ejbClientSourceFolder);
+        parameters.byName(DtoGeneratorFeature.SOURCE_FOLDER).setValue(ejbGeneratedClientSourceFolder);
         numberOfSourcesGenerated = dtoGen.generate(parameters);
         logger.info(numberOfSourcesGenerated+" dto file(s) generated");
         
         EntityDtoConverterGeneratorFeature convGen = new EntityDtoConverterGeneratorFeature(masterModel);
         parameters = convGen.getParameters();
-        parameters.byName(EntityDtoConverterGeneratorFeature.SOURCE_FOLDER).setValue(ejbSourceFolder);
+        parameters.byName(EntityDtoConverterGeneratorFeature.SOURCE_FOLDER).setValue(ejbGeneratedSourceFolder);
         numberOfSourcesGenerated = convGen.generate(parameters);
 		logger.info(numberOfSourcesGenerated+" converter file(s) generated");
 		
 		CrudServiceBeansGeneratorFeature svcGen = new CrudServiceBeansGeneratorFeature(masterModel);
 		parameters = svcGen.getParameters();
-        parameters.byName(CrudServiceBeansGeneratorFeature.SOURCE_FOLDER_CLIENT_PROJECT).setValue(ejbClientSourceFolder);
-        parameters.byName(CrudServiceBeansGeneratorFeature.SOURCE_FOLDER_EJB_PROJECT).setValue(ejbSourceFolder);
+        parameters.byName(CrudServiceBeansGeneratorFeature.SOURCE_FOLDER_CLIENT_PROJECT).setValue(ejbGeneratedClientSourceFolder);
+        parameters.byName(CrudServiceBeansGeneratorFeature.SOURCE_FOLDER_EJB_PROJECT).setValue(ejbGeneratedSourceFolder);
         numberOfSourcesGenerated = svcGen.generate(parameters);
         logger.info(numberOfSourcesGenerated+" service beans and service interfaces generated");
 		
-		CrudServiceRESTGeneratorFeature restGen = new CrudServiceRESTGeneratorFeature(masterModel);
-		parameters = restGen.getParameters();
-        parameters.byName(CrudServiceRESTGeneratorFeature.SOURCE_FOLDER).setValue(restSourceFolder);
-        numberOfSourcesGenerated = restGen.generate(parameters);
-        logger.info(numberOfSourcesGenerated+" REST wrapper file(s) generated");
-        
+        if ((masterModel.isGeneratingRestXml() || masterModel.isGeneratingRestJson())) {
+			CrudServiceRESTGeneratorFeature restGen = new CrudServiceRESTGeneratorFeature(masterModel);
+			parameters = restGen.getParameters();
+	        parameters.byName(CrudServiceRESTGeneratorFeature.SOURCE_FOLDER).setValue(restGeneratedSourceFolder);
+	        numberOfSourcesGenerated = restGen.generate(parameters);
+	        logger.info(numberOfSourcesGenerated+" REST wrapper file(s) generated");
+        }
+
         ModifyMultiGeneratorFeature smGen = new ModifyMultiGeneratorFeature(masterModel);
         parameters = smGen.getParameters();
-        parameters.byName(ModifyMultiGeneratorFeature.SOURCE_FOLDER_CLIENT_PROJECT).setValue(ejbClientSourceFolder);
-        parameters.byName(ModifyMultiGeneratorFeature.SOURCE_FOLDER_EJB_PROJECT).setValue(ejbSourceFolder);
-        parameters.byName(ModifyMultiGeneratorFeature.SOURCE_FOLDER_SERVLET_PROJECT).setValue(restSourceFolder);
+        parameters.byName(ModifyMultiGeneratorFeature.SOURCE_FOLDER_CLIENT_PROJECT).setValue(ejbGeneratedClientSourceFolder);
+        parameters.byName(ModifyMultiGeneratorFeature.SOURCE_FOLDER_EJB_PROJECT).setValue(ejbGeneratedSourceFolder);
+        parameters.byName(ModifyMultiGeneratorFeature.SOURCE_FOLDER_SERVLET_PROJECT).setValue(restGeneratedSourceFolder);
         numberOfSourcesGenerated = smGen.generate(parameters);
         logger.info(numberOfSourcesGenerated+" store multi support file(s) generated");
+	}
+
+	private static void cleanSourceFolder(String sourceFolder) {
+		File root = new File(sourceFolder);
+		try {
+			FileUtils.deleteDirectory(root);
+		} catch (IOException e) {
+			throw new ToolError(e);
+		}
+		// Hmm ... we need a refresh afterwards anyway
+		root.mkdir();
 	}
 
 	private static GeneratorOptions analyzeAzzyztant(MetaClass azzyztant) {

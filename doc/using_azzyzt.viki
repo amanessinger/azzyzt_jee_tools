@@ -1,7 +1,7 @@
 #VAR: fmt=~html(site|slides): css=highlight.css,layout-deplate.css cssInclude=true
 #VAR: tableStyle=formal
 
-#VAR: version=1.2.1
+#VAR: version=1.2.2
 
 * Azzyzt JEE Tools
 #OPT: plain!
@@ -216,6 +216,7 @@ initially:
 azzyzt_tools
 `-- 1.2.1
     |-- antlr-2.7.7.jar
+    |-- commons-io-2.0.1.jar
     |-- org.azzyzt.jee.tools.mwe.jar
     |-- runtime
     |   |-- org.azzyzt.jee.runtime.jar
@@ -974,6 +975,13 @@ operations
 From the operations, drill down to the generated sample requests. Each
 operation will automatically have one request called "''Request 1''".
 
+The operations mentioned so far consume (where applicable) XML input
+and produce XML output. Additionally for each operation there is also
+a variant with the suffix ''Json''. Thus for ''store(dto)'' there is
+also a ''storeJson(dto)''. It won't come as a surprise that these
+variants consume and produce [[http://json.org/][JSON]], the
+__\JavaScript Object Notation__. 
+
 * Examples for REST
 
 I assume that you use [[http://www.soapui.org][soapUI]] to work
@@ -993,8 +1001,14 @@ press ''<TAB>'' to get out of the value field (important, otherwise
 soapUI does not accept the value!) and send the request.
 
 For POST requests, the left pane has an upper and a lower part. Just
-copy the XML from the example and paste it into the lower left
+copy the XML or JSON from the example and paste it into the lower left
 pane. Then send the request.
+
+For a POST request you need to set the MIME type ("__Media Type__") of
+the POST data. In soapUI this defaults to "''application/xml''". For
+JSON requests you have to change it to "''application/json"
+manually. It is not contained in the drop-down list, but you can edit
+the text.
 
 ** List of all countries
 
@@ -1009,30 +1023,67 @@ The result will be an unsorted list of all countries:
 #Code syntax=XML <<---
 <dtoes>
    <country>
-      <createTimestamp>2011-05-19T14:49:15.975+02:00</createTimestamp>
+      <createTimestamp>2011-06-15T12:59:28.896+02:00</createTimestamp>
       <createUser>admin</createUser>
       <id>1</id>
-      <modificationTimestamp>2011-05-19T14:49:15.975+02:00</modificationTimestamp>
+      <modificationTimestamp>2011-06-15T12:59:28.896+02:00</modificationTimestamp>
       <modificationUser>admin</modificationUser>
       <name>Austria</name>
    </country>
    <country>
-      <createTimestamp>2011-05-19T14:49:16.016+02:00</createTimestamp>
+      <createTimestamp>2011-06-15T12:59:28.937+02:00</createTimestamp>
       <createUser>admin</createUser>
       <id>2</id>
-      <modificationTimestamp>2011-05-19T14:49:16.016+02:00</modificationTimestamp>
+      <modificationTimestamp>2011-06-15T12:59:28.937+02:00</modificationTimestamp>
       <modificationUser>admin</modificationUser>
       <name>Italy</name>
    </country>
    <country>
-      <createTimestamp>2011-05-19T14:49:16.037+02:00</createTimestamp>
+      <createTimestamp>2011-06-15T12:59:28.958+02:00</createTimestamp>
       <createUser>admin</createUser>
       <id>3</id>
-      <modificationTimestamp>2011-05-19T14:49:16.037+02:00</modificationTimestamp>
+      <modificationTimestamp>2011-06-15T12:59:28.958+02:00</modificationTimestamp>
       <modificationUser>admin</modificationUser>
       <name>USA</name>
    </country>
 </dtoes>
+---
+
+Issue a GET request to any of the JSON equivalents:
+
+  [[http://localhost:8080/cookbookServlets/REST/country/allJson]]
+
+  [[http://localhost:8080/cookbookServlets/REST/countryRestricted/allJson]]
+
+and you get the same list, but now in JSON notation:
+
+#Code syntax=dot <<---
+{"country": [
+      {
+      "createTimestamp": "2011-06-15T12:59:28.896+02:00",
+      "createUser": "admin",
+      "id": "1",
+      "modificationTimestamp": "2011-06-15T12:59:28.896+02:00",
+      "modificationUser": "admin",
+      "name": "Austria"
+   },
+      {
+      "createTimestamp": "2011-06-15T12:59:28.937+02:00",
+      "createUser": "admin",
+      "id": "2",
+      "modificationTimestamp": "2011-06-15T12:59:28.937+02:00",
+      "modificationUser": "admin",
+      "name": "Italy"
+   },
+      {
+      "createTimestamp": "2011-06-15T12:59:28.958+02:00",
+      "createUser": "admin",
+      "id": "3",
+      "modificationTimestamp": "2011-06-15T12:59:28.958+02:00",
+      "modificationUser": "admin",
+      "name": "USA"
+   }
+]}
 ---
 
 ** City with the ID 1
@@ -1048,14 +1099,35 @@ delivers
 #Code syntax=XML <<---
 <city>
    <countryId>1</countryId>
-   <createTimestamp>2011-05-19T14:49:16.057+02:00</createTimestamp>
+   <createTimestamp>2011-06-15T12:59:28.979+02:00</createTimestamp>
    <createUser>admin</createUser>
    <id>1</id>
-   <modificationTimestamp>2011-05-19T14:49:16.057+02:00</modificationTimestamp>
+   <modificationTimestamp>2011-06-15T12:59:28.979+02:00</modificationTimestamp>
    <modificationUser>admin</modificationUser>
    <name>Graz</name>
 </city>
 ---
+
+or with JSON 
+
+  [[http://localhost:8080/cookbookServlets/REST/city/byIdJson?id=1]]
+
+  [[http://localhost:8080/cookbookServlets/REST/cityRestricted/byIdJson?id=1]]
+
+delivers
+
+#Code syntax=dot <<---
+{
+   "countryId": "1",
+   "createTimestamp": "2011-06-15T12:59:28.979+02:00",
+   "createUser": "admin",
+   "id": "1",
+   "modificationTimestamp": "2011-06-15T12:59:28.979+02:00",
+   "modificationUser": "admin",
+   "name": "Graz"
+}
+---
+
 
 ** Sorted list of cities
 
@@ -1074,7 +1146,7 @@ POST the following XML document
 </query_spec>
 ---
 
-into one fo these URLs
+into one of these URLs
 
   [[http://localhost:8080/cookbookServlets/REST/city/list]]
 
@@ -1088,114 +1160,268 @@ the result:
 <dtoes>
    <city>
       <countryId>1</countryId>
-      <createTimestamp>2011-05-19T14:49:16.119+02:00</createTimestamp>
+      <createTimestamp>2011-06-15T12:59:29.041+02:00</createTimestamp>
       <createUser>admin</createUser>
       <id>4</id>
-      <modificationTimestamp>2011-05-19T14:49:16.119+02:00</modificationTimestamp>
+      <modificationTimestamp>2011-06-15T12:59:29.041+02:00</modificationTimestamp>
       <modificationUser>admin</modificationUser>
       <name>Wien</name>
    </city>
    <city>
       <countryId>1</countryId>
-      <createTimestamp>2011-05-19T14:49:16.098+02:00</createTimestamp>
+      <createTimestamp>2011-06-15T12:59:29.020+02:00</createTimestamp>
       <createUser>admin</createUser>
       <id>3</id>
-      <modificationTimestamp>2011-05-19T14:49:16.098+02:00</modificationTimestamp>
+      <modificationTimestamp>2011-06-15T12:59:29.020+02:00</modificationTimestamp>
       <modificationUser>admin</modificationUser>
       <name>Salzburg</name>
    </city>
    <city>
       <countryId>1</countryId>
-      <createTimestamp>2011-05-19T14:49:16.078+02:00</createTimestamp>
+      <createTimestamp>2011-06-15T12:59:28.999+02:00</createTimestamp>
       <createUser>admin</createUser>
       <id>2</id>
-      <modificationTimestamp>2011-05-19T14:49:16.078+02:00</modificationTimestamp>
+      <modificationTimestamp>2011-06-15T12:59:28.999+02:00</modificationTimestamp>
       <modificationUser>admin</modificationUser>
       <name>Linz</name>
    </city>
    <city>
       <countryId>1</countryId>
-      <createTimestamp>2011-05-19T14:49:16.057+02:00</createTimestamp>
+      <createTimestamp>2011-06-15T12:59:28.979+02:00</createTimestamp>
       <createUser>admin</createUser>
       <id>1</id>
-      <modificationTimestamp>2011-05-19T14:49:16.057+02:00</modificationTimestamp>
+      <modificationTimestamp>2011-06-15T12:59:28.979+02:00</modificationTimestamp>
       <modificationUser>admin</modificationUser>
       <name>Graz</name>
    </city>
    <city>
       <countryId>2</countryId>
-      <createTimestamp>2011-05-19T14:49:16.202+02:00</createTimestamp>
+      <createTimestamp>2011-06-15T12:59:29.123+02:00</createTimestamp>
       <createUser>admin</createUser>
       <id>8</id>
-      <modificationTimestamp>2011-05-19T14:49:16.202+02:00</modificationTimestamp>
+      <modificationTimestamp>2011-06-15T12:59:29.123+02:00</modificationTimestamp>
       <modificationUser>admin</modificationUser>
       <name>Venezia</name>
    </city>
    <city>
       <countryId>2</countryId>
-      <createTimestamp>2011-05-19T14:49:16.181+02:00</createTimestamp>
+      <createTimestamp>2011-06-15T12:59:29.103+02:00</createTimestamp>
       <createUser>admin</createUser>
       <id>7</id>
-      <modificationTimestamp>2011-05-19T14:49:16.181+02:00</modificationTimestamp>
+      <modificationTimestamp>2011-06-15T12:59:29.103+02:00</modificationTimestamp>
       <modificationUser>admin</modificationUser>
       <name>Roma</name>
    </city>
    <city>
       <countryId>2</countryId>
-      <createTimestamp>2011-05-19T14:49:16.160+02:00</createTimestamp>
+      <createTimestamp>2011-06-15T12:59:29.082+02:00</createTimestamp>
       <createUser>admin</createUser>
       <id>6</id>
-      <modificationTimestamp>2011-05-19T14:49:16.160+02:00</modificationTimestamp>
+      <modificationTimestamp>2011-06-15T12:59:29.082+02:00</modificationTimestamp>
       <modificationUser>admin</modificationUser>
       <name>Firenze</name>
    </city>
    <city>
       <countryId>2</countryId>
-      <createTimestamp>2011-05-19T14:49:16.140+02:00</createTimestamp>
+      <createTimestamp>2011-06-15T12:59:29.061+02:00</createTimestamp>
       <createUser>admin</createUser>
       <id>5</id>
-      <modificationTimestamp>2011-05-19T14:49:16.140+02:00</modificationTimestamp>
+      <modificationTimestamp>2011-06-15T12:59:29.061+02:00</modificationTimestamp>
       <modificationUser>admin</modificationUser>
       <name>Bologna</name>
    </city>
    <city>
       <countryId>3</countryId>
-      <createTimestamp>2011-05-19T14:49:16.284+02:00</createTimestamp>
+      <createTimestamp>2011-06-15T12:59:29.226+02:00</createTimestamp>
       <createUser>admin</createUser>
       <id>12</id>
-      <modificationTimestamp>2011-05-19T14:49:16.284+02:00</modificationTimestamp>
+      <modificationTimestamp>2011-06-15T12:59:29.226+02:00</modificationTimestamp>
       <modificationUser>admin</modificationUser>
       <name>Washington</name>
    </city>
    <city>
       <countryId>3</countryId>
-      <createTimestamp>2011-05-19T14:49:16.263+02:00</createTimestamp>
+      <createTimestamp>2011-06-15T12:59:29.205+02:00</createTimestamp>
       <createUser>admin</createUser>
       <id>11</id>
-      <modificationTimestamp>2011-05-19T14:49:16.263+02:00</modificationTimestamp>
+      <modificationTimestamp>2011-06-15T12:59:29.205+02:00</modificationTimestamp>
       <modificationUser>admin</modificationUser>
       <name>New York</name>
    </city>
    <city>
       <countryId>3</countryId>
-      <createTimestamp>2011-05-19T14:49:16.243+02:00</createTimestamp>
+      <createTimestamp>2011-06-15T12:59:29.165+02:00</createTimestamp>
       <createUser>admin</createUser>
       <id>10</id>
-      <modificationTimestamp>2011-05-19T14:49:16.243+02:00</modificationTimestamp>
+      <modificationTimestamp>2011-06-15T12:59:29.165+02:00</modificationTimestamp>
       <modificationUser>admin</modificationUser>
       <name>Los Angeles</name>
    </city>
    <city>
       <countryId>3</countryId>
-      <createTimestamp>2011-05-19T14:49:16.222+02:00</createTimestamp>
+      <createTimestamp>2011-06-15T12:59:29.144+02:00</createTimestamp>
       <createUser>admin</createUser>
       <id>9</id>
-      <modificationTimestamp>2011-05-19T14:49:16.222+02:00</modificationTimestamp>
+      <modificationTimestamp>2011-06-15T12:59:29.144+02:00</modificationTimestamp>
       <modificationUser>admin</modificationUser>
       <name>Atlanta</name>
    </city>
 </dtoes>
 ---
+
+For JSON you still post an XML document, in fact the same XML
+document, into one of these URLs
+
+  [[http://localhost:8080/cookbookServlets/REST/city/listJson]]
+
+  [[http://localhost:8080/cookbookServlets/REST/cityRestricted/listJson]]
+
+and get
+
+#Code syntax=dot <<---
+{"city": [
+      {
+      "countryId": "1",
+      "createTimestamp": "2011-06-15T12:59:29.041+02:00",
+      "createUser": "admin",
+      "id": "4",
+      "modificationTimestamp": "2011-06-15T12:59:29.041+02:00",
+      "modificationUser": "admin",
+      "name": "Wien"
+   },
+      {
+      "countryId": "1",
+      "createTimestamp": "2011-06-15T12:59:29.020+02:00",
+      "createUser": "admin",
+      "id": "3",
+      "modificationTimestamp": "2011-06-15T12:59:29.020+02:00",
+      "modificationUser": "admin",
+      "name": "Salzburg"
+   },
+      {
+      "countryId": "1",
+      "createTimestamp": "2011-06-15T12:59:28.999+02:00",
+      "createUser": "admin",
+      "id": "2",
+      "modificationTimestamp": "2011-06-15T12:59:28.999+02:00",
+      "modificationUser": "admin",
+      "name": "Linz"
+   },
+      {
+      "countryId": "1",
+      "createTimestamp": "2011-06-15T12:59:28.979+02:00",
+      "createUser": "admin",
+      "id": "1",
+      "modificationTimestamp": "2011-06-15T12:59:28.979+02:00",
+      "modificationUser": "admin",
+      "name": "Graz"
+   },
+      {
+      "countryId": "2",
+      "createTimestamp": "2011-06-15T12:59:29.123+02:00",
+      "createUser": "admin",
+      "id": "8",
+      "modificationTimestamp": "2011-06-15T12:59:29.123+02:00",
+      "modificationUser": "admin",
+      "name": "Venezia"
+   },
+      {
+      "countryId": "2",
+      "createTimestamp": "2011-06-15T12:59:29.103+02:00",
+      "createUser": "admin",
+      "id": "7",
+      "modificationTimestamp": "2011-06-15T12:59:29.103+02:00",
+      "modificationUser": "admin",
+      "name": "Roma"
+   },
+      {
+      "countryId": "2",
+      "createTimestamp": "2011-06-15T12:59:29.082+02:00",
+      "createUser": "admin",
+      "id": "6",
+      "modificationTimestamp": "2011-06-15T12:59:29.082+02:00",
+      "modificationUser": "admin",
+      "name": "Firenze"
+   },
+      {
+      "countryId": "2",
+      "createTimestamp": "2011-06-15T12:59:29.061+02:00",
+      "createUser": "admin",
+      "id": "5",
+      "modificationTimestamp": "2011-06-15T12:59:29.061+02:00",
+      "modificationUser": "admin",
+      "name": "Bologna"
+   },
+      {
+      "countryId": "3",
+      "createTimestamp": "2011-06-15T12:59:29.226+02:00",
+      "createUser": "admin",
+      "id": "12",
+      "modificationTimestamp": "2011-06-15T12:59:29.226+02:00",
+      "modificationUser": "admin",
+      "name": "Washington"
+   },
+      {
+      "countryId": "3",
+      "createTimestamp": "2011-06-15T12:59:29.205+02:00",
+      "createUser": "admin",
+      "id": "11",
+      "modificationTimestamp": "2011-06-15T12:59:29.205+02:00",
+      "modificationUser": "admin",
+      "name": "New York"
+   },
+      {
+      "countryId": "3",
+      "createTimestamp": "2011-06-15T12:59:29.165+02:00",
+      "createUser": "admin",
+      "id": "10",
+      "modificationTimestamp": "2011-06-15T12:59:29.165+02:00",
+      "modificationUser": "admin",
+      "name": "Los Angeles"
+   },
+      {
+      "countryId": "3",
+      "createTimestamp": "2011-06-15T12:59:29.144+02:00",
+      "createUser": "admin",
+      "id": "9",
+      "modificationTimestamp": "2011-06-15T12:59:29.144+02:00",
+      "modificationUser": "admin",
+      "name": "Atlanta"
+   }
+]}
+---
+
+Stop it, you say, didn't you pretend that in the JSON variant it's all
+JSON?  Why XML?
+
+Well, you still have to post the XML with MIME type
+"''application/json''". Fact is, that the server expects a single
+string parameter, and that this string must contain a valid query
+specification in XML. Thus the XML of this string parameter is not a
+matter of transport protocol, it is the payload, it is content.
+
+This single string happens to have the same network representation,
+regardless of how it is sent, as "''application/xml''" or as
+"''application/json''". The only difference is the ''Content-Type''
+header. Otoh, the server expects "''application/json''" and will
+produce an error if it gets the wrong content type header.
+
+But again: why XML? Why not have an alternative representation of the
+query in JSON?
+
+The reason is, that JSON is a format that's easy to turn into
+JavaScript objects by calling ''eval()'' (though you shouldn't do
+that), but it is not a very readable format for people. In the
+following we will see some XML that could of course be expressed in
+JSON as well, but that is generally more readable in XML. While
+readability is subjective, it is matter of fact that XML has
+wide-spread tool support (editors, syntax highlighting, validation
+tools, etc), while support for JSON is comaratively sparse.
+
+Apart from that, the generated server side would have to implement a
+JSON parser for converting JSON specifications in actual queries, just
+like it currently does with an XML parser. There is no clear advantage
+in doing that, and therefore the specifications are XML only.
 
 
 ** Query with three conditions
@@ -1240,23 +1466,54 @@ been "''Venezia''").
 <dtoes>
    <city>
       <countryId>2</countryId>
-      <createTimestamp>2011-05-19T14:49:16.140+02:00</createTimestamp>
+      <createTimestamp>2011-06-15T12:59:29.061+02:00</createTimestamp>
       <createUser>admin</createUser>
       <id>5</id>
-      <modificationTimestamp>2011-05-19T14:49:16.140+02:00</modificationTimestamp>
+      <modificationTimestamp>2011-06-15T12:59:29.061+02:00</modificationTimestamp>
       <modificationUser>admin</modificationUser>
       <name>Bologna</name>
    </city>
    <city>
       <countryId>2</countryId>
-      <createTimestamp>2011-05-19T14:49:16.160+02:00</createTimestamp>
+      <createTimestamp>2011-06-15T12:59:29.082+02:00</createTimestamp>
       <createUser>admin</createUser>
       <id>6</id>
-      <modificationTimestamp>2011-05-19T14:49:16.160+02:00</modificationTimestamp>
+      <modificationTimestamp>2011-06-15T12:59:29.082+02:00</modificationTimestamp>
       <modificationUser>admin</modificationUser>
       <name>Firenze</name>
    </city>
 </dtoes>
+---
+
+Alternatively use the JSON URLs
+
+  [[http://localhost:8080/cookbookServlets/REST/city/listJson]]
+
+  [[http://localhost:8080/cookbookServlets/REST/cityRestricted/listJson]]
+
+and get this result:
+
+#Code syntax=dot <<---
+{"city": [
+      {
+      "countryId": "2",
+      "createTimestamp": "2011-06-15T12:59:29.061+02:00",
+      "createUser": "admin",
+      "id": "5",
+      "modificationTimestamp": "2011-06-15T12:59:29.061+02:00",
+      "modificationUser": "admin",
+      "name": "Bologna"
+   },
+      {
+      "countryId": "2",
+      "createTimestamp": "2011-06-15T12:59:29.082+02:00",
+      "createUser": "admin",
+      "id": "6",
+      "modificationTimestamp": "2011-06-15T12:59:29.082+02:00",
+      "modificationUser": "admin",
+      "name": "Firenze"
+   }
+]}
 ---
 
 The XML-based query language currently supports the unary expression
@@ -1333,50 +1590,108 @@ have been "''Linz''").
 <dtoes>
    <city>
       <countryId>2</countryId>
-      <createTimestamp>2011-05-19T14:49:16.140+02:00</createTimestamp>
+      <createTimestamp>2011-06-15T12:59:29.061+02:00</createTimestamp>
       <createUser>admin</createUser>
       <id>5</id>
-      <modificationTimestamp>2011-05-19T14:49:16.140+02:00</modificationTimestamp>
+      <modificationTimestamp>2011-06-15T12:59:29.061+02:00</modificationTimestamp>
       <modificationUser>admin</modificationUser>
       <name>Bologna</name>
    </city>
    <city>
       <countryId>2</countryId>
-      <createTimestamp>2011-05-19T14:49:16.160+02:00</createTimestamp>
+      <createTimestamp>2011-06-15T12:59:29.082+02:00</createTimestamp>
       <createUser>admin</createUser>
       <id>6</id>
-      <modificationTimestamp>2011-05-19T14:49:16.160+02:00</modificationTimestamp>
+      <modificationTimestamp>2011-06-15T12:59:29.082+02:00</modificationTimestamp>
       <modificationUser>admin</modificationUser>
       <name>Firenze</name>
    </city>
    <city>
       <countryId>3</countryId>
-      <createTimestamp>2011-05-19T14:49:16.243+02:00</createTimestamp>
+      <createTimestamp>2011-06-15T12:59:29.165+02:00</createTimestamp>
       <createUser>admin</createUser>
       <id>10</id>
-      <modificationTimestamp>2011-05-19T14:49:16.243+02:00</modificationTimestamp>
+      <modificationTimestamp>2011-06-15T12:59:29.165+02:00</modificationTimestamp>
       <modificationUser>admin</modificationUser>
       <name>Los Angeles</name>
    </city>
    <city>
       <countryId>2</countryId>
-      <createTimestamp>2011-05-19T14:49:16.181+02:00</createTimestamp>
+      <createTimestamp>2011-06-15T12:59:29.103+02:00</createTimestamp>
       <createUser>admin</createUser>
       <id>7</id>
-      <modificationTimestamp>2011-05-19T14:49:16.181+02:00</modificationTimestamp>
+      <modificationTimestamp>2011-06-15T12:59:29.103+02:00</modificationTimestamp>
       <modificationUser>admin</modificationUser>
       <name>Roma</name>
    </city>
    <city>
       <countryId>2</countryId>
-      <createTimestamp>2011-05-19T14:49:16.202+02:00</createTimestamp>
+      <createTimestamp>2011-06-15T12:59:29.123+02:00</createTimestamp>
       <createUser>admin</createUser>
       <id>8</id>
-      <modificationTimestamp>2011-05-19T14:49:16.202+02:00</modificationTimestamp>
+      <modificationTimestamp>2011-06-15T12:59:29.123+02:00</modificationTimestamp>
       <modificationUser>admin</modificationUser>
       <name>Venezia</name>
    </city>
 </dtoes>
+---
+
+For JSON use 
+
+  [[http://localhost:8080/cookbookServlets/REST/city/listJson]]
+
+  [[http://localhost:8080/cookbookServlets/REST/cityRestricted/listJson]]
+
+and get
+
+#Code syntax=dot <<---
+{"city": [
+      {
+      "countryId": "2",
+      "createTimestamp": "2011-06-15T12:59:29.061+02:00",
+      "createUser": "admin",
+      "id": "5",
+      "modificationTimestamp": "2011-06-15T12:59:29.061+02:00",
+      "modificationUser": "admin",
+      "name": "Bologna"
+   },
+      {
+      "countryId": "2",
+      "createTimestamp": "2011-06-15T12:59:29.082+02:00",
+      "createUser": "admin",
+      "id": "6",
+      "modificationTimestamp": "2011-06-15T12:59:29.082+02:00",
+      "modificationUser": "admin",
+      "name": "Firenze"
+   },
+      {
+      "countryId": "3",
+      "createTimestamp": "2011-06-15T12:59:29.165+02:00",
+      "createUser": "admin",
+      "id": "10",
+      "modificationTimestamp": "2011-06-15T12:59:29.165+02:00",
+      "modificationUser": "admin",
+      "name": "Los Angeles"
+   },
+      {
+      "countryId": "2",
+      "createTimestamp": "2011-06-15T12:59:29.103+02:00",
+      "createUser": "admin",
+      "id": "7",
+      "modificationTimestamp": "2011-06-15T12:59:29.103+02:00",
+      "modificationUser": "admin",
+      "name": "Roma"
+   },
+      {
+      "countryId": "2",
+      "createTimestamp": "2011-06-15T12:59:29.123+02:00",
+      "createUser": "admin",
+      "id": "8",
+      "modificationTimestamp": "2011-06-15T12:59:29.123+02:00",
+      "modificationUser": "admin",
+      "name": "Venezia"
+   }
+]}
 ---
 
 
@@ -1411,10 +1726,10 @@ may return
 #Code syntax=XML <<---
 <city>
    <countryId>2</countryId>
-   <createTimestamp>2011-05-20T11:50:06.805+02:00</createTimestamp>
+   <createTimestamp>2011-06-15T15:48:45.503+02:00</createTimestamp>
    <createUser>anonymous</createUser>
    <id>13</id>
-   <modificationTimestamp>2011-05-20T11:50:06.805+02:00</modificationTimestamp>
+   <modificationTimestamp>2011-06-15T15:48:45.503+02:00</modificationTimestamp>
    <modificationUser>anonymous</modificationUser>
    <name>Udinw</name>
 </city>
@@ -1422,15 +1737,45 @@ may return
 
 The new ''id'' will have been automatically allocated from a sequence.
 
+Let's try the same with another bogus city name, but this time in
+JSON. We use
+
+  [[http://localhost:8080/cookbookServlets/REST/city/storeJson]]
+
+and now the text that we send to the server is actually JSON, not
+XML. The server does not expect a string, it expects a city object,
+and it expects this object in JSON transport. Thus we send
+
+#Code syntax=dot <<---
+{
+    "countryId" : "2",
+    "name" : "Anconx"
+}
+---
+
+and receive
+
+#Code syntax=dot <<---
+{
+   "countryId": "2",
+   "createTimestamp": "2011-06-15T18:05:39.272+02:00",
+   "createUser": "anonymous",
+   "id": "14",
+   "modificationTimestamp": "2011-06-15T18:05:39.272+02:00",
+   "modificationUser": "anonymous",
+   "name": "Anconx"
+}
+---
+
 
 ** Update a record, specify user
 
 *** User names
 
-You may have noticed, that "''Udinw''" has been inserted with not
-only an ''id'' set on server side, it had also a create/modify
-timestamps set as well as creat/modify users. Both user names were set
-to "''anonymous''".
+You may have noticed, that "''Udinw''" and "''Anconx''" have been
+inserted with not only an ''id'' set on server side, they had also
+create/modify timestamps set as well as create/modify users. Both user
+names were set to "''anonymous''".
 
 The code generated by Azzyzt JEE Tools uses an extra EJB to figure out
 what the user name for a specific request is. I call this a __Site
@@ -1506,21 +1851,54 @@ POST the following XML
 </city>
 ---
 
-into to rename "__Udinw__" to "__Udine__". This is the result,
+into 
+
+  [[http://localhost:8080/cookbookServlets/REST/city/store]]
+
+to rename "__Udinw__" to "__Udine__". This is the result,
 note the modification user and timestamp, while create user and
 timestamp have stayed unchanged.
 
 #Code syntax=XML <<---
 <city>
    <countryId>2</countryId>
-   <createTimestamp>2011-05-20T11:50:06.805+02:00</createTimestamp>
+   <createTimestamp>2011-06-15T15:48:45.503+02:00</createTimestamp>
    <createUser>anonymous</createUser>
    <id>13</id>
-   <modificationTimestamp>2011-05-20T12:45:06.038+02:00</modificationTimestamp>
+   <modificationTimestamp>2011-06-15T18:10:34.917+02:00</modificationTimestamp>
    <modificationUser>andreas</modificationUser>
    <name>Udine</name>
 </city>
 ---
+
+Now let's update ''Anconx'' to ''Ancona'' via JSON. The URL is
+
+  [[http://localhost:8080/cookbookServlets/REST/city/storeJson]]
+
+and with the input
+
+#Code syntax=dot <<---
+{
+    "countryId" : 2,
+    "id" : 14,
+    "name" : "Ancona"
+}
+---
+
+we get
+
+#Code syntax=dot <<---
+{
+   "countryId": "2",
+   "createTimestamp": "2011-06-15T18:05:39.272+02:00",
+   "createUser": "anonymous",
+   "id": "14",
+   "modificationTimestamp": "2011-06-15T18:15:43.614+02:00",
+   "modificationUser": "andreas",
+   "name": "Ancona"
+}
+---
+
 
 
 ** Delete a record
@@ -1534,6 +1912,16 @@ result will be
 
 #Code syntax=XML <<---
 <result>OK</result>
+---
+
+and the same with the JSON URL
+
+  [[http://localhost:8080/cookbookServlets/REST/city/deleteJson?id=14]]
+
+results in 
+
+#Code syntax=dot <<---
+{"result": "OK"}
 ---
 
 
@@ -1588,37 +1976,37 @@ something like
 #Code syntax=XML <<---
 <dtoes>
    <country>
-      <createTimestamp>2011-05-20T12:59:33.185+02:00</createTimestamp>
+      <createTimestamp>2011-06-15T18:25:41.427+02:00</createTimestamp>
       <createUser>andreas</createUser>
       <id>4</id>
-      <modificationTimestamp>2011-05-20T12:59:33.185+02:00</modificationTimestamp>
+      <modificationTimestamp>2011-06-15T18:25:41.427+02:00</modificationTimestamp>
       <modificationUser>andreas</modificationUser>
       <name>France</name>
    </country>
    <city>
       <countryId>4</countryId>
-      <createTimestamp>2011-05-20T12:59:33.185+02:00</createTimestamp>
+      <createTimestamp>2011-06-15T18:25:41.427+02:00</createTimestamp>
       <createUser>andreas</createUser>
-      <id>14</id>
-      <modificationTimestamp>2011-05-20T12:59:33.185+02:00</modificationTimestamp>
+      <id>15</id>
+      <modificationTimestamp>2011-06-15T18:25:41.427+02:00</modificationTimestamp>
       <modificationUser>andreas</modificationUser>
       <name>Marseille</name>
    </city>
    <city>
       <countryId>4</countryId>
-      <createTimestamp>2011-05-20T12:59:33.185+02:00</createTimestamp>
+      <createTimestamp>2011-06-15T18:25:41.427+02:00</createTimestamp>
       <createUser>andreas</createUser>
-      <id>15</id>
-      <modificationTimestamp>2011-05-20T12:59:33.185+02:00</modificationTimestamp>
+      <id>16</id>
+      <modificationTimestamp>2011-06-15T18:25:41.427+02:00</modificationTimestamp>
       <modificationUser>andreas</modificationUser>
       <name>Paris</name>
    </city>
    <city>
       <countryId>4</countryId>
-      <createTimestamp>2011-05-20T12:59:33.185+02:00</createTimestamp>
+      <createTimestamp>2011-06-15T18:25:41.427+02:00</createTimestamp>
       <createUser>andreas</createUser>
-      <id>16</id>
-      <modificationTimestamp>2011-05-20T12:59:33.185+02:00</modificationTimestamp>
+      <id>17</id>
+      <modificationTimestamp>2011-06-15T18:25:41.427+02:00</modificationTimestamp>
       <modificationUser>andreas</modificationUser>
       <name>Rennes</name>
    </city>
@@ -1649,6 +2037,52 @@ will get an ''\EntityNotFoundException'', and if you don't send an ID,
 a new object is inserted.
 
 
+As for JSON, it seems that we run into a problem with polymorphism
+though. I would have expected an input of
+
+#Code syntax=dot <<---
+{
+   "country":    {
+      "id": -1,
+      "name": "Deutschland"
+   },
+   "city": [
+      {
+         "countryId": -1,
+         "name": "Berlin"
+      },
+      {
+         "countryId": -1,
+         "name": "Frankfurt"
+      },
+      {
+         "countryId": -1,
+         "name": "Hamburg"
+      },
+   ]
+}
+---
+
+to be the correct equivalent in JSON, at least that's what I get when
+I construct a GET operation "''List<Dto> test()''" and return an
+''\ArrayList<Dto>'' with a country and three cities. 
+
+Serialized from Java to JSON it works, but when I try to use the same
+as input for a parameter that's also a "''List<Dto>''", then the client
+times out, the operation in the server is never entered, and after
+some time \GlassFish logs a message about having interrupted an idle
+thread.
+
+There may be another JSON input that works, but so far I must conclude
+that either JSON can't deserialize polymorphic lists, or that I
+trigger a bug in \GlassFish's REST library Jersey. This is with
+\GlassFish 3.1, which ships with Jersey 1.5 and Jackson 1.5.5 as JSON
+API. As far as I can tell from conversations on the Internet, Jackson
+1.7 still has some problems, and the proposed solutions involve the
+use of annotations that are not part of the Java EE 6 standard. I
+guess it's simply a tad too early for polymorphic JSON input.
+
+
 ** Delete multiple records from different tables
 
 The second operation in ''\ModifyMultiBean'' deletes all in a list of objects.
@@ -1658,13 +2092,13 @@ POST the following XML
 #Code syntax=XML <<---
 <dtoes>
    <city>
-      <id>14</id>
-   </city>
-   <city>
       <id>15</id>
    </city>
    <city>
       <id>16</id>
+   </city>
+   <city>
+      <id>17</id>
    </city>
    <country>
       <id>4</id>
@@ -1683,6 +2117,8 @@ Again the result will be
 ---
 
 and with only one transactional operation we got rid of France.
+
+The problem of correct JSON input (if it exists at all) is still open.
 
 
 ** Store and/or delete multiple records in different tables
@@ -1726,37 +2162,37 @@ and expect a result like
 #Code syntax=XML <<---
 <dtoes>
    <country>
-      <createTimestamp>2011-05-20T13:44:14.648+02:00</createTimestamp>
+      <createTimestamp>2011-06-15T19:52:58.569+02:00</createTimestamp>
       <createUser>andreas</createUser>
       <id>5</id>
-      <modificationTimestamp>2011-05-20T13:44:14.648+02:00</modificationTimestamp>
+      <modificationTimestamp>2011-06-15T19:52:58.569+02:00</modificationTimestamp>
       <modificationUser>andreas</modificationUser>
       <name>France</name>
    </country>
    <city>
       <countryId>5</countryId>
-      <createTimestamp>2011-05-20T13:44:14.648+02:00</createTimestamp>
+      <createTimestamp>2011-06-15T19:52:58.569+02:00</createTimestamp>
       <createUser>andreas</createUser>
-      <id>17</id>
-      <modificationTimestamp>2011-05-20T13:44:14.648+02:00</modificationTimestamp>
+      <id>18</id>
+      <modificationTimestamp>2011-06-15T19:52:58.569+02:00</modificationTimestamp>
       <modificationUser>andreas</modificationUser>
       <name>Marseille</name>
    </city>
    <city>
       <countryId>5</countryId>
-      <createTimestamp>2011-05-20T13:44:14.648+02:00</createTimestamp>
+      <createTimestamp>2011-06-15T19:52:58.569+02:00</createTimestamp>
       <createUser>andreas</createUser>
-      <id>18</id>
-      <modificationTimestamp>2011-05-20T13:44:14.648+02:00</modificationTimestamp>
+      <id>19</id>
+      <modificationTimestamp>2011-06-15T19:52:58.569+02:00</modificationTimestamp>
       <modificationUser>andreas</modificationUser>
       <name>Paris</name>
    </city>
    <city>
       <countryId>5</countryId>
-      <createTimestamp>2011-05-20T13:44:14.648+02:00</createTimestamp>
+      <createTimestamp>2011-06-15T19:52:58.569+02:00</createTimestamp>
       <createUser>andreas</createUser>
-      <id>19</id>
-      <modificationTimestamp>2011-05-20T13:44:14.648+02:00</modificationTimestamp>
+      <id>20</id>
+      <modificationTimestamp>2011-06-15T19:52:58.569+02:00</modificationTimestamp>
       <modificationUser>andreas</modificationUser>
       <name>Rennes</name>
    </city>
@@ -1773,13 +2209,13 @@ Now we can delete France again and insert Egypt. POST the following XML
    <delete>
       <dtoes>
          <city>
-            <id>17</id>
-         </city>
-         <city>
             <id>18</id>
          </city>
          <city>
             <id>19</id>
+         </city>
+         <city>
+            <id>20</id>
          </city>
          <country>
             <id>5</id>
@@ -1818,28 +2254,28 @@ exact IDs that you got in the last step, i.e. the country ID of
 #Code syntax=XML <<---
 <dtoes>
    <country>
-      <createTimestamp>2011-05-20T13:49:03.912+02:00</createTimestamp>
+      <createTimestamp>2011-06-15T20:01:33.808+02:00</createTimestamp>
       <createUser>andreas</createUser>
       <id>6</id>
-      <modificationTimestamp>2011-05-20T13:49:03.912+02:00</modificationTimestamp>
+      <modificationTimestamp>2011-06-15T20:01:33.808+02:00</modificationTimestamp>
       <modificationUser>andreas</modificationUser>
       <name>Egypt</name>
    </country>
    <city>
       <countryId>6</countryId>
-      <createTimestamp>2011-05-20T13:49:03.912+02:00</createTimestamp>
+      <createTimestamp>2011-06-15T20:01:33.808+02:00</createTimestamp>
       <createUser>andreas</createUser>
-      <id>20</id>
-      <modificationTimestamp>2011-05-20T13:49:03.912+02:00</modificationTimestamp>
+      <id>21</id>
+      <modificationTimestamp>2011-06-15T20:01:33.808+02:00</modificationTimestamp>
       <modificationUser>andreas</modificationUser>
       <name>Assuan</name>
    </city>
    <city>
       <countryId>6</countryId>
-      <createTimestamp>2011-05-20T13:49:03.912+02:00</createTimestamp>
+      <createTimestamp>2011-06-15T20:01:33.808+02:00</createTimestamp>
       <createUser>andreas</createUser>
-      <id>21</id>
-      <modificationTimestamp>2011-05-20T13:49:03.912+02:00</modificationTimestamp>
+      <id>22</id>
+      <modificationTimestamp>2011-06-15T20:01:33.808+02:00</modificationTimestamp>
       <modificationUser>andreas</modificationUser>
       <name>Cairo</name>
    </city>
@@ -1856,6 +2292,8 @@ Each of the two lists could have been left empty, reducing the
 operation "''storeDeletMulti()''" to a more complicated version of
 either "''storeMulti()''" or "''deleteMulti()''", or if both lists are
 empty, to a very complicated no-op.
+
+Again the question of correct JSON input is open.
 
 ** A visit from Austria to Luxor
 
@@ -1914,10 +2352,10 @@ The result is
 <dtoes>
    <city>
       <countryId>6</countryId>
-      <createTimestamp>2011-06-09T14:23:00.463+02:00</createTimestamp>
+      <createTimestamp>2011-06-15T20:04:58.693+02:00</createTimestamp>
       <createUser>andreas</createUser>
-      <id>22</id>
-      <modificationTimestamp>2011-06-09T14:23:00.463+02:00</modificationTimestamp>
+      <id>23</id>
+      <modificationTimestamp>2011-06-15T20:04:58.693+02:00</modificationTimestamp>
       <modificationUser>andreas</modificationUser>
       <name>Luxor</name>
    </city>
@@ -1926,14 +2364,14 @@ The result is
       <languageName>English (UK)</languageName>
    </language>
    <visit>
-      <createTimestamp>2011-06-09-142300.463</createTimestamp>
+      <createTimestamp>2011-06-15-200458.693</createTimestamp>
       <createUser>andreas</createUser>
       <id>
          <fromZipArea>1</fromZipArea>
          <langUsed>en_UK</langUsed>
-         <toCity>22</toCity>
+         <toCity>23</toCity>
       </id>
-      <modificationTimestamp>2011-06-09-142300.463</modificationTimestamp>
+      <modificationTimestamp>2011-06-15-200458.693</modificationTimestamp>
       <modificationUser>andreas</modificationUser>
       <totalNumberOfVisitors>5</totalNumberOfVisitors>
    </visit>
@@ -1954,11 +2392,11 @@ POST the following XML
       <id>
          <fromZipArea>1</fromZipArea>
          <langUsed>en_UK</langUsed>
-         <toCity>22</toCity>
+         <toCity>23</toCity>
       </id>
    </visit>
    <city>
-      <id>22</id>
+      <id>23</id>
    </city>
    <language>
       <id>en_UK</id>
@@ -2156,6 +2594,8 @@ import org.azzyzt.jee.runtime.util.StringConverterInterface;
         cutbacks = {
                 AzzyztGeneratorCutback.NoRemoteInterfaces, 
                 AzzyztGeneratorCutback.NoSoapServices,
+                AzzyztGeneratorCutback.NoRestServicesJson, 
+                AzzyztGeneratorCutback.NoRestServicesXml,
         }
 )
 public class Azzyztant implements AzzyztantInterface {
@@ -2177,13 +2617,17 @@ For brevity I have removed the generated comments, but otherwise it is
 the same class as generated, with one exception: There is an
 annotation ''@\AzzyztGeneratorOptions'' on the class, that defined the
 cutbacks. In this case we specify, that we want no ''@Remote'' and no
-''@\WebService'' annotations. The resulting applications will only be
-reachable via REST.
+''@\WebService'' annotations, no REST services with JSON serialization
+and no REST services with XML serialization. The resulting
+applications will only be usable as building blocks for your own
+classes. Add your own services and use the generated beans, converters
+and DTOs.
 
-For the time being, these are the only cutbacks available, others will
-follow, and there will also be additional options, not only
-cutbacks. In any case, the ''Azzyztant'' is the place where options
-go.
+ !!! If you turn off both variants of REST, Azzyzt won't generate the REST servlet either!
+
+That's it so far. Additional options, not only cutbacks, will follow
+in the future. In any case, the ''Azzyztant'' is the place where
+options go.
 
 
 * Miscellanea
@@ -2259,6 +2703,214 @@ which is
  LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN 
  ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
  POSSIBILITY OF SUCH DAMAGE.
+---
+
+The code generator uses [[http://commons.apache.org/io/][Apache
+Commons IO]] which is licensed under the
+
+#Verbatim <<---
+
+                                 Apache License
+                           Version 2.0, January 2004
+                        http://www.apache.org/licenses/
+
+   TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+
+   1. Definitions.
+
+      "License" shall mean the terms and conditions for use, reproduction,
+      and distribution as defined by Sections 1 through 9 of this document.
+
+      "Licensor" shall mean the copyright owner or entity authorized by
+      the copyright owner that is granting the License.
+
+      "Legal Entity" shall mean the union of the acting entity and all
+      other entities that control, are controlled by, or are under common
+      control with that entity. For the purposes of this definition,
+      "control" means (i) the power, direct or indirect, to cause the
+      direction or management of such entity, whether by contract or
+      otherwise, or (ii) ownership of fifty percent (50%) or more of the
+      outstanding shares, or (iii) beneficial ownership of such entity.
+
+      "You" (or "Your") shall mean an individual or Legal Entity
+      exercising permissions granted by this License.
+
+      "Source" form shall mean the preferred form for making modifications,
+      including but not limited to software source code, documentation
+      source, and configuration files.
+
+      "Object" form shall mean any form resulting from mechanical
+      transformation or translation of a Source form, including but
+      not limited to compiled object code, generated documentation,
+      and conversions to other media types.
+
+      "Work" shall mean the work of authorship, whether in Source or
+      Object form, made available under the License, as indicated by a
+      copyright notice that is included in or attached to the work
+      (an example is provided in the Appendix below).
+
+      "Derivative Works" shall mean any work, whether in Source or Object
+      form, that is based on (or derived from) the Work and for which the
+      editorial revisions, annotations, elaborations, or other modifications
+      represent, as a whole, an original work of authorship. For the purposes
+      of this License, Derivative Works shall not include works that remain
+      separable from, or merely link (or bind by name) to the interfaces of,
+      the Work and Derivative Works thereof.
+
+      "Contribution" shall mean any work of authorship, including
+      the original version of the Work and any modifications or additions
+      to that Work or Derivative Works thereof, that is intentionally
+      submitted to Licensor for inclusion in the Work by the copyright owner
+      or by an individual or Legal Entity authorized to submit on behalf of
+      the copyright owner. For the purposes of this definition, "submitted"
+      means any form of electronic, verbal, or written communication sent
+      to the Licensor or its representatives, including but not limited to
+      communication on electronic mailing lists, source code control systems,
+      and issue tracking systems that are managed by, or on behalf of, the
+      Licensor for the purpose of discussing and improving the Work, but
+      excluding communication that is conspicuously marked or otherwise
+      designated in writing by the copyright owner as "Not a Contribution."
+
+      "Contributor" shall mean Licensor and any individual or Legal Entity
+      on behalf of whom a Contribution has been received by Licensor and
+      subsequently incorporated within the Work.
+
+   2. Grant of Copyright License. Subject to the terms and conditions of
+      this License, each Contributor hereby grants to You a perpetual,
+      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+      copyright license to reproduce, prepare Derivative Works of,
+      publicly display, publicly perform, sublicense, and distribute the
+      Work and such Derivative Works in Source or Object form.
+
+   3. Grant of Patent License. Subject to the terms and conditions of
+      this License, each Contributor hereby grants to You a perpetual,
+      worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+      (except as stated in this section) patent license to make, have made,
+      use, offer to sell, sell, import, and otherwise transfer the Work,
+      where such license applies only to those patent claims licensable
+      by such Contributor that are necessarily infringed by their
+      Contribution(s) alone or by combination of their Contribution(s)
+      with the Work to which such Contribution(s) was submitted. If You
+      institute patent litigation against any entity (including a
+      cross-claim or counterclaim in a lawsuit) alleging that the Work
+      or a Contribution incorporated within the Work constitutes direct
+      or contributory patent infringement, then any patent licenses
+      granted to You under this License for that Work shall terminate
+      as of the date such litigation is filed.
+
+   4. Redistribution. You may reproduce and distribute copies of the
+      Work or Derivative Works thereof in any medium, with or without
+      modifications, and in Source or Object form, provided that You
+      meet the following conditions:
+
+      (a) You must give any other recipients of the Work or
+          Derivative Works a copy of this License; and
+
+      (b) You must cause any modified files to carry prominent notices
+          stating that You changed the files; and
+
+      (c) You must retain, in the Source form of any Derivative Works
+          that You distribute, all copyright, patent, trademark, and
+          attribution notices from the Source form of the Work,
+          excluding those notices that do not pertain to any part of
+          the Derivative Works; and
+
+      (d) If the Work includes a "NOTICE" text file as part of its
+          distribution, then any Derivative Works that You distribute must
+          include a readable copy of the attribution notices contained
+          within such NOTICE file, excluding those notices that do not
+          pertain to any part of the Derivative Works, in at least one
+          of the following places: within a NOTICE text file distributed
+          as part of the Derivative Works; within the Source form or
+          documentation, if provided along with the Derivative Works; or,
+          within a display generated by the Derivative Works, if and
+          wherever such third-party notices normally appear. The contents
+          of the NOTICE file are for informational purposes only and
+          do not modify the License. You may add Your own attribution
+          notices within Derivative Works that You distribute, alongside
+          or as an addendum to the NOTICE text from the Work, provided
+          that such additional attribution notices cannot be construed
+          as modifying the License.
+
+      You may add Your own copyright statement to Your modifications and
+      may provide additional or different license terms and conditions
+      for use, reproduction, or distribution of Your modifications, or
+      for any such Derivative Works as a whole, provided Your use,
+      reproduction, and distribution of the Work otherwise complies with
+      the conditions stated in this License.
+
+   5. Submission of Contributions. Unless You explicitly state otherwise,
+      any Contribution intentionally submitted for inclusion in the Work
+      by You to the Licensor shall be under the terms and conditions of
+      this License, without any additional terms or conditions.
+      Notwithstanding the above, nothing herein shall supersede or modify
+      the terms of any separate license agreement you may have executed
+      with Licensor regarding such Contributions.
+
+   6. Trademarks. This License does not grant permission to use the trade
+      names, trademarks, service marks, or product names of the Licensor,
+      except as required for reasonable and customary use in describing the
+      origin of the Work and reproducing the content of the NOTICE file.
+
+   7. Disclaimer of Warranty. Unless required by applicable law or
+      agreed to in writing, Licensor provides the Work (and each
+      Contributor provides its Contributions) on an "AS IS" BASIS,
+      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+      implied, including, without limitation, any warranties or conditions
+      of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
+      PARTICULAR PURPOSE. You are solely responsible for determining the
+      appropriateness of using or redistributing the Work and assume any
+      risks associated with Your exercise of permissions under this License.
+
+   8. Limitation of Liability. In no event and under no legal theory,
+      whether in tort (including negligence), contract, or otherwise,
+      unless required by applicable law (such as deliberate and grossly
+      negligent acts) or agreed to in writing, shall any Contributor be
+      liable to You for damages, including any direct, indirect, special,
+      incidental, or consequential damages of any character arising as a
+      result of this License or out of the use or inability to use the
+      Work (including but not limited to damages for loss of goodwill,
+      work stoppage, computer failure or malfunction, or any and all
+      other commercial damages or losses), even if such Contributor
+      has been advised of the possibility of such damages.
+
+   9. Accepting Warranty or Additional Liability. While redistributing
+      the Work or Derivative Works thereof, You may choose to offer,
+      and charge a fee for, acceptance of support, warranty, indemnity,
+      or other liability obligations and/or rights consistent with this
+      License. However, in accepting such obligations, You may act only
+      on Your own behalf and on Your sole responsibility, not on behalf
+      of any other Contributor, and only if You agree to indemnify,
+      defend, and hold each Contributor harmless for any liability
+      incurred by, or claims asserted against, such Contributor by reason
+      of your accepting any such warranty or additional liability.
+
+   END OF TERMS AND CONDITIONS
+
+   APPENDIX: How to apply the Apache License to your work.
+
+      To apply the Apache License to your work, attach the following
+      boilerplate notice, with the fields enclosed by brackets "[]"
+      replaced with your own identifying information. (Don't include
+      the brackets!)  The text should be enclosed in the appropriate
+      comment syntax for the file format. We also recommend that a
+      file or class name and description of purpose be included on the
+      same "printed page" as the copyright notice for easier
+      identification within third-party archives.
+
+   Copyright [yyyy] [name of copyright owner]
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
 ---
 
 This documentation was created using [[http://deplate.sourceforge.net/][Deplate]].

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.azzyzt.jee.mwe.generic.feature_1.2.1.201106061455.jar" id="org.azzyzt.jee.mwe.generic.feature" version="1.2.1.201106061455">
+   <feature url="features/org.azzyzt.jee.mwe.generic.feature_1.2.2.201106161222.jar" id="org.azzyzt.jee.mwe.generic.feature" version="1.2.2.201106161222">
       <category name="org.azzyzt.jee.tools.mwe"/>
    </feature>
    <category-def name="org.azzyzt.jee.tools.mwe" label="Azzyzt">

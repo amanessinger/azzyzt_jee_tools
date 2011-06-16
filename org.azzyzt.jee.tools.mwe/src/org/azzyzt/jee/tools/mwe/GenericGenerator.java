@@ -88,7 +88,7 @@ public class GenericGenerator {
 	        
 	        MetaModel targetModel = b.build();
 	        JavaGenerator targetGen = new JavaGenerator(
-	        		targetModel, sourceFolder, b.getTemplateGroup());
+	        		targetModel, sourceFolder, b.getTemplateGroup(), MetaModel.createMasterModel(projectBaseName, logger));
 			targetGen.setGenerateFields(b.getGenerateFields());
 			targetGen.setGenerateDefaultConstructor(b.getGenerateDefaultConstructor());
 			targetGen.setGenerateGettersSetters(b.getGenerateGettersSetters());

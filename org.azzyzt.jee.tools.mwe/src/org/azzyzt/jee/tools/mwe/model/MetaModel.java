@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
+import org.azzyzt.jee.runtime.meta.AzzyztGeneratorCutback;
 import org.azzyzt.jee.tools.mwe.exception.ToolError;
 import org.azzyzt.jee.tools.mwe.generator.GeneratorOptions;
 import org.azzyzt.jee.tools.mwe.model.annotation.MetaAnnotatable;
@@ -212,6 +213,22 @@ public class MetaModel {
 
 	public Set<MetaClass> getEmbeddables() {
 		return embeddables;
+	}
+	
+	public boolean isGeneratingRemoteInterfaces() {
+		return !generatorOptions.hasCutback(AzzyztGeneratorCutback.NoRemoteInterfaces);
+	}
+
+	public boolean isGeneratingSoapServices() {
+		return !generatorOptions.hasCutback(AzzyztGeneratorCutback.NoSoapServices);
+	}
+
+	public boolean isGeneratingRestXml() {
+		return !generatorOptions.hasCutback(AzzyztGeneratorCutback.NoRestServicesXml);
+	}
+
+	public boolean isGeneratingRestJson() {
+		return !generatorOptions.hasCutback(AzzyztGeneratorCutback.NoRestServicesJson);
 	}
 
 }
