@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 <meta name="language" content="en">
-<meta name="date" content="2011-06-15T20:36:05">
+<meta name="date" content="2011-06-16T12:14:40">
 <meta name="generator" content="deplate.rb 0.8.5">
 <link rel="start" href="using_azzyzt.html" title="Frontpage">
 <link rel="chapter" href="using_azzyzt.html#hd001" title="Azzyzt JEE Tools">
@@ -3617,6 +3617,8 @@ the <code>Azzyztant</code>:</p>
         cutbacks <span class="hl sym">= {</span>
                 AzzyztGeneratorCutback<span class="hl sym">.</span>NoRemoteInterfaces<span class="hl sym">,</span> 
                 AzzyztGeneratorCutback<span class="hl sym">.</span>NoSoapServices<span class="hl sym">,</span>
+                AzzyztGeneratorCutback<span class="hl sym">.</span>NoRestServicesJson<span class="hl sym">,</span> 
+                AzzyztGeneratorCutback<span class="hl sym">.</span>NoRestServicesXml<span class="hl sym">,</span>
         <span class="hl sym">}</span>
 <span class="hl sym">)</span>
 <span class="hl kwa">public class</span> Azzyztant <span class="hl kwa">implements</span> AzzyztantInterface <span class="hl sym">{</span>
@@ -3638,12 +3640,19 @@ the <code>Azzyztant</code>:</p>
 the same class as generated, with one exception: There is an annotation 
 <code>@AzzyztGeneratorOptions</code> on the class, that defined the 
 cutbacks. In this case we specify, that we want no <code>@Remote</code> 
-and no <code>@WebService</code> annotations. The resulting applications 
-will only be reachable via REST.</p>
+and no <code>@WebService</code> annotations, no REST services with JSON 
+serialization and no REST services with XML serialization. The resulting 
+applications will only be usable as building blocks for your own 
+classes. Add your own services and use the generated beans, converters 
+and DTOs.</p>
 
-<p>For the time being, these are the only cutbacks available, others will 
-follow, and there will also be additional options, not only cutbacks. In 
-any case, the <code>Azzyztant</code> is the place where options go.</p>
+<div class="important"><p class="important">
+If you turn off both variants of REST, Azzyzt won&rsquo;t generate the REST servlet either!
+</p></div>
+
+<p>That&rsquo;s it so far. Additional options, not only cutbacks, will 
+follow in the future. In any case, the <code>Azzyztant</code> is the 
+place where options go.</p>
 
 
 

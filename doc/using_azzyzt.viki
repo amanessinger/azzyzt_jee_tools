@@ -2594,6 +2594,8 @@ import org.azzyzt.jee.runtime.util.StringConverterInterface;
         cutbacks = {
                 AzzyztGeneratorCutback.NoRemoteInterfaces, 
                 AzzyztGeneratorCutback.NoSoapServices,
+                AzzyztGeneratorCutback.NoRestServicesJson, 
+                AzzyztGeneratorCutback.NoRestServicesXml,
         }
 )
 public class Azzyztant implements AzzyztantInterface {
@@ -2615,13 +2617,17 @@ For brevity I have removed the generated comments, but otherwise it is
 the same class as generated, with one exception: There is an
 annotation ''@\AzzyztGeneratorOptions'' on the class, that defined the
 cutbacks. In this case we specify, that we want no ''@Remote'' and no
-''@\WebService'' annotations. The resulting applications will only be
-reachable via REST.
+''@\WebService'' annotations, no REST services with JSON serialization
+and no REST services with XML serialization. The resulting
+applications will only be usable as building blocks for your own
+classes. Add your own services and use the generated beans, converters
+and DTOs.
 
-For the time being, these are the only cutbacks available, others will
-follow, and there will also be additional options, not only
-cutbacks. In any case, the ''Azzyztant'' is the place where options
-go.
+ !!! If you turn off both variants of REST, Azzyzt won't generate the REST servlet either!
+
+That's it so far. Additional options, not only cutbacks, will follow
+in the future. In any case, the ''Azzyztant'' is the place where
+options go.
 
 
 * Miscellanea
