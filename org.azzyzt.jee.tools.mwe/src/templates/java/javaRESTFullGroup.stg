@@ -1,4 +1,4 @@
-group javaRESTFullGroup : javaGroup;
+group javaRESTFullGroup : javaRESTRestrictedGroup;
 
 @javaClass.extra_class_annotations() ::= <<
 @Interceptors(RESTInterceptor.class)
@@ -6,104 +6,77 @@ group javaRESTFullGroup : javaGroup;
 >>
 
 @javaClass.extra_methods() ::= <<
-<byIdHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+<if(generator.masterModel.generatingRestXml)>
+<byIdHead(entity=mdt.properties.entity, dto=mdt.properties.dto, format="MediaType.APPLICATION_XML", suffix="")>
 <byIdBody(entity=mdt.properties.entity, dto=mdt.properties.dto)>
 
-<allHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+<allHead(entity=mdt.properties.entity, dto=mdt.properties.dto, format="MediaType.APPLICATION_XML", suffix="")>
 <allBody(entity=mdt.properties.entity, dto=mdt.properties.dto)>
 
-<listHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+<listHead(entity=mdt.properties.entity, dto=mdt.properties.dto, format="MediaType.APPLICATION_XML", suffix="")>
 <listBody(entity=mdt.properties.entity, dto=mdt.properties.dto)>
 
-<storeHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+<storeHead(entity=mdt.properties.entity, dto=mdt.properties.dto, format="MediaType.APPLICATION_XML", suffix="")>
 <storeBody(entity=mdt.properties.entity, dto=mdt.properties.dto)>
 
-<deleteHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>
-<deleteBody(entity=mdt.properties.entity, dto=mdt.properties.dto)>
->>
-
-byIdHead(entity, dto) ::= <<
-<if(entity.combinedId)>@POST<else>@GET<endif>
-@Path("byId")
-<if(entity.combinedId)>
-@Consumes(MediaType.APPLICATION_XML)
+<deleteHead(entity=mdt.properties.entity, dto=mdt.properties.dto, format="MediaType.APPLICATION_XML", suffix="")>
+<deleteBody(entity=mdt.properties.entity, dto=mdt.properties.dto, result="\<result\\>OK\</result\\>")>
 
 <endif>
-@Produces(MediaType.APPLICATION_XML)
-public <dto.simpleName> <entity.lcFirstSimpleName>ById(<if(entity.combinedId)><else>@QueryParam(value="id") <endif><dto.properties.idFieldType.simpleName> id)
-    throws EntityNotFoundException, AccessDeniedException, EntityInstantiationException, InvalidIdException
+
+<if(generator.masterModel.generatingRestJson)>
+<byIdHead(entity=mdt.properties.entity, dto=mdt.properties.dto, format="MediaType.APPLICATION_JSON", suffix="Json")>
+<byIdBody(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+
+<allHead(entity=mdt.properties.entity, dto=mdt.properties.dto, format="MediaType.APPLICATION_JSON", suffix="Json")>
+<allBody(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+
+<listHead(entity=mdt.properties.entity, dto=mdt.properties.dto, format="MediaType.APPLICATION_JSON", suffix="Json")>
+<listBody(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+
+<storeHead(entity=mdt.properties.entity, dto=mdt.properties.dto, format="MediaType.APPLICATION_JSON", suffix="Json")>
+<storeBody(entity=mdt.properties.entity, dto=mdt.properties.dto)>
+
+<deleteHead(entity=mdt.properties.entity, dto=mdt.properties.dto, format="MediaType.APPLICATION_JSON", suffix="Json")>
+<deleteBody(entity=mdt.properties.entity, dto=mdt.properties.dto, result="{ result : \\\"OK\\\" }")>
+
+<endif>
+
 >>
 
-byIdBody(entity, dto) ::= <<
-{
-    nocache();
-    return svcFullBean.<entity.lcFirstSimpleName>ById(id);
-}
->>
-
-allHead(entity, dto) ::= <<
-@GET
-@Path("all")
-@Produces(MediaType.APPLICATION_XML)
-public List\<<dto.superMetaClass.simpleName>\> <entity.lcFirstSimpleName>All()
-    throws EntityNotFoundException, AccessDeniedException, EntityInstantiationException, InvalidIdException, InvalidFieldException, QuerySyntaxException, NotYetImplementedException
->>
-
-allBody(entity, dto) ::= <<
-{
-    nocache();
-    return svcFullBean.<entity.lcFirstSimpleName>List(new QuerySpec());
-}
->>
-
-listHead(entity, dto) ::= <<
+storeHead(entity, dto, format, suffix) ::= <<
 @POST
-@Path("list")
-@Consumes(MediaType.APPLICATION_XML)
-@Produces(MediaType.APPLICATION_XML)
-public List\<<dto.superMetaClass.simpleName>\> <entity.lcFirstSimpleName>List(String querySpecXml)
-    throws AccessDeniedException, InvalidFieldException, QuerySyntaxException, NotYetImplementedException
->>
-
-listBody(entity, dto) ::= <<
-{
-    return svcFullBean.<entity.lcFirstSimpleName>ListByXML(querySpecXml);
-}
->>
-
-storeHead(entity, dto) ::= <<
-@POST
-@Path("store")
-@Consumes(MediaType.APPLICATION_XML)
-@Produces(MediaType.APPLICATION_XML)
-public <dto.simpleName> <entity.lcFirstSimpleName>Store(<dto.simpleName> dto)
+@Path("store<suffix>")
+@Consumes(<format>)
+@Produces(<format>)
+public <dto.simpleName> <entity.lcFirstSimpleName>Store<suffix>(<dto.simpleName> dto)
     throws EntityNotFoundException, AccessDeniedException, EntityInstantiationException, 
            InvalidIdException, DuplicateProxyIdException, InvalidProxyIdException
 >>
 
 storeBody(entity, dto) ::= <<
 {    
-    return svcFullBean.<entity.lcFirstSimpleName>Store(dto);
+    return svcBean.<entity.lcFirstSimpleName>Store(dto);
 }
 >>
 
-deleteHead(entity, dto) ::= <<
+deleteHead(entity, dto, format, suffix) ::= <<
 <if(entity.combinedId)>@POST<else>@GET<endif>
-@Path("delete")
+@Path("delete<suffix>")
 <if(entity.combinedId)>
-@Consumes(MediaType.APPLICATION_XML)
+@Consumes(<format>)
 
 <endif>
-@Produces(MediaType.APPLICATION_XML)
-public String <entity.lcFirstSimpleName>Delete(<if(entity.combinedId)><else>@QueryParam(value="id") <endif><dto.properties.idFieldType.simpleName> id)
+@Produces(<format>)
+public String <entity.lcFirstSimpleName>Delete<suffix>(<if(entity.combinedId)><else>@QueryParam(value="id") <endif><dto.properties.idFieldType.simpleName> id)
     throws EntityNotFoundException, AccessDeniedException, EntityInstantiationException, InvalidIdException
 >>
 
-deleteBody(entity, dto) ::= <<
+deleteBody(entity, dto, result) ::= <<
 {    
     nocache();
     // in case of embedded IDs, the ID must be converted from the corresponding DTO
-    svcFullBean.<entity.lcFirstSimpleName>Delete(id);
-    return "\<result\>OK\</result\>"; // Can't return void for a GET request
+    svcBean.<entity.lcFirstSimpleName>Delete(id);
+    return "<result>"; // Can't return void for a GET request
 }
 >>

@@ -20,10 +20,12 @@ public class ModelProperties {
 	public static final String MODIFY_MULTI_INTERFACE = "modifyMultiInterface";
 	public static final String REST_FULL_DELEGATOR = "RESTFullDelegator";
 	public static final String REST_INTERCEPTOR = "rest_interceptor";
+	public static final String REST_RESTRICTED_DELEGATOR = "RESTRestrictedDelegator";
 	public static final String REST_STORE_MULTI_DELEGATOR = "RESTStoreMultiDelegator";
 	public static final String STORE_DELETE_DTO = "storeDeleteDto";
 	public static final String STORE_WRAPPER_DTO = "storeWrapperDto";
 	public static final String SVC_BEAN = "svcBean";
+	public static final String SVC_BEAN_METHOD_SUFFIX = "svcBeanMethodSuffix";
 	public static final String SVC_FULL_BEAN = "svcFullBean";
 	public static final String SVC_FULL_INTERFACE = "svcFullInterface";
 	public static final String SVC_RESTRICTED_BEAN = "svcRestrictedBean";

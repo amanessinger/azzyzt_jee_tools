@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Azzyzt JEE tools common plugin support
 Bundle-SymbolicName: org.azzyzt.jee.tools.common.plugin
-Bundle-Version: 1.2.1.qualifier
+Bundle-Version: 1.2.2.qualifier
 Bundle-Activator: org.azzyzt.jee.tools.common.Common
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime

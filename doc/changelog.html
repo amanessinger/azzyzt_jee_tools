@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 <meta name="language" content="en">
-<meta name="date" content="2011-06-07T11:51:31">
+<meta name="date" content="2011-06-15T12:40:56">
 <meta name="generator" content="deplate.rb 0.8.5">
 <link rel="start" href="changelog.html" title="Frontpage">
 <link rel="chapter" href="changelog.html#hd001" title="Azzyzt JEE Tools">
@@ -803,11 +803,33 @@ span.progress {
 <h1 id="hd001"><a name="file000"></a>Azzyzt JEE Tools</h1>
 
 <div class="important"><p class="important">
-Release 1.2.1
+Release 1.2.2
 </p></div>
 
 
-<h2 id="hd001001">Changes in 1.2.1</h2>
+<h2 id="hd001001">Changes in 1.2.2</h2>
+
+<ul class="Itemize">
+    <li class="Itemize-1 Itemize dash">
+        Support for JSON added. Query spec parameter for list operations is 
+        intentionally still XML though.
+    </li>
+    <li class="Itemize-1 Itemize dash">
+        Two new cutbacks can be defined in Azzyztant: 
+        <code>NoRestServicesXml</code> and <code>NoRestServicesJson</code>. If 
+        both are used, no REST code is generated at all, not even the servlet.
+    </li>
+    <li class="Itemize-1 Itemize dash">
+        A good one and a bad one: we now clean all <code>generated</code> 
+        folders before generating code. This has become a necessity with 
+        cutbacks. The drawback is, that we now have Apache Commons IO as an 
+        additional bundled library.
+    </li>
+</ul>
+
+
+
+<h2 id="hd001002">Changes in 1.2.1</h2>
 
 <ul class="Itemize">
     <li class="Itemize-1 Itemize dash">
@@ -839,7 +861,7 @@ Release 1.2.1
 
 
 
-<h2 id="hd001002">Changes in 1.2.0</h2>
+<h2 id="hd001003">Changes in 1.2.0</h2>
 
 <ul class="Itemize">
     <li class="Itemize-1 Itemize dash">
@@ -874,7 +896,7 @@ Release 1.2.1
 
 
 
-<h2 id="hd001003">Changes in 1.1.1</h2>
+<h2 id="hd001004">Changes in 1.1.1</h2>
 
 <ul class="Itemize">
     <li class="Itemize-1 Itemize dash">
@@ -902,7 +924,7 @@ Release 1.2.1
 
 
 
-<h2 id="hd001004">Changes in 1.1.0</h2>
+<h2 id="hd001005">Changes in 1.1.0</h2>
 
 <ul class="Itemize">
     <li class="Itemize-1 Itemize dash">

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><feature id="org.azzyzt.jee.mwe.generic.feature" label="Azzyzt JEE modeling with entities, generic version" provider-name="azzyzt.org" version="1.2.1.qualifier">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><feature id="org.azzyzt.jee.mwe.generic.feature" label="Azzyzt JEE modeling with entities, generic version" provider-name="azzyzt.org" version="1.2.2.qualifier">
 
    <description url="http://www.azzyzt.org">
       Azzyzt JEE Tools (generic) is a collection of software tools

@@ -32,16 +32,16 @@ import org.azzyzt.jee.tools.mwe.model.MetaModel;
 
 public abstract class GeneratorFeature extends Feature {
 	
-	private MetaModel model;
+	private MetaModel masterModel;
 
-	public GeneratorFeature(MetaModel model) {
-		this.model = model;
+	public GeneratorFeature(MetaModel masterModel) {
+		this.masterModel = masterModel;
 	}
 
 	public abstract int generate(Parameters parameters);
 
-	protected MetaModel getModel() {
-		return model;
+	protected MetaModel getMasterModel() {
+		return masterModel;
 	}
 
 }

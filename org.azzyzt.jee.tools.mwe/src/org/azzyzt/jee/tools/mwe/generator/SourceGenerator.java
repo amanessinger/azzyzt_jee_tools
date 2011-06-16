@@ -35,12 +35,14 @@ import org.azzyzt.jee.tools.mwe.model.MetaModel;
 public abstract class SourceGenerator {
 
 	private MetaModel model;
+	private MetaModel masterModel;
 	private String sourceFolder;
 	private File absoluteSourceFolder;
 	protected String stringTemplateGroup;
 
-	public SourceGenerator(MetaModel model, String sourceFolder, String stringTemplateGroup) {
+	public SourceGenerator(MetaModel model, MetaModel masterModel, String sourceFolder, String stringTemplateGroup) {
 		this.model = model;
+		this.masterModel = masterModel;
 		this.stringTemplateGroup = stringTemplateGroup;
 		setSourceFolder(sourceFolder);
 	}
@@ -71,6 +73,10 @@ public abstract class SourceGenerator {
 
 	public File getAbsoluteSourceFolder() {
 		return absoluteSourceFolder;
+	}
+
+	public MetaModel getMasterModel() {
+		return masterModel;
 	}
 
 }
