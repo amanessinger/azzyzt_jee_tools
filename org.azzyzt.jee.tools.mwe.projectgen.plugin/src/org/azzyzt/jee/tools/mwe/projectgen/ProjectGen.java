@@ -50,7 +50,7 @@ public class ProjectGen extends AbstractUIPlugin {
 	public static final String PLUGIN_ID = "org.azzyzt.jee.tools.mwe.projectgen"; //$NON-NLS-1$
 
 	// Azzyzt release. Don't edit it, this is set automatically by VersionBumper
-    public static final String AZZYZT_RELEASE = "1.2.2";
+    public static final String AZZYZT_RELEASE = "1.2.3";
 	
 	// The ID of the associated nature
 	public static final String AZZYZTED_NATURE_ID = "org.azzyzt.jee.mwe.nature.id"; //$NON-NLS-1$

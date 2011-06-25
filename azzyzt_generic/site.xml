@@ -1,9 +1,8 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<site>
-   <feature url="features/org.azzyzt.jee.mwe.generic.feature_1.2.2.201106161222.jar" id="org.azzyzt.jee.mwe.generic.feature" version="1.2.2.201106161222">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><site>
+   <feature id="org.azzyzt.jee.mwe.generic.feature" url="features/org.azzyzt.jee.mwe.generic.feature_1.2.3.qualifier.jar" version="1.2.3.qualifier">
       <category name="org.azzyzt.jee.tools.mwe"/>
    </feature>
-   <category-def name="org.azzyzt.jee.tools.mwe" label="Azzyzt">
+   <category-def label="Azzyzt" name="org.azzyzt.jee.tools.mwe">
       <description>
          Tools for creating azzyzted projects and generating code from JPA entity classes.
       </description>
