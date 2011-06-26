@@ -21,7 +21,7 @@ distribution's ''doc'' directory.
 
 For a change log see [[changelog.html]].
 
-The complete sources are on GitHub under
+The complete sources are on \GitHub under
 [[https://github.com/amanessinger/azzyzt_jee_tools]].
 
 
@@ -77,15 +77,20 @@ and Eclipse versions
 
  - Galileo SR1, SR2
  - Helios SR1, SR2
+ - Indigo
 
 Eclipse is always understood as the generic bundle
 [[http://www.eclipse.org/downloads/][Eclipse IDE for Java EE
 Developers]]. Other distributions may contain the required plugins and
 may work, but they were not tested.
 
-The plugins compile on Indigo M4, but currently no plugin for
-\GlassFish is available for Indigo, thus the configuration has not been
-tested. 
+The plugins were compiled on Eclipse 3.7 "Indigo" and tested in the
+following configurations:
+
+ - \Glassfish Tools Bundle for Eclipse (Galileo SR1 + \GlassFish 3.0)
+ - Helios SR1 + \GlassFish 3.01
+ - Helios SR2 + \GlassFish 3.1
+ - Indigo + \GlassFish 3.1
 
 Using JBOSS AS 6.0 as a runtime, generated code should compile.
 ''@Remote'' annotations on generated service bean interfaces have to

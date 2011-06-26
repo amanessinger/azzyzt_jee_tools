@@ -1,4 +1,10 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><feature id="org.azzyzt.jee.mwe.generic.feature" label="Azzyzt JEE modeling with entities, generic version" provider-name="azzyzt.org" version="1.2.3.qualifier">
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.azzyzt.jee.mwe.generic.feature"
+      label="Azzyzt JEE modeling with entities, generic version"
+      version="1.2.3.qualifier"
+      provider-name="azzyzt.org"
+      plugin="org.azzyzt.jee.tools.mwe.projectgen.plugin">
 
    <description url="http://www.azzyzt.org">
       Azzyzt JEE Tools (generic) is a collection of software tools
@@ -17,7 +23,7 @@ popular Java IDEs.
 
  Licensed under the EUPL, Version 1.1 or as soon they
  will be approved by the European Commission - subsequent
- versions of the EUPL (the "Licence");
+ versions of the EUPL (the &quot;Licence&quot;);
  You may not use this work except in compliance with the
  Licence.
  
@@ -32,7 +38,7 @@ popular Java IDEs.
 
  Unless required by applicable law or agreed to in
  writing, software distributed under the Licence is
- distributed on an "AS IS" basis,
+ distributed on an &quot;AS IS&quot; basis,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
  express or implied.
  See the Licence for the specific language governing
@@ -61,7 +67,7 @@ which is
  without specific prior written permission.
  
  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
- "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
+ &quot;AS IS&quot; AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS 
  FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE 
  COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, 
@@ -74,12 +80,36 @@ which is
  POSSIBILITY OF SUCH DAMAGE.
    </license>
 
-   <plugin download-size="0" fragment="true" id="org.azzyzt.jee.runtime.site.generic.fragment" install-size="0" version="0.0.0"/>
+   <url>
+      <update label="Azzyzt JEE Tools" url="http://azzyzt.manessinger.com/azzyzt_generic/"/>
+   </url>
 
-   <plugin download-size="0" id="org.azzyzt.jee.tools.mwe.projectgen.plugin" install-size="0" unpack="false" version="0.0.0"/>
+   <plugin
+         id="org.azzyzt.jee.runtime.site.generic.fragment"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"/>
 
-   <plugin download-size="0" id="org.azzyzt.jee.tools.common.plugin" install-size="0" unpack="false" version="0.0.0"/>
+   <plugin
+         id="org.azzyzt.jee.tools.mwe.projectgen.plugin"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 
-   <plugin download-size="0" id="org.azzyzt.jee.tools.project" install-size="0" unpack="false" version="0.0.0"/>
+   <plugin
+         id="org.azzyzt.jee.tools.common.plugin"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.azzyzt.jee.tools.project"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 
 </feature>

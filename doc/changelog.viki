@@ -8,6 +8,17 @@
 
  !!! Release {version}
 
+** Changes in 1.2.3
+#OPT: plain!
+
+ - The installed feature is now listed in the "about / installation
+   details / features" dialog. 
+
+ - An Azzyzt logo is displayed in the "about" dialog.
+
+ - Azzyzt was built under Eclipse 3.7 "Indigo" against the \GlassFish
+   3.1 runtime. The plugin runs with all Eclipse versions since 3.5 SR1.
+
 ** Changes in 1.2.2
 #OPT: plain!
 
