@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Azzyzt JEE site adapter, magwien version
 Bundle-SymbolicName: org.azzyzt.jee.runtime.site.magwien.fragment
-Bundle-Version: 1.2.2.qualifier
+Bundle-Version: 1.2.3.qualifier
 Fragment-Host: org.azzyzt.jee.tools.mwe.projectgen.plugin;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: azzyzt.org

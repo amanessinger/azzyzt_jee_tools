@@ -2,7 +2,7 @@
 1 Azzyzt JEE Tools
 ==================
 
-  !!! Release 1.2.2
+  !!! Release 1.2.3
 
 Azzyzt JEE Tools is a collection of software tools helping software 
 developers to create software using Java Enterprise Edition 6. It is 
@@ -17,14 +17,14 @@ distribution's doc directory.
 
 For a change log see changelog.html[2].
 
-The complete sources are on GitHub[3] under 
-https://github.com/amanessinger/azzyzt_jee_tools[4].
+The complete sources are on GitHub under 
+https://github.com/amanessinger/azzyzt_jee_tools[3].
 
 
 1.1 Current status
 ~~~~~~~~~~~~~~~~~~
 
-As of release 1.2.2, Azzyzt JEE Tools consists of three main parts:
+As of release 1.2.3, Azzyzt JEE Tools consists of three main parts:
 
   1. a generator that creates so-called azzyzted projects. An azzyzted 
     project is a collection of four projects, an Enterprise Application 
@@ -50,7 +50,7 @@ As of release 1.2.2, Azzyzt JEE Tools consists of three main parts:
   3. a runtime library of code used by generated applications.
 
 The structure of azzyzted projects and the structure of generated code 
-evolved from the work on An Eclipse / GlassFish / Java EE 6 Tutorial[5] 
+evolved from the work on An Eclipse / GlassFish / Java EE 6 Tutorial[4] 
 and on usage of that tutorial in a subsequent internal training class 
 for developers at the Municipiality of Vienna, Austria.
 
@@ -70,13 +70,19 @@ and Eclipse versions
 
   * Galileo SR1, SR2
   * Helios SR1, SR2
+  * Indigo
 
 Eclipse is always understood as the generic bundle Eclipse IDE for Java 
-EE Developers[6]. Other distributions may contain the required plugins 
+EE Developers[5]. Other distributions may contain the required plugins 
 and may work, but they were not tested.
 
-The plugins compile on Indigo M4, but currently no plugin for GlassFish 
-is available for Indigo, thus the configuration has not been tested.
+The plugins were compiled on Eclipse 3.7 "Indigo" and tested in the 
+following configurations:
+
+  * Glassfish Tools Bundle for Eclipse (Galileo SR1 + GlassFish 3.0)
+  * Helios SR1 + GlassFish 3.01
+  * Helios SR2 + GlassFish 3.1
+  * Indigo + GlassFish 3.1
 
 Using JBOSS AS 6.0 as a runtime, generated code should compile. @Remote 
 annotations on generated service bean interfaces have to be suppressed 
@@ -95,9 +101,9 @@ Contributions to Azzyzt JEE Tools are welcome. Possible areas include
 support for additional Java IDEs, additional patterns, additional 
 runtimes, etc. Of course bug fixes are welcome as well.
 
-Azzyzt JEE Tools were developed by Andreas Manessinger[7] for the 
+Azzyzt JEE Tools were developed by Andreas Manessinger[6] for the 
 Municipal Department 14 - Automated Data Processing, Information and 
-Communications Technology[8] (MA 14) of the City of Vienna, Austria
+Communications Technology[7] (MA 14) of the City of Vienna, Austria
 
 
 1.2 Licenses
@@ -127,7 +133,7 @@ Communications Technology[8] (MA 14) of the City of Vienna, Austria
      permissions and limitations under the Licence.
 
 For the purpose of generating code, Azzyzt JEE Tools make use of and 
-bundles a copy of StringTemplate[9], which is
+bundles a copy of StringTemplate[8], which is
 
      Copyright (c) 2008, Terence Parr
      All rights reserved.
@@ -159,7 +165,7 @@ bundles a copy of StringTemplate[9], which is
      ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
      POSSIBILITY OF SUCH DAMAGE.
 
-The code generator uses Apache Commons IO[10] which is licensed under the
+The code generator uses Apache Commons IO[9] which is licensed under the
 
     
                                      Apache License
@@ -364,17 +370,16 @@ The code generator uses Apache Commons IO[10] which is licensed under the
        See the License for the specific language governing permissions and
        limitations under the License.
 
-This documentation was created using Deplate[11].
+This documentation was created using Deplate[10].
 
 [1] using_azzyzt.html
 [2] changelog.html
-[3] GitHub.text
-[4] https://github.com/amanessinger/azzyzt_jee_tools
-[5] http://programming.manessinger.com/tutorials/an-eclipse-glassfish-java-ee-6-tutorial/
-[6] http://www.eclipse.org/downloads/
-[7] http://programming.manessinger.com
-[8] http://www.wien.gv.at/english/administration/ict/
-[9] http://www.stringtemplate.org/
-[10] http://commons.apache.org/io/
-[11] http://deplate.sourceforge.net/
+[3] https://github.com/amanessinger/azzyzt_jee_tools
+[4] http://programming.manessinger.com/tutorials/an-eclipse-glassfish-java-ee-6-tutorial/
+[5] http://www.eclipse.org/downloads/
+[6] http://programming.manessinger.com
+[7] http://www.wien.gv.at/english/administration/ict/
+[8] http://www.stringtemplate.org/
+[9] http://commons.apache.org/io/
+[10] http://deplate.sourceforge.net/
 
