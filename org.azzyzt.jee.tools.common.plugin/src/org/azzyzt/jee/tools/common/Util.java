@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -27,6 +27,8 @@
 
 package org.azzyzt.jee.tools.common;
 
+import java.io.File;
+import java.io.FileReader;
 import java.net.URL;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -40,6 +42,44 @@ public class Util {
 	
 	protected static final long POLL_FEEDBACK_INTERVAL_MILLIS = 100;
 
+	public static boolean askExternalMainClass(
+			String jobTitle,
+			final URL[] classPathEntries, 
+			final String fqMainClassName,
+			final String[] args
+	)
+	throws InterruptedException 
+	{
+		boolean result = false;
+		
+		try {
+			File tempFile = File.createTempFile("azzyzt", "txt");
+			String[] prefixedArgs = new String[args.length + 1];
+			System.arraycopy(args, 0, prefixedArgs, 1, args.length);
+			prefixedArgs[0] = tempFile.getAbsolutePath();
+			
+			Job job = setupJob(jobTitle, classPathEntries, fqMainClassName, prefixedArgs);
+			job.setUser(false);
+			job.schedule();
+			job.join();
+
+			FileReader reader = new FileReader(tempFile);
+			int charCode = reader.read();
+			if (charCode == -1) {
+				throw new Error("Can't read from temp file "+tempFile);
+			}
+			char ch = (char)charCode;
+			result = (ch == 'Y');
+			
+			tempFile.delete();
+			
+			return result;
+		} catch (Exception e) {
+			// What else can I do?
+			throw new InterruptedException(e.getMessage());
+		}
+	}
+	
 	public static void callExternalMainClass(
 			String jobTitle,
 			final URL[] classPathEntries, 
@@ -48,6 +88,14 @@ public class Util {
 	) 
 	throws InterruptedException 
 	{
+		Job job = setupJob(jobTitle, classPathEntries, fqMainClassName, args);
+		job.setUser(false);
+		job.schedule();
+		job.join();
+	}
+
+	private static Job setupJob(String jobTitle, final URL[] classPathEntries,
+			final String fqMainClassName, final String[] args) {
 		Job job = new Job(jobTitle) {
 			
 			@Override
@@ -83,9 +131,7 @@ public class Util {
 			}
 			
 		};
-		job.setUser(false);
-		job.schedule();
-		job.join();
+		return job;
 	}
 
 	public static Status createErrorStatus(String msg) {

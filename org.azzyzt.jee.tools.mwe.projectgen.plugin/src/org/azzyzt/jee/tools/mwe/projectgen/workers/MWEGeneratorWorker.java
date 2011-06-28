@@ -111,6 +111,14 @@ public class MWEGeneratorWorker {
 			 */
 			refreshAzzyztedProject();
 
+			String[] testArgs = {
+					"AddCxfRestClient",
+					projectBaseName
+			};
+			fqMainClassName = "org.azzyzt.jee.tools.mwe.HasOption";
+			boolean hasOption = Util.askExternalMainClass("Ensure we have all prerequisites", classPathEntries, fqMainClassName, testArgs);
+			System.err.println("Project "+(hasOption ? "has" : "does not have")+" option "+testArgs[0]);
+
 			fqMainClassName = "org.azzyzt.jee.tools.mwe.StandardCodeGenerator";
 			Util.callExternalMainClass("Generate code from entities", classPathEntries, fqMainClassName, args);
 			monitor.worked(55);
