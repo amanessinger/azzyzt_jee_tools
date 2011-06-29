@@ -35,6 +35,7 @@ import java.util.List;
 import org.azzyzt.jee.tools.common.Common;
 import org.azzyzt.jee.tools.common.Util;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -56,8 +57,12 @@ public class JavaProject extends FacetedProject {
 	
 	protected JavaProject() { }
 	
-	private static IJavaProject asIJavaProject(Project p) throws CoreException {
-		return (IJavaProject)p.getP().getNature(JavaCore.NATURE_ID);
+	public static IJavaProject asIJavaProject(Project p) throws CoreException {
+		return asIJavaProject(p.getP());
+	}
+
+	public static IJavaProject asIJavaProject(IProject p) throws CoreException {
+		return (IJavaProject)p.getNature(JavaCore.NATURE_ID);
 	}
 
 	protected static JavaProject asJavaProject(FacetedProject p) throws CoreException {
@@ -74,8 +79,10 @@ public class JavaProject extends FacetedProject {
 	throws CoreException 
 	{
 		super(name, context);
-		this.sourceFolderNames = sourceFolderNames;
-		installJavaFacet();
+		if (isNewlyCreated()) {
+			this.sourceFolderNames = sourceFolderNames;
+			installJavaFacet();
+		}
 		jp = asIJavaProject(this);		
 	}
 

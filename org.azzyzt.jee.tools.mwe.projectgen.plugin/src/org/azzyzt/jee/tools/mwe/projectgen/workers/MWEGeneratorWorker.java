@@ -29,13 +29,17 @@ package org.azzyzt.jee.tools.mwe.projectgen.workers;
 
 import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
 
+import org.azzyzt.jee.runtime.meta.AzzyztGeneratorOption;
 import org.azzyzt.jee.tools.common.Util;
 import org.azzyzt.jee.tools.mwe.projectgen.ProjectGen;
 import org.azzyzt.jee.tools.project.AzzyztToolsProject;
 import org.azzyzt.jee.tools.project.Context;
+import org.azzyzt.jee.tools.project.CxfRestClientProject;
 import org.azzyzt.jee.tools.project.EarProject;
 import org.azzyzt.jee.tools.project.EjbProject;
+import org.azzyzt.jee.tools.project.JavaProject;
 import org.azzyzt.jee.tools.project.Project;
 import org.azzyzt.jee.tools.project.ProjectUtil;
 import org.eclipse.core.resources.IProject;
@@ -71,12 +75,11 @@ public class MWEGeneratorWorker {
 						null
 				);
 			}
-			String projectBaseName = prjName.substring(0, prjName.length() - 3);
-
-			context = new Context();
+			String projectBaseName = prjName.substring(0, prjName.length() - Context.PROJECT_SUFFIX_EJB.length());
+			
+			context = new Context(prj);
 			context.setProjectBaseName(projectBaseName);
 			context.setMonitor(monitor);
-			context.setValid(true);
 			
 			AzzyztToolsProject azzyztToolsProject = new AzzyztToolsProject(
 					ProjectGen.AZZYZT_RELEASE, 
@@ -111,14 +114,32 @@ public class MWEGeneratorWorker {
 			 */
 			refreshAzzyztedProject();
 
+			String optionName = AzzyztGeneratorOption.AddCxfRestClient.name();
 			String[] testArgs = {
-					"AddCxfRestClient",
+					optionName,
 					projectBaseName
 			};
 			fqMainClassName = "org.azzyzt.jee.tools.mwe.HasOption";
-			boolean hasOption = Util.askExternalMainClass("Ensure we have all prerequisites", classPathEntries, fqMainClassName, testArgs);
-			System.err.println("Project "+(hasOption ? "has" : "does not have")+" option "+testArgs[0]);
-
+			boolean hasOption = Util.askExternalMainClass("Check is option "+optionName+" is requested", classPathEntries, fqMainClassName, testArgs);
+			String cxfRestClientProjectName = projectBaseName+Context.PROJECT_SUFFIX_CXF_REST_CLIENT;
+			if (hasOption) {
+				IProject p = context.getRoot().getProject(cxfRestClientProjectName);
+				if (!p.exists()) {
+					ArrayList<JavaProject> projectsOnBuildPath = new ArrayList<JavaProject>();
+					projectsOnBuildPath.add(
+							// TODO this is ugly, create a uniform way to get at existing projects by name
+							new JavaProject(context.getEjbClientProjectName(), context, null)
+							);
+					CxfRestClientProject cxfRestClientProject = new CxfRestClientProject(cxfRestClientProjectName, context, projectsOnBuildPath);
+					cxfRestClientProject.getP().refreshLocal(IResource.DEPTH_INFINITE, new SubProgressMonitor(monitor, 10));
+				}
+			} else {
+				/*
+				 * We could remove the project, but that would probably mean we throw away user code.
+				 * Instead we simply do nothing
+				 */
+			}
+			
 			fqMainClassName = "org.azzyzt.jee.tools.mwe.StandardCodeGenerator";
 			Util.callExternalMainClass("Generate code from entities", classPathEntries, fqMainClassName, args);
 			monitor.worked(55);
