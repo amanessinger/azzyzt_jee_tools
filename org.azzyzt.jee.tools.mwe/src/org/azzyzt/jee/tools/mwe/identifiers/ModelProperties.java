@@ -19,9 +19,12 @@ public class ModelProperties {
 	public static final String MODIFY_MULTI_BEAN = "modifyMultiBean";
 	public static final String MODIFY_MULTI_INTERFACE = "modifyMultiInterface";
 	public static final String REST_FULL_DELEGATOR = "RESTFullDelegator";
+	public static final String REST_FULL_CXF_INTERFACE = "RESTFullCxfInterface";
 	public static final String REST_INTERCEPTOR = "rest_interceptor";
 	public static final String REST_RESTRICTED_DELEGATOR = "RESTRestrictedDelegator";
+	public static final String REST_RESTRICTED_CXF_INTERFACE = "RESTRestrictedCxfInterface";
 	public static final String REST_STORE_MULTI_DELEGATOR = "RESTStoreMultiDelegator";
+	public static final String REST_STORE_MULTI_CXF_INTERFACE = "RESTStoreMultiCxfInterface";
 	public static final String STORE_DELETE_DTO = "storeDeleteDto";
 	public static final String STORE_WRAPPER_DTO = "storeWrapperDto";
 	public static final String SVC_BEAN = "svcBean";

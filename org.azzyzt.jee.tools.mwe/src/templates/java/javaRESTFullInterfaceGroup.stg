@@ -1,0 +1,49 @@
+group javaRESTFullInterfaceGroup : javaRESTRestrictedInterfaceGroup;
+
+@javaInterface.extra_methods() ::= <<
+<if(generator.masterModel.generatingRestXml)>
+<byIdHead(entity=mdt.properties.entity, dto=mdt.properties.dto, format="MediaType.APPLICATION_XML", suffix="")>
+
+<allHead(entity=mdt.properties.entity, dto=mdt.properties.dto, format="MediaType.APPLICATION_XML", suffix="")>
+
+<listHead(entity=mdt.properties.entity, dto=mdt.properties.dto, format="MediaType.APPLICATION_XML", suffix="")>
+
+<storeHead(entity=mdt.properties.entity, dto=mdt.properties.dto, format="MediaType.APPLICATION_XML", suffix="")>
+
+<deleteHead(entity=mdt.properties.entity, dto=mdt.properties.dto, format="MediaType.APPLICATION_XML", suffix="")>
+
+<endif>
+
+<if(generator.masterModel.generatingRestJson)>
+<byIdHead(entity=mdt.properties.entity, dto=mdt.properties.dto, format="MediaType.APPLICATION_JSON", suffix="Json")>
+
+<allHead(entity=mdt.properties.entity, dto=mdt.properties.dto, format="MediaType.APPLICATION_JSON", suffix="Json")>
+
+<listHead(entity=mdt.properties.entity, dto=mdt.properties.dto, format="MediaType.APPLICATION_JSON", suffix="Json")>
+
+<storeHead(entity=mdt.properties.entity, dto=mdt.properties.dto, format="MediaType.APPLICATION_JSON", suffix="Json")>
+
+<deleteHead(entity=mdt.properties.entity, dto=mdt.properties.dto, format="MediaType.APPLICATION_JSON", suffix="Json")>
+
+<endif>
+
+>>
+
+storeHead(entity, dto, format, suffix) ::= <<
+@POST
+@Path("store<suffix>")
+@Consumes(<format>)
+@Produces(<format>)
+public <dto.simpleName> <entity.lcFirstSimpleName>Store<suffix>(<dto.simpleName> dto);
+>>
+
+deleteHead(entity, dto, format, suffix) ::= <<
+<if(entity.combinedId)>@POST<else>@GET<endif>
+@Path("delete<suffix>")
+<if(entity.combinedId)>
+@Consumes(<format>)
+
+<endif>
+@Produces(<format>)
+public String <entity.lcFirstSimpleName>Delete<suffix>(<if(entity.combinedId)><else>@QueryParam(value="id") <endif><dto.properties.idFieldType.simpleName> id);
+>>

@@ -35,6 +35,7 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.azzyzt.jee.runtime.meta.AzzyztGeneratorCutback;
+import org.azzyzt.jee.runtime.meta.AzzyztGeneratorOption;
 import org.azzyzt.jee.tools.mwe.exception.ToolError;
 import org.azzyzt.jee.tools.mwe.generator.GeneratorOptions;
 import org.azzyzt.jee.tools.mwe.model.annotation.MetaAnnotatable;
@@ -231,4 +232,7 @@ public class MetaModel {
 		return !generatorOptions.hasCutback(AzzyztGeneratorCutback.NoRestServicesJson);
 	}
 
+	public boolean isGeneratingCxfRestClient() {
+		return generatorOptions.hasOption(AzzyztGeneratorOption.AddCxfRestClient);
+	}
 }

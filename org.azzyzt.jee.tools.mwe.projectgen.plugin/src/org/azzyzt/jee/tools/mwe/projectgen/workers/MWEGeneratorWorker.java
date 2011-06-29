@@ -159,7 +159,9 @@ public class MWEGeneratorWorker {
 	private void refreshAzzyztedProject() throws CoreException {
 		for (String name : context.allProjectNames()) {
 			IProject project = context.getRoot().getProject(name);
-			project.refreshLocal(IResource.DEPTH_INFINITE, new SubProgressMonitor(monitor, 10));
+			if (project.exists()) {
+				project.refreshLocal(IResource.DEPTH_INFINITE, new SubProgressMonitor(monitor, 10));
+			}
 		}
 	}
 

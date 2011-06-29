@@ -57,6 +57,7 @@ public class Context {
 	private String ejbProjectName;
 	private String ejbClientProjectName;
 	private String servletProjectName;
+	private String cxfRestClientProjectName;
 	private String packageName;
 	private Set<IRuntime> targetRuntimes;
 	private IRuntime selectedRuntime;
@@ -92,6 +93,7 @@ public class Context {
 		this.ejbProjectName = projectBaseName + PROJECT_SUFFIX_EJB;
 		this.ejbClientProjectName = projectBaseName + PROJECT_SUFFIX_EJB_CLIENT;
 		this.servletProjectName = projectBaseName + PROJECT_SUFFIX_SERVLETS;
+		this.cxfRestClientProjectName = projectBaseName + PROJECT_SUFFIX_CXF_REST_CLIENT;
 	}
 	
 	public String validate() {
@@ -128,7 +130,7 @@ public class Context {
 	}
 	
 	public List<String> allProjectNames() {
-		return Arrays.asList(earProjectName, ejbProjectName, ejbClientProjectName, servletProjectName);
+		return Arrays.asList(earProjectName, ejbProjectName, ejbClientProjectName, servletProjectName, cxfRestClientProjectName);
 	}
 	
 	private boolean isExistingProject(String name) {
@@ -153,6 +155,10 @@ public class Context {
 
 	public String getServletProjectName() {
 		return servletProjectName;
+	}
+
+	public String getCxfRestClientProjectName() {
+		return cxfRestClientProjectName;
 	}
 
 	public String getPackageName() {

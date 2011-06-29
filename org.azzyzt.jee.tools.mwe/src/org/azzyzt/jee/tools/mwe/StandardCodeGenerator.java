@@ -87,9 +87,15 @@ public class StandardCodeGenerator {
 		String rootPath = arguments.get(0);
         String projectBaseName = arguments.get(1);
         String projectPathPrefix = rootPath+projectBaseName;
+        
+        /*
+         * TODO here's some duplication of path fragments. We could put them into a library that
+         * we share with the plugins. 
+         */
         String ejbGeneratedSourceFolder = projectPathPrefix+"EJB/generated";
         String ejbGeneratedClientSourceFolder = projectPathPrefix+"EJBClient/generated";
         String restGeneratedSourceFolder = projectPathPrefix+"Servlets/generated";
+        String cxfRestClientGeneratedSourceFolder = projectPathPrefix+"CxfRestClient/generated";
         
         for (String sourceFolder : new String[]{ ejbGeneratedSourceFolder, ejbGeneratedClientSourceFolder, restGeneratedSourceFolder }) {
         	cleanSourceFolder(sourceFolder);
@@ -150,6 +156,9 @@ public class StandardCodeGenerator {
 			CrudServiceRESTGeneratorFeature restGen = new CrudServiceRESTGeneratorFeature(masterModel);
 			parameters = restGen.getParameters();
 	        parameters.byName(CrudServiceRESTGeneratorFeature.SOURCE_FOLDER).setValue(restGeneratedSourceFolder);
+	        if (masterModel.isGeneratingCxfRestClient()) {
+	        	parameters.byName(CrudServiceRESTGeneratorFeature.CXF_REST_CLIENT_SOURCE_FOLDER).setValue(cxfRestClientGeneratedSourceFolder);
+	        }
 	        numberOfSourcesGenerated = restGen.generate(parameters);
 	        logger.info(numberOfSourcesGenerated+" REST wrapper file(s) generated");
         }
@@ -159,6 +168,9 @@ public class StandardCodeGenerator {
         parameters.byName(ModifyMultiGeneratorFeature.SOURCE_FOLDER_CLIENT_PROJECT).setValue(ejbGeneratedClientSourceFolder);
         parameters.byName(ModifyMultiGeneratorFeature.SOURCE_FOLDER_EJB_PROJECT).setValue(ejbGeneratedSourceFolder);
         parameters.byName(ModifyMultiGeneratorFeature.SOURCE_FOLDER_SERVLET_PROJECT).setValue(restGeneratedSourceFolder);
+        if (masterModel.isGeneratingCxfRestClient()) {
+        	parameters.byName(ModifyMultiGeneratorFeature.CXF_REST_CLIENT_SOURCE_FOLDER).setValue(cxfRestClientGeneratedSourceFolder);
+        }
         numberOfSourcesGenerated = smGen.generate(parameters);
         logger.info(numberOfSourcesGenerated+" store multi support file(s) generated");
 	}
