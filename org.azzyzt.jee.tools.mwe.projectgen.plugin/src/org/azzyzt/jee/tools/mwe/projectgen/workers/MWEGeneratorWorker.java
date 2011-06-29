@@ -130,7 +130,13 @@ public class MWEGeneratorWorker {
 							// TODO this is ugly, create a uniform way to get at existing projects by name
 							new JavaProject(context.getEjbClientProjectName(), context, null)
 							);
-					CxfRestClientProject cxfRestClientProject = new CxfRestClientProject(cxfRestClientProjectName, context, projectsOnBuildPath);
+					CxfRestClientProject cxfRestClientProject = 
+							new CxfRestClientProject(
+									cxfRestClientProjectName, 
+									context, 
+									projectsOnBuildPath,
+									ProjectGen.getCxfRestClientLibJarUrls()
+									);
 					cxfRestClientProject.getP().refreshLocal(IResource.DEPTH_INFINITE, new SubProgressMonitor(monitor, 10));
 				}
 			} else {

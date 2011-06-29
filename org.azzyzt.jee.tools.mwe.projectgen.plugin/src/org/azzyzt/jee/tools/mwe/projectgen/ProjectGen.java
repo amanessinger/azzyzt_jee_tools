@@ -68,6 +68,7 @@ public class ProjectGen extends AbstractUIPlugin {
 	private static URL jeeRuntimeSiteJarUrl = null;
 	private static URL jeeToolsMweJarUrl = null;
 	private static List<URL> toolsLibJarUrls = new ArrayList<URL>();
+	private static List<URL> cxfRestClientLibJarUrls = new ArrayList<URL>();
 
 	/**
 	 * The constructor
@@ -150,7 +151,6 @@ public class ProjectGen extends AbstractUIPlugin {
 	private boolean successfullyInitializedLibraryJarUrls() {
 		Bundle bundle = ProjectGen.getDefault().getBundle();
 		boolean recurse = true;
-		@SuppressWarnings("unchecked")
 		Enumeration<URL> jars = (Enumeration<URL>)bundle.findEntries("lib", "*.jar", recurse);
 		while (jars.hasMoreElements()) {
 			URL jar = jars.nextElement();
@@ -169,6 +169,9 @@ public class ProjectGen extends AbstractUIPlugin {
 			if (jar.getPath().contains("/lib/tools/")) {
 				toolsLibJarUrls.add(jar);
 				continue;
+			}
+			if (jar.getPath().contains("/lib/cxf_rest_client/")) {
+				cxfRestClientLibJarUrls.add(jar);
 			}
 		}
 		return jeeRuntimeJarUrl != null 
@@ -198,6 +201,10 @@ public class ProjectGen extends AbstractUIPlugin {
 
 	public static List<URL> getToolsLibJarUrls() {
 		return toolsLibJarUrls;
+	}
+
+	public static List<URL> getCxfRestClientLibJarUrls() {
+		return cxfRestClientLibJarUrls;
 	}
 	
 }

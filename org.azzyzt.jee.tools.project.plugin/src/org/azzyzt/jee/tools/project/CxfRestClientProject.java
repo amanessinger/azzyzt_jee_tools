@@ -27,23 +27,40 @@
 
 package org.azzyzt.jee.tools.project;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 
+import org.azzyzt.jee.tools.common.Util;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Path;
 
 public class CxfRestClientProject extends JavaProject {
 
 	public CxfRestClientProject(
 			String name, 
 			Context context, 
-			List<JavaProject> projectsOnBuildPath) 
+			List<JavaProject> projectsOnBuildPath, List<URL> cxfRestClientJars) 
 	throws CoreException 
 	{
 		super(name, context, Arrays.asList(DWP_SRC_FOLDER_NAME, GENERATED_SRC_FOLDER_NAME));
 
 		addProjectsToBuildPath(projectsOnBuildPath);
 		fixFacets(context.getFacets().javaFacet);
+
+		IFolder lib = createFolderForPathIfNeeded(new Path("lib"));
+		for (URL jarUrl : cxfRestClientJars) {
+			try {
+				String path = jarUrl.getPath();
+				String fileName = path.substring(path.lastIndexOf('/') + 1);
+				copyFromUrlToFolder(lib, jarUrl, fileName);
+				addJarToClassPath(new Path("lib/"+fileName));
+			} catch (IOException e) {
+				throw Util.createCoreException("Can't install CXF REST client libraries", e);
+			}
+		}
 		moveJreToEndOfClassPath();
 	}
 	

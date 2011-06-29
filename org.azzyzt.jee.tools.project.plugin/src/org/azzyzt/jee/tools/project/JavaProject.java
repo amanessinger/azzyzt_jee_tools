@@ -129,13 +129,25 @@ public class JavaProject extends FacetedProject {
 	throws CoreException, JavaModelException 
 	{
 		IClasspathEntry classpathEntry = JavaCore.newSourceEntry(getP().getFullPath().append(path));
+		addEntryToClassPath(classpathEntry);
+	}
+
+	protected void addJarToClassPath(Path jar)
+	throws CoreException, JavaModelException 
+	{
+		IClasspathEntry classpathEntry = JavaCore.newLibraryEntry(getP().getFullPath().append(jar), null, null);
+		addEntryToClassPath(classpathEntry);
+	}
+
+	private void addEntryToClassPath(IClasspathEntry classpathEntry)
+			throws JavaModelException {
 		IClasspathEntry[] rawClasspath = jp.getRawClasspath();
 		IClasspathEntry[] newClasspath = new IClasspathEntry[rawClasspath.length + 1];
 		newClasspath[0] = classpathEntry;
 		System.arraycopy(rawClasspath, 0, newClasspath, 1, rawClasspath.length);
 		jp.setRawClasspath(newClasspath, getContext().getSubMonitor());
 	}
-
+	
 	protected void moveJreToEndOfClassPath() 
 	throws JavaModelException 
 	{
