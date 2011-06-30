@@ -34,7 +34,7 @@ storeHead(entity, dto, format, suffix) ::= <<
 @Path("store<suffix>")
 @Consumes(<format>)
 @Produces(<format>)
-public <dto.simpleName> <entity.lcFirstSimpleName>Store<suffix>(<dto.simpleName> dto);
+public <dto.simpleName> store<suffix>(<dto.simpleName> dto);
 >>
 
 deleteHead(entity, dto, format, suffix) ::= <<
@@ -45,5 +45,5 @@ deleteHead(entity, dto, format, suffix) ::= <<
 
 <endif>
 @Produces(<format>)
-public String <entity.lcFirstSimpleName>Delete<suffix>(<if(entity.combinedId)><else>@QueryParam(value="id") <endif><dto.properties.idFieldType.simpleName> id);
+public String delete<suffix>(<if(entity.combinedId)><else>@QueryParam(value="id") <endif><dto.properties.idFieldType.simpleName> id);
 >>

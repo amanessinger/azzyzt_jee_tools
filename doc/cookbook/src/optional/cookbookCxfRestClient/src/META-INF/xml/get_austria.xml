@@ -1,0 +1,6 @@
+<query_spec>
+   <cond type="STRING" op="EQ">
+      <fieldName>name</fieldName>
+      <value>Austria</value>
+   </cond>
+</query_spec>
