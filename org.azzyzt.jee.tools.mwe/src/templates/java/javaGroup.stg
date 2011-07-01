@@ -17,6 +17,7 @@ package <mdt.packageName>;
     <if(generator.generateFields)><mdt.fields:fieldDeclaration()><endif>
     <@extra_fields()>
     <if(generator.generateDefaultConstructor)><defaultConstructor(mdt)><endif>
+    <if(mdt.properties.extraConstructors)><mdt.properties.extraConstructors><endif>
     <@extra_constructors()>
     <if(generator.generateGettersSetters)><mdt.fields:getterSetter()><endif>
     <mdt.methods:classMethodDeclaration()>

@@ -3,12 +3,14 @@ package com.manessinger.cookbook.service.test;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.apache.cxf.jaxrs.client.JAXRSClientFactory;
+import javax.ws.rs.core.MediaType;
 
-import com.manessinger.cookbook.dto.CityDto;
+import org.apache.cxf.jaxrs.client.JAXRSClientFactory;
+import org.apache.cxf.jaxrs.client.WebClient;
+
 import com.manessinger.cookbook.service.CityFullCxfRestInterface;
 
-public class CityById {
+public class DeleteCity {
 
 	public static void main(String[] args) {
 		
@@ -31,13 +33,14 @@ public class CityById {
 		}
 		
 		CityFullCxfRestInterface citySvc = JAXRSClientFactory.create(base.toExternalForm(), CityFullCxfRestInterface.class);
+		WebClient.client(citySvc).accept(MediaType.MEDIA_TYPE_WILDCARD);
 		
-		CityDto city = citySvc.byId(id);
-		System.out.println("City with ID "+id+" is "+city.getName());
+		String result = citySvc.delete(id);
+		System.out.println("City with ID "+id+" was deleted ("+result+")");
 	}
 
 	private static void usageExit() {
-		System.err.println("usage: CityById <base-url> <city-id>");
+		System.err.println("usage: DeleteCity <base-url> <city-id>");
 		System.exit(1);
 	}
 
