@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<site>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><site>
    <feature id="org.azzyzt.jee.mwe.magwien.feature" url="features/org.azzyzt.jee.mwe.magwien.feature_1.2.3.qualifier.jar" version="1.2.3.qualifier">
       <category name="org.azzyzt.jee.tools.mwe"/>
    </feature>

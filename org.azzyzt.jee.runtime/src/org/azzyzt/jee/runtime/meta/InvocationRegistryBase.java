@@ -41,14 +41,15 @@ public abstract class InvocationRegistryBase {
 	public abstract TransactionSynchronizationRegistry getTsr();
 	public abstract AzzyztantInterface getAzzyztant();
 	
-	public void registerRESTInvocation(InvocationContext ctx) {
+	public InvocationMetaInfo registerRESTInvocation(InvocationContext ctx) {
+		InvocationMetaInfo metaInfo = new InvocationMetaInfo();
 		TransactionSynchronizationRegistry tsr = getTsr();
 
 		ensureInvocationTimestamp(tsr);
 		
 		SiteAdapterInterface siteAdapter = getSiteAdapter();
 		if (siteAdapter != null) {
-			InvocationMetaInfo metaInfo = siteAdapter.fromRESTContext(ctx);
+			metaInfo = siteAdapter.fromRESTContext(ctx);
 			StringConverterInterface usernameConverter = getAzzyztant().getUsernameConverter();
 			if (usernameConverter != null) {
 				// call converter if supplied
@@ -56,8 +57,9 @@ public abstract class InvocationRegistryBase {
 						usernameConverter.convert(metaInfo.getAuthenticatedUserName())
 				);
 			}
-			tsr.putResource("invocationMetaInfo", metaInfo);
 		}
+		tsr.putResource("invocationMetaInfo", metaInfo);
+		return metaInfo;
 	}
 	
 	public void registerEJBInvocation(InvocationContext ctx) {

@@ -14,7 +14,7 @@ import java.util.List;
 import javax.ws.rs.core.MediaType;
 import javax.xml.bind.JAXB;
 
-import org.apache.cxf.jaxrs.client.ClientWebApplicationException;
+import org.apache.cxf.jaxrs.client.Client;
 import org.apache.cxf.jaxrs.client.JAXRSClientFactory;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.junit.Before;
@@ -50,6 +50,10 @@ public class CookbookRestTest {
 	private static CountryFullCxfRestInterface countrySvc;
 	private static CityFullCxfRestInterface citySvc;
 	private static ModifyMultiCxfRestInterface multiSvc;
+
+	private static Client countryClient;
+	private static Client cityClient;
+	private static Client multiClient;
 	
 	/**
 	 * BEFORE CLASS: setup proxies, set their media types to APPLICATION_XML. 
@@ -70,16 +74,22 @@ public class CookbookRestTest {
 	@BeforeClass
 	public static void setupProxies() {
 		countrySvc = JAXRSClientFactory.create(BASE_URI, CountryFullCxfRestInterface.class);
-		WebClient.client(countrySvc).type(MediaType.APPLICATION_XML);
-		WebClient.client(countrySvc).accept(MediaType.MEDIA_TYPE_WILDCARD);
+		countryClient = WebClient.client(countrySvc);
+		countryClient.type(MediaType.APPLICATION_XML);
+		countryClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
+		// countryClient.header("X-Portal-Cred0", "REST_200_ON_ERROR");
 		
 		citySvc = JAXRSClientFactory.create(BASE_URI, CityFullCxfRestInterface.class);
-		WebClient.client(citySvc).type(MediaType.APPLICATION_XML);
-		WebClient.client(citySvc).accept(MediaType.MEDIA_TYPE_WILDCARD);
+		cityClient = WebClient.client(citySvc);
+		cityClient.type(MediaType.APPLICATION_XML);
+		cityClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
+		// cityClient.header("X-Portal-Cred0", "REST_200_ON_ERROR");
 		
 		multiSvc = JAXRSClientFactory.create(BASE_URI, ModifyMultiCxfRestInterface.class);
-		WebClient.client(multiSvc).type(MediaType.APPLICATION_XML);
-		WebClient.client(multiSvc).accept(MediaType.MEDIA_TYPE_WILDCARD);
+		multiClient = WebClient.client(multiSvc);
+		multiClient.type(MediaType.APPLICATION_XML);
+		multiClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
+		// multiClient.header("X-Portal-Cred0", "REST_200_ON_ERROR");
 	}
 	
 	/**

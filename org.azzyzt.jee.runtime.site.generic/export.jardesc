@@ -11,6 +11,11 @@
         </sealing>
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="true" exportOutputFolder="false">
-        <javaElement handleIdentifier="=org.azzyzt.jee.runtime.site.generic"/>
+        <file path="/org.azzyzt.jee.runtime.site.generic/.classpath"/>
+        <file path="/org.azzyzt.jee.runtime.site.generic/.project"/>
+        <javaElement handleIdentifier="=org.azzyzt.jee.runtime.site.generic/ejbModule"/>
+        <file path="/org.azzyzt.jee.runtime.site.generic/.gitignore"/>
+        <folder path="/org.azzyzt.jee.runtime.site.generic/build"/>
+        <file path="/org.azzyzt.jee.runtime.site.generic/export.jardesc"/>
     </selectedElements>
 </jardesc>

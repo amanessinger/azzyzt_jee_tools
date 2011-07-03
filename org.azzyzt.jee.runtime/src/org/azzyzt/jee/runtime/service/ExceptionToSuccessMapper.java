@@ -31,6 +31,8 @@ import javax.ws.rs.core.Response;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.azzyzt.jee.runtime.exception.MapToHttpSuccessException;
+
 @XmlType(propOrder = {"type", "code", "detail"})
 public class ExceptionToSuccessMapper {
 
@@ -45,9 +47,10 @@ public class ExceptionToSuccessMapper {
 		super();
 	}
 
-	public Response toResponse(Throwable e) {
-		e.printStackTrace();
-		detail = e.getClass().getSimpleName();
+	public Response toResponse(MapToHttpSuccessException e) {
+		Throwable orig = e.getCause();
+		orig.printStackTrace();
+		detail = orig.getClass().getSimpleName();
 		return Response.ok().entity(this).type("application/xml").build();
 	}
 
