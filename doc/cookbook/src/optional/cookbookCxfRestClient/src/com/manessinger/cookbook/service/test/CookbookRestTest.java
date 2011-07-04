@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.xml.bind.JAXB;
 
@@ -24,10 +25,16 @@ import org.junit.Test;
 import com.manessinger.cookbook.dto.CityDto;
 import com.manessinger.cookbook.dto.CountryDto;
 import com.manessinger.cookbook.dto.Dto;
+import com.manessinger.cookbook.dto.LanguageDto;
 import com.manessinger.cookbook.dto.StoreDelete;
+import com.manessinger.cookbook.dto.VisitDto;
+import com.manessinger.cookbook.entity.VisitId;
 import com.manessinger.cookbook.service.CityFullCxfRestInterface;
 import com.manessinger.cookbook.service.CountryFullCxfRestInterface;
+import com.manessinger.cookbook.service.LanguageFullCxfRestInterface;
 import com.manessinger.cookbook.service.ModifyMultiCxfRestInterface;
+import com.manessinger.cookbook.service.VisitFullCxfRestInterface;
+import com.manessinger.cookbook.service.ZipFullCxfRestInterface;
 
 /**
  * A test class that executes all tests from the cookbook tutorial. Some tests
@@ -47,13 +54,19 @@ public class CookbookRestTest {
 	private static final String ASSUAN = "Assuan";
 	private static final String CAIRO = "Cairo";
 	
-	private static CountryFullCxfRestInterface countrySvc;
 	private static CityFullCxfRestInterface citySvc;
+	private static CountryFullCxfRestInterface countrySvc;
+	private static LanguageFullCxfRestInterface languageSvc;
 	private static ModifyMultiCxfRestInterface multiSvc;
+	private static VisitFullCxfRestInterface visitSvc;
+	private static ZipFullCxfRestInterface zipSvc;
 
-	private static Client countryClient;
 	private static Client cityClient;
+	private static Client countryClient;
+	private static Client languageClient;
 	private static Client multiClient;
+	private static Client visitClient;
+	private static Client zipClient;
 	
 	/**
 	 * BEFORE CLASS: setup proxies, set their media types to APPLICATION_XML. 
@@ -73,23 +86,43 @@ public class CookbookRestTest {
 	 */
 	@BeforeClass
 	public static void setupProxies() {
-		countrySvc = JAXRSClientFactory.create(BASE_URI, CountryFullCxfRestInterface.class);
-		countryClient = WebClient.client(countrySvc);
-		countryClient.type(MediaType.APPLICATION_XML);
-		countryClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
-		// countryClient.header("X-Portal-Cred0", "REST_200_ON_ERROR");
-		
+
 		citySvc = JAXRSClientFactory.create(BASE_URI, CityFullCxfRestInterface.class);
 		cityClient = WebClient.client(citySvc);
 		cityClient.type(MediaType.APPLICATION_XML);
 		cityClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
 		// cityClient.header("X-Portal-Cred0", "REST_200_ON_ERROR");
 		
+		countrySvc = JAXRSClientFactory.create(BASE_URI, CountryFullCxfRestInterface.class);
+		countryClient = WebClient.client(countrySvc);
+		countryClient.type(MediaType.APPLICATION_XML);
+		countryClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
+		// countryClient.header("X-Portal-Cred0", "REST_200_ON_ERROR");
+		
+		languageSvc = JAXRSClientFactory.create(BASE_URI, LanguageFullCxfRestInterface.class);
+		languageClient = WebClient.client(languageSvc);
+		languageClient.type(MediaType.APPLICATION_XML);
+		languageClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
+		// languageClient.header("X-Portal-Cred0", "REST_200_ON_ERROR");
+		
 		multiSvc = JAXRSClientFactory.create(BASE_URI, ModifyMultiCxfRestInterface.class);
 		multiClient = WebClient.client(multiSvc);
 		multiClient.type(MediaType.APPLICATION_XML);
 		multiClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
 		// multiClient.header("X-Portal-Cred0", "REST_200_ON_ERROR");
+		
+		visitSvc = JAXRSClientFactory.create(BASE_URI, VisitFullCxfRestInterface.class);
+		visitClient = WebClient.client(visitSvc);
+		visitClient.type(MediaType.APPLICATION_XML);
+		visitClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
+		// visitClient.header("X-Portal-Cred0", "REST_200_ON_ERROR");
+		
+		zipSvc = JAXRSClientFactory.create(BASE_URI, ZipFullCxfRestInterface.class);
+		zipClient = WebClient.client(zipSvc);
+		zipClient.type(MediaType.APPLICATION_XML);
+		zipClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
+		// zipClient.header("X-Portal-Cred0", "REST_200_ON_ERROR");
+		
 	}
 	
 	/**
@@ -286,10 +319,13 @@ public class CookbookRestTest {
 	 * TEST: store France and three cities in one call, delete them in one call
 	 */
 	@Test
-	public void storeDeleteFranceAndCities() {
+	public void testStoreDeleteFranceAndCities() {
 		List<Dto> dtos = createCountryAndCityDtos(FRANCE, MARSEILLES, PARIS, RENNES);
 		dtos = multiSvc.storeMulti(dtos);
 		checkCountryAndCityDtos(dtos, FRANCE, MARSEILLES, PARIS, RENNES);
+		
+		dump(dtos);
+
 		String result = multiSvc.deleteMulti(dtos);
 		assertEquals("<result>OK</result>", result);
 	}
@@ -298,10 +334,13 @@ public class CookbookRestTest {
 	 * TEST: store France, replace it with Egypt, make a visit to Luxor and clean up
 	 */
 	@Test
-	public void storeFranceReplaceWithEgyptMakeVisit() {
+	public void testStoreFranceReplaceWithEgyptMakeVisit() {
 		List<Dto> france = createCountryAndCityDtos(FRANCE, MARSEILLES, PARIS, RENNES);
 		france = multiSvc.storeMulti(france);
 		checkCountryAndCityDtos(france, FRANCE, MARSEILLES, PARIS, RENNES);
+		
+		dump(france);
+
 		Long idFrance = ((CountryDto)france.get(0)).getId();
 
 		List<Dto> egypt = createCountryAndCityDtos(EGYPT, ASSUAN, CAIRO);
@@ -313,12 +352,53 @@ public class CookbookRestTest {
 		try {
 			countrySvc.byId(idFrance);
 			lookupFailed = false;
-		} catch (Exception e) { }
+		} catch (WebApplicationException e) { }
 		assertTrue(lookupFailed);
 		// now check Egypt
 		checkCountryAndCityDtos(egypt, EGYPT, ASSUAN, CAIRO);
 		
-		String result = multiSvc.deleteMulti(egypt);
+		dump(egypt);
+		
+		// create the visit
+		Long idEgypt = ((CountryDto)egypt.get(0)).getId();
+		
+		CityDto luxor = createCity(idEgypt, "Luxor", -1L);
+		
+		LanguageDto enUK = new LanguageDto();
+		enUK.setId("en_UK");
+		enUK.setLanguageName("English (UK)");
+		
+		VisitDto visit = new VisitDto();
+		visit.setId(new VisitId(1L, luxor.getId(), enUK.getId()));
+		visit.setTotalNumberOfVisitors(5L);
+		
+		List<Dto> dtos = new ArrayList<Dto>();
+		dtos.add(luxor);
+		dtos.add(enUK);
+		dtos.add(visit);
+		dtos = multiSvc.storeMulti(dtos);
+		
+		assertNotNull(dtos);
+		assertEquals(3, dtos.size());
+		
+		Dto dto = dtos.get(0);
+		assertNotNull(dto);
+		assertTrue(dto instanceof CityDto);
+		CityDto luxorStored = (CityDto)dto;
+		assertTrue(luxorStored.getId() > 0);
+		
+		dto = dtos.get(2);
+		assertNotNull(dto);
+		assertTrue(dto instanceof VisitDto);
+		VisitDto visitStored = (VisitDto)dto;
+		assertEquals(luxorStored.getId(), visitStored.getId().getToCity());
+		
+		dump(dtos);
+		
+		String result = multiSvc.deleteMulti(dtos);
+		assertEquals("<result>OK</result>", result);
+		
+		result = multiSvc.deleteMulti(egypt);
 		assertEquals("<result>OK</result>", result);
 	}
 
@@ -332,20 +412,34 @@ public class CookbookRestTest {
 	private List<Dto> createCountryAndCityDtos(String country, String...cities) {
 		List<Dto> result = new ArrayList<Dto>();
 
+		Long idGen = -1L;
 		CountryDto co = new CountryDto();
-		co.setId(-1L);
+		co.setId(idGen--);
 		co.setName(country);
 		result.add(co);
 
 		if (cities == null || cities.length == 0) return result;
 		
 		for (String city : cities) {
-			CityDto c = new CityDto();
-			c.setCountryId(-1L);
-			c.setName(city);
+			CityDto c = createCity(co.getId(), city, idGen--);
 			result.add(c);
 		}
 		return result;
+	}
+
+	/**
+	 * Helper method to create a city
+	 * 
+	 * @param cityName
+	 * @param countryId
+	 * @return
+	 */
+	private CityDto createCity(Long countryId, String cityName, Long cityId) {
+		CityDto c = new CityDto();
+		c.setCountryId(countryId);
+		c.setId(cityId);
+		c.setName(cityName);
+		return c;
 	}
 
 	/**
@@ -397,10 +491,20 @@ public class CookbookRestTest {
 	 * @param o
 	 */
 	private static void dump(Object o) {
+		dump(o, 3);
+	}
+	
+	private static void dump(Object o, int depth) {
 		StackTraceElement[] trace = Thread.currentThread().getStackTrace();
-		System.err.println(trace[2].getMethodName()+"():\n");
+		System.err.println(trace[depth].getMethodName()+"():\n");
 		JAXB.marshal(o, System.err);
 		System.err.println("\n");
+	}
+	
+	private static void dump(List<?> l) {
+		for (Object o : l) {
+			dump(o, 3);
+		}
 	}
 	
 	/**
