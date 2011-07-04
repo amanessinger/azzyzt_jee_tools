@@ -93,37 +93,63 @@ doc/cookbook
 |       |-- create_cookbook__user.sql
 |       |-- create_tables.sql
 |       |-- drop_tables.sql
-|       `-- initialize_data.sql
+|       |-- initialize_data.sql
+|       `-- reinitialize.sql
 |
 |-- README.txt
 |
 `-- src
-    |-- cookbookEJB
-    |   `-- ejbModule
-    |       |-- com
-    |       |   `-- manessinger
-    |       |       `-- cookbook
-    |       |           `-- entity
-    |       |               |-- City.java
-    |       |               |-- Country.java
-    |       |               |-- Language.java
-    |       |               |-- Visit.java
-    |       |               `-- Zip.java
-    |       `-- META-INF
-    |           `-- persistence.xml
-    |
-    `-- cookbookEJBClient
-        `-- ejbModule
-            `-- com
-                `-- manessinger
-                    `-- cookbook
-                        `-- entity
-                            `-- VisitId.java
+    |-- base
+    |   |-- cookbookEJB
+    |   |   `-- ejbModule
+    |   |       |-- com
+    |   |       |   `-- manessinger
+    |   |       |       `-- cookbook
+    |   |       |           `-- entity
+    |   |       |               |-- City.java
+    |   |       |               |-- Country.java
+    |   |       |               |-- Language.java
+    |   |       |               |-- Visit.java
+    |   |       |               `-- Zip.java
+    |   |       `-- META-INF
+    |   |           `-- persistence.xml
+    |   |
+    |   `-- cookbookEJBClient
+    |       `-- ejbModule
+    |           `-- com
+    |               `-- manessinger
+    |                   `-- cookbook
+    |                       `-- entity
+    |                           `-- VisitId.java
+    `-- optional
+        |-- cookbookCxfRestClient
+        |   `-- src
+        |       |-- com
+        |       |   `-- manessinger
+        |       |       `-- cookbook
+        |       |           `-- service
+        |       |               `-- test
+        |       |                   |-- CityById.java
+        |       |                   |-- CookbookRestTest.java
+        |       |                   `-- DeleteCity.java
+        |       `-- META-INF
+        |           `-- xml
+        |               |-- get_austria.xml
+        |               |-- nested_expressions.xml
+        |               |-- query_with_three_conditions.xml
+        |               `-- sorted_list_of_cities.xml
+        `-- cookbookEJB
+            `-- ejbModule
+                `-- com
+                    `-- manessinger
+                        `-- cookbook
+                            `-- meta
+                                `-- Azzyztant.java
 ---
 
 On the same level as ''README.txt'' you find one directory for each
 database that the tutorial supports. Note, it's not that Java EE 6 or
-GlassFish or Azzyzt don't support other databases, it's just that I've
+\GlassFish or Azzyzt don't support other databases, it's just that I've
 not tested the tutorial with anything else.
 
 Each database subdirectory contains a set of SQL instructions on how
@@ -131,9 +157,11 @@ to create the database user, the database, and scripts to create the
 schema objects (tables and sequences), to initialize the tables, and
 finally to drop the schema objects if you want to start over.
 
-Furthermore there is a directory ''src'', that contains the sources of
-entity classes and a ''persistence.xml'', that already references
-these classes. More about that in the next couple of sections.
+Furthermore there is a directory ''src/base'', that contains the
+sources of entity classes and a ''persistence.xml'', that already
+references these classes. More about that in the next couple of
+sections. Another directory ''src/optional'' contains the sources of
+the JUnit test that I use.
 
 Finally ''doc/cookbook'' contains a soapUI project file. This already
 contains the REST requests for the examples at the end of this
@@ -184,9 +212,9 @@ will become useful for you as well, for now I ask you to simply let it
 alone :)
 
 The EAR project is an Enterprise Application Project, basically a
-wrapper around the three Java projects. The artifact of an EAR project
-is an enterprise archive, for instance "''cookbookEAR.ear''", and this
-is the deployable application.
+wrapper around the three server-side Java projects. The artifact of an
+EAR project is an enterprise archive, for instance
+"''cookbookEAR.ear''", and this is the deployable application.
 
 "''cookbookEJB''" is where we put all application functionality,
 "''cookbookEJBClient''" is the EJB client project, its artifact could
@@ -214,7 +242,7 @@ initially:
 
 #Verbatim <<---
 azzyzt_tools
-`-- 1.2.3
+`-- 1.2.4
     |-- antlr-2.7.7.jar
     |-- commons-io-2.0.1.jar
     |-- org.azzyzt.jee.tools.mwe.jar
@@ -348,7 +376,8 @@ Whichever way you go, be prepared to have to do some manual work in
 this phase. Those problems have been in Dali for quite some time and I
 have not seen any progress in a year. On the other hand, creating the
 entities or database schemata is definitely not in the scope of Azzyzt
-JEE Tools. So far my hopes are on Eclipse Indigo :)
+JEE Tools. Eclipse Indigo could have changed this, but so far I did
+not find time to try it.
 
 Note please, that __Azzyzted Modeling With Entities__ only supports mapping
 annotations on fields, not on accessor methods. This is not a deeply
@@ -394,8 +423,7 @@ entity fields:
       that uses information supplied in an HTTP header called
       "''x-authenticate-userid''", thus it relies on some
       authenticating portal or gateway in front of the application
-      server. I admit that here's definitely potential for
-      configurability :)
+      server. Later on we will see how to configure this.
 
 *** Sample entities
 
@@ -410,7 +438,7 @@ should not need to. Try to stay database-agnostic if you can, it gives
 you one dependency less to care about.
 
 #Verbatim <<---
-doc/cookbook/src
+doc/cookbook/src/base
 |
 |-- cookbookEJB
 |   `-- ejbModule
@@ -443,7 +471,7 @@ In order to use the entities, just copy the two folders
 into your workspace and then refresh the projects in Eclipse. Most
 likely an error symbol will be shown on the EJB project. Don't worry,
 use "__Project / Clean ... / Clean all projects__" and it will go
-away. I believe this to be an error in Eclipse.
+away. I believe this to be an error in Eclipse. 
 
 The sample database is pretty simple. We have have countries, cities,
 zips, visits from a zip code area to a certain city, guided using a
@@ -662,8 +690,8 @@ private Date modificationTimestamp;
 
 and finally in ''Visit'' as string. This is not uncommon in legacy
 databases, and because there is no standard string representation that
-we can rely on, we have to specify the format as a standard format
-string as documented for ''java.text.SimpleDateFormat''.
+we can rely on, I have decided to require the format a format string
+as documented for ''java.text.SimpleDateFormat''.
 
 #Code id=createModifyTimestampDate syntax=Java <<---
 @CreateTimestamp(format="yyyy-MM-dd-HHmmss.SSS")
@@ -694,10 +722,9 @@ name of the language.
 Using such tables may be a tad less efficient, but it actually brings
 a big advantage as well: it makes databases more readable. A foreign
 key in a visit record can be understood without looking up the value
-in the language table.
-
-Even if you don't agree, there is no way around the fact that we
-stumble upon this pattern in practically every legacy database.
+in the language table. And even if you don't agree, there is no way
+around the fact that we stumble upon this pattern in practically every
+legacy database.
 
 Here we are, that's our entity model.
 
@@ -717,6 +744,8 @@ In our example, the result of code generation looks like this:
 cookbookEAR
 |
 |-- EarContent
+|   `-- META-INF
+|       `-- azzyzt.xml
 `-- lib
     |-- org.azzyzt.jee.runtime.jar
     `-- org.azzyzt.jee.runtime.site.jar

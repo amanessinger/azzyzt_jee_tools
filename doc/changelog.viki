@@ -8,6 +8,36 @@
 
  !!! Release {version}
 
+** Changes in 1.2.4
+#OPT: plain!
+
+ - In Azzyztant you can now define options. There is one option now,
+   ''\AzzyztGeneratorOption.\AddCxfRestClient'', that you can use to
+   get a REST client project using [[http://cxf.apache.org/][Apache
+   CXF]] as REST client library. Of all the Java REST client APIs, CXF
+   seems to be the most elegant. It uses an interface with the same
+   annotations as on server side. You call one factory method using
+   the interface as parameter, get a proxy, and this proxy behaves
+   just as the resource on server side would. Cool, clean, minimum
+   fuss. Of course the interfaces for generated REST services are
+   generated as well.
+
+ - The documentation has now a JUnit test that covers everything
+   that's in the [[using_azzyzt.html][cookbook tutorial]].
+
+ - Up to now the REST runtime behavior was hard-coded to work around
+   some limitations of our Flex clients. In case of an error, the
+   conformant REST behavior would be to use HTTP status codes, for
+   example "__500, Internal server error__". Our Flex clients can't
+   (please don't ask me why) access the status code and can't even
+   find out if the error was on client or on server side. Thus our
+   servers return "__200, OK__" in case of an error, with an XML error
+   element indicating the kind of error. This is OK as long as you
+   read and parse XML responses yourself, but REST client libraries
+   like Apache CXF expect the proper result object on "__200,
+   OK__". Now the default is, for the server to behave correctly
+   unless the client indicates otherwise via an HTTP request header.
+
 ** Changes in 1.2.3
 #OPT: plain!
 

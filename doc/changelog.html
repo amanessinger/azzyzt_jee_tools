@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 <meta name="language" content="en">
-<meta name="date" content="2011-06-26T14:51:45">
+<meta name="date" content="2011-07-04T13:55:08">
 <meta name="generator" content="deplate.rb 0.8.5">
 <link rel="start" href="changelog.html" title="Frontpage">
 <link rel="chapter" href="changelog.html#hd001" title="Azzyzt JEE Tools">
@@ -803,11 +803,51 @@ span.progress {
 <h1 id="hd001"><a name="file000"></a>Azzyzt JEE Tools</h1>
 
 <div class="important"><p class="important">
-Release 1.2.3
+Release 1.2.4
 </p></div>
 
 
-<h2 id="hd001001">Changes in 1.2.3</h2>
+<h2 id="hd001001">Changes in 1.2.4</h2>
+
+<ul class="Itemize">
+    <li class="Itemize-1 Itemize dash">
+        In Azzyztant you can now define options. There is one option now, 
+        <code>AzzyztGeneratorOption.AddCxfRestClient</code>, that you can use to 
+        get a REST client project using 
+        <span class="remote"><a href="http://cxf.apache.org/" class="remote">Apache 
+        CXF</a></span><a name="idx001"></a> as REST client library. Of all the 
+        Java REST client APIs, CXF seems to be the most elegant. It uses an 
+        interface with the same annotations as on server side. You call one 
+        factory method using the interface as parameter, get a proxy, and this 
+        proxy behaves just as the resource on server side would. Cool, clean, 
+        minimum fuss. Of course the interfaces for generated REST services are 
+        generated as well.
+    </li>
+    <li class="Itemize-1 Itemize dash">
+        The documentation has now a JUnit test that covers everything 
+        that&rsquo;s in the <a href="using_azzyzt.html">cookbook 
+        tutorial</a><a name="idx002"></a>.
+    </li>
+    <li class="Itemize-1 Itemize dash">
+        Up to now the REST runtime behavior was hard-coded to work around some 
+        limitations of our Flex clients. In case of an error, the conformant 
+        REST behavior would be to use HTTP status codes, for example 
+        &ldquo;<em>500, Internal server error</em>&rdquo;. Our Flex clients 
+        can&rsquo;t (please don&rsquo;t ask me why) access the status code and 
+        can&rsquo;t even find out if the error was on client or on server side. 
+        Thus our servers return &ldquo;<em>200, OK</em>&rdquo; in case of an 
+        error, with an XML error element indicating the kind of error. This is 
+        OK as long as you read and parse XML responses yourself, but REST client 
+        libraries like Apache CXF expect the proper result object on 
+        &ldquo;<em>200, OK</em>&rdquo;. Now the default is, for the server to 
+        behave correctly unless the client indicates otherwise via an HTTP 
+        request header.
+    </li>
+</ul>
+
+
+
+<h2 id="hd001002">Changes in 1.2.3</h2>
 
 <ul class="Itemize">
     <li class="Itemize-1 Itemize dash">
@@ -826,7 +866,7 @@ Release 1.2.3
 
 
 
-<h2 id="hd001002">Changes in 1.2.2</h2>
+<h2 id="hd001003">Changes in 1.2.2</h2>
 
 <ul class="Itemize">
     <li class="Itemize-1 Itemize dash">
@@ -848,7 +888,7 @@ Release 1.2.3
 
 
 
-<h2 id="hd001003">Changes in 1.2.1</h2>
+<h2 id="hd001004">Changes in 1.2.1</h2>
 
 <ul class="Itemize">
     <li class="Itemize-1 Itemize dash">
@@ -880,7 +920,7 @@ Release 1.2.3
 
 
 
-<h2 id="hd001004">Changes in 1.2.0</h2>
+<h2 id="hd001005">Changes in 1.2.0</h2>
 
 <ul class="Itemize">
     <li class="Itemize-1 Itemize dash">
@@ -897,7 +937,7 @@ Release 1.2.3
         have been conducted though, thus I expect some glitches.
     </li>
     <li class="Itemize-1 Itemize dash">
-        Made @<a href="WebService.html">WebService</a><a name="idx001"></a> 
+        Made @<a href="WebService.html">WebService</a><a name="idx003"></a> 
         optional via <code>AzzyztGeneratorOptions</code> and 
         <code>AzzyztGeneratorCutback.NoSoapServices</code>
     </li>
@@ -915,7 +955,7 @@ Release 1.2.3
 
 
 
-<h2 id="hd001005">Changes in 1.1.1</h2>
+<h2 id="hd001006">Changes in 1.1.1</h2>
 
 <ul class="Itemize">
     <li class="Itemize-1 Itemize dash">
@@ -943,7 +983,7 @@ Release 1.2.3
 
 
 
-<h2 id="hd001006">Changes in 1.1.0</h2>
+<h2 id="hd001007">Changes in 1.1.0</h2>
 
 <ul class="Itemize">
     <li class="Itemize-1 Itemize dash">
@@ -1000,7 +1040,7 @@ Release 1.2.3
 </ul>
 
 <p>This documentation was created using 
-<span class="remote"><a href="http://deplate.sourceforge.net/" class="remote">Deplate</a></span><a name="idx002"></a>.</p>
+<span class="remote"><a href="http://deplate.sourceforge.net/" class="remote">Deplate</a></span><a name="idx004"></a>.</p>
 
 
 <!-- Start of StatCounter Code -->
