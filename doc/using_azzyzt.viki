@@ -1445,7 +1445,7 @@ following we will see some XML that could of course be expressed in
 JSON as well, but that is generally more readable in XML. While
 readability is subjective, it is matter of fact that XML has
 wide-spread tool support (editors, syntax highlighting, validation
-tools, etc), while support for JSON is comaratively sparse.
+tools, etc), while support for JSON is comparatively sparse.
 
 Apart from that, the generated server side would have to implement a
 JSON parser for converting JSON specifications in actual queries, just
@@ -2453,7 +2453,7 @@ generated, or how the generated features behave at runtime. The idea
 is, to create a central class, that controls both. We call this class
 the "__Azzyztant__".
 
-From release 1.2.0 on, azzyzted projects are generated with a default
+Since release 1.2.0, azzyzted projects are generated with a default
 ''Azzyztant'' in a sub-package ''meta'' within the ''ejbModule''
 source folder of the EJB project, i.e. parallel to the ''entity''
 package. This is how the ''Azzyztant'' is created:
@@ -2590,14 +2590,14 @@ does not matter.
 
 Up to release 1.1.1, the generated code did not compile against the
 JBoss AS 6.0 runtime, because the interfaces generated in the client
-project are annotated with ''@Remote'', and ''@Remote'' is not part of
-the Java EE 6 web profile. On the other hand, ''@Remote'' is only
-needed if you want to call your services via CORBA/IIOP, and very
-often this will not be the case. Web services are in fashion, so why
-should we tie the code to \GlassFish only, just to be able to
-potentially use something that we know we won't use anyway? Some users
-may want it though, and thus we like ''@Remote'' on interfaces to be a
-configurable feature.
+project were unchangeably annotated with ''@Remote'', and ''@Remote''
+is not part of the Java EE 6 web profile. On the other hand,
+''@Remote'' is only needed if you want to call your services via
+CORBA/IIOP, and very often this will not be the case. Web services are
+in fashion, so why should we tie the code to \GlassFish only, just to
+be able to potentially use something that we know we won't use anyway?
+Some users may want it though, and thus we like ''@Remote'' on
+interfaces to be a configurable feature.
 
 The same could be said of access via SOAP or via REST. If you don't
 use it in your application, why should Azzyzt generate it?
@@ -2605,7 +2605,7 @@ use it in your application, why should Azzyzt generate it?
 In order to cut back on unused features, you can put an annotation on
 the ''Azzyztant'':
 
-#Code id=AzzyztantAsGenerated syntax=Java <<---
+#Code id=AzzyztantAllCutbacks syntax=Java <<---
 package com.manessinger.cookbook.meta;
 
 import javax.ejb.LocalBean;
@@ -2633,12 +2633,10 @@ public class Azzyztant implements AzzyztantInterface {
 
     public Azzyztant() { super(); }
 
-
     @Override
     public StringConverterInterface getUsernameConverter() {
         return usernameConverter;
     }
-
 }
 ---
 
@@ -2654,9 +2652,296 @@ and DTOs.
 
  !!! If you turn off both variants of REST, Azzyzt won't generate the REST servlet either!
 
-That's it so far. Additional options, not only cutbacks, will follow
-in the future. In any case, the ''Azzyztant'' is the place where
-options go.
+
+** Adding features
+
+Cutting back on features is not the only customization, you can also
+add features. You do that by adding options.
+
+
+*** Adding an Apache CXF REST client
+
+#Code id=AzzyztantCxfClient syntax=Java <<---
+package com.manessinger.cookbook.meta;
+
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+
+import org.azzyzt.jee.runtime.annotation.AzzyztGeneratorOptions;
+import org.azzyzt.jee.runtime.meta.AzzyztGeneratorCutback;
+import org.azzyzt.jee.runtime.meta.AzzyztGeneratorOption;
+import org.azzyzt.jee.runtime.meta.AzzyztantInterface;
+import org.azzyzt.jee.runtime.util.StringConverterInterface;
+
+@LocalBean
+@Stateless
+@AzzyztGeneratorOptions(
+        cutbacks = {
+                AzzyztGeneratorCutback.NoRemoteInterfaces,
+                AzzyztGeneratorCutback.NoSoapServices,
+        },
+        options = {
+                AzzyztGeneratorOption.AddCxfRestClient,
+        }
+)
+public class Azzyztant implements AzzyztantInterface {
+
+    private final StringConverterInterface usernameConverter = null;
+
+    public Azzyztant() { super(); }
+
+    @Override
+    public StringConverterInterface getUsernameConverter() {
+        return usernameConverter;
+    }
+}
+---
+
+"''AzzyztGeneratorOption.AddCxfRestClient''" is currently the only
+option, more may follow. Using that option causes the code generator
+to create one more project, a REST client project using the Apache CXF
+REST libraries.
+
+The CXF REST client project is not created by default. It is only
+created if the code generator finds this option. Once it is created,
+it is not automatically removed, even if you drop the option. Here is
+how the generated project looks like:
+
+#Verbatim <<---
+cookbookCxfRestClient
+|
+|-- generated
+|   `-- com
+|       `-- manessinger
+|           `-- cookbook
+|               `-- service
+|                   |-- CityFullCxfRestInterface.java
+|                   |-- CityRestrictedCxfRestInterface.java
+|                   |-- CountryFullCxfRestInterface.java
+|                   |-- CountryRestrictedCxfRestInterface.java
+|                   |-- LanguageFullCxfRestInterface.java
+|                   |-- LanguageRestrictedCxfRestInterface.java
+|                   |-- ModifyMultiCxfRestInterface.java
+|                   |-- VisitFullCxfRestInterface.java
+|                   |-- VisitRestrictedCxfRestInterface.java
+|                   |-- ZipFullCxfRestInterface.java
+|                   `-- ZipRestrictedCxfRestInterface.java
+|-- lib
+|   |-- commons-logging-1.1.1.jar
+|   |-- cxf-2.4.1.jar
+|   |-- jettison-1.3.jar
+|   |-- jsr311-api-1.1.1.jar
+|   |-- neethi-3.0.0.jar
+|   `-- wsdl4j-1.6.2.jar
+`-- src
+---
+
+The project comes with a set of Apache CXF libraries included and the
+class path set up to use them.
+
+
+*** CXF? Don't we use Jersey?
+
+Java EE defines REST bindings for Java. The standard is called JAX-RS
+and its public API is restricted to the server side. This does not
+mean that you can't use REST clients in Java, it only means that Java
+EE does not mandate a client API. On the other hand, implementing a
+server API is more than half of what you need for a corresponding
+client API, and for testing purposes you'll want a client API
+anyway. The only problem is, that due to the lack of standardization,
+the client APIs of the various JAX-RS implementations and different
+and we have to decide for one of them.
+
+Of course there is a
+[[http://jersey.java.net/nonav/documentation/latest/client-api.html][client
+API in Jersey]], the reference implementation of JAX-RS, that is also
+part of the \GlassFish application server. I don't like it, because I
+find it verbose and complex. Basically you have to repeat a complex
+incantation for each call, and the underlying model is
+protocol-centric.
+
+[[http://docs.jboss.org/resteasy/docs/2.2.1.GA/userguide/html/RESTEasy_Client_Framework.html][RESTEasy
+by JBoss]] is an alternative. You define an interface for the service,
+and then you can create a client proxy for this interface. What I
+don't like in RESTEasy, is the handling of responses. It is not as
+verbose as Jersey, but it is unnecessarily complex as well.
+
+[[http://cxf.apache.org/][Apache CXF]] is the third big player, and
+they have a verbose API like Jersey, but additionally an extremely
+elegant and simple proxy-based API. Basically you define an interface,
+from the interface you create a proxy, and just like in RESTEasy you
+can then call server methods as methods of this proxy. The difference
+is in response handling. While other APIs require you to help along
+with deserialization, the CXF proxy API simply leaves this to
+JAX-B. It's more or less like SOAP. Create a proxy once, and then,
+upon method calls, get the response automatically deserialized into
+objects. The only thing you need, are classes for the parameters,
+annotated with JAX-B annotations, and that's exactly what we have with
+the DTOs in our EJB client project. 
+
+
+*** The generated CXF REST client interfaces
+
+For each REST service we generate a corresponding client
+interface. Let's take for example the full city client:
+
+#Code id=SimpleCXFClient syntax=Java <<---
+package com.manessinger.cookbook.service;
+
+import com.manessinger.cookbook.dto.CityDto;
+import com.manessinger.cookbook.dto.Dto;
+import java.util.List;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+
+
+/**
+ * Generated interface com.manessinger.cookbook.service.CityFullCxfRestInterface
+ */
+@Path(value="city")
+public interface CityFullCxfRestInterface {
+
+    @GET
+    @Path("byId")
+    @Produces(MediaType.APPLICATION_XML)
+    public CityDto byId(@QueryParam(value="id") Long id);
+
+    @GET
+    @Path("all")
+    @Produces(MediaType.APPLICATION_XML)
+    public List<Dto> all();
+
+    @POST
+    @Path("list")
+    @Consumes(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_XML)
+    public List<Dto> list(String querySpecXml);
+
+    @POST
+    @Path("store")
+    @Consumes(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_XML)
+    public CityDto store(CityDto dto);
+
+    @GET
+    @Path("delete")
+    @Produces(MediaType.APPLICATION_XML)
+    public String delete(@QueryParam(value="id") Long id);
+
+    @GET
+    @Path("byIdJson")
+    @Produces(MediaType.APPLICATION_JSON)
+    public CityDto byIdJson(@QueryParam(value="id") Long id);
+
+    @GET
+    @Path("allJson")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Dto> allJson();
+
+    @POST
+    @Path("listJson")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Dto> listJson(String querySpecXml);
+
+    @POST
+    @Path("storeJson")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public CityDto storeJson(CityDto dto);
+
+    @GET
+    @Path("deleteJson")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String deleteJson(@QueryParam(value="id") Long id);
+
+}
+---
+
+As you can see, the annotations look exactly as on server side. Using
+Apache CXF, this interface can be used to create a proxy implementing
+this interface. Just as in SOAP, the methods return DTOs and lists of
+DTOs, polymorphism included.
+
+In order to make this work, the CXF REST client project needs access
+to the DTOs, thus the project is created with the client project on
+the build path, and in production, its artifact would need the EJB
+client JAR on the class path.
+
+
+*** A simple CXF client example
+
+Here's a complete toy client. It prints the name of the city whose ID
+is given on the command line.
+
+#Code id=SimpleCXFClient syntax=Java <<---
+package com.manessinger.cookbook.service.test;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import org.apache.cxf.jaxrs.client.JAXRSClientFactory;
+
+import com.manessinger.cookbook.dto.CityDto;
+import com.manessinger.cookbook.service.CityFullCxfRestInterface;
+
+public class CityById {
+
+    public static void main(String[] args) {
+        
+        if (args.length != 2) {
+            usageExit();
+        }
+
+        URL base = null;
+        try {
+            base = new URL(args[0]);
+        } catch (MalformedURLException e) {
+            usageExit();
+        }
+        
+        Long id = null;
+        try {
+            id = Long.parseLong(args[1]);
+        } catch (NumberFormatException e) {
+            usageExit();
+        }
+        
+        CityFullCxfRestInterface citySvc =
+            JAXRSClientFactory.create(
+                base.toExternalForm(), 
+                CityFullCxfRestInterface.class
+            );
+        
+        CityDto city = citySvc.byId(id);
+        System.out.println("City with ID "+id+" is "+city.getName());
+    }
+
+    private static void usageExit() {
+        System.err.println("usage: CityById <base-url> <city-id>");
+        System.exit(1);
+    }
+}
+---
+
+As you see, most of the code is parameter checking. As soon as the
+parameters are checked, we use "''JAXRSClientFactory''" to create the
+proxy "''citySvc''". Then we can use the proxy to make any number of
+method calls.
+
+The CXF proxy client API is as SOAPish as it gets in REST. Of course
+there is still communication over the network, and that means things
+can go wrong. The client may not be able to reach the service, or the
+service may throw an exception, for instance because there may be no
+city with the requested ID. In both cases a
+''WebApplicationException'' is thrown, either in form of a
+''ClientWebApplicationException'' if it's a client-side problem, or a
+''ServerWebApplicationException'' if the problem was on server side.
 
 
 * Miscellanea

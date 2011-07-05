@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 <meta name="language" content="en">
-<meta name="date" content="2011-07-04T15:43:49">
+<meta name="date" content="2011-07-05T15:55:14">
 <meta name="generator" content="deplate.rb 0.8.5">
 <link rel="start" href="using_azzyzt.html" title="Frontpage">
 <link rel="chapter" href="using_azzyzt.html#hd001" title="Azzyzt JEE Tools">
@@ -2381,7 +2381,7 @@ see some XML that could of course be expressed in JSON as well, but that
 is generally more readable in XML. While readability is subjective, it 
 is matter of fact that XML has wide-spread tool support (editors, syntax 
 highlighting, validation tools, etc), while support for JSON is 
-comaratively sparse.</p>
+comparatively sparse.</p>
 
 <p>Apart from that, the generated server side would have to implement a 
 JSON parser for converting JSON specifications in actual queries, just 
@@ -3461,7 +3461,7 @@ generated, or how the generated features behave at runtime. The idea is,
 to create a central class, that controls both. We call this class the 
 &ldquo;<em>Azzyztant</em>&rdquo;.</p>
 
-<p>From release 1.2.0 on, azzyzted projects are generated with a default 
+<p>Since release 1.2.0, azzyzted projects are generated with a default 
 <code>Azzyztant</code> in a sub-package <code>meta</code> within the 
 <code>ejbModule</code> source folder of the EJB project, i.e. parallel 
 to the <code>entity</code> package. This is how the 
@@ -3612,7 +3612,7 @@ not matter.</p>
 
 <p>Up to release 1.1.1, the generated code did not compile against the 
 JBoss AS 6.0 runtime, because the interfaces generated in the client 
-project are annotated with <code>@Remote</code>, and 
+project were unchangeably annotated with <code>@Remote</code>, and 
 <code>@Remote</code> is not part of the Java EE 6 web profile. On the 
 other hand, <code>@Remote</code> is only needed if you want to call your 
 services via CORBA/IIOP, and very often this will not be the case. Web 
@@ -3627,6 +3627,7 @@ don&rsquo;t use it in your application, why should Azzyzt generate it?</p>
 <p>In order to cut back on unused features, you can put an annotation on 
 the <code>Azzyztant</code>:</p>
 
+<a name="AzzyztantAllCutbacks"></a>
 <div class="code">
 <pre>
 <span class="hl kwa">package</span> com<span class="hl sym">.</span>manessinger<span class="hl sym">.</span>cookbook<span class="hl sym">.</span>meta<span class="hl sym">;</span>
@@ -3656,12 +3657,10 @@ the <code>Azzyztant</code>:</p>
 
     <span class="hl kwa">public</span> <span class="hl kwd">Azzyztant</span><span class="hl sym">() {</span> <span class="hl kwa">super</span><span class="hl sym">(); }</span>
 
-
     &#64;Override
     <span class="hl kwa">public</span> StringConverterInterface <span class="hl kwd">getUsernameConverter</span><span class="hl sym">() {</span>
         <span class="hl kwa">return</span> usernameConverter<span class="hl sym">;</span>
     <span class="hl sym">}</span>
-
 <span class="hl sym">}</span>
 </pre>
 </div>
@@ -3679,9 +3678,309 @@ and DTOs.</p>
 If you turn off both variants of REST, Azzyzt won&rsquo;t generate the REST servlet either!
 </p></div>
 
-<p>That&rsquo;s it so far. Additional options, not only cutbacks, will 
-follow in the future. In any case, the <code>Azzyztant</code> is the 
-place where options go.</p>
+
+
+<h2 id="hd006004">6.4&nbsp;Adding features</h2>
+
+<p>Cutting back on features is not the only customization, you can also add 
+features. You do that by adding options.</p>
+
+
+<h3 id="hd006004001">6.4.1&nbsp;Adding an Apache CXF REST client</h3>
+
+<a name="AzzyztantCxfClient"></a>
+<div class="code">
+<pre>
+<span class="hl kwa">package</span> com<span class="hl sym">.</span>manessinger<span class="hl sym">.</span>cookbook<span class="hl sym">.</span>meta<span class="hl sym">;</span>
+
+<span class="hl kwa">import</span> javax<span class="hl sym">.</span>ejb<span class="hl sym">.</span>LocalBean<span class="hl sym">;</span>
+<span class="hl kwa">import</span> javax<span class="hl sym">.</span>ejb<span class="hl sym">.</span>Stateless<span class="hl sym">;</span>
+
+<span class="hl kwa">import</span> org<span class="hl sym">.</span>azzyzt<span class="hl sym">.</span>jee<span class="hl sym">.</span>runtime<span class="hl sym">.</span>annotation<span class="hl sym">.</span>AzzyztGeneratorOptions<span class="hl sym">;</span>
+<span class="hl kwa">import</span> org<span class="hl sym">.</span>azzyzt<span class="hl sym">.</span>jee<span class="hl sym">.</span>runtime<span class="hl sym">.</span>meta<span class="hl sym">.</span>AzzyztGeneratorCutback<span class="hl sym">;</span>
+<span class="hl kwa">import</span> org<span class="hl sym">.</span>azzyzt<span class="hl sym">.</span>jee<span class="hl sym">.</span>runtime<span class="hl sym">.</span>meta<span class="hl sym">.</span>AzzyztGeneratorOption<span class="hl sym">;</span>
+<span class="hl kwa">import</span> org<span class="hl sym">.</span>azzyzt<span class="hl sym">.</span>jee<span class="hl sym">.</span>runtime<span class="hl sym">.</span>meta<span class="hl sym">.</span>AzzyztantInterface<span class="hl sym">;</span>
+<span class="hl kwa">import</span> org<span class="hl sym">.</span>azzyzt<span class="hl sym">.</span>jee<span class="hl sym">.</span>runtime<span class="hl sym">.</span>util<span class="hl sym">.</span>StringConverterInterface<span class="hl sym">;</span>
+
+&#64;LocalBean
+&#64;Stateless
+&#64;<span class="hl kwd">AzzyztGeneratorOptions</span><span class="hl sym">(</span>
+        cutbacks <span class="hl sym">= {</span>
+                AzzyztGeneratorCutback<span class="hl sym">.</span>NoRemoteInterfaces<span class="hl sym">,</span>
+                AzzyztGeneratorCutback<span class="hl sym">.</span>NoSoapServices<span class="hl sym">,</span>
+        <span class="hl sym">},</span>
+        options <span class="hl sym">= {</span>
+                AzzyztGeneratorOption<span class="hl sym">.</span>AddCxfRestClient<span class="hl sym">,</span>
+        <span class="hl sym">}</span>
+<span class="hl sym">)</span>
+<span class="hl kwa">public class</span> Azzyztant <span class="hl kwa">implements</span> AzzyztantInterface <span class="hl sym">{</span>
+
+    <span class="hl kwa">private final</span> StringConverterInterface usernameConverter <span class="hl sym">=</span> null<span class="hl sym">;</span>
+
+    <span class="hl kwa">public</span> <span class="hl kwd">Azzyztant</span><span class="hl sym">() {</span> <span class="hl kwa">super</span><span class="hl sym">(); }</span>
+
+    &#64;Override
+    <span class="hl kwa">public</span> StringConverterInterface <span class="hl kwd">getUsernameConverter</span><span class="hl sym">() {</span>
+        <span class="hl kwa">return</span> usernameConverter<span class="hl sym">;</span>
+    <span class="hl sym">}</span>
+<span class="hl sym">}</span>
+</pre>
+</div>
+<p>&ldquo;<code>AzzyztGeneratorOption.AddCxfRestClient</code>&rdquo; is 
+currently the only option, more may follow. Using that option causes the 
+code generator to create one more project, a REST client project using 
+the Apache CXF REST libraries.</p>
+
+<p>The CXF REST client project is not created by default. It is only 
+created if the code generator finds this option. Once it is created, it 
+is not automatically removed, even if you drop the option. Here is how 
+the generated project looks like:</p>
+
+<pre class="verbatim">
+cookbookCxfRestClient
+|
+|--&nbsp;generated
+|&nbsp;&nbsp;&nbsp;`--&nbsp;com
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;manessinger
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;cookbook
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;service
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;CityFullCxfRestInterface.java
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;CityRestrictedCxfRestInterface.java
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;CountryFullCxfRestInterface.java
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;CountryRestrictedCxfRestInterface.java
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;LanguageFullCxfRestInterface.java
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;LanguageRestrictedCxfRestInterface.java
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;ModifyMultiCxfRestInterface.java
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;VisitFullCxfRestInterface.java
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;VisitRestrictedCxfRestInterface.java
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;ZipFullCxfRestInterface.java
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;ZipRestrictedCxfRestInterface.java
+|--&nbsp;lib
+|&nbsp;&nbsp;&nbsp;|--&nbsp;commons-logging-1.1.1.jar
+|&nbsp;&nbsp;&nbsp;|--&nbsp;cxf-2.4.1.jar
+|&nbsp;&nbsp;&nbsp;|--&nbsp;jettison-1.3.jar
+|&nbsp;&nbsp;&nbsp;|--&nbsp;jsr311-api-1.1.1.jar
+|&nbsp;&nbsp;&nbsp;|--&nbsp;neethi-3.0.0.jar
+|&nbsp;&nbsp;&nbsp;`--&nbsp;wsdl4j-1.6.2.jar
+`--&nbsp;src
+</pre>
+
+<p>The project comes with a set of Apache CXF libraries included and the 
+class path set up to use them.</p>
+
+
+
+<h3 id="hd006004002">6.4.2&nbsp;CXF? Don&rsquo;t we use Jersey?</h3>
+
+<p>Java EE defines REST bindings for Java. The standard is called JAX-RS 
+and its public API is restricted to the server side. This does not mean 
+that you can&rsquo;t use REST clients in Java, it only means that Java 
+EE does not mandate a client API. On the other hand, implementing a 
+server API is more than half of what you need for a corresponding client 
+API, and for testing purposes you&rsquo;ll want a client API anyway. The 
+only problem is, that due to the lack of standardization, the client 
+APIs of the various JAX-RS implementations and different and we have to 
+decide for one of them.</p>
+
+<p>Of course there is a 
+<span class="remote"><a href="http://jersey.java.net/nonav/documentation/latest/client-api.html" class="remote">client 
+API in Jersey</a></span><a name="idx0059"></a>, the reference 
+implementation of JAX-RS, that is also part of the GlassFish application 
+server. I don&rsquo;t like it, because I find it verbose and complex. 
+Basically you have to repeat a complex incantation for each call, and 
+the underlying model is protocol-centric.</p>
+
+<p><span class="remote"><a href="http://docs.jboss.org/resteasy/docs/2.2.1.GA/userguide/html/RESTEasy_Client_Framework.html" class="remote">RESTEasy 
+by JBoss</a></span><a name="idx0060"></a> is an alternative. You define 
+an interface for the service, and then you can create a client proxy for 
+this interface. What I don&rsquo;t like in RESTEasy, is the handling of 
+responses. It is not as verbose as Jersey, but it is unnecessarily 
+complex as well.</p>
+
+<p><span class="remote"><a href="http://cxf.apache.org/" class="remote">Apache 
+CXF</a></span><a name="idx0061"></a> is the third big player, and they 
+have a verbose API like Jersey, but additionally an extremely elegant 
+and simple proxy-based API. Basically you define an interface, from the 
+interface you create a proxy, and just like in RESTEasy you can then 
+call server methods as methods of this proxy. The difference is in 
+response handling. While other APIs require you to help along with 
+deserialization, the CXF proxy API simply leaves this to JAX-B. 
+It&rsquo;s more or less like SOAP. Create a proxy once, and then, upon 
+method calls, get the response automatically deserialized into objects. 
+The only thing you need, are classes for the parameters, annotated with 
+JAX-B annotations, and that&rsquo;s exactly what we have with the DTOs 
+in our EJB client project.</p>
+
+
+
+<h3 id="hd006004003">6.4.3&nbsp;The generated CXF REST client interfaces</h3>
+
+<p>For each REST service we generate a corresponding client interface. 
+Let&rsquo;s take for example the full city client:</p>
+
+<a name="SimpleCXFClient"></a>
+<div class="code">
+<pre>
+<span class="hl kwa">package</span> com<span class="hl sym">.</span>manessinger<span class="hl sym">.</span>cookbook<span class="hl sym">.</span>service<span class="hl sym">;</span>
+
+<span class="hl kwa">import</span> com<span class="hl sym">.</span>manessinger<span class="hl sym">.</span>cookbook<span class="hl sym">.</span>dto<span class="hl sym">.</span>CityDto<span class="hl sym">;</span>
+<span class="hl kwa">import</span> com<span class="hl sym">.</span>manessinger<span class="hl sym">.</span>cookbook<span class="hl sym">.</span>dto<span class="hl sym">.</span>Dto<span class="hl sym">;</span>
+<span class="hl kwa">import</span> java<span class="hl sym">.</span>util<span class="hl sym">.</span><span class="hl kwc">List</span><span class="hl sym">;</span>
+<span class="hl kwa">import</span> javax<span class="hl sym">.</span>ws<span class="hl sym">.</span>rs<span class="hl sym">.</span>Consumes<span class="hl sym">;</span>
+<span class="hl kwa">import</span> javax<span class="hl sym">.</span>ws<span class="hl sym">.</span>rs<span class="hl sym">.</span>GET<span class="hl sym">;</span>
+<span class="hl kwa">import</span> javax<span class="hl sym">.</span>ws<span class="hl sym">.</span>rs<span class="hl sym">.</span>POST<span class="hl sym">;</span>
+<span class="hl kwa">import</span> javax<span class="hl sym">.</span>ws<span class="hl sym">.</span>rs<span class="hl sym">.</span>Path<span class="hl sym">;</span>
+<span class="hl kwa">import</span> javax<span class="hl sym">.</span>ws<span class="hl sym">.</span>rs<span class="hl sym">.</span>Produces<span class="hl sym">;</span>
+<span class="hl kwa">import</span> javax<span class="hl sym">.</span>ws<span class="hl sym">.</span>rs<span class="hl sym">.</span>QueryParam<span class="hl sym">;</span>
+<span class="hl kwa">import</span> javax<span class="hl sym">.</span>ws<span class="hl sym">.</span>rs<span class="hl sym">.</span>core<span class="hl sym">.</span>MediaType<span class="hl sym">;</span>
+
+
+<span class="hl com">/**</span>
+<span class="hl com"> * Generated interface com.manessinger.cookbook.service.CityFullCxfRestInterface</span>
+<span class="hl com"> */</span>
+&#64;<span class="hl kwd">Path</span><span class="hl sym">(</span>value<span class="hl sym">=</span><span class="hl str">&quot;city&quot;</span><span class="hl sym">)</span>
+<span class="hl kwa">public interface</span> CityFullCxfRestInterface <span class="hl sym">{</span>
+
+    &#64;GET
+    &#64;<span class="hl kwd">Path</span><span class="hl sym">(</span><span class="hl str">&quot;byId&quot;</span><span class="hl sym">)</span>
+    &#64;<span class="hl kwd">Produces</span><span class="hl sym">(</span>MediaType<span class="hl sym">.</span>APPLICATION_XML<span class="hl sym">)</span>
+    <span class="hl kwa">public</span> CityDto <span class="hl kwd">byId</span><span class="hl sym">(</span>&#64;<span class="hl kwd">QueryParam</span><span class="hl sym">(</span>value<span class="hl sym">=</span><span class="hl str">&quot;id&quot;</span><span class="hl sym">)</span> <span class="hl kwc">Long</span> id<span class="hl sym">);</span>
+
+    &#64;GET
+    &#64;<span class="hl kwd">Path</span><span class="hl sym">(</span><span class="hl str">&quot;all&quot;</span><span class="hl sym">)</span>
+    &#64;<span class="hl kwd">Produces</span><span class="hl sym">(</span>MediaType<span class="hl sym">.</span>APPLICATION_XML<span class="hl sym">)</span>
+    <span class="hl kwa">public</span> <span class="hl kwc">List</span><span class="hl sym">&lt;</span>Dto<span class="hl sym">&gt;</span> <span class="hl kwd">all</span><span class="hl sym">();</span>
+
+    &#64;POST
+    &#64;<span class="hl kwd">Path</span><span class="hl sym">(</span><span class="hl str">&quot;list&quot;</span><span class="hl sym">)</span>
+    &#64;<span class="hl kwd">Consumes</span><span class="hl sym">(</span>MediaType<span class="hl sym">.</span>APPLICATION_XML<span class="hl sym">)</span>
+    &#64;<span class="hl kwd">Produces</span><span class="hl sym">(</span>MediaType<span class="hl sym">.</span>APPLICATION_XML<span class="hl sym">)</span>
+    <span class="hl kwa">public</span> <span class="hl kwc">List</span><span class="hl sym">&lt;</span>Dto<span class="hl sym">&gt;</span> <span class="hl kwd">list</span><span class="hl sym">(</span><span class="hl kwc">String</span> querySpecXml<span class="hl sym">);</span>
+
+    &#64;POST
+    &#64;<span class="hl kwd">Path</span><span class="hl sym">(</span><span class="hl str">&quot;store&quot;</span><span class="hl sym">)</span>
+    &#64;<span class="hl kwd">Consumes</span><span class="hl sym">(</span>MediaType<span class="hl sym">.</span>APPLICATION_XML<span class="hl sym">)</span>
+    &#64;<span class="hl kwd">Produces</span><span class="hl sym">(</span>MediaType<span class="hl sym">.</span>APPLICATION_XML<span class="hl sym">)</span>
+    <span class="hl kwa">public</span> CityDto <span class="hl kwd">store</span><span class="hl sym">(</span>CityDto dto<span class="hl sym">);</span>
+
+    &#64;GET
+    &#64;<span class="hl kwd">Path</span><span class="hl sym">(</span><span class="hl str">&quot;delete&quot;</span><span class="hl sym">)</span>
+    &#64;<span class="hl kwd">Produces</span><span class="hl sym">(</span>MediaType<span class="hl sym">.</span>APPLICATION_XML<span class="hl sym">)</span>
+    <span class="hl kwa">public</span> <span class="hl kwc">String</span> <span class="hl kwd">delete</span><span class="hl sym">(</span>&#64;<span class="hl kwd">QueryParam</span><span class="hl sym">(</span>value<span class="hl sym">=</span><span class="hl str">&quot;id&quot;</span><span class="hl sym">)</span> <span class="hl kwc">Long</span> id<span class="hl sym">);</span>
+
+    &#64;GET
+    &#64;<span class="hl kwd">Path</span><span class="hl sym">(</span><span class="hl str">&quot;byIdJson&quot;</span><span class="hl sym">)</span>
+    &#64;<span class="hl kwd">Produces</span><span class="hl sym">(</span>MediaType<span class="hl sym">.</span>APPLICATION_JSON<span class="hl sym">)</span>
+    <span class="hl kwa">public</span> CityDto <span class="hl kwd">byIdJson</span><span class="hl sym">(</span>&#64;<span class="hl kwd">QueryParam</span><span class="hl sym">(</span>value<span class="hl sym">=</span><span class="hl str">&quot;id&quot;</span><span class="hl sym">)</span> <span class="hl kwc">Long</span> id<span class="hl sym">);</span>
+
+    &#64;GET
+    &#64;<span class="hl kwd">Path</span><span class="hl sym">(</span><span class="hl str">&quot;allJson&quot;</span><span class="hl sym">)</span>
+    &#64;<span class="hl kwd">Produces</span><span class="hl sym">(</span>MediaType<span class="hl sym">.</span>APPLICATION_JSON<span class="hl sym">)</span>
+    <span class="hl kwa">public</span> <span class="hl kwc">List</span><span class="hl sym">&lt;</span>Dto<span class="hl sym">&gt;</span> <span class="hl kwd">allJson</span><span class="hl sym">();</span>
+
+    &#64;POST
+    &#64;<span class="hl kwd">Path</span><span class="hl sym">(</span><span class="hl str">&quot;listJson&quot;</span><span class="hl sym">)</span>
+    &#64;<span class="hl kwd">Consumes</span><span class="hl sym">(</span>MediaType<span class="hl sym">.</span>APPLICATION_JSON<span class="hl sym">)</span>
+    &#64;<span class="hl kwd">Produces</span><span class="hl sym">(</span>MediaType<span class="hl sym">.</span>APPLICATION_JSON<span class="hl sym">)</span>
+    <span class="hl kwa">public</span> <span class="hl kwc">List</span><span class="hl sym">&lt;</span>Dto<span class="hl sym">&gt;</span> <span class="hl kwd">listJson</span><span class="hl sym">(</span><span class="hl kwc">String</span> querySpecXml<span class="hl sym">);</span>
+
+    &#64;POST
+    &#64;<span class="hl kwd">Path</span><span class="hl sym">(</span><span class="hl str">&quot;storeJson&quot;</span><span class="hl sym">)</span>
+    &#64;<span class="hl kwd">Consumes</span><span class="hl sym">(</span>MediaType<span class="hl sym">.</span>APPLICATION_JSON<span class="hl sym">)</span>
+    &#64;<span class="hl kwd">Produces</span><span class="hl sym">(</span>MediaType<span class="hl sym">.</span>APPLICATION_JSON<span class="hl sym">)</span>
+    <span class="hl kwa">public</span> CityDto <span class="hl kwd">storeJson</span><span class="hl sym">(</span>CityDto dto<span class="hl sym">);</span>
+
+    &#64;GET
+    &#64;<span class="hl kwd">Path</span><span class="hl sym">(</span><span class="hl str">&quot;deleteJson&quot;</span><span class="hl sym">)</span>
+    &#64;<span class="hl kwd">Produces</span><span class="hl sym">(</span>MediaType<span class="hl sym">.</span>APPLICATION_JSON<span class="hl sym">)</span>
+    <span class="hl kwa">public</span> <span class="hl kwc">String</span> <span class="hl kwd">deleteJson</span><span class="hl sym">(</span>&#64;<span class="hl kwd">QueryParam</span><span class="hl sym">(</span>value<span class="hl sym">=</span><span class="hl str">&quot;id&quot;</span><span class="hl sym">)</span> <span class="hl kwc">Long</span> id<span class="hl sym">);</span>
+
+<span class="hl sym">}</span>
+</pre>
+</div>
+<p>As you can see, the annotations look exactly as on server side. Using 
+Apache CXF, this interface can be used to create a proxy implementing 
+this interface. Just as in SOAP, the methods return DTOs and lists of 
+DTOs, polymorphism included.</p>
+
+<p>In order to make this work, the CXF REST client project needs access to 
+the DTOs, thus the project is created with the client project on the 
+build path, and in production, its artifact would need the EJB client 
+JAR on the class path.</p>
+
+
+
+<h3 id="hd006004004">6.4.4&nbsp;A simple CXF client example</h3>
+
+<p>Here&rsquo;s a complete toy client. It prints the name of the city whose 
+ID is given on the command line.</p>
+
+<div class="code">
+<pre>
+<span class="hl kwa">package</span> com<span class="hl sym">.</span>manessinger<span class="hl sym">.</span>cookbook<span class="hl sym">.</span>service<span class="hl sym">.</span>test<span class="hl sym">;</span>
+
+<span class="hl kwa">import</span> java<span class="hl sym">.</span>net<span class="hl sym">.</span><span class="hl kwc">MalformedURLException</span><span class="hl sym">;</span>
+<span class="hl kwa">import</span> java<span class="hl sym">.</span>net<span class="hl sym">.</span><span class="hl kwc">URL</span><span class="hl sym">;</span>
+
+<span class="hl kwa">import</span> org<span class="hl sym">.</span>apache<span class="hl sym">.</span>cxf<span class="hl sym">.</span>jaxrs<span class="hl sym">.</span>client<span class="hl sym">.</span>JAXRSClientFactory<span class="hl sym">;</span>
+
+<span class="hl kwa">import</span> com<span class="hl sym">.</span>manessinger<span class="hl sym">.</span>cookbook<span class="hl sym">.</span>dto<span class="hl sym">.</span>CityDto<span class="hl sym">;</span>
+<span class="hl kwa">import</span> com<span class="hl sym">.</span>manessinger<span class="hl sym">.</span>cookbook<span class="hl sym">.</span>service<span class="hl sym">.</span>CityFullCxfRestInterface<span class="hl sym">;</span>
+
+<span class="hl kwa">public class</span> CityById <span class="hl sym">{</span>
+
+    <span class="hl kwa">public static</span> <span class="hl kwb">void</span> <span class="hl kwd">main</span><span class="hl sym">(</span><span class="hl kwc">String</span><span class="hl sym">[]</span> args<span class="hl sym">) {</span>
+        
+        <span class="hl kwa">if</span> <span class="hl sym">(</span>args<span class="hl sym">.</span>length <span class="hl sym">!=</span> <span class="hl num">2</span><span class="hl sym">) {</span>
+            <span class="hl kwd">usageExit</span><span class="hl sym">();</span>
+        <span class="hl sym">}</span>
+
+        <span class="hl kwc">URL</span> base <span class="hl sym">=</span> null<span class="hl sym">;</span>
+        <span class="hl kwa">try</span> <span class="hl sym">{</span>
+            base <span class="hl sym">=</span> <span class="hl kwa">new</span> <span class="hl kwc">URL</span><span class="hl sym">(</span>args<span class="hl sym">[</span><span class="hl num">0</span><span class="hl sym">]);</span>
+        <span class="hl sym">}</span> <span class="hl kwa">catch</span> <span class="hl sym">(</span><span class="hl kwc">MalformedURLException</span> e<span class="hl sym">) {</span>
+            <span class="hl kwd">usageExit</span><span class="hl sym">();</span>
+        <span class="hl sym">}</span>
+        
+        <span class="hl kwc">Long</span> id <span class="hl sym">=</span> null<span class="hl sym">;</span>
+        <span class="hl kwa">try</span> <span class="hl sym">{</span>
+            id <span class="hl sym">=</span> <span class="hl kwc">Long</span><span class="hl sym">.</span><span class="hl kwd">parseLong</span><span class="hl sym">(</span>args<span class="hl sym">[</span><span class="hl num">1</span><span class="hl sym">]);</span>
+        <span class="hl sym">}</span> <span class="hl kwa">catch</span> <span class="hl sym">(</span><span class="hl kwc">NumberFormatException</span> e<span class="hl sym">) {</span>
+            <span class="hl kwd">usageExit</span><span class="hl sym">();</span>
+        <span class="hl sym">}</span>
+        
+        CityFullCxfRestInterface citySvc <span class="hl sym">=</span>
+            JAXRSClientFactory<span class="hl sym">.</span><span class="hl kwd">create</span><span class="hl sym">(</span>
+                base<span class="hl sym">.</span><span class="hl kwd">toExternalForm</span><span class="hl sym">(),</span> 
+                CityFullCxfRestInterface<span class="hl sym">.</span><span class="hl kwa">class</span>
+            <span class="hl sym">);</span>
+        
+        CityDto city <span class="hl sym">=</span> citySvc<span class="hl sym">.</span><span class="hl kwd">byId</span><span class="hl sym">(</span>id<span class="hl sym">);</span>
+        <span class="hl kwc">System</span><span class="hl sym">.</span>out<span class="hl sym">.</span><span class="hl kwd">println</span><span class="hl sym">(</span><span class="hl str">&quot;City with ID &quot;</span><span class="hl sym">+</span>id<span class="hl sym">+</span><span class="hl str">&quot; is &quot;</span><span class="hl sym">+</span>city<span class="hl sym">.</span><span class="hl kwd">getName</span><span class="hl sym">());</span>
+    <span class="hl sym">}</span>
+
+    <span class="hl kwa">private static</span> <span class="hl kwb">void</span> <span class="hl kwd">usageExit</span><span class="hl sym">() {</span>
+        <span class="hl kwc">System</span><span class="hl sym">.</span>err<span class="hl sym">.</span><span class="hl kwd">println</span><span class="hl sym">(</span><span class="hl str">&quot;usage: CityById &lt;base-url&gt; &lt;city-id&gt;&quot;</span><span class="hl sym">);</span>
+        <span class="hl kwc">System</span><span class="hl sym">.</span><span class="hl kwd">exit</span><span class="hl sym">(</span><span class="hl num">1</span><span class="hl sym">);</span>
+    <span class="hl sym">}</span>
+<span class="hl sym">}</span>
+</pre>
+</div>
+<p>As you see, most of the code is parameter checking. As soon as the 
+parameters are checked, we use 
+&ldquo;<code>JAXRSClientFactory</code>&rdquo; to create the proxy 
+&ldquo;<code>citySvc</code>&rdquo;. Then we can use the proxy to make 
+any number of method calls.</p>
+
+<p>The CXF proxy client API is as SOAPish as it gets in REST. Of course 
+there is still communication over the network, and that means things can 
+go wrong. The client may not be able to reach the service, or the 
+service may throw an exception, for instance because there may be no 
+city with the requested ID. In both cases a 
+<code>WebApplicationException</code> is thrown, either in form of a 
+<code>ClientWebApplicationException</code> if it&rsquo;s a client-side 
+problem, or a <code>ServerWebApplicationException</code> if the problem 
+was on server side.</p>
 
 
 
@@ -3730,7 +4029,7 @@ as for REST.</p>
 
 <p>For the purpose of generating code, Azzyzt JEE Tools make use of and 
 bundles a copy of 
-<span class="remote"><a href="http://www.stringtemplate.org/" class="remote">StringTemplate</a></span><a name="idx0059"></a>, 
+<span class="remote"><a href="http://www.stringtemplate.org/" class="remote">StringTemplate</a></span><a name="idx0062"></a>, 
 which is</p>
 
 <pre class="verbatim">
@@ -3767,7 +4066,7 @@ which is</p>
 
 <p>The code generator uses 
 <span class="remote"><a href="http://commons.apache.org/io/" class="remote">Apache 
-Commons IO</a></span><a name="idx0060"></a> which is licensed under the</p>
+Commons IO</a></span><a name="idx0063"></a> which is licensed under the</p>
 
 <pre class="verbatim">
 
@@ -3975,7 +4274,7 @@ Commons IO</a></span><a name="idx0060"></a> which is licensed under the</p>
 </pre>
 
 <p>This documentation was created using 
-<span class="remote"><a href="http://deplate.sourceforge.net/" class="remote">Deplate</a></span><a name="idx0061"></a>.</p>
+<span class="remote"><a href="http://deplate.sourceforge.net/" class="remote">Deplate</a></span><a name="idx0064"></a>.</p>
 
 
 <!-- Start of StatCounter Code -->
