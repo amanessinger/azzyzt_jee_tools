@@ -47,7 +47,7 @@ public class Facets {
 	public static final IProjectFacetVersion EJB_MINIMUM_FACET_VERSION_WANTED = IJ2EEFacetConstants.EJB_30;
 	
 	public IProjectFacet javaFacet = JavaFacet.FACET;
-	public IProjectFacetVersion javaFacetVersion = JavaFacet.VERSION_1_6; // default if no runtime is selected (e.g. CXF client)
+	public IProjectFacetVersion javaFacetVersion = JavaFacet.VERSION_1_5; // default if no runtime is selected, Galileo has no 1.6
 	
 	public IProjectFacet ejbFacet = IJ2EEFacetConstants.EJB_FACET;
 	public IProjectFacetVersion ejbFacetVersion = EJB_MINIMUM_FACET_VERSION_WANTED;
