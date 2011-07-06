@@ -1,0 +1,10 @@
+<query_spec>
+   <orderBy>
+       <fieldName>country.id</fieldName>
+       <ascending>true</ascending>
+   </orderBy>
+   <orderBy>
+       <fieldName>name</fieldName>
+       <ascending>false</ascending>
+   </orderBy>
+</query_spec>

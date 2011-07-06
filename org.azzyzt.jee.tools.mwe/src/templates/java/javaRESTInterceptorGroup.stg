@@ -8,9 +8,18 @@ public RESTInterceptor() { }
 @AroundInvoke
 protected Object intercept(InvocationContext ctx) throws Exception {
 	
-	invocationRegistry.registerRESTInvocation(ctx);
+	InvocationMetaInfo mi = invocationRegistry.registerRESTInvocation(ctx);
 	
-	Object result = ctx.proceed();
+	Object result = null;
+	try {
+        result = ctx.proceed();
+	} catch (Exception e) {
+	    if (mi.isReturn200OnError()) {
+	        throw new MapToHttpSuccessException(e);
+	    } else {
+	        throw e;
+	    }
+	}
 	
 	return result;
 }

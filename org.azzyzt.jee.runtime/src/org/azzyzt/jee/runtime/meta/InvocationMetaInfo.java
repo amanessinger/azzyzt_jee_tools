@@ -35,6 +35,8 @@ public class InvocationMetaInfo {
 	
 	private String authenticatedUserName;
 	
+	private boolean return200OnError = false;
+	
 	public InvocationMetaInfo() {
 		this.started = new Date();
 	}
@@ -49,6 +51,14 @@ public class InvocationMetaInfo {
 
 	public void setAuthenticatedUserName(String authenticatedUserName) {
 		this.authenticatedUserName = authenticatedUserName;
+	}
+
+	public boolean isReturn200OnError() {
+		return return200OnError;
+	}
+
+	public void setReturn200OnError(boolean return200OnError) {
+		this.return200OnError = return200OnError;
 	}
 
 }

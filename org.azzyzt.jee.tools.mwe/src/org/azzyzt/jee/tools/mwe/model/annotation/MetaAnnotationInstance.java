@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -96,7 +96,7 @@ public class MetaAnnotationInstance {
 
 	public Object getRawValue(String element) {
 		if (!hasElement(element)) {
-			throw new ToolError("Element "+element+" is unsupported by "+metaAnnotation);
+			return null;
 		}
 		return unquotedlyValuedElements.get(element);
 	}

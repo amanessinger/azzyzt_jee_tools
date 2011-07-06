@@ -1,0 +1,44 @@
+group javaRESTModifyMultiInterfaceGroup : javaGroup;
+
+@javaInterface.extra_methods() ::= <<
+<if(generator.masterModel.generatingRestXml)>
+<storeMultiHead(format="MediaType.APPLICATION_XML", suffix="")>
+<deleteMultiHead(format="MediaType.APPLICATION_XML", suffix="")>
+<storeDeleteMultiHead(format="MediaType.APPLICATION_XML", suffix="")>
+
+<endif>
+
+<if(generator.masterModel.generatingRestJson)>
+<storeMultiHead(format="MediaType.APPLICATION_JSON", suffix="Json")>
+<deleteMultiHead(format="MediaType.APPLICATION_JSON", suffix="Json")>
+<storeDeleteMultiHead(format="MediaType.APPLICATION_JSON", suffix="Json")>
+
+<endif>
+>>
+
+storeMultiHead(format, suffix) ::= <<
+@POST
+@Path("storeMulti<suffix>")
+@Consumes(<format>)
+@Produces(<format>)
+public List\<Dto\> storeMulti<suffix>(List\<Dto\> dtos);
+
+>>
+
+deleteMultiHead(format, suffix) ::= <<
+@POST
+@Path("deleteMulti<suffix>")
+@Consumes(<format>)
+@Produces(<format>)
+public String deleteMulti<suffix>(List\<Dto\> dtos);
+
+>>
+
+storeDeleteMultiHead(format, suffix) ::= <<
+@POST
+@Path("storeDeleteMulti<suffix>")
+@Consumes(<format>)
+@Produces(<format>)
+public List\<Dto\> storeDeleteMulti<suffix>(StoreDelete storeDelete);
+
+>>

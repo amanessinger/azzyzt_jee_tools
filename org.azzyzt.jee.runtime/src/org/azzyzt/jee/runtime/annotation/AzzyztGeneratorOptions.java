@@ -6,11 +6,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import org.azzyzt.jee.runtime.meta.AzzyztGeneratorCutback;
+import org.azzyzt.jee.runtime.meta.AzzyztGeneratorOption;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value=ElementType.TYPE)
 public @interface AzzyztGeneratorOptions {
 	
 	AzzyztGeneratorCutback[] cutbacks() default {};
+	
+	AzzyztGeneratorOption[] options() default {};
 
 }

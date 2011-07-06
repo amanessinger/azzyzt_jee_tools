@@ -52,12 +52,13 @@ public class RESTExceptionMapperModelBuilder extends DerivedModelBuilder impleme
 			MetaClass target = MetaClass.forName(packageName, simpleName);
 			target.setModifiers(std.mod_public);
 			target.setSuperMetaClass(std.exceptionToSuccessMapper);
-			target.addInterface(std.javaxWsRsExtExceptionMapperThrowable);
+			target.addInterface(std.javaxWsRsExtExceptionMapper200Success);
 			MetaAnnotationInstance provider = new MetaAnnotationInstance(std.javaxWsRsCoreProvider, target);
 			target.addMetaAnnotationInstance(provider);
 			MetaAnnotationInstance xmlRootElement = new MetaAnnotationInstance(std.javaxXmlBindAnnotationXmlRootElement, target);
 			xmlRootElement.setElement("name", "error");
 			target.addMetaAnnotationInstance(xmlRootElement);
+			target.addReferencedForeignType(std.mapToHttpSuccessException);
 			
 			// now break out
 			break;

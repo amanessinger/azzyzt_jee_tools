@@ -21,3 +21,6 @@ the following scripts:
   sql/create_tables.sql
   sql/initialize_data.sql
 
+For your convenience, I have added a concatenation of these scripts in
+
+  sql/reinitialize.sql

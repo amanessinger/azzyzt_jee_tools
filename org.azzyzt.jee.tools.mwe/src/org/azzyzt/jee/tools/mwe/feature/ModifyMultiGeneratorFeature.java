@@ -27,6 +27,7 @@
 
 package org.azzyzt.jee.tools.mwe.feature;
 
+import org.azzyzt.jee.tools.mwe.builder.RESTModifyMultiInterfaceModelBuilder;
 import org.azzyzt.jee.tools.mwe.builder.RESTModifyMultiModelBuilder;
 import org.azzyzt.jee.tools.mwe.builder.ModifyMultiBeanModelBuilder;
 import org.azzyzt.jee.tools.mwe.builder.ModifyMultiInterfaceModelBuilder;
@@ -38,6 +39,7 @@ public class ModifyMultiGeneratorFeature extends GeneratorFeature {
 	public static final String SOURCE_FOLDER_EJB_PROJECT = "Source Folder (EJB Project)";
 	public static final String SOURCE_FOLDER_CLIENT_PROJECT = "Source Folder (Client Project)";
 	public static final String SOURCE_FOLDER_SERVLET_PROJECT = "Source Folder (Servlet Project)";
+	public static final String CXF_REST_CLIENT_SOURCE_FOLDER = "CXF REST Client Source Folder";
 
 	public ModifyMultiGeneratorFeature(MetaModel entityModel) {
 		super(entityModel);
@@ -49,6 +51,7 @@ public class ModifyMultiGeneratorFeature extends GeneratorFeature {
 		parameters.add(new Parameter(SOURCE_FOLDER_EJB_PROJECT, ParameterType.SourceFolder, Parameter.IS_MANDATORY));
 		parameters.add(new Parameter(SOURCE_FOLDER_CLIENT_PROJECT, ParameterType.SourceFolder, Parameter.IS_MANDATORY));
 		parameters.add(new Parameter(SOURCE_FOLDER_SERVLET_PROJECT, ParameterType.SourceFolder, Parameter.IS_MANDATORY));
+		parameters.add(new Parameter(CXF_REST_CLIENT_SOURCE_FOLDER, ParameterType.SourceFolder, Parameter.IS_OPTIONAL));
 		return parameters;
 	}
 	
@@ -56,10 +59,14 @@ public class ModifyMultiGeneratorFeature extends GeneratorFeature {
 	public int generate(Parameters parameters) {
 		int numberOfSourcesGenerated;
 		String sourceFolder;
-		
-		sourceFolder = (String)parameters.byName(SOURCE_FOLDER_CLIENT_PROJECT).getValue();
+		String cxfRestClientSourceFolder = null;
 		
 		MetaModel masterModel = getMasterModel();
+		
+		sourceFolder = (String)parameters.byName(SOURCE_FOLDER_CLIENT_PROJECT).getValue();
+		if (masterModel.isGeneratingCxfRestClient()) {
+			cxfRestClientSourceFolder = (String)parameters.byName(CXF_REST_CLIENT_SOURCE_FOLDER).getValue();
+		}
 		
 		MetaModel targetModel = new ModifyMultiInterfaceModelBuilder(getMasterModel(), null).build();
 		JavaGenerator targetGen = new JavaGenerator(targetModel, sourceFolder, "javaModifyMultiGroup", masterModel);
@@ -75,10 +82,18 @@ public class ModifyMultiGeneratorFeature extends GeneratorFeature {
 		sourceFolder = (String)parameters.byName(SOURCE_FOLDER_SERVLET_PROJECT).getValue();
 		
         if ((masterModel.isGeneratingRestXml() || masterModel.isGeneratingRestJson())) {
+        	
 			targetModel = new RESTModifyMultiModelBuilder(getMasterModel(), null).build();
 			targetGen = new JavaGenerator(targetModel, sourceFolder, "javaRESTModifyMultiGroup", masterModel);
 			targetGen.setGenerateGettersSetters(false);
 			numberOfSourcesGenerated += targetGen.generate();
+			
+			if (masterModel.isGeneratingCxfRestClient()) {
+				targetModel = new RESTModifyMultiInterfaceModelBuilder(getMasterModel(), null).build();
+				targetGen = new JavaGenerator(targetModel, cxfRestClientSourceFolder, "javaRESTModifyMultiInterfaceGroup", masterModel);
+				targetGen.setGenerateGettersSetters(false);
+				numberOfSourcesGenerated += targetGen.generate();
+			}
         }
 				
 		return numberOfSourcesGenerated;

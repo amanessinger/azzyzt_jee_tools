@@ -1,0 +1,47 @@
+group javaRESTRestrictedInterfaceGroup : javaGroup;
+
+@javaInterface.extra_methods() ::= <<
+<if(generator.masterModel.generatingRestXml)>
+<byIdHead(entity=mdt.properties.entity, dto=mdt.properties.dto, format="MediaType.APPLICATION_XML", suffix="")>
+
+<allHead(entity=mdt.properties.entity, dto=mdt.properties.dto, format="MediaType.APPLICATION_XML", suffix="")>
+
+<listHead(entity=mdt.properties.entity, dto=mdt.properties.dto, format="MediaType.APPLICATION_XML", suffix="")>
+
+<endif>
+
+<if(generator.masterModel.generatingRestJson)>
+<byIdHead(entity=mdt.properties.entity, dto=mdt.properties.dto, format="MediaType.APPLICATION_JSON", suffix="Json")>
+
+<allHead(entity=mdt.properties.entity, dto=mdt.properties.dto, format="MediaType.APPLICATION_JSON", suffix="Json")>
+
+<listHead(entity=mdt.properties.entity, dto=mdt.properties.dto, format="MediaType.APPLICATION_JSON", suffix="Json")>
+
+<endif>
+>>
+
+byIdHead(entity, dto, format, suffix) ::= <<
+<if(entity.combinedId)>@POST<else>@GET<endif>
+@Path("byId<suffix>")
+<if(entity.combinedId)>
+@Consumes(<format>)
+
+<endif>
+@Produces(<format>)
+public <dto.simpleName> byId<suffix>(<if(entity.combinedId)><else>@QueryParam(value="id") <endif><dto.properties.idFieldType.simpleName> id);
+>>
+
+allHead(entity, dto, format, suffix) ::= <<
+@GET
+@Path("all<suffix>")
+@Produces(<format>)
+public List\<<dto.superMetaClass.simpleName>\> all<suffix>();
+>>
+
+listHead(entity, dto, format, suffix) ::= <<
+@POST
+@Path("list<suffix>")
+@Consumes(<format>)
+@Produces(<format>)
+public List\<<dto.superMetaClass.simpleName>\> list<suffix>(String querySpecXml);
+>>
