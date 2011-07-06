@@ -30,8 +30,8 @@ import org.xml.sax.SAXException;
 public class VersionBumper {
 
 	private static final String DOTTED_VERSION_EXPR = "\\d+(\\.\\d+){2}";
-	private static final String VERSION_SUFFIX_FQ_EXPR = "\\.\\d{12}";
 	private static final String VERSION_SUFFIX_GENERIC = "qualifier";
+	private static final String VERSION_SUFFIX_FQ_EXPR = "\\.(\\d{12}|qualifier)";
 	private static final String VERSION_SUFFIX_GENERIC_EXPR = "\\."+VERSION_SUFFIX_GENERIC;
 
 	private static final String SITE_TARGET_XPATH = "/site/feature";
