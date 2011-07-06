@@ -65,6 +65,8 @@ public class RESTInterceptorModelBuilder extends DerivedModelBuilder implements 
 			target.addReferencedForeignType(std.javaxEjbEJB);
 			target.addReferencedForeignType(std.javaxInterceptorAroundInvoke);
 			target.addReferencedForeignType(std.javaxInterceptorInvocationContext);
+			target.addReferencedForeignType(std.mapToHttpSuccessException);
+			target.addReferencedForeignType(std.invocationMetaInfo);
 			
 			addInvocationRegistryField(target);
 			

@@ -141,7 +141,7 @@ public class MetaStandardDefs {
 	public final MetaInterface javaxServletHttpHttpServletResponse;
 	public final MetaAnnotation javaxWsRsCoreContext;
 	public final MetaClass javaxWsRsCoreMediaType;
-	public final MetaInterface javaxWsRsExtExceptionMapperThrowable;
+	public final MetaInterface javaxWsRsExtExceptionMapper200Success;
 
 	public final MetaClass eaoBase;
 	public final MetaClass entityBase;
@@ -163,6 +163,7 @@ public class MetaStandardDefs {
 	public final MetaClass querySyntaxException;
 	public final MetaClass notYetImplementedException;
 	public final MetaClass translatableException;
+	public final MetaClass mapToHttpSuccessException;
 	public final MetaClass restDelegatorBase;
 	public final MetaClass orderByClause;
 	public final MetaInterface typeMetaInfo;
@@ -183,6 +184,7 @@ public class MetaStandardDefs {
 	public final MetaInterface azzyztantInterface;
 	public final MetaAnnotation azzyztGeneratorOptions;
 	public final MetaEnum azzyztGeneratorCutback;
+	public final MetaClass invocationMetaInfo;
 	
 
 	public MetaStandardDefs() {
@@ -320,10 +322,11 @@ public class MetaStandardDefs {
 		javaxServletHttpHttpServletResponse = MetaInterface.forType(javax.servlet.http.HttpServletResponse.class);
 		javaxWsRsCoreContext = MetaAnnotation.forType(javax.ws.rs.core.Context.class);
 		javaxWsRsCoreProvider = MetaAnnotation.forType(javax.ws.rs.ext.Provider.class);
-		javaxWsRsExtExceptionMapperThrowable = MetaInterface.forType(javax.ws.rs.ext.ExceptionMapper.class);
+		javaxWsRsExtExceptionMapper200Success = MetaInterface.forType(javax.ws.rs.ext.ExceptionMapper.class);
 		List<MetaType> metaArgumentTypes = new ArrayList<MetaType>();
-		metaArgumentTypes.add(meta_Throwable);
-		javaxWsRsExtExceptionMapperThrowable.setMetaArgumentTypes(metaArgumentTypes);
+		mapToHttpSuccessException = MetaClass.forType(org.azzyzt.jee.runtime.exception.MapToHttpSuccessException.class);
+		metaArgumentTypes.add(mapToHttpSuccessException);
+		javaxWsRsExtExceptionMapper200Success.setMetaArgumentTypes(metaArgumentTypes);
 		stringListWrapper = MetaClass.forType(org.azzyzt.jee.runtime.dto.StringListWrapper.class);
 		
 		eaoBase = MetaClass.forType(org.azzyzt.jee.runtime.eao.EaoBase.class);
@@ -331,6 +334,7 @@ public class MetaStandardDefs {
 		invocationRegistryInterface = MetaInterface.forType(org.azzyzt.jee.runtime.meta.InvocationRegistryInterface.class);
 		InvocationRegistryBase = MetaClass.forType(org.azzyzt.jee.runtime.meta.InvocationRegistryBase.class);
 		javaxTransactionTransactionSynchronizationRegistry = MetaInterface.forType(javax.transaction.TransactionSynchronizationRegistry.class);
+		invocationMetaInfo = MetaClass.forType(org.azzyzt.jee.runtime.meta.InvocationMetaInfo.class);
 		multiObjectDeleter = MetaClass.forType(org.azzyzt.jee.runtime.eao.MultiObjectDeleter.class);
 		multiObjectSaver = MetaClass.forType(org.azzyzt.jee.runtime.eao.MultiObjectSaver.class);
 		converterRawInterface = MetaInterface.forType(org.azzyzt.jee.runtime.conv.ConverterRawInterface.class);

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -47,7 +47,7 @@ public class Facets {
 	public static final IProjectFacetVersion EJB_MINIMUM_FACET_VERSION_WANTED = IJ2EEFacetConstants.EJB_30;
 	
 	public IProjectFacet javaFacet = JavaFacet.FACET;
-	public IProjectFacetVersion javaFacetVersion;
+	public IProjectFacetVersion javaFacetVersion = JavaFacet.VERSION_1_6; // default if no runtime is selected (e.g. CXF client)
 	
 	public IProjectFacet ejbFacet = IJ2EEFacetConstants.EJB_FACET;
 	public IProjectFacetVersion ejbFacetVersion = EJB_MINIMUM_FACET_VERSION_WANTED;

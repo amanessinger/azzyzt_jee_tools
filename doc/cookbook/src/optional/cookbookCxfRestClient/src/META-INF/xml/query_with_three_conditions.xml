@@ -1,0 +1,20 @@
+<query_spec>
+   <expr type="AND">
+       <cond type="STRING" op="EQ" caseSensitive="true">
+          <fieldName>country.name</fieldName>
+          <value>Italy</value>
+       </cond>
+       <cond type="STRING" op="LIKE" negated="true" caseSensitive="false">
+          <fieldName>name</fieldName>
+          <value>r%</value>
+       </cond>
+       <cond type="LONG" op="EQ" negated="true">
+          <fieldName>id</fieldName>
+          <value>8</value>
+       </cond>
+   </expr>
+   <orderBy>
+       <fieldName>name</fieldName>
+       <ascending>true</ascending>
+   </orderBy>
+</query_spec>

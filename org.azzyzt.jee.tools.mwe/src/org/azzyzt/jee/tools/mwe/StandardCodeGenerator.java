@@ -34,8 +34,6 @@ import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.apache.commons.io.FileUtils;
-import org.azzyzt.jee.runtime.meta.AzzyztGeneratorCutback;
-import org.azzyzt.jee.tools.mwe.builder.AzzyztantBeanBuilder;
 import org.azzyzt.jee.tools.mwe.builder.EntityEnumerator;
 import org.azzyzt.jee.tools.mwe.builder.TargetEnumerator;
 import org.azzyzt.jee.tools.mwe.exception.ToolError;
@@ -48,28 +46,17 @@ import org.azzyzt.jee.tools.mwe.feature.ModifyMultiGeneratorFeature;
 import org.azzyzt.jee.tools.mwe.feature.Parameters;
 import org.azzyzt.jee.tools.mwe.feature.SingleTargetsGeneratorFeature;
 import org.azzyzt.jee.tools.mwe.generator.GeneratorOptions;
-import org.azzyzt.jee.tools.mwe.identifiers.ModelProperties;
-import org.azzyzt.jee.tools.mwe.identifiers.PackageTails;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
-import org.azzyzt.jee.tools.mwe.model.annotation.MetaAnnotationInstance;
 import org.azzyzt.jee.tools.mwe.model.type.MetaClass;
-import org.azzyzt.jee.tools.mwe.model.type.MetaStandardDefs;
-import org.azzyzt.jee.tools.mwe.model.type.MetaType;
 import org.azzyzt.jee.tools.mwe.util.Log;
 import org.azzyzt.jee.tools.mwe.util.Log.Verbosity;
+import org.azzyzt.jee.tools.mwe.util.MainHelper;
 import org.azzyzt.jee.tools.mwe.util.ProjectTools;
 import org.azzyzt.jee.tools.mwe.util.QueueLog;
 import org.azzyzt.jee.tools.mwe.util.StreamLog;
 
 public class StandardCodeGenerator {
 	
-	/*
-	 * When loading Azzyztant, it may be that it has just been created by PrerequisiteGenerator.
-	 * There will have been a refresh of the project afterwards, but the compiler may not yet
-	 * be done compiling. Thus we try loading until we succeed or this number of seconds is up.
-	 */
-	private static int MAX_NUMBER_OF_SECONDS_TO_WAIT_FOR_COMPILATION_OF_AZZYZTANT = 30;
-
 	public static void main(String[] args) {
         doWork(args, new StreamLog());
     }
@@ -100,9 +87,15 @@ public class StandardCodeGenerator {
 		String rootPath = arguments.get(0);
         String projectBaseName = arguments.get(1);
         String projectPathPrefix = rootPath+projectBaseName;
+        
+        /*
+         * TODO here's some duplication of path fragments. We could put them into a library that
+         * we share with the plugins. 
+         */
         String ejbGeneratedSourceFolder = projectPathPrefix+"EJB/generated";
         String ejbGeneratedClientSourceFolder = projectPathPrefix+"EJBClient/generated";
         String restGeneratedSourceFolder = projectPathPrefix+"Servlets/generated";
+        String cxfRestClientGeneratedSourceFolder = projectPathPrefix+"CxfRestClient/generated";
         
         for (String sourceFolder : new String[]{ ejbGeneratedSourceFolder, ejbGeneratedClientSourceFolder, restGeneratedSourceFolder }) {
         	cleanSourceFolder(sourceFolder);
@@ -113,7 +106,7 @@ public class StandardCodeGenerator {
 
         TargetEnumerator enumerator;
         if (3 == arguments.size()) {
-            String persistenceUnitName = arguments.get(1);
+            String persistenceUnitName = arguments.get(2);
 			enumerator = new EntityEnumerator(persistenceUnitName, logger);
         } else {
             enumerator = new EntityEnumerator(EntityEnumerator.PERSISTENCE_UNIT_WILDCARD, logger);
@@ -123,8 +116,8 @@ public class StandardCodeGenerator {
         
         String packagePrefix = ProjectTools.determinePackagePrefix(enumerator, logger);
         
-		MetaClass azzyztant = loadAzzyztant(masterModel, packagePrefix, logger);
-        GeneratorOptions go = analyzeAzzyztant(azzyztant);
+		MetaClass azzyztant = MainHelper.loadAzzyztant(masterModel, packagePrefix, logger);
+        GeneratorOptions go = GeneratorOptions.analyzeAzzyztant(azzyztant);
         masterModel.setGeneratorOptions(go);
         
         EntityModelBuilderFeature embf = new EntityModelBuilderFeature(masterModel, logger);
@@ -163,6 +156,9 @@ public class StandardCodeGenerator {
 			CrudServiceRESTGeneratorFeature restGen = new CrudServiceRESTGeneratorFeature(masterModel);
 			parameters = restGen.getParameters();
 	        parameters.byName(CrudServiceRESTGeneratorFeature.SOURCE_FOLDER).setValue(restGeneratedSourceFolder);
+	        if (masterModel.isGeneratingCxfRestClient()) {
+	        	parameters.byName(CrudServiceRESTGeneratorFeature.CXF_REST_CLIENT_SOURCE_FOLDER).setValue(cxfRestClientGeneratedSourceFolder);
+	        }
 	        numberOfSourcesGenerated = restGen.generate(parameters);
 	        logger.info(numberOfSourcesGenerated+" REST wrapper file(s) generated");
         }
@@ -172,6 +168,9 @@ public class StandardCodeGenerator {
         parameters.byName(ModifyMultiGeneratorFeature.SOURCE_FOLDER_CLIENT_PROJECT).setValue(ejbGeneratedClientSourceFolder);
         parameters.byName(ModifyMultiGeneratorFeature.SOURCE_FOLDER_EJB_PROJECT).setValue(ejbGeneratedSourceFolder);
         parameters.byName(ModifyMultiGeneratorFeature.SOURCE_FOLDER_SERVLET_PROJECT).setValue(restGeneratedSourceFolder);
+        if (masterModel.isGeneratingCxfRestClient()) {
+        	parameters.byName(ModifyMultiGeneratorFeature.CXF_REST_CLIENT_SOURCE_FOLDER).setValue(cxfRestClientGeneratedSourceFolder);
+        }
         numberOfSourcesGenerated = smGen.generate(parameters);
         logger.info(numberOfSourcesGenerated+" store multi support file(s) generated");
 	}
@@ -185,52 +184,6 @@ public class StandardCodeGenerator {
 		}
 		// Hmm ... we need a refresh afterwards anyway
 		root.mkdir();
-	}
-
-	private static GeneratorOptions analyzeAzzyztant(MetaClass azzyztant) {
-		GeneratorOptions result = new GeneratorOptions();
-		MetaStandardDefs std = MetaType.getStandardtypes();
-		List<MetaAnnotationInstance> mais = azzyztant.getMetaAnnotationInstances();
-		for (MetaAnnotationInstance mai : mais) {
-			if (mai.getMetaAnnotation().equals(std.azzyztGeneratorOptions)) {
-				AzzyztGeneratorCutback[] cutbacks = 
-					(AzzyztGeneratorCutback[])mai.getRawValue("cutbacks");
-				for (AzzyztGeneratorCutback c : cutbacks) {
-					result.addCutback(c);
-				}
-			}
-		}
-		return result;
-	}
-
-	private static MetaClass loadAzzyztant(
-			MetaModel masterModel,
-			String packagePrefix, 
-			Log logger
-	) {
-        String metaPackagePrefix = packagePrefix+"."+PackageTails.META;
-		String fqAzzyztantName = metaPackagePrefix+"."+AzzyztantBeanBuilder.AZZYZTANT_BEAN_NAME;
-		
-		long start = System.currentTimeMillis();
-		do {
-	        try {
-				Class<?> azzyztantClazz = Class.forName(fqAzzyztantName);
-				MetaClass metaAzzyztant = MetaClass.forType(azzyztantClazz);
-				masterModel.follow(metaPackagePrefix);
-				masterModel.addMetaDeclaredTypeIfTarget(metaAzzyztant);
-				masterModel.setProperty(ModelProperties.AZZYZTANT, metaAzzyztant);
-				return metaAzzyztant;
-			} catch (ClassNotFoundException e) {
-				try {
-					logger.info("Generated class "+fqAzzyztantName+" not yet compiled, trying to load again in a second ...");
-					Thread.sleep(1000);
-				} catch (InterruptedException e1) { }
-			}
-		} while (System.currentTimeMillis() - start < MAX_NUMBER_OF_SECONDS_TO_WAIT_FOR_COMPILATION_OF_AZZYZTANT * 1000);
-		
-		String msg = "Generated class "+fqAzzyztantName+" can't be loaded, giving up";
-		logger.info(msg);
-		throw new ToolError(msg);
 	}
 
 }

@@ -27,7 +27,9 @@
 
 package org.azzyzt.jee.tools.mwe.feature;
 
+import org.azzyzt.jee.tools.mwe.builder.CrudServiceRESTFullInterfaceModelBuilder;
 import org.azzyzt.jee.tools.mwe.builder.CrudServiceRESTFullModelBuilder;
+import org.azzyzt.jee.tools.mwe.builder.CrudServiceRESTRestrictedInterfaceModelBuilder;
 import org.azzyzt.jee.tools.mwe.builder.CrudServiceRESTRestrictedModelBuilder;
 import org.azzyzt.jee.tools.mwe.builder.RESTExceptionMapperModelBuilder;
 import org.azzyzt.jee.tools.mwe.builder.RESTInterceptorModelBuilder;
@@ -38,6 +40,7 @@ import org.azzyzt.jee.tools.mwe.model.MetaModel;
 public class CrudServiceRESTGeneratorFeature extends GeneratorFeature {
 
 	public static final String SOURCE_FOLDER = "Source Folder";
+	public static final String CXF_REST_CLIENT_SOURCE_FOLDER = "CXF REST Client Source Folder";
 
 	public CrudServiceRESTGeneratorFeature(MetaModel entityModel) {
 		super(entityModel);
@@ -47,6 +50,7 @@ public class CrudServiceRESTGeneratorFeature extends GeneratorFeature {
 	public Parameters getParameters() {
 		Parameters parameters = new Parameters();
 		parameters.add(new Parameter(SOURCE_FOLDER, ParameterType.SourceFolder, Parameter.IS_MANDATORY));
+		parameters.add(new Parameter(CXF_REST_CLIENT_SOURCE_FOLDER, ParameterType.SourceFolder, Parameter.IS_OPTIONAL));
 		return parameters;
 	}
 	
@@ -54,10 +58,14 @@ public class CrudServiceRESTGeneratorFeature extends GeneratorFeature {
 	public int generate(Parameters parameters) {
 		int numberOfSourcesGenerated;
 		String sourceFolder;
-		
-		sourceFolder = (String)parameters.byName(SOURCE_FOLDER).getValue();
+		String cxfRestClientSourceFolder = null;
 		
 		MetaModel masterModel = getMasterModel();
+		
+		sourceFolder = (String)parameters.byName(SOURCE_FOLDER).getValue();
+		if (masterModel.isGeneratingCxfRestClient()) {
+			cxfRestClientSourceFolder = (String)parameters.byName(CXF_REST_CLIENT_SOURCE_FOLDER).getValue();
+		}
 		
 		MetaModel targetModel = new RESTInterceptorModelBuilder(getMasterModel(), null).build();
 		JavaGenerator targetGen = new JavaGenerator(targetModel, sourceFolder, "javaRESTInterceptorGroup", masterModel);
@@ -71,10 +79,24 @@ public class CrudServiceRESTGeneratorFeature extends GeneratorFeature {
 		targetGen.setGenerateGettersSetters(false);
 		numberOfSourcesGenerated += targetGen.generate();
 		
+		if (masterModel.isGeneratingCxfRestClient()) {
+			targetModel = new CrudServiceRESTFullInterfaceModelBuilder(getMasterModel(), null).build();
+			targetGen = new JavaGenerator(targetModel, cxfRestClientSourceFolder, "javaRESTFullInterfaceGroup", masterModel);
+			targetGen.setGenerateGettersSetters(false);
+			numberOfSourcesGenerated += targetGen.generate();
+		}
+		
 		targetModel = new CrudServiceRESTRestrictedModelBuilder(getMasterModel(), null).build();
 		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaRESTRestrictedGroup", masterModel);
 		targetGen.setGenerateGettersSetters(false);
 		numberOfSourcesGenerated += targetGen.generate();
+		
+		if (masterModel.isGeneratingCxfRestClient()) {
+			targetModel = new CrudServiceRESTRestrictedInterfaceModelBuilder(getMasterModel(), null).build();
+			targetGen = new JavaGenerator(targetModel, cxfRestClientSourceFolder, "javaRESTRestrictedInterfaceGroup", masterModel);
+			targetGen.setGenerateGettersSetters(false);
+			numberOfSourcesGenerated += targetGen.generate();
+		}
 		
 		targetModel = new RESTServletModelBuilder(getMasterModel(), null).build();
 		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaGroup", masterModel);

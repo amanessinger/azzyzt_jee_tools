@@ -134,6 +134,17 @@ public class StoreDeleteDtoModelBuilder extends DerivedModelBuilder implements B
 		mai = new MetaAnnotationInstance(std.javaxXmlBindAnnotationXmlRootElement, storeDeleteMultiDto);
 		mai.setElement("name", STORE_DELETE_DTO_NAME.toLowerCase());
 		storeDeleteMultiDto.addMetaAnnotationInstance(mai);
+		storeDeleteMultiDto.addReferencedForeignType(std.javaUtilList);
+		storeDeleteMultiDto.addReferencedForeignType(dtoBase);
+		
+		StringBuilder constructorSb = new StringBuilder();
+		constructorSb.append("public ");
+		constructorSb.append(STORE_DELETE_DTO_NAME);
+		constructorSb.append("(List<Dto> deleteDtos, List<Dto> storeDtos) {\n");
+		constructorSb.append("    delete.setDtoes(deleteDtos);\n");
+		constructorSb.append("    store.setDtoes(storeDtos);\n");
+		constructorSb.append("}\n\n");
+		storeDeleteMultiDto.setProperty(ModelProperties.EXTRA_CONSTRUCTORS, constructorSb.toString());
 
 		MetaField deleteField = new MetaField(storeDeleteMultiDto, DELETE_WRAPPER_ROOT_ELEMENT);
 		deleteField.setModifiers(std.mod_private);
