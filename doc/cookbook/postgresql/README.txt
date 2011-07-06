@@ -31,5 +31,3 @@ the following scripts:
 For your convenience, I have added a concatenation of these scripts in
 
   sql/reinitialize.sql
-
-

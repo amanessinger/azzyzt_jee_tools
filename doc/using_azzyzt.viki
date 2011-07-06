@@ -1,5 +1,6 @@
 #VAR: fmt=~html(site|slides): css=highlight.css,layout-deplate.css cssInclude=true
 #VAR: tableStyle=formal
+#VAR: subToC=true
 
 #VAR: version=1.2.4
 
@@ -12,11 +13,13 @@ Azzyzt JEE Tools is a collection of software tools helping software
 developers to create software using Java Enterprise Edition 6. It is
 designed to be integrated into popular Java IDEs.
 
-This file is a tutorial for users of Azzyzt JEE Tools.
+This file is a tutorial for users of Azzyzt JEE Tools. It has the
+following sections:
+
+TTTOOOCCC
 
 Copyright (c) 2011, Municipiality of Vienna, Austria
 Licensed under the EUPL, Version 1.1 or subsequent versions
-
 
 * Using Azzyzt JEE Tools
 
@@ -84,7 +87,8 @@ doc/cookbook
 |   `-- sql
 |       |-- create_tables.sql
 |       |-- drop_tables.sql
-|       `-- initialize_data.sql
+|       |-- initialize_data.sql
+|       `-- reinitialize.sql
 |
 |-- postgresql
 |   |-- README.txt
@@ -1010,6 +1014,17 @@ a variant with the suffix ''Json''. Thus for ''store(dto)'' there is
 also a ''storeJson(dto)''. It won't come as a surprise that these
 variants consume and produce [[http://json.org/][JSON]], the
 __\JavaScript Object Notation__. 
+
+
+** Variants of the query specification
+
+The XML format of query specifications was chosen to be easily
+creatable from Adobe Flash REST clients. When the services are
+accessed via SOAP or CORBA, the "''list()''" methods take an object of
+type ''QuerySpec'' as parameter. Alternatively a second method
+"''listByXML()''" is generated, and those methods again take XML in
+form of a string parameter. The XML format is the same as for REST.
+
 
 * Examples for REST
 
@@ -2745,12 +2760,12 @@ class path set up to use them.
 Java EE defines REST bindings for Java. The standard is called JAX-RS
 and its public API is restricted to the server side. This does not
 mean that you can't use REST clients in Java, it only means that Java
-EE does not mandate a client API. On the other hand, implementing a
-server API is more than half of what you need for a corresponding
-client API, and for testing purposes you'll want a client API
-anyway. The only problem is, that due to the lack of standardization,
-the client APIs of the various JAX-RS implementations and different
-and we have to decide for one of them.
+EE does not mandate a specific client API. On the other hand,
+implementing a server API is more than half of what you need for a
+corresponding client API, and for testing purposes you'll want a
+client API anyway. The only problem is, that due to the lack of
+standardization, the client APIs of the various JAX-RS implementations
+are all different and we have to choose one of them.
 
 Of course there is a
 [[http://jersey.java.net/nonav/documentation/latest/client-api.html][client
@@ -2763,7 +2778,7 @@ protocol-centric.
 [[http://docs.jboss.org/resteasy/docs/2.2.1.GA/userguide/html/RESTEasy_Client_Framework.html][RESTEasy
 by JBoss]] is an alternative. You define an interface for the service,
 and then you can create a client proxy for this interface. What I
-don't like in RESTEasy, is the handling of responses. It is not as
+don't like in RESTEasy is the handling of responses. It is not as
 verbose as Jersey, but it is unnecessarily complex as well.
 
 [[http://cxf.apache.org/][Apache CXF]] is the third big player, and
@@ -2772,12 +2787,12 @@ elegant and simple proxy-based API. Basically you define an interface,
 from the interface you create a proxy, and just like in RESTEasy you
 can then call server methods as methods of this proxy. The difference
 is in response handling. While other APIs require you to help along
-with deserialization, the CXF proxy API simply leaves this to
-JAX-B. It's more or less like SOAP. Create a proxy once, and then,
-upon method calls, get the response automatically deserialized into
-objects. The only thing you need, are classes for the parameters,
-annotated with JAX-B annotations, and that's exactly what we have with
-the DTOs in our EJB client project. 
+with deserialization, require casts, etc, the CXF proxy API simply
+leaves this to JAX-B. It's more or less like SOAP. Create a proxy
+once, and then, upon method calls, get the response automatically
+deserialized into objects. The only thing you need, are classes for
+the parameters, annotated with JAX-B annotations, but that's exactly
+what we have with the DTOs in our EJB client project.
 
 
 *** The generated CXF REST client interfaces
@@ -2869,9 +2884,9 @@ this interface. Just as in SOAP, the methods return DTOs and lists of
 DTOs, polymorphism included.
 
 In order to make this work, the CXF REST client project needs access
-to the DTOs, thus the project is created with the client project on
-the build path, and in production, its artifact would need the EJB
-client JAR on the class path.
+to the DTOs, thus the CXF REST client project is created with the EJB
+client project on the build path, and in production, its artifact
+would need the EJB client JAR on the class path.
 
 
 *** A simple CXF client example
@@ -2944,17 +2959,679 @@ city with the requested ID. In both cases a
 ''ServerWebApplicationException'' if the problem was on server side.
 
 
-* Miscellanea
+*** In-server unit tests
 
-** Variants of the query specification
+Why should we bother with Java REST clients anyway? After all, Java
+has a fully conformant SOAP stack, thus we would be better off by just
+making SOAP calls or calling the beans via CORBA, right?
 
-REST is just one way to access the services. The XML format of query
-specifications was chosen to be easily creatable from Adobe Flash
-clients. When the services are accessed via SOAP or CORBA, the
-"''list()''" methods take an object of type ''QuerySpec'' as
-parameter. Alternatively a second method "''listByXML()''" is
-generated, and those methods again take XML in form of a string
-parameter. The XML format is the same as for REST.
+Well, one good reason is, that we may want to make unit tests for our
+services. When doing so, we will want to maximize coverage by going
+through as many layers as possible, and that means to make REST
+requests. There is no need to test the service beans separately,
+because the REST wrappers call down into the beans anyway. Sure, this
+way we don't test access via SOAP, but SOAP web service functionality
+is basic server functionality enabled by a single annotation. Not much
+can possibly go wrong here :)
+
+The doc directory of the Azzyzt distribution contains an optional
+source tree.
+
+#Verbatim <<---
+doc/cookbook/src/optional
+|-- cookbookCxfRestClient
+|   `-- src
+|       |-- com
+|       |   `-- manessinger
+|       |       `-- cookbook
+|       |           `-- service
+|       |               `-- test
+|       |                   |-- CityById.java
+|       |                   |-- CookbookRestTest.java
+|       |                   `-- DeleteCity.java
+|       `-- META-INF
+|           `-- xml
+|               |-- get_austria.xml
+|               |-- nested_expressions.xml
+|               |-- query_with_three_conditions.xml
+|               `-- sorted_list_of_cities.xml
+`-- cookbookEJB
+    `-- ejbModule
+        `-- com
+            `-- manessinger
+                `-- cookbook
+                    `-- meta
+                        `-- Azzyztant.java
+---
+
+In order to use these sources, make sure that you already have
+configured the option ''AzzyztGeneratorOption.AddCxfRestClient'' and
+generated code. If so, you should have a project
+''cookbookCxfRestClient'' with nothing but the generated interfaces
+of the proxies. 
+
+We want to make unit tests, thus we need the JUnit libraries on the
+build path. From the context menu of ''cookbookCxfRestClient'' choose
+"__Build Path / Configure Build Path / Libraries / Add Library /
+JUnit__".  The default is "__JUnit 3__", make sure that you choose
+"__JUnit 4__".
+
+Now you can copy the two directories of the optional source tree over
+your cookbook workspace and refresh the projects.
+
+The unit test expects an initialized test database, thus it is a good
+idea to run ''reinitialize.sql'' from either
+''doc/cookbook/oracle/sql'' or ''doc/cookbook/postgresql/sql'',
+depending on the database that you use.
+
+Here is the full unit test:
+
+#Code id=CookbookRestTest syntax=Java <<---
+package com.manessinger.cookbook.service.test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.MediaType;
+import javax.xml.bind.JAXB;
+
+import org.apache.cxf.jaxrs.client.Client;
+import org.apache.cxf.jaxrs.client.JAXRSClientFactory;
+import org.apache.cxf.jaxrs.client.WebClient;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import com.manessinger.cookbook.dto.CityDto;
+import com.manessinger.cookbook.dto.CountryDto;
+import com.manessinger.cookbook.dto.Dto;
+import com.manessinger.cookbook.dto.LanguageDto;
+import com.manessinger.cookbook.dto.StoreDelete;
+import com.manessinger.cookbook.dto.VisitDto;
+import com.manessinger.cookbook.entity.VisitId;
+import com.manessinger.cookbook.service.CityFullCxfRestInterface;
+import com.manessinger.cookbook.service.CountryFullCxfRestInterface;
+import com.manessinger.cookbook.service.LanguageFullCxfRestInterface;
+import com.manessinger.cookbook.service.ModifyMultiCxfRestInterface;
+import com.manessinger.cookbook.service.VisitFullCxfRestInterface;
+import com.manessinger.cookbook.service.ZipFullCxfRestInterface;
+
+/**
+ * A test class that executes all tests from the cookbook tutorial. Some tests
+ * are slightly altered, in order to make them robust against different IDs and 
+ * different execution order. We assume a freshly set up cookbook database.
+ */
+public class CookbookRestTest {
+    
+    private static final String BASE_URI = "http://localhost:8080/cookbookServlets/REST";
+    
+    private static final String FRANCE = "France";
+    private static final String MARSEILLES = "Marseilles";
+    private static final String PARIS = "Paris";
+    private static final String RENNES = "Rennes";
+    
+    private static final String EGYPT = "Egypt";
+    private static final String ASSUAN = "Assuan";
+    private static final String CAIRO = "Cairo";
+    
+    private static CityFullCxfRestInterface citySvc;
+    private static CountryFullCxfRestInterface countrySvc;
+    private static LanguageFullCxfRestInterface languageSvc;
+    private static ModifyMultiCxfRestInterface multiSvc;
+    private static VisitFullCxfRestInterface visitSvc;
+    private static ZipFullCxfRestInterface zipSvc;
+
+    private static Client cityClient;
+    private static Client countryClient;
+    private static Client languageClient;
+    private static Client multiClient;
+    private static Client visitClient;
+    private static Client zipClient;
+    
+    /**
+     * BEFORE CLASS: setup proxies, set their media types to APPLICATION_XML. 
+     * There seems to be an error in Apache CXF, the REST client seemingly ignores 
+     * \@Consumes annotations and always sends text/plain 
+     * 
+     * The "Accept: *" header seems to be necessary to make a returned string (delete) 
+     * be delivered as XML. Omitting it makes delete() fail with the generic 
+     * 
+     * javax.ws.rs.WebApplicationException 
+     *   at com.sun.jersey.server.impl.uri.rules.TerminatingRule.accept(TerminatingRule.java:66)
+     * 
+     * No idea whose fault this is. I suppose how I treat delete() is wrong (though it works for 
+     * soapUI and for Flex clients), otoh I don't see why CXF automatically produces an 
+     * "Accept: text/plain" for a return type of String. It could simply use the type from the 
+     * interface, and that's "application/xml".
+     */
+    @BeforeClass
+    public static void setupProxies() {
+
+        citySvc = JAXRSClientFactory.create(BASE_URI, CityFullCxfRestInterface.class);
+        cityClient = WebClient.client(citySvc);
+        cityClient.type(MediaType.APPLICATION_XML);
+        cityClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
+        // cityClient.header("X-Portal-Cred0", "REST_200_ON_ERROR");
+        
+        countrySvc = JAXRSClientFactory.create(BASE_URI, CountryFullCxfRestInterface.class);
+        countryClient = WebClient.client(countrySvc);
+        countryClient.type(MediaType.APPLICATION_XML);
+        countryClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
+        // countryClient.header("X-Portal-Cred0", "REST_200_ON_ERROR");
+        
+        languageSvc = JAXRSClientFactory.create(BASE_URI, LanguageFullCxfRestInterface.class);
+        languageClient = WebClient.client(languageSvc);
+        languageClient.type(MediaType.APPLICATION_XML);
+        languageClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
+        // languageClient.header("X-Portal-Cred0", "REST_200_ON_ERROR");
+        
+        multiSvc = JAXRSClientFactory.create(BASE_URI, ModifyMultiCxfRestInterface.class);
+        multiClient = WebClient.client(multiSvc);
+        multiClient.type(MediaType.APPLICATION_XML);
+        multiClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
+        // multiClient.header("X-Portal-Cred0", "REST_200_ON_ERROR");
+        
+        visitSvc = JAXRSClientFactory.create(BASE_URI, VisitFullCxfRestInterface.class);
+        visitClient = WebClient.client(visitSvc);
+        visitClient.type(MediaType.APPLICATION_XML);
+        visitClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
+        // visitClient.header("X-Portal-Cred0", "REST_200_ON_ERROR");
+        
+        zipSvc = JAXRSClientFactory.create(BASE_URI, ZipFullCxfRestInterface.class);
+        zipClient = WebClient.client(zipSvc);
+        zipClient.type(MediaType.APPLICATION_XML);
+        zipClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
+        // zipClient.header("X-Portal-Cred0", "REST_200_ON_ERROR");
+        
+    }
+    
+    /**
+     * BEFORE TEST: We dump to System.out, print a line between tests
+     */
+    @Before
+    public void printDelimiter() {
+        System.err.println("########################################################\n");
+    }
+    
+    /**
+     * TEST: List of all countries
+     */
+    @Test
+    public void testAllCountries() {
+        List<Dto> countries = countrySvc.all();
+        
+        assertNotNull(countries);
+        assertTrue(countries.size() >= 3);
+        for (Dto d : countries) {
+            assertTrue(d instanceof CountryDto);
+            CountryDto c = (CountryDto)d;
+            dump(c);
+        }
+    }
+    
+    /**
+     * TEST: City with the ID 1
+     */
+    @Test
+    public void testCityById() {
+        CityDto city1 = citySvc.byId(1L);
+        
+        assertNotNull(city1);
+        assertEquals(new Long(1), city1.getId());
+        assertEquals("Graz", city1.getName());
+        dump(city1);
+    }
+    
+    /**
+     * TEST: Sorted list of cities, grouped by ascending country.ID, 
+     * names within groups descending
+     */
+    @Test
+    public void testSortedListOfCities() {
+        List<Dto> cities = citySvc.list(from("META-INF/xml/sorted_list_of_cities.xml"));
+        
+        assertNotNull(cities);
+        assertTrue(cities.size() >= 12);
+        CityDto last = null;
+        for (Dto d : cities) {
+            assertTrue(d instanceof CityDto);
+            CityDto c = (CityDto)d;
+            if (last != null) {
+                if (c.getCountryId().equals(last.getCountryId())) {
+                    // we expect names within country groups to be descending, could be equal
+                    assertTrue(c.getName().compareTo(last.getName()) <= 0);
+                } else {
+                    assertTrue(c.getCountryId() > last.getCountryId());
+                }
+            }
+
+            last = c;
+            dump(c);
+        }
+    }
+
+    /**
+     * TEST: Query with three conditions:
+     *  - Country name is "Italy"
+     *  - City name does not begin with "r" (case-insensitive)
+     *  - City ID is not 8 
+     *  - ascending by city name
+     */
+    @Test
+    public void testQueryWithThreeConditions() {
+        List<Dto> cities = citySvc.list(from("META-INF/xml/query_with_three_conditions.xml"));
+        
+        assertNotNull(cities);
+        assertTrue(cities.size() >= 2);
+        CountryDto co = null;
+        CityDto last = null;
+        for (Dto d : cities) {
+            assertTrue(d instanceof CityDto);
+            CityDto c = (CityDto)d;
+            
+            // is in Italy
+            if (co == null) {
+                co = countrySvc.byId(c.getCountryId());
+                assertEquals("Italy", co.getName());
+            } else {
+                assertEquals(co.getId(), c.getCountryId());
+            }
+            
+            // does not begin with "r" (case-insensitive)
+            char startChar = c.getName().charAt(0);
+            assertTrue(startChar != 'r' && startChar != 'R');
+            
+            // ID is not 8
+            assertTrue(c.getId() != 8);
+            
+            // name ascending
+            if (last != null) {
+                assertTrue(c.getName().compareTo(last.getName()) >= 0);
+            }
+            last = c;
+
+            dump(c);
+        }
+    }
+
+    /**
+     * TEST: Nested expressions
+     *  - either in "Italy"
+     *  - name starts with "l" (case-insensitive), but is not "Linz"
+     */
+    @Test
+    public void testNestedExpressions() {
+        List<Dto> cities = citySvc.list(from("META-INF/xml/nested_expressions.xml"));
+        
+        assertNotNull(cities);
+        assertTrue(cities.size() >= 2);
+        CityDto last = null;
+        for (Dto d : cities) {
+            assertTrue(d instanceof CityDto);
+            CityDto c = (CityDto)d;
+            
+            CountryDto co = countrySvc.byId(c.getCountryId());
+            if (!co.getName().equals("Italy")) {
+                char startChar = c.getName().charAt(0);
+                assertTrue(startChar == 'l' || startChar == 'L');
+                assertTrue(c.getId() != 2);
+                assertTrue(!c.getName().equals("Linz"));
+            }
+            
+            // name ascending
+            if (last != null) {
+                assertTrue(c.getName().compareTo(last.getName()) >= 0);
+            }
+            last = c;
+
+            dump(c);
+        }
+    }
+    
+    /**
+     * TEST: Store, update and delete a city
+     * Store a new city under a wrong name, update its name, finally delete it.
+     * This is different from the tutorial, we use Austria in order to not 
+     * interfere with the list tests so far. We also do it only once, because
+     * we don't test JSON.
+     */
+    @Test
+    public void testStoreUpdateDeleteCity() {
+        List<Dto> countries = countrySvc.list(from("META-INF/xml/get_austria.xml"));
+        assertNotNull(countries);
+        assertEquals(1, countries.size());
+        CountryDto austria = (CountryDto)countries.get(0);
+        assertEquals("Austria", austria.getName());
+        
+        CityDto c = new CityDto();
+        c.setCountryId(austria.getId());
+        c.setName("Villak");
+        dump(c);
+        
+        c = citySvc.store(c);
+        assertNotNull(c);
+        assertNotNull(c.getId());
+        assertTrue(c.getId() > 12);
+        assertNotNull(c.getCreateTimestamp());
+        assertNotNull(c.getModificationTimestamp());
+        assertNotNull(c.getCreateUser());
+        assertNotNull(c.getModificationUser());
+        assertEquals(c.getCreateTimestamp(), c.getModificationTimestamp());
+        assertEquals(c.getCreateUser(), c.getModificationUser());
+        dump(c);
+
+        Long id = c.getId();
+        Calendar createTst = c.getCreateTimestamp();
+        
+        c.setName("Villach");
+        c = citySvc.store(c);
+        assertNotNull(c);
+        assertNotNull(c.getId());
+        assertEquals(id, c.getId());
+        assertNotNull(c.getModificationTimestamp());
+        assertTrue(c.getModificationTimestamp().compareTo(createTst) == 1);
+        dump(c);
+        
+        String result = citySvc.delete(id);
+        assertEquals("<result>OK</result>", result);
+    }
+    
+    /**
+     * TEST: store France and three cities in one call, delete them in one call
+     */
+    @Test
+    public void testStoreDeleteFranceAndCities() {
+        List<Dto> dtos = createCountryAndCityDtos(FRANCE, MARSEILLES, PARIS, RENNES);
+        dtos = multiSvc.storeMulti(dtos);
+        checkCountryAndCityDtos(dtos, FRANCE, MARSEILLES, PARIS, RENNES);
+        
+        dump(dtos);
+
+        String result = multiSvc.deleteMulti(dtos);
+        assertEquals("<result>OK</result>", result);
+    }
+
+    /**
+     * TEST: store France, replace it with Egypt, make a visit to Luxor 
+     * and clean up
+     */
+    @Test
+    public void testStoreFranceReplaceWithEgyptMakeVisit() {
+        List<Dto> france = createCountryAndCityDtos(FRANCE, MARSEILLES, PARIS, RENNES);
+        france = multiSvc.storeMulti(france);
+        checkCountryAndCityDtos(france, FRANCE, MARSEILLES, PARIS, RENNES);
+        
+        dump(france);
+
+        Long idFrance = ((CountryDto)france.get(0)).getId();
+
+        List<Dto> egypt = createCountryAndCityDtos(EGYPT, ASSUAN, CAIRO);
+
+        StoreDelete sd = new StoreDelete(france, egypt);
+        egypt = multiSvc.storeDeleteMulti(sd);
+        // check (partially) that France is gone
+        boolean lookupFailed = true;
+        try {
+            countrySvc.byId(idFrance);
+            lookupFailed = false;
+        } catch (WebApplicationException e) { }
+        assertTrue(lookupFailed);
+        // now check Egypt
+        checkCountryAndCityDtos(egypt, EGYPT, ASSUAN, CAIRO);
+        
+        dump(egypt);
+        
+        // create the visit
+        Long idEgypt = ((CountryDto)egypt.get(0)).getId();
+        
+        CityDto luxor = createCity(idEgypt, "Luxor", -1L);
+        
+        LanguageDto enUK = new LanguageDto();
+        enUK.setId("en_UK");
+        enUK.setLanguageName("English (UK)");
+        
+        VisitDto visit = new VisitDto();
+        visit.setId(new VisitId(1L, luxor.getId(), enUK.getId()));
+        visit.setTotalNumberOfVisitors(5L);
+        
+        List<Dto> dtos = new ArrayList<Dto>();
+        dtos.add(luxor);
+        dtos.add(enUK);
+        dtos.add(visit);
+        dtos = multiSvc.storeMulti(dtos);
+        
+        assertNotNull(dtos);
+        assertEquals(3, dtos.size());
+        
+        Dto dto = dtos.get(0);
+        assertNotNull(dto);
+        assertTrue(dto instanceof CityDto);
+        CityDto luxorStored = (CityDto)dto;
+        assertTrue(luxorStored.getId() > 0);
+        
+        dto = dtos.get(2);
+        assertNotNull(dto);
+        assertTrue(dto instanceof VisitDto);
+        VisitDto visitStored = (VisitDto)dto;
+        assertEquals(luxorStored.getId(), visitStored.getId().getToCity());
+        
+        dump(dtos);
+        
+        String result = multiSvc.deleteMulti(dtos);
+        assertEquals("<result>OK</result>", result);
+        
+        result = multiSvc.deleteMulti(egypt);
+        assertEquals("<result>OK</result>", result);
+    }
+
+    /**
+     * Helper method that creates DTOs for a country and its cities
+     * 
+     * @param name of country
+     * @param names of cities
+     * @return
+     */
+    private List<Dto> createCountryAndCityDtos(String country, String...cities) {
+        List<Dto> result = new ArrayList<Dto>();
+
+        Long idGen = -1L;
+        CountryDto co = new CountryDto();
+        co.setId(idGen--);
+        co.setName(country);
+        result.add(co);
+
+        if (cities == null || cities.length == 0) return result;
+        
+        for (String city : cities) {
+            CityDto c = createCity(co.getId(), city, idGen--);
+            result.add(c);
+        }
+        return result;
+    }
+
+    /**
+     * Helper method to create a city
+     * 
+     * @param cityName
+     * @param countryId
+     * @return
+     */
+    private CityDto createCity(Long countryId, String cityName, Long cityId) {
+        CityDto c = new CityDto();
+        c.setCountryId(countryId);
+        c.setId(cityId);
+        c.setName(cityName);
+        return c;
+    }
+
+    /**
+     * Helper method that checks a country and its cities
+     * 
+     * @param dtos returned from storeMulti() or storeDeleteMulti()
+     * @param name of country
+     * @param names of cities
+     */
+    private void checkCountryAndCityDtos(List<Dto> dtos, String country, String...cities) {
+        // guard against caller
+        assertTrue(cities != null);
+
+        Dto dto;
+
+        // check list
+        assertNotNull(dtos);
+        assertEquals(1 + cities.length, dtos.size());
+        
+        dto = dtos.get(0);
+        assertNotNull(dto);
+        assertTrue(dto instanceof CountryDto);
+        
+        CountryDto co = (CountryDto)dto;
+        Long countryId = co.getId();
+        assertNotNull(countryId);
+        assertTrue(countryId > 0);
+        assertEquals(country, co.getName());
+        
+        if (cities.length == 0) return;
+        
+        for (int i = 0; i < cities.length; i++) {
+            dto = dtos.get(i + 1);
+            assertNotNull(dto);
+            assertTrue(dto instanceof CityDto);
+            
+            CityDto c = (CityDto)dto;
+            Long cityId = c.getId();
+            assertNotNull(cityId);
+            assertTrue(cityId > 0);
+            assertEquals(cities[i], c.getName());
+            assertNotNull(c.getCountryId());
+            assertEquals(countryId, c.getCountryId());
+        }
+    }
+
+    /**
+     * Prints the name of the calling method, followed by an XML dump 
+     * of object given as parameter
+     * @param o
+     */
+    private static void dump(Object o) {
+        dump(o, 3);
+    }
+    
+    private static void dump(Object o, int depth) {
+        StackTraceElement[] trace = Thread.currentThread().getStackTrace();
+        System.err.println(trace[depth].getMethodName()+"():\n");
+        JAXB.marshal(o, System.err);
+        System.err.println("\n");
+    }
+    
+    private static void dump(List<?> l) {
+        for (Object o : l) {
+            dump(o, 3);
+        }
+    }
+    
+    /**
+     * Read content of a file and returns it as a string
+     * @param relativeToRootFileName
+     * @return
+     */
+    private String from(String relativeToRootFileName) {
+        StringBuilder result = new StringBuilder();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(
+                getClass().getClassLoader().getResourceAsStream(
+                        relativeToRootFileName)));
+        String line;
+        try {
+            while ((line = reader.readLine()) != null) {
+                result.append(line);
+                result.append('\n');
+            }
+        } catch (IOException e) {
+            throw new Error(e);
+        }
+        return result.toString().trim();
+    }
+}
+---
+
+Run the test via "__Run As / JUnit Test__". You will see soem output
+in the console, and in the JUnit view the bar should stay green and all
+tests should succeed.
+
+You can repeat the test as often as you like, the tests are written in
+a way that they clean up after themselves.
+
+I could have made database reinitialization automatically in a
+''@BeforeClass'' method, but, honestly, automatically dropping a
+database schema in a unit test suite always make me kind of
+nervous :)
+
+
+** Customizing the REST error response
+
+One of the principles of REST is, that a service should behave just
+like any plain old HTTP server. Thus, if an error occurs, the default
+behavior of Java REST services is to return "__500 Internal server
+error__", "__404 Not Found__" or whatever describes the situation most
+accurately. The rest of the response may contain an "__entity__" in
+HTTP lingo, in other words information explaining the type of error.
+
+Unfortunately Adobe Flex clients making a request either get a
+response or not, and if not, they have no access to anything but the
+status code. If we want to return descriptive information, we have to
+use the status "__200 OK__" and return a special response, for
+instance an XML element "__error__".
+
+That's exactly what we have implemented, and due to the fact that we
+have written our own Flex serializer/deserializer anyway, we have no
+problem reacting to errors appropriately. The drawback is though, that
+these services not only violate HTTP, they are also incompatible with
+the Apache CXF REST implementation, because by not properly
+implementing HTTP, they also don't properly implement REST. Therefore
+we need to make error behavior customizable.
+
+So far we have seen customizations that work at generation time
+(options and cutbacks) or at runtime for all requests (user name
+translation). Now we need to respond differently for different
+clients, and in order to do that, a client has to signal the type of
+response it expects.
+
+Our solution is, by default to be strictly HTTP compliant, unless the
+client sends a certain custom HTTP request header. We don't let the
+client send the header though, we insert the header when the request
+traverses our portal. The way our portal works, we can define
+so-called __credentials__ per user group and URL prefix, and those
+credentials are delivered to the server via custom HTTP headers
+"''X-Portal-Cred0''", "''X-Portal-Cred1''" and so on. The libraries
+used by the generated REST code look for HTTP request headers starting
+with "''X-Portal-Cred''" and a value of "''REST_200_ON_ERROR''". If
+such a header is found and an error occurs, the response to that
+request is sent in non-conformant mode. Such a non-conformant response
+could look more or less like this:
+
+#Verbatim <<---
+HTTP/1.1 200 OK
+Cache-Control: no-store,max-age=0,must-revalidate
+Content-Type: application/xml
+Content-Length: 142
+Date: Wed, 06 Jul 2011 14:16:11 GMT
+
+<error>
+<type>FAULT</type>
+<code>0</code>
+<detail>EntityNotFoundException</detail>
+</error>
+---
+
 
 * Licenses
 

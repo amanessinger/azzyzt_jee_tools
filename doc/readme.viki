@@ -29,28 +29,30 @@ The complete sources are on \GitHub under
 
 As of release {version}, Azzyzt JEE Tools consists of three main parts:
 
- # a generator that creates so-called __azzyzted projects__. An
-   azzyzted project is a collection of four projects, an Enterprise
-   Application Project (EAR project), an Enterprise Java Beans project
-   (EJB project), its client project (EJB client project) and a
-   Dynamic Web Project (servlet project). The EJB project contains all
-   business code, the servlet project contains REST wrappers around
-   business methods, the EJB client project contains all data types
-   visible to SOAP or REST clients. These three are called member
-   projects. The EAR project is a container for the member projects.
+ # a project generator that creates so-called __azzyzted
+   projects__. An azzyzted project is a collection of four projects,
+   an Enterprise Application Project (EAR project), an Enterprise Java
+   Beans project (EJB project), its client project (EJB client
+   project) and a Dynamic Web Project (servlet project). The EJB
+   project contains all business code, the servlet project contains
+   REST wrappers around business methods, the EJB client project
+   contains all data types visible to SOAP or REST clients. These
+   three are called member projects. The EAR project is a container
+   for the member projects.
 
-   The code generator uses a project base name, a package prefix and
-   an Eclipse runtime specification capable of supporting EJB
-   3.1, and from that it creates the four projects. The EJB project is
+   The project generator uses a project base name, a package prefix
+   and an Eclipse runtime specification capable of supporting EJB 3.1,
+   and from that it creates the four projects. The EJB project is
    marked with a special "__azzyzted nature__".
 
- # a generator that analyzes JPA entities in azzyzted projects, and
-   uses that information to create a base application. This
-   application is a set of service beans exposed as SOAP and REST
-   services. They offer access to the database as it is commonly used
-   by CRUD applications. All generated code is in dedicated source
-   folders. The generated application can be extended and the
-   extensions may use generated code like DTOs as building blocks.
+ # an application code generator that analyzes JPA entities in
+   azzyzted projects, and uses that information to create a base
+   application. This application is a set of service beans exposed as
+   SOAP and REST services. They offer access to the database as it is
+   commonly used by CRUD applications. All generated code is in
+   dedicated source folders. The generated application can be extended
+   and the extensions may use generated code like DTOs as building
+   blocks.
 
  # a runtime library of code used by generated applications.
 
@@ -64,8 +66,8 @@ Municipiality of Vienna, Austria.
 Although Azzyzt JEE Tools come as a set of extensions to the Eclipse
 IDE, large portions of the code are independent of Eclipse. Given a
 project structure like that created by #1, #2 could be called from any
-IDE and can even be used without an IDE, because it can be called as a
-command line utility.
+IDE and can even be used without an IDE, because it can be called from
+the command line.
 
 Azzyzt JEE Tools are known to work with the runtimes of
 
@@ -79,10 +81,10 @@ and Eclipse versions
  - Helios SR1, SR2
  - Indigo
 
-Eclipse is always understood as the generic bundle
-[[http://www.eclipse.org/downloads/][Eclipse IDE for Java EE
-Developers]]. Other distributions may contain the required plugins and
-may work, but they were not tested.
+In the context of this documentation Eclipse is always assumed as the
+generic bundle [[http://www.eclipse.org/downloads/][Eclipse IDE for
+Java EE Developers]]. Other distributions may contain the required
+plugins and may work, but they were not tested.
 
 The plugins were compiled on Eclipse 3.7 "Indigo" and tested in the
 following configurations:

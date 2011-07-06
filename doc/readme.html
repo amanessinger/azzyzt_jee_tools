@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 <meta name="language" content="en">
-<meta name="date" content="2011-07-04T13:13:01">
+<meta name="date" content="2011-07-06T16:58:48">
 <meta name="generator" content="deplate.rb 0.8.5">
 <link rel="start" href="readme.html" title="Frontpage">
 <link rel="chapter" href="readme.html#hd001" title="Azzyzt JEE Tools">
@@ -831,8 +831,8 @@ in the source distribution&rsquo;s <code>doc</code> directory.</p>
 
 <ol class="Ordered numeric">
     <li class="Ordered-1 Ordered">
-        a generator that creates so-called <em>azzyzted projects</em>. An 
-        azzyzted project is a collection of four projects, an Enterprise 
+        a project generator that creates so-called <em>azzyzted projects</em>. 
+        An azzyzted project is a collection of four projects, an Enterprise 
         Application Project (EAR project), an Enterprise Java Beans project (EJB 
         project), its client project (EJB client project) and a Dynamic Web 
         Project (servlet project). The EJB project contains all business code, 
@@ -840,19 +840,19 @@ in the source distribution&rsquo;s <code>doc</code> directory.</p>
         EJB client project contains all data types visible to SOAP or REST 
         clients. These three are called member projects. The EAR project is a 
         container for the member projects.
-        <br class="itempara" />The code generator uses a project base name, a package prefix and an 
+        <br class="itempara" />The project generator uses a project base name, a package prefix and an 
         Eclipse runtime specification capable of supporting EJB 3.1, and from 
         that it creates the four projects. The EJB project is marked with a 
         special &ldquo;<em>azzyzted nature</em>&rdquo;.
     </li>
     <li class="Ordered-1 Ordered">
-        a generator that analyzes JPA entities in azzyzted projects, and uses 
-        that information to create a base application. This application is a set 
-        of service beans exposed as SOAP and REST services. They offer access to 
-        the database as it is commonly used by CRUD applications. All generated 
-        code is in dedicated source folders. The generated application can be 
-        extended and the extensions may use generated code like DTOs as building 
-        blocks.
+        an application code generator that analyzes JPA entities in azzyzted 
+        projects, and uses that information to create a base application. This 
+        application is a set of service beans exposed as SOAP and REST services. 
+        They offer access to the database as it is commonly used by CRUD 
+        applications. All generated code is in dedicated source folders. The 
+        generated application can be extended and the extensions may use 
+        generated code like DTOs as building blocks.
     </li>
     <li class="Ordered-1 Ordered">
         a runtime library of code used by generated applications.
@@ -869,8 +869,8 @@ for developers at the Municipiality of Vienna, Austria.</p>
 <p>Although Azzyzt JEE Tools come as a set of extensions to the Eclipse 
 IDE, large portions of the code are independent of Eclipse. Given a 
 project structure like that created by #1, #2 could be called from any 
-IDE and can even be used without an IDE, because it can be called as a 
-command line utility.</p>
+IDE and can even be used without an IDE, because it can be called from 
+the command line.</p>
 
 <p>Azzyzt JEE Tools are known to work with the runtimes of</p>
 
@@ -900,7 +900,8 @@ command line utility.</p>
     </li>
 </ul>
 
-<p>Eclipse is always understood as the generic bundle 
+<p>In the context of this documentation Eclipse is always assumed as the 
+generic bundle 
 <span class="remote"><a href="http://www.eclipse.org/downloads/" class="remote">Eclipse 
 IDE for Java EE Developers</a></span><a name="idx005"></a>. Other 
 distributions may contain the required plugins and may work, but they 

@@ -163,7 +163,8 @@ public class CookbookRestTest {
 	}
 	
 	/**
-	 * TEST: Sorted list of cities, grouped by ascending country.ID, names within groups descending
+	 * TEST: Sorted list of cities, grouped by ascending country.ID, 
+	 * names within groups descending
 	 */
 	@Test
 	public void testSortedListOfCities() {
@@ -331,7 +332,8 @@ public class CookbookRestTest {
 	}
 
 	/**
-	 * TEST: store France, replace it with Egypt, make a visit to Luxor and clean up
+	 * TEST: store France, replace it with Egypt, make a visit to Luxor 
+	 * and clean up
 	 */
 	@Test
 	public void testStoreFranceReplaceWithEgyptMakeVisit() {
@@ -487,7 +489,8 @@ public class CookbookRestTest {
 	}
 
 	/**
-	 * Prints the name of the calling method, followed by an XML dump of object given as parameter
+	 * Prints the name of the calling method, followed by an XML dump 
+	 * of object given as parameter
 	 * @param o
 	 */
 	private static void dump(Object o) {
