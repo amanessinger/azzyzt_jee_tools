@@ -27,14 +27,20 @@
 
 package org.azzyzt.jee.runtime.annotation;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * May be added to entity fields. Internal fields will not be exposed in DTOs. 
+ * This annotation may be added to entity fields. Internal fields will not be exposed 
+ * in DTOs. Hide fields as internal, when you either don't intend to persist objects of the entity class 
+ * in question, or if leaving those fields <code>null</code> does not cause problems during insertion
+ * of new objects. The database columns may allow for <code>NULL</code> values or there may be database
+ * defaults or triggers in place.
  */
+@Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value=ElementType.FIELD)
 public @interface Internal {

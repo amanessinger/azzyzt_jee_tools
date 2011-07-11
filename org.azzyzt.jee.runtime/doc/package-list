@@ -1,0 +1,10 @@
+org.azzyzt.jee.runtime.annotation
+org.azzyzt.jee.runtime.conv
+org.azzyzt.jee.runtime.dto
+org.azzyzt.jee.runtime.dto.query
+org.azzyzt.jee.runtime.eao
+org.azzyzt.jee.runtime.entity
+org.azzyzt.jee.runtime.exception
+org.azzyzt.jee.runtime.meta
+org.azzyzt.jee.runtime.service
+org.azzyzt.jee.runtime.util

@@ -27,14 +27,23 @@
 
 package org.azzyzt.jee.runtime.annotation;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * May be added to entity fields
+ * This annotation can be added to entity fields of the type <code>java.lang.String</code>.
+ * Modification user fields are automatically set by the runtime. The exact method how a username is 
+ * determined, is delegated to a so-called site adapter bean. Azzyzt JEE Tools currently come
+ * with a site adapter that can extract user names from HTTP headers. At the moment this works
+ * with REST only. 
+ * @see org.azzyzt.jee.runtime.annotation.CreateUser
+ * @see org.azzyzt.jee.runtime.annotation.CreateTimestamp
+ * @see org.azzyzt.jee.runtime.annotation.ModificationTimestamp
  */
+@Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value=ElementType.FIELD)
 public @interface ModificationUser {

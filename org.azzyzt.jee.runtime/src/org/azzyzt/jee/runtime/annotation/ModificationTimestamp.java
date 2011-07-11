@@ -27,14 +27,23 @@
 
 package org.azzyzt.jee.runtime.annotation;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * May be added to entity fields
+ * This annotation can be added to entity fields of the types
+ * <code>java.util.Calendar</code>, <code>java.util.Date</code> or <code>java.lang.String</code>.
+ * It marks the field as a modification timestamp. Modification timestamps are automatically set by the runtime
+ * and they contain a timestamp indicating when a record was last modified. 
+ * @see org.azzyzt.jee.runtime.annotation.CreateTimestamp
+ * @see org.azzyzt.jee.runtime.annotation.CreateUser
+ * @see org.azzyzt.jee.runtime.annotation.ModificationUser
+ * @see java.text.SimpleDateFormat
  */
+@Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value=ElementType.FIELD)
 public @interface ModificationTimestamp {
