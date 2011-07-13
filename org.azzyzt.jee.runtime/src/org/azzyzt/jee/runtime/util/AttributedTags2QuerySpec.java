@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -61,7 +61,23 @@ import org.azzyzt.jee.runtime.dto.query.UnaryFieldOperator;
 import org.azzyzt.jee.runtime.exception.NotYetImplementedException;
 import org.azzyzt.jee.runtime.exception.QuerySyntaxException;
 
-public class AttributedTags2QuerySpec extends DefaultHandler implements REST2QuerySpec {
+/**
+ * This class is a SAX parser for an XML representation of <code>QuerySpec</code>. 
+ * The XML format is one of tags with attributes and without namespaces. The format
+ * was largely determined by what was easy to create for Flex clients.
+ * 
+ * Alternative formats could be implemented after the same pattern. If so, it would
+ * probably make sense to factor common code out. We already had one alternative
+ * format with tags only, but as it was not used, it became tedious to support.
+ * 
+ * For ease of implementation we extend <code>DefaultHandler</code>, and to abstract 
+ * the concrete parser class used, we implement <code>Xml2QuerySpec</code> for the one 
+ * externally used method.
+ * 
+ * @see QuerySpec
+ * @see Xml2QuerySpec
+ */
+public class AttributedTags2QuerySpec extends DefaultHandler implements Xml2QuerySpec {
 
 	private static final SAXParserFactory _SAX_PARSER_FACTORY;
 	static {

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -35,7 +35,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.azzyzt.jee.runtime.exception.QuerySyntaxException;
 import org.azzyzt.jee.runtime.util.AttributedTags2QuerySpec;
-import org.azzyzt.jee.runtime.util.REST2QuerySpec;
+import org.azzyzt.jee.runtime.util.Xml2QuerySpec;
 
 /**
  * <p>For each entity class Azzyzt JEE Tools create two type-specific service beans
@@ -50,7 +50,12 @@ import org.azzyzt.jee.runtime.util.REST2QuerySpec;
  * <p>Query specifications can either be constructed as a tree of objects or as XML text.
  * The latter is the only way to submit a query via the generated REST interface.</p>
  * 
+ * <p><code>QuerySpec</code> implements <code>Node</code>, because this way the parser can 
+ * directly use the <code>QuerySpec</code> as root of the expression tree. 
+ * 
  * @see Expression
+ * @see Node
+ * @see AttributedTags2QuerySpec
  * @see OrderByClause
  */
 @XmlRootElement(name="query_spec")
@@ -76,7 +81,9 @@ public class QuerySpec implements Node, Serializable {
 	}
 	
 	/**
-	 * Factory method that constructs a query specification from an XML representation
+	 * Factory method that constructs a query specification from an XML representation.
+	 * This is mandatory for REST clients, but may also be useful in cases where we want
+	 * to read queries from files, etc. 
 	 * @param querySpecXml an XML representation as it is used by REST clients
 	 * @return the query specification as object tree
 	 * @throws QuerySyntaxException
@@ -84,7 +91,7 @@ public class QuerySpec implements Node, Serializable {
 	public static QuerySpec fromXML(String querySpecXml) 
 		throws QuerySyntaxException 
 	{
-		REST2QuerySpec r2qs = new AttributedTags2QuerySpec();
+		Xml2QuerySpec r2qs = new AttributedTags2QuerySpec();
 		return r2qs.fromXML(querySpecXml);
 	}
 
@@ -96,6 +103,10 @@ public class QuerySpec implements Node, Serializable {
 		this.expression = expression;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.azzyzt.jee.runtime.dto.query.Node#add(org.azzyzt.jee.runtime.dto.query.Expression)
+	 */
+	@Override
 	public void add(Expression expression) 
 		throws QuerySyntaxException 
 	{

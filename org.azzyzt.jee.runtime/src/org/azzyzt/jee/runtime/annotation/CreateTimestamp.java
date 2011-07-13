@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or - as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -38,9 +38,9 @@ import java.lang.annotation.Target;
  * <code>java.util.Calendar</code>, <code>java.util.Date</code> or <code>java.lang.String</code>.
  * It marks the field as a create timestamp. Create timestamps are automatically set by the runtime
  * and they contain a timestamp indicating when a record was created. 
- * @see org.azzyzt.jee.runtime.annotation.CreateUser
- * @see org.azzyzt.jee.runtime.annotation.ModificationTimestamp
- * @see org.azzyzt.jee.runtime.annotation.ModificationUser
+ * @see CreateUser
+ * @see ModificationTimestamp
+ * @see ModificationUser
  * @see java.text.SimpleDateFormat
  */
 @Documented

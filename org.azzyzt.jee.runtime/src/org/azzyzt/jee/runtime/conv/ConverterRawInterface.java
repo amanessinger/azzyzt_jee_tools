@@ -29,7 +29,7 @@ public interface ConverterRawInterface {
 	/**
 	 * converts a DTO to the associated entity
 	 * @param in a DTO
-	 * @return
+	 * @return an entity
 	 * @throws EntityNotFoundException
 	 * @throws EntityInstantiationException
 	 * @throws InvalidIdException

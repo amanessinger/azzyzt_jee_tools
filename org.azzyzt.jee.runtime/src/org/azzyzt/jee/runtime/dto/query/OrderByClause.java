@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or - as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -31,6 +31,13 @@ import java.io.Serializable;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ * <code>QuerySpec</code> has a list of order-by clauses. They determine the 
+ * sort order of a query result. Each clause refers to an entity field and 
+ * sorting can either be ascending or descending.
+ * 
+ * @see QuerySpec
+ */
 @XmlRootElement(name = "orderby")
 public class OrderByClause implements FieldReferer, Serializable {
 	

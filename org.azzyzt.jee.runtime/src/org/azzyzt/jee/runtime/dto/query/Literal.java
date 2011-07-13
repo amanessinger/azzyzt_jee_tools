@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or - as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -29,6 +29,9 @@ package org.azzyzt.jee.runtime.dto.query;
 
 import org.azzyzt.jee.runtime.exception.NotYetImplementedException;
 
+/**
+ * Literal occurring in an <code>Expression</code>. A <code>Literal</code> has a type and a value. 
+ */
 public class Literal extends Operand {
 	
 	public Literal() { }
@@ -59,6 +62,13 @@ public class Literal extends Operand {
 		this.value = value;
 	}
 
+	/**
+	 * Factory method that creates a <code>Literal</code> from a text.
+	 * @param text the input
+	 * @param type supposed type of the input
+	 * @return the <code>Literal</code>
+	 * @throws NotYetImplementedException
+	 */
 	public static Literal parse(String text, LiteralType type) 
 		throws NotYetImplementedException 
 	{
@@ -92,6 +102,9 @@ public class Literal extends Operand {
 		return l;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.azzyzt.jee.runtime.dto.query.Operand#isValid()
+	 */
 	@Override
 	public boolean isValid() {
 		if (type == null || value == null)

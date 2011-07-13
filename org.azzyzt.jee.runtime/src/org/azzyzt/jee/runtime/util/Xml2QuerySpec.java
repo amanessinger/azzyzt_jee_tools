@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -30,8 +30,24 @@ package org.azzyzt.jee.runtime.util;
 import org.azzyzt.jee.runtime.dto.query.QuerySpec;
 import org.azzyzt.jee.runtime.exception.QuerySyntaxException;
 
-public interface REST2QuerySpec {
+/**
+ * Interface implemented by parsers for XML representations of query specifications.
+ * Java is a single inheritance language, and our parsers already inherit from 
+ * <code>org.xml.sax.helpers.DefaultHandler</code>. Thus, to hide the fact that we
+ * could use different parsers for different XML formats, we let all parsers implement
+ * this interface.
+ * 
+ * @see QuerySpec
+ * @see AttributedTags2QuerySpec
+ * 
+ */
+public interface Xml2QuerySpec {
 
+	/**
+	 * @param xml an XML representation of a <code>QuerySpec</code>
+	 * @return a <code>QuerySpec</code>
+	 * @throws QuerySyntaxException
+	 */
 	public abstract QuerySpec fromXML(String xml) throws QuerySyntaxException;
 
 }

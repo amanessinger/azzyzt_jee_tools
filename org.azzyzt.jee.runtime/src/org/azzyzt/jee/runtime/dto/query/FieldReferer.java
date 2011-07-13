@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or - as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -27,6 +27,9 @@
 
 package org.azzyzt.jee.runtime.dto.query;
 
+/**
+ * Interface to be implemented by classes that refer to entity fields
+ */
 public interface FieldReferer {
 	
 	public String getFieldName();

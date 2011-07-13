@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or - as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -33,6 +33,15 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 
+/**
+ * <p>The abstract parent class for expressions that refer to entity fields. 
+ * Field expressions can be negated and (if it makes sense, not checked)
+ * they can be case-sensitive or insensitive.</p>
+ * 
+ * <p>A <code>FieldExpression</code> has at least one <code>FieldReference</code>.</p>
+ * 
+ * @see FieldReference
+ */
 @XmlSeeAlso({UnaryFieldExpression.class, BinaryFieldExpression.class})
 public abstract class FieldExpression extends Expression implements FieldReferer, Serializable {
 
@@ -50,12 +59,18 @@ public abstract class FieldExpression extends Expression implements FieldReferer
 		this.isNegated = isNegated;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.azzyzt.jee.runtime.dto.query.FieldReferer#getFieldName()
+	 */
 	@XmlElement(nillable=false, required=true)
 	@Override
 	public String getFieldName() {
 		return fieldReference.getFieldName();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.azzyzt.jee.runtime.dto.query.FieldReferer#setFieldName(java.lang.String)
+	 */
 	@Override
 	public void setFieldName(String fieldName) {
 		this.fieldReference.setFieldName(fieldName);
@@ -78,12 +93,18 @@ public abstract class FieldExpression extends Expression implements FieldReferer
 		fieldReference.setCaseSensitive(isCaseSensitive);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.azzyzt.jee.runtime.dto.query.Expression#getReplaceableBy()
+	 */
 	@Override
 	public Expression getReplaceableBy() {
 		// FEs are never replaceable, they are only reducible
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.azzyzt.jee.runtime.dto.query.Expression#isValid()
+	 */
 	@Override
 	public boolean isValid() {
 		boolean result;
