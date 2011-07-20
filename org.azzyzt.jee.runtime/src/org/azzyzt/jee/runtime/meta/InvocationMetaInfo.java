@@ -61,4 +61,9 @@ public class InvocationMetaInfo {
 		this.return200OnError = return200OnError;
 	}
 
+	public void setCredentials(Credentials c) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

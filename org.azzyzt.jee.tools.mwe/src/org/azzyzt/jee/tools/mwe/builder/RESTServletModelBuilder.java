@@ -28,6 +28,7 @@
 package org.azzyzt.jee.tools.mwe.builder;
 
 import org.azzyzt.jee.tools.mwe.identifiers.PackageTails;
+import org.azzyzt.jee.tools.mwe.identifiers.RESTPathFragments;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
 import org.azzyzt.jee.tools.mwe.model.annotation.MetaAnnotationInstance;
 import org.azzyzt.jee.tools.mwe.model.type.MetaClass;
@@ -53,7 +54,7 @@ public class RESTServletModelBuilder extends DerivedModelBuilder implements Buil
 			target.setModifiers(std.mod_public);
 			target.setSuperMetaClass(std.javaxWsRsCoreApplication);
 			MetaAnnotationInstance applicationPath = new MetaAnnotationInstance(std.javaxWsRsApplicationPath, target);
-			applicationPath.setElement("value", "REST");
+			applicationPath.setElement("value", RESTPathFragments.APPLICATION_PATH);
 			target.addMetaAnnotationInstance(applicationPath);
 			
 			// now break out

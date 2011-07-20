@@ -35,6 +35,7 @@ import javax.naming.NamingException;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MultivaluedMap;
 
+import org.azzyzt.jee.runtime.meta.Credentials;
 import org.azzyzt.jee.runtime.meta.InvocationMetaInfo;
 
 public class SiteAdapterBase {
@@ -42,21 +43,22 @@ public class SiteAdapterBase {
 	private static final String DEFAULT_USERNAME_HEADER = "x-authenticate-userid";
     private static final String JNDI_USERNAME_HEADER = "custom/stringvalues/http/header/username";
 
-    private static final String DEFAULT_200_ON_ERROR_HEADER_PREFIX = "x-portal-cred";
-    private static final String JNDI_200_ON_ERROR_HEADER_PREFIX = "custom/stringvalues/http/header/200_ON_ERROR";
-    private static final String REST_200_ON_ERROR = "REST_200_ON_ERROR";
+    private static final String DEFAULT_CREDENTIALS_HEADER = "HTTP_X_AUTHORIZE_ROLES";
+    private static final String JNDI_CREDENTIALS_HEADER = "custom/stringvalues/http/header/roles";
+    
+    private static final String REST_200_ON_ERROR = "REST_200_ON_ERROR"; // FIXME
 
     private static final String DEFAULT_ANONYMOUS_USER = "anonymous";
     private static final String JNDI_ANONYMOUS_USER = "custom/stringvalues/username/anonymous";
     
     private static String anonymousUser;
     private static String usernameHeader;
-    private static String onError200Header;
+    private static String credentialsHeader;
     
     static {    	
     	anonymousUser = lookupString(JNDI_ANONYMOUS_USER, DEFAULT_ANONYMOUS_USER);
     	usernameHeader = lookupString(JNDI_USERNAME_HEADER, DEFAULT_USERNAME_HEADER);
-    	onError200Header = lookupString(JNDI_200_ON_ERROR_HEADER_PREFIX, DEFAULT_200_ON_ERROR_HEADER_PREFIX);
+    	credentialsHeader = lookupString(JNDI_CREDENTIALS_HEADER, DEFAULT_CREDENTIALS_HEADER);
     }
 
 	public SiteAdapterBase() { }
@@ -75,17 +77,17 @@ public class SiteAdapterBase {
     	if (httpHeaders == null) return i;
     	
     	i.setReturn200OnError(false);
-    	MultivaluedMap<String,String> requestHeaders = httpHeaders.getRequestHeaders();
-    	CHECK_REST_ERROR_BEHAVIOR: for (String key : requestHeaders.keySet()) {
-    		if (key.toLowerCase().startsWith(onError200Header)) {
-    			List<String> values = requestHeaders.get(key);
-    			for (String v : values) {
-    				if (v.equals(REST_200_ON_ERROR)) {
-    					i.setReturn200OnError(true);
-    					break CHECK_REST_ERROR_BEHAVIOR;
-    				}
-    			}
+    	List<String> credentialsHeaders = httpHeaders.getRequestHeader(credentialsHeader);
+    	StringBuffer credentialsSb = new StringBuffer();
+    	for (String h : credentialsHeaders) {
+    		credentialsSb.append(h);
+    		if (!h.endsWith(";")) {
+    			credentialsSb.append(';');
     		}
+    	}
+    	String credentials = credentialsSb.toString();
+    	if (credentials != null && !credentials.isEmpty()) {
+    		i.setCredentials(Credentials.fromString(credentials));
     	}
     	
 		List<String> userIds = httpHeaders.getRequestHeader(usernameHeader);
