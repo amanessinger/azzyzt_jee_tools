@@ -2,7 +2,7 @@
 #VAR: tableStyle=formal
 #VAR: subToC=true
 
-#VAR: version=1.2.4
+#VAR: version=1.2.5
 
 * Azzyzt JEE Tools
 #OPT: plain!

@@ -15,6 +15,7 @@ public class Credentials {
 		}
 		String[] credStatements = in.split(";");
 		for (String credStatement : credStatements) {
+			// credential name
 			credStatement = credStatement.trim();
 			if (credStatement.isEmpty()) {
 				continue;
@@ -28,6 +29,30 @@ public class Credentials {
 			result.add(credentialName, c);
 			if (credStatementParts.length == 1) {
 				continue;
+			}
+			// credential properties in parens
+			String propsPart = credStatementParts[1];
+			String[] props = propsPart.split(",");
+			for (String prop : props) {
+				// isolate name/value pairs
+				prop = prop.trim();
+				if (prop.isEmpty()) {
+					continue;
+				}
+				String[] p = prop.split("=");
+				String pName = p[0].trim();
+				if (pName.isEmpty()) {
+					continue;
+				}
+				String pValue = Credential.PROPVAL_TRUE; // default if no value is given
+				if (p.length > 1) {
+					String p1 = p[1].trim();
+					if (!p1.isEmpty()) {
+						// has a value
+						pValue = p1;
+					}
+				}
+				c.addProperty(pName, pValue);
 			}
 		}
 		return result;

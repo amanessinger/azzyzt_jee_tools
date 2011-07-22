@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or � as soon they
+ * Licensed under the EUPL, Version 1.1 or - as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -33,8 +33,8 @@ import javax.interceptor.InvocationContext;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MultivaluedMap;
 
+import org.azzyzt.jee.runtime.meta.Credential;
 import org.azzyzt.jee.runtime.meta.Credentials;
 import org.azzyzt.jee.runtime.meta.InvocationMetaInfo;
 
@@ -46,7 +46,8 @@ public class SiteAdapterBase {
     private static final String DEFAULT_CREDENTIALS_HEADER = "HTTP_X_AUTHORIZE_ROLES";
     private static final String JNDI_CREDENTIALS_HEADER = "custom/stringvalues/http/header/roles";
     
-    private static final String REST_200_ON_ERROR = "REST_200_ON_ERROR"; // FIXME
+    private static final String CRED_AZZYZT = "azzyzt";
+    private static final String CRED_PROP_200_ON_ERROR = "200-on-error";
 
     private static final String DEFAULT_ANONYMOUS_USER = "anonymous";
     private static final String JNDI_ANONYMOUS_USER = "custom/stringvalues/username/anonymous";
@@ -78,6 +79,7 @@ public class SiteAdapterBase {
     	
     	i.setReturn200OnError(false);
     	List<String> credentialsHeaders = httpHeaders.getRequestHeader(credentialsHeader);
+    	// there shouldn't ever be more than one header, but just if, string them together
     	StringBuffer credentialsSb = new StringBuffer();
     	for (String h : credentialsHeaders) {
     		credentialsSb.append(h);
@@ -86,9 +88,14 @@ public class SiteAdapterBase {
     		}
     	}
     	String credentials = credentialsSb.toString();
-    	if (credentials != null && !credentials.isEmpty()) {
-    		i.setCredentials(Credentials.fromString(credentials));
-    	}
+    	Credentials creds = Credentials.fromString(credentials); // copes with null/empty/...
+		i.setCredentials(creds);
+		if (creds.hasCredential(CRED_AZZYZT)) {
+			Credential credAzzyzt = creds.getCredential(CRED_AZZYZT);
+			if (credAzzyzt.isPropertyTrue(CRED_PROP_200_ON_ERROR)) {
+				i.setReturn200OnError(true);
+			}
+		}
     	
 		List<String> userIds = httpHeaders.getRequestHeader(usernameHeader);
     	
