@@ -40,7 +40,7 @@ import org.azzyzt.jee.runtime.meta.InvocationMetaInfo;
 
 public class SiteAdapterBase {
 
-	private static final String DEFAULT_USERNAME_HEADER = "x-authenticate-userid";
+	private static final String DEFAULT_USERNAME_HEADER = "HTTP_X_AUTHENTICATE_USERID";
     private static final String JNDI_USERNAME_HEADER = "custom/stringvalues/http/header/username";
 
     private static final String DEFAULT_CREDENTIALS_HEADER = "HTTP_X_AUTHORIZE_ROLES";
