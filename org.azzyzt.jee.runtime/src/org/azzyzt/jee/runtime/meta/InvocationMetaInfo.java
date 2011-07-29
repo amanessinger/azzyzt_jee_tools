@@ -36,6 +36,8 @@ public class InvocationMetaInfo {
 	private String authenticatedUserName;
 	
 	private boolean return200OnError = false;
+
+	private Credentials credentials;
 	
 	public InvocationMetaInfo() {
 		this.started = new Date();
@@ -62,8 +64,11 @@ public class InvocationMetaInfo {
 	}
 
 	public void setCredentials(Credentials c) {
-		// TODO Auto-generated method stub
-		
+		this.credentials = c;
+	}
+
+	public Credentials getCredentials() {
+		return credentials;
 	}
 
 }
