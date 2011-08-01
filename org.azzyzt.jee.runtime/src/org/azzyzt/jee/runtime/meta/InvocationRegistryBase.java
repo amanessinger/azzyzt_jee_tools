@@ -32,6 +32,7 @@ import java.util.Calendar;
 import javax.interceptor.InvocationContext;
 import javax.transaction.TransactionSynchronizationRegistry;
 
+import org.azzyzt.jee.runtime.identifiers.TsrKeys;
 import org.azzyzt.jee.runtime.util.SiteAdapterInterface;
 import org.azzyzt.jee.runtime.util.StringConverterInterface;
 
@@ -58,21 +59,40 @@ public abstract class InvocationRegistryBase {
 				);
 			}
 		}
-		tsr.putResource("invocationMetaInfo", metaInfo);
+		tsr.putResource(TsrKeys.INVOCATION_META_INFO, metaInfo);
 		return metaInfo;
 	}
 	
-	public void registerEJBInvocation(InvocationContext ctx) {
+	public InvocationMetaInfo registerEJBInvocation(InvocationContext ctx) {
 		TransactionSynchronizationRegistry tsr = getTsr();
 
 		ensureInvocationTimestamp(tsr);
+		
+		InvocationMetaInfo metaInfo = getMetaInfo();		
+		if (metaInfo == null) {
+			// not already done in REST interceptor 
+			metaInfo = new InvocationMetaInfo();
+			SiteAdapterInterface siteAdapter = getSiteAdapter();
+			if (siteAdapter != null) {
+				metaInfo = siteAdapter.fromSOAPContext(ctx);
+				StringConverterInterface usernameConverter = getAzzyztant().getUsernameConverter();
+				if (usernameConverter != null) {
+					// call converter if supplied
+					metaInfo.setAuthenticatedUserName(
+							usernameConverter.convert(metaInfo.getAuthenticatedUserName())
+					);
+				}
+			}
+			tsr.putResource(TsrKeys.INVOCATION_META_INFO, metaInfo);
+		}
+		return metaInfo;
 	}
 	
 	private Calendar ensureInvocationTimestamp(TransactionSynchronizationRegistry tsr) {
-		Object resource = tsr.getResource("invocationTimestamp");
+		Object resource = tsr.getResource(TsrKeys.INVOCATION_TIMESTAMP);
 		if (resource == null) {
 			Calendar invocationTimestamp = Calendar.getInstance();
-			tsr.putResource("invocationTimestamp", invocationTimestamp);
+			tsr.putResource(TsrKeys.INVOCATION_TIMESTAMP, invocationTimestamp);
 			return invocationTimestamp;
 		} else {
 			return (Calendar)resource;
@@ -81,7 +101,7 @@ public abstract class InvocationRegistryBase {
 	
 	public InvocationMetaInfo getMetaInfo() {
 		// TODO make sure that the caller (generated) can cope with nulls
-		InvocationMetaInfo metaInfo = (InvocationMetaInfo)getTsr().getResource("invocationMetaInfo");
+		InvocationMetaInfo metaInfo = (InvocationMetaInfo)getTsr().getResource(TsrKeys.INVOCATION_META_INFO);
 		return metaInfo;
 	}
 	

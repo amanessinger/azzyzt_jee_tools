@@ -62,6 +62,8 @@ public class SiteAdapterModelBuilder extends DerivedModelBuilder implements Buil
 			target.addMetaAnnotationInstance(mai);
 			
 			target.addReferencedForeignType(std.javaxEjbLocal);
+			target.addReferencedForeignType(std.javaxAnnotationResource);
+			target.addReferencedForeignType(std.javaxXmlWsWebServiceContext);
 			
 			// now break out
 			break;

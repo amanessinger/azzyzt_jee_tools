@@ -5,3 +5,12 @@ group javaSiteAdapterGroup : javaGroup;
 
 >>
 
+@javaClass.extra_methods() ::= <<
+@Resource WebServiceContext wsc;
+
+@Override
+protected WebServiceContext getWebServiceContext() {
+    return wsc;
+}
+
+>>

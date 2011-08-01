@@ -34,11 +34,11 @@ import org.azzyzt.jee.tools.mwe.model.annotation.MetaAnnotationInstance;
 import org.azzyzt.jee.tools.mwe.model.type.MetaClass;
 import org.azzyzt.jee.tools.mwe.model.type.MetaEntity;
 
-public class TransactionRollbackHandlerModelBuilder extends DerivedModelBuilder implements Builder {
+public class EJBInterceptorModelBuilder extends DerivedModelBuilder implements Builder {
 
-	private static final String CLASS_NAME = "TransactionRollbackHandler";
+	private static final String CLASS_NAME = "EJBInterceptor";
 
-	public TransactionRollbackHandlerModelBuilder(MetaModel entityModel, String targetPackageName) {
+	public EJBInterceptorModelBuilder(MetaModel entityModel, String targetPackageName) {
 		super(entityModel, targetPackageName);
 	}
 

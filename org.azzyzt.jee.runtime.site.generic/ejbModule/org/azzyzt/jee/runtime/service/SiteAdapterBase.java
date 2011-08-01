@@ -28,22 +28,26 @@
 package org.azzyzt.jee.runtime.service;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.interceptor.InvocationContext;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MultivaluedMap;
+import javax.xml.ws.WebServiceContext;
+import javax.xml.ws.handler.MessageContext;
 
 import org.azzyzt.jee.runtime.meta.Credential;
 import org.azzyzt.jee.runtime.meta.Credentials;
 import org.azzyzt.jee.runtime.meta.InvocationMetaInfo;
 
-public class SiteAdapterBase {
+public abstract class SiteAdapterBase {
 
-	private static final String DEFAULT_USERNAME_HEADER = "HTTP_X_AUTHENTICATE_USERID";
+	private static final String DEFAULT_USERNAME_HEADER = "http_x_authenticate_userid";
     private static final String JNDI_USERNAME_HEADER = "custom/stringvalues/http/header/username";
 
-    private static final String DEFAULT_CREDENTIALS_HEADER = "HTTP_X_AUTHORIZE_ROLES";
+    private static final String DEFAULT_CREDENTIALS_HEADER = "http_x_authorize_roles";
     private static final String JNDI_CREDENTIALS_HEADER = "custom/stringvalues/http/header/roles";
     
     private static final String CRED_AZZYZT = "azzyzt";
@@ -64,6 +68,8 @@ public class SiteAdapterBase {
 
 	public SiteAdapterBase() { }
 
+	protected abstract WebServiceContext getWebServiceContext();
+
     public InvocationMetaInfo fromRESTContext(InvocationContext ctx) {
     	
     	InvocationMetaInfo i = new InvocationMetaInfo();
@@ -77,9 +83,60 @@ public class SiteAdapterBase {
     	
     	if (httpHeaders == null) return i;
     	
-    	i.setReturn200OnError(false);
+    	//printAllHeadersToStderr(httpHeaders);
+    	
     	List<String> credentialsHeaders = httpHeaders.getRequestHeader(credentialsHeader);
-    	// there shouldn't ever be more than one header, but just if, string them together
+    	if (credentialsHeaders == null) {
+    		credentialsHeaders = httpHeaders.getRequestHeader(credentialsHeader.toUpperCase());
+    	}
+		extractCredentials(i, credentialsHeaders);
+		List<String> usernameHeaders = httpHeaders.getRequestHeader(usernameHeader);
+		if (usernameHeaders == null) {
+			usernameHeaders = httpHeaders.getRequestHeader(usernameHeader.toUpperCase());
+		}
+		extractUserId(i, usernameHeaders);
+    	
+    	return i;
+    }
+
+    @SuppressWarnings("unchecked")
+	public InvocationMetaInfo fromSOAPContext(InvocationContext ctx) {
+    	
+    	InvocationMetaInfo i = new InvocationMetaInfo();
+		i.setAuthenticatedUserName(anonymousUser);
+		
+		WebServiceContext wsc = getWebServiceContext();
+		if (wsc != null) {
+    		MessageContext messageContext = wsc.getMessageContext();
+			if (messageContext.containsKey(MessageContext.HTTP_REQUEST_HEADERS)) {
+				
+    			Map<String, List<String>> httpHeaders;
+				httpHeaders = (Map<String, List<String>>)messageContext.get(MessageContext.HTTP_REQUEST_HEADERS);
+				
+		    	List<String> credentialsHeaders = httpHeaders.get(credentialsHeader);
+		    	if (credentialsHeaders == null) {
+		    		credentialsHeaders = httpHeaders.get(credentialsHeader.toUpperCase());
+		    	}
+				extractCredentials(i, credentialsHeaders);
+				
+				List<String> usernameHeaders = httpHeaders.get(usernameHeader);
+				if (usernameHeaders == null) {
+					usernameHeaders = httpHeaders.get(usernameHeader.toUpperCase());
+				}
+				extractUserId(i, usernameHeaders);
+    		}
+		}
+
+    	return i;
+    }
+    
+	private void extractCredentials(InvocationMetaInfo i, List<String> credentialsHeaders) 
+	{
+		i.setReturn200OnError(false);
+		
+		if (credentialsHeaders == null || credentialsHeaders.isEmpty()) return;
+		
+		// there shouldn't ever be more than one header, but just if, string them together
     	StringBuffer credentialsSb = new StringBuffer();
     	for (String h : credentialsHeaders) {
     		credentialsSb.append(h);
@@ -96,16 +153,14 @@ public class SiteAdapterBase {
 				i.setReturn200OnError(true);
 			}
 		}
-    	
-		List<String> userIds = httpHeaders.getRequestHeader(usernameHeader);
-    	
-    	if (userIds == null || userIds.isEmpty()) return i;
-    	
-    	i.setAuthenticatedUserName(userIds.get(0));
-    	
-    	return i;
-    }
-
+	}
+    
+	private void extractUserId(InvocationMetaInfo i, List<String> userIds) {
+		if (userIds != null && !userIds.isEmpty()) {
+			i.setAuthenticatedUserName(userIds.get(0));
+		}
+	}
+	
 	private static String lookupString(String jndiName, String defaultValue) {
 		String result;
         try {
@@ -119,4 +174,20 @@ public class SiteAdapterBase {
 		return result;
 	}
     
+	@SuppressWarnings("unused")
+	private void printAllHeadersToStderr(HttpHeaders httpHeaders) {
+		MultivaluedMap<String, String> requestHeaders = httpHeaders.getRequestHeaders();
+    	for (String key : requestHeaders.keySet()) {
+    		StringBuffer sb = new StringBuffer();
+    		sb.append(key);
+    		sb.append(" =");
+    		List<String> values = httpHeaders.getRequestHeader(key);
+    		for (String value : values) {
+    			sb.append(" ");
+    			sb.append(value);
+    		}
+    		System.err.println(sb.toString());
+    	}
+	}
+
 }

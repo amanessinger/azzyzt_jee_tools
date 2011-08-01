@@ -119,6 +119,7 @@ public class MetaStandardDefs {
 	public final MetaAnnotation javaxPersistenceEmbeddable;
 	
 	public final MetaAnnotation javaxJwsWebService;
+	public final MetaInterface javaxXmlWsWebServiceContext;
 	
 	public final MetaAnnotation javaxXmlBindAnnotationXmlRootElement;
 	public final MetaAnnotation javaxXmlBindAnnotationXmlElementWrapper;
@@ -303,6 +304,7 @@ public class MetaStandardDefs {
 		javaxPersistenceEmbeddable = MetaAnnotation.forType(javax.persistence.Embeddable.class);
 		
 		javaxJwsWebService = MetaAnnotation.forType(javax.jws.WebService.class);
+		javaxXmlWsWebServiceContext = MetaInterface.forType(javax.xml.ws.WebServiceContext.class);
 		
 		javaxXmlBindAnnotationXmlRootElement = MetaAnnotation.forType(javax.xml.bind.annotation.XmlRootElement.class);
 		javaxXmlBindAnnotationXmlElementWrapper = MetaAnnotation.forType(javax.xml.bind.annotation.XmlElementWrapper.class);

@@ -32,7 +32,7 @@ import org.azzyzt.jee.tools.mwe.builder.EaoModelBuilder;
 import org.azzyzt.jee.tools.mwe.builder.InvocationRegistryModelBuilder;
 import org.azzyzt.jee.tools.mwe.builder.SiteAdapterModelBuilder;
 import org.azzyzt.jee.tools.mwe.builder.StoreDeleteDtoModelBuilder;
-import org.azzyzt.jee.tools.mwe.builder.TransactionRollbackHandlerModelBuilder;
+import org.azzyzt.jee.tools.mwe.builder.EJBInterceptorModelBuilder;
 import org.azzyzt.jee.tools.mwe.builder.TypeMetaInfoModelBuilder;
 import org.azzyzt.jee.tools.mwe.builder.ValidAssociationPathsModelBuilder;
 import org.azzyzt.jee.tools.mwe.generator.JavaGenerator;
@@ -129,8 +129,8 @@ public class SingleTargetsGeneratorFeature extends GeneratorFeature {
 		targetGen.setGenerateGettersSetters(false);
 		numberOfSourcesGenerated += targetGen.generate();
 
-		targetModel = new TransactionRollbackHandlerModelBuilder(getMasterModel(), null).build();
-		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaTransactionRollbackHandlerGroup", masterModel);
+		targetModel = new EJBInterceptorModelBuilder(getMasterModel(), null).build();
+		targetGen = new JavaGenerator(targetModel, sourceFolder, "javaEJBInterceptorGroup", masterModel);
 		targetGen.setGenerateFields(true);
 		targetGen.setGenerateDefaultConstructor(false);
 		targetGen.setGenerateGettersSetters(false);

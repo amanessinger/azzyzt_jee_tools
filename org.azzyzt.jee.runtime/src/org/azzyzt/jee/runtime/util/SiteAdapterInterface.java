@@ -34,5 +34,6 @@ import org.azzyzt.jee.runtime.meta.InvocationMetaInfo;
 public interface SiteAdapterInterface {
 	
 	public InvocationMetaInfo fromRESTContext(InvocationContext ctx);
+	public InvocationMetaInfo fromSOAPContext(InvocationContext ctx);
 
 }

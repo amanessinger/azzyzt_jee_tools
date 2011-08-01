@@ -1,4 +1,4 @@
-group javaTransactionRollbackHandlerGroup : javaGroup;
+group javaEJBInterceptorGroup : javaGroup;
 
 @javaClass.extra_methods() ::= <<
 @AroundInvoke
