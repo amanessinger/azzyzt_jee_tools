@@ -1,9 +1,11 @@
 group javaEJBInterceptorGroup : javaGroup;
 
 @javaClass.extra_methods() ::= <<
+@Resource WebServiceContext wsc;
+
 @AroundInvoke
 public Object aroundBeanInvocation(InvocationContext ctx) throws Exception {
-    invocationRegistry.registerEJBInvocation(ctx);
+    invocationRegistry.registerEJBInvocation(wsc);
     try {
         Object result = ctx.proceed();
         eao.flush();

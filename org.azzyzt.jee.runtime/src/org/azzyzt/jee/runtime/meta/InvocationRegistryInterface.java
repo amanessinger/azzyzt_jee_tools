@@ -4,6 +4,7 @@ import java.util.Calendar;
 
 import javax.interceptor.InvocationContext;
 import javax.transaction.TransactionSynchronizationRegistry;
+import javax.xml.ws.WebServiceContext;
 
 import org.azzyzt.jee.runtime.util.SiteAdapterInterface;
 
@@ -19,6 +20,6 @@ public interface InvocationRegistryInterface {
 	
 	public InvocationMetaInfo registerRESTInvocation(InvocationContext ctx);
 	
-	public InvocationMetaInfo registerEJBInvocation(InvocationContext ctx);
+	public InvocationMetaInfo registerEJBInvocation(WebServiceContext ctx);
 
 }

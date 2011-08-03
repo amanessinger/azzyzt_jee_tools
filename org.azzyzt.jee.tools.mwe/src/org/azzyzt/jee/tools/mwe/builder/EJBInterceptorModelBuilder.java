@@ -67,6 +67,7 @@ public class EJBInterceptorModelBuilder extends DerivedModelBuilder implements B
 			target.addReferencedForeignType(std.javaxInterceptorInvocationContext);
 			target.addReferencedForeignType(std.javaxEjbEJBTransactionRolledbackException);
 			target.addReferencedForeignType(std.translatableException);
+			target.addReferencedForeignType(std.javaxXmlWsWebServiceContext);
 			
 			addGenericEaoField(target);
 			addEJBSessionContext(target);

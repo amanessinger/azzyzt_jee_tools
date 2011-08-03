@@ -4,13 +4,3 @@ group javaSiteAdapterGroup : javaGroup;
 @Local( { SiteAdapterInterface.class })
 
 >>
-
-@javaClass.extra_methods() ::= <<
-@Resource WebServiceContext wsc;
-
-@Override
-protected WebServiceContext getWebServiceContext() {
-    return wsc;
-}
-
->>

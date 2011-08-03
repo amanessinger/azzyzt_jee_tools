@@ -28,12 +28,13 @@
 package org.azzyzt.jee.runtime.util;
 
 import javax.interceptor.InvocationContext;
+import javax.xml.ws.WebServiceContext;
 
 import org.azzyzt.jee.runtime.meta.InvocationMetaInfo;
 
 public interface SiteAdapterInterface {
 	
 	public InvocationMetaInfo fromRESTContext(InvocationContext ctx);
-	public InvocationMetaInfo fromSOAPContext(InvocationContext ctx);
+	public InvocationMetaInfo fromSOAPContext(WebServiceContext ctx);
 
 }

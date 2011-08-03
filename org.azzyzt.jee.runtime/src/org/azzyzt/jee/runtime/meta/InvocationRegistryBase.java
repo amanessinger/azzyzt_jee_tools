@@ -31,12 +31,13 @@ import java.util.Calendar;
 
 import javax.interceptor.InvocationContext;
 import javax.transaction.TransactionSynchronizationRegistry;
+import javax.xml.ws.WebServiceContext;
 
 import org.azzyzt.jee.runtime.identifiers.TsrKeys;
 import org.azzyzt.jee.runtime.util.SiteAdapterInterface;
 import org.azzyzt.jee.runtime.util.StringConverterInterface;
 
-public abstract class InvocationRegistryBase {
+public abstract class InvocationRegistryBase implements InvocationRegistryInterface {
 
 	public abstract SiteAdapterInterface getSiteAdapter();
 	public abstract TransactionSynchronizationRegistry getTsr();
@@ -63,7 +64,7 @@ public abstract class InvocationRegistryBase {
 		return metaInfo;
 	}
 	
-	public InvocationMetaInfo registerEJBInvocation(InvocationContext ctx) {
+	public InvocationMetaInfo registerEJBInvocation(WebServiceContext ctx) {
 		TransactionSynchronizationRegistry tsr = getTsr();
 
 		ensureInvocationTimestamp(tsr);
