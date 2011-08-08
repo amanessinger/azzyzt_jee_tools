@@ -7,7 +7,10 @@ import org.azzyzt.jee.runtime.annotation.AzzyztGeneratorOptions;
 import org.azzyzt.jee.runtime.meta.AzzyztGeneratorCutback;
 import org.azzyzt.jee.runtime.meta.AzzyztGeneratorOption;
 import org.azzyzt.jee.runtime.meta.AzzyztantInterface;
+import org.azzyzt.jee.runtime.util.AuthorizationInterface;
 import org.azzyzt.jee.runtime.util.StringConverterInterface;
+
+import com.manessinger.cookbook.util.Authorizer;
 
 
 /**
@@ -51,7 +54,19 @@ public class Azzyztant implements AzzyztantInterface {
      * 'convert()'. Neither should you.
      */
     private final StringConverterInterface usernameConverter = null;
-
+    
+    /*
+     * 'authorizer' can be set to an instance of any class that implements
+     * AuthorizationInterface.
+     *
+     * ATTENTION: keep this stateless, fast and thread-safe!!! 
+     * 
+     * This is actually a shared instance that, if not null, is called once 
+     * upon any invocation. The runtime won't try to synchronize its call to 
+     * 'checkAuthorization()'. Neither should you.
+     */
+    private final AuthorizationInterface authorizer = new Authorizer();
+    
     public Azzyztant() { super(); }
 
 
@@ -59,5 +74,10 @@ public class Azzyztant implements AzzyztantInterface {
     public StringConverterInterface getUsernameConverter() {
         return usernameConverter;
     }
+
+	@Override
+	public AuthorizationInterface getAuthorizer() {
+		return authorizer;
+	}
 
 }

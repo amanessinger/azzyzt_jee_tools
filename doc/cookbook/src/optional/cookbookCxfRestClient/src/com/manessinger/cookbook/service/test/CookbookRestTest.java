@@ -3,6 +3,7 @@ package com.manessinger.cookbook.service.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,6 +18,7 @@ import javax.xml.bind.JAXB;
 
 import org.apache.cxf.jaxrs.client.Client;
 import org.apache.cxf.jaxrs.client.JAXRSClientFactory;
+import org.apache.cxf.jaxrs.client.ServerWebApplicationException;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -43,7 +45,7 @@ import com.manessinger.cookbook.service.ZipFullCxfRestInterface;
  */
 public class CookbookRestTest {
 	
-	private static final String BASE_URI = "http://localhost:8080/cookbookServlets/REST";
+	private static final String BASE_URI = "http://localhost:8081/cookbookServlets/REST";
 	
 	private static final String FRANCE = "France";
 	private static final String MARSEILLES = "Marseilles";
@@ -68,6 +70,9 @@ public class CookbookRestTest {
 	private static Client visitClient;
 	private static Client zipClient;
 	
+	private static CityFullCxfRestInterface cityProtectedSvc;
+	private static Client cityProtectedClient;
+	
 	/**
 	 * BEFORE CLASS: setup proxies, set their media types to APPLICATION_XML. 
 	 * There seems to be an error in Apache CXF, the REST client seemingly ignores 
@@ -91,37 +96,50 @@ public class CookbookRestTest {
 		cityClient = WebClient.client(citySvc);
 		cityClient.type(MediaType.APPLICATION_XML);
 		cityClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
-		// cityClient.header("X-Portal-Cred0", "REST_200_ON_ERROR");
+		cityClient.header("x-authorize-roles", "azzyzt(200-on-error=false);modify()");
+		cityClient.header("x-authenticate-userid", "junit");
 		
 		countrySvc = JAXRSClientFactory.create(BASE_URI, CountryFullCxfRestInterface.class);
 		countryClient = WebClient.client(countrySvc);
 		countryClient.type(MediaType.APPLICATION_XML);
 		countryClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
-		// countryClient.header("X-Portal-Cred0", "REST_200_ON_ERROR");
+		countryClient.header("x-authorize-roles", "azzyzt(200-on-error=false);modify()");
+		countryClient.header("x-authenticate-userid", "junit");
 		
 		languageSvc = JAXRSClientFactory.create(BASE_URI, LanguageFullCxfRestInterface.class);
 		languageClient = WebClient.client(languageSvc);
 		languageClient.type(MediaType.APPLICATION_XML);
 		languageClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
-		// languageClient.header("X-Portal-Cred0", "REST_200_ON_ERROR");
+		languageClient.header("x-authorize-roles", "azzyzt(200-on-error=false);modify()");
+		languageClient.header("x-authenticate-userid", "junit");
 		
 		multiSvc = JAXRSClientFactory.create(BASE_URI, ModifyMultiCxfRestInterface.class);
 		multiClient = WebClient.client(multiSvc);
 		multiClient.type(MediaType.APPLICATION_XML);
 		multiClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
-		// multiClient.header("X-Portal-Cred0", "REST_200_ON_ERROR");
+		multiClient.header("x-authorize-roles", "azzyzt(200-on-error=false);modify()");
+		multiClient.header("x-authenticate-userid", "junit");
 		
 		visitSvc = JAXRSClientFactory.create(BASE_URI, VisitFullCxfRestInterface.class);
 		visitClient = WebClient.client(visitSvc);
 		visitClient.type(MediaType.APPLICATION_XML);
 		visitClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
-		// visitClient.header("X-Portal-Cred0", "REST_200_ON_ERROR");
+		visitClient.header("x-authorize-roles", "azzyzt(200-on-error=false);modify()");
+		visitClient.header("x-authenticate-userid", "junit");
 		
 		zipSvc = JAXRSClientFactory.create(BASE_URI, ZipFullCxfRestInterface.class);
 		zipClient = WebClient.client(zipSvc);
 		zipClient.type(MediaType.APPLICATION_XML);
 		zipClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
-		// zipClient.header("X-Portal-Cred0", "REST_200_ON_ERROR");
+		zipClient.header("x-authorize-roles", "azzyzt(200-on-error=false);modify()");
+		zipClient.header("x-authenticate-userid", "junit");
+		
+		cityProtectedSvc = JAXRSClientFactory.create(BASE_URI, CityFullCxfRestInterface.class);
+		cityProtectedClient = WebClient.client(cityProtectedSvc);
+		cityProtectedClient.type(MediaType.APPLICATION_XML);
+		cityProtectedClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
+		cityProtectedClient.header("x-authorize-roles", "azzyzt(200-on-error=false);");
+		cityProtectedClient.header("x-authenticate-userid", "junit");
 		
 	}
 	
@@ -404,6 +422,27 @@ public class CookbookRestTest {
 		assertEquals("<result>OK</result>", result);
 	}
 
+	/**
+	 * TEST: Store a city with the protected client. It does not send a 
+	 * "modify" credential, thus the server should throw an AccessDenied Exception.
+	 */
+	@Test(expected=ServerWebApplicationException.class)
+	public void testTryStoreCity() {
+		List<Dto> countries = countrySvc.list(from("META-INF/xml/get_austria.xml"));
+		assertNotNull(countries);
+		assertEquals(1, countries.size());
+		CountryDto austria = (CountryDto)countries.get(0);
+		assertEquals("Austria", austria.getName());
+		
+		CityDto c = new CityDto();
+		c.setCountryId(austria.getId());
+		c.setName("Villach");
+		dump(c);
+		
+		c = cityProtectedSvc.store(c);
+		fail("This should be unreachable");
+	}
+	
 	/**
 	 * Helper method that creates DTOs for a country and its cities
 	 * 

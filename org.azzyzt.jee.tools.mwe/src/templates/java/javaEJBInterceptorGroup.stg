@@ -5,8 +5,14 @@ group javaEJBInterceptorGroup : javaGroup;
 
 @AroundInvoke
 public Object aroundBeanInvocation(InvocationContext ctx) throws Exception {
-    invocationRegistry.registerEJBInvocation(wsc);
+    InvocationMetaInfo mi = invocationRegistry.registerEJBInvocation(wsc);
+    
     try {
+        
+        AuthorizationInterface authorizer = invocationRegistry.getAzzyztant().getAuthorizer();
+        if (authorizer != null) {
+            authorizer.checkAuthorization(ctx.getTarget().getClass(), ctx.getMethod(), mi);
+        }
         Object result = ctx.proceed();
         eao.flush();
         return result;
