@@ -54,7 +54,7 @@ public class RESTModifyMultiInterfaceModelBuilder extends DerivedModelBuilder im
 			// create MetaInterface
 			String packageName = derivePackageNameFromEntityAndFollowPackage(me, PackageTails.SERVICE);
 			String simpleName = CLASS_NAME;
-			String pathString = RESTPathFragments.RESTRICTED+"modifyMulti";
+			String pathString = RESTPathFragments.RESTFUL+"modifyMulti";
 			MetaInterface target = MetaInterface.forName(packageName, simpleName);
 			masterModel.setProperty(ModelProperties.REST_STORE_MULTI_CXF_INTERFACE, target);
 			target.setModifiers(std.mod_public);
