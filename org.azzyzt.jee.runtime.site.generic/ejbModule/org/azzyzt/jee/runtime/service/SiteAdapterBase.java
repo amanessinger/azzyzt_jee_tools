@@ -43,30 +43,47 @@ import org.azzyzt.jee.runtime.meta.InvocationMetaInfo;
 import org.azzyzt.jee.runtime.util.SiteAdapterInterface;
 
 public abstract class SiteAdapterBase implements SiteAdapterInterface {
+	
+	private static final String JNDI_STRINGVALUES_PFX = "custom/stringvalues/";
 
 	private static final String DEFAULT_USERNAME_HEADER = "x-authenticate-userid";
-    private static final String JNDI_USERNAME_HEADER = "custom/stringvalues/http/header/username";
+    private static final String JNDI_USERNAME_HEADER = "http/header/username";
 
     private static final String DEFAULT_CREDENTIALS_HEADER = "x-authorize-roles";
-    private static final String JNDI_CREDENTIALS_HEADER = "custom/stringvalues/http/header/roles";
+    private static final String JNDI_CREDENTIALS_HEADER = "http/header/roles";
     
     private static final String CRED_AZZYZT = "azzyzt";
     private static final String CRED_PROP_200_ON_ERROR = "200-on-error";
 
     private static final String DEFAULT_ANONYMOUS_USER = "anonymous";
-    private static final String JNDI_ANONYMOUS_USER = "custom/stringvalues/username/anonymous";
+    private static final String JNDI_ANONYMOUS_USER = "username/anonymous";
     
-    private static String anonymousUser;
-    private static String usernameHeader;
-    private static String credentialsHeader;
+    private static String anonymousUser = null;
+    private static String usernameHeader = null;
+    private static String credentialsHeader = null;
     
-    static {    	
-    	anonymousUser = lookupString(JNDI_ANONYMOUS_USER, DEFAULT_ANONYMOUS_USER);
-    	usernameHeader = lookupString(JNDI_USERNAME_HEADER, DEFAULT_USERNAME_HEADER);
-    	credentialsHeader = lookupString(JNDI_CREDENTIALS_HEADER, DEFAULT_CREDENTIALS_HEADER);
-    }
-
 	public SiteAdapterBase() { }
+
+	public SiteAdapterBase(String appName) {
+		if (anonymousUser == null) {
+			anonymousUser = lookupString(
+					JNDI_STRINGVALUES_PFX+"app_"+appName+'/'+JNDI_ANONYMOUS_USER, 
+					JNDI_STRINGVALUES_PFX+JNDI_ANONYMOUS_USER, 
+					DEFAULT_ANONYMOUS_USER);
+		}
+		if (usernameHeader == null) {
+			usernameHeader = lookupString(
+					JNDI_STRINGVALUES_PFX+"app_"+appName+'/'+JNDI_USERNAME_HEADER, 
+					JNDI_STRINGVALUES_PFX+JNDI_USERNAME_HEADER, 
+					DEFAULT_USERNAME_HEADER);
+		}
+		if (credentialsHeader == null) {
+			credentialsHeader = lookupString(
+					JNDI_STRINGVALUES_PFX+"app_"+appName+'/'+JNDI_CREDENTIALS_HEADER, 
+					JNDI_STRINGVALUES_PFX+JNDI_CREDENTIALS_HEADER, 
+					DEFAULT_CREDENTIALS_HEADER);
+		}
+	}
 
     public InvocationMetaInfo fromRESTContext(InvocationContext ctx) {
     	
@@ -141,15 +158,20 @@ public abstract class SiteAdapterBase implements SiteAdapterInterface {
 		}
 	}
 	
-	private static String lookupString(String jndiName, String defaultValue) {
-		String result;
+	private static String lookupString(String appName, String globalName, String defaultValue) {
+		String result = null;
+		InitialContext ctxt = null;
         try {
-            // Lookup via JNDI
-            result = (String) new InitialContext()
-            .lookup(jndiName);
-        } catch (NamingException e) {
-            // initialize with default
-            result = (String) defaultValue;
+			ctxt = new InitialContext();
+            result = (String) ctxt.lookup(appName);
+        } catch (NamingException e) { }
+        if (result == null) {
+        	try {
+                result = (String) ctxt.lookup(globalName);
+        	} catch (NamingException e) { }
+        }
+        if (result == null) {
+        	result = (String) defaultValue;
         }
 		return result;
 	}
