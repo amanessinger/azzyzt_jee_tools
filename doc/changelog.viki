@@ -8,6 +8,15 @@
 
  !!! Release {version}
 
+** Changes in 1.3.0
+#OPT: plain!
+
+ - New URLs for SOAP and REST. The new URL schema bundles full
+   services and restricted services. Thus it is possible to
+   allow/disallow one of thos categories based on the URL prefix.
+
+ - ...
+
 ** Changes in 1.2.4
 #OPT: plain!
 

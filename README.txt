@@ -2,7 +2,7 @@
 1 Azzyzt JEE Tools
 ==================
 
-  !!! Release 1.2.4
+  !!! Release 1.3.0
 
 Azzyzt JEE Tools is a collection of software tools helping software 
 developers to create software using Java Enterprise Edition 6. It is 
@@ -24,7 +24,7 @@ https://github.com/amanessinger/azzyzt_jee_tools[3].
 1.1 Current status
 ~~~~~~~~~~~~~~~~~~
 
-As of release 1.2.4, Azzyzt JEE Tools consists of three main parts:
+As of release 1.3.0, Azzyzt JEE Tools consists of three main parts:
 
   1. a project generator that creates so-called azzyzted projects. An 
     azzyzted project is a collection of four projects, an Enterprise 
@@ -90,11 +90,12 @@ Using JBOSS AS 6.0 as a runtime, generated code should compile. @Remote
 annotations on generated service bean interfaces have to be suppressed 
 using AzzyztGeneratorCutback.NoRemoteInterfaces, because JBOSS AS 6.0 
 only supports the JEE 6 web profile. No further testing with JBOSS AS 
-6.0 has been done yet.
+6.0 has been done yet, JBOSS AS 7.0 has not been tested.
 
-The project generator (#1) already runs with Apache Geronimo v3.0-M1, 
-but due to lacking support for REST, generated applications do not 
-compile.
+In spring 2011 the project generator (#1) has been found to run with 
+Apache Geronimo v3.0-M1, but due to lacking support for REST, generated 
+applications did not compile. No further testing was done on Geronimo 
+since.
 
 Future extensions may provide generators for additional patterns 
 commonly used in Java EE applications.

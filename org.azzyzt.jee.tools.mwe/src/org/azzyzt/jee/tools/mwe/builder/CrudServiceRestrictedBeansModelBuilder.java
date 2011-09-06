@@ -39,6 +39,7 @@ import org.azzyzt.jee.tools.mwe.model.type.MetaInterface;
 public class CrudServiceRestrictedBeansModelBuilder extends DerivedModelBuilder implements Builder {
 
 	public static final String CLASS_SUFFIX = "RestrictedBean";
+	private static final String RESTRICTED_APP_SFX = "_restricted";
 
 	public CrudServiceRestrictedBeansModelBuilder(MetaModel entityModel, String targetPackageName) {
 		super(entityModel, targetPackageName);
@@ -65,7 +66,7 @@ public class CrudServiceRestrictedBeansModelBuilder extends DerivedModelBuilder 
 			target.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxEjbStateless, target));
 			if (!masterModel.getGeneratorOptions().hasCutback(AzzyztGeneratorCutback.NoSoapServices)) {
 				MetaAnnotationInstance mai = new MetaAnnotationInstance(std.javaxJwsWebService, target);
-				mai.setElement("serviceName", masterModel.getProjectBaseName());
+				mai.setElement("serviceName", masterModel.getProjectBaseName()+RESTRICTED_APP_SFX);
 				target.addMetaAnnotationInstance(mai);
 			}
 			
