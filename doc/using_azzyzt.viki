@@ -24,14 +24,16 @@ Licensed under the EUPL, Version 1.1 or subsequent versions
 * Using Azzyzt JEE Tools
 
 If you just want to use Azzyzt JEE Tools (as opposed to modify and
-build them), the recommended way to install the software is via
-an Eclipse update site. As of release {version}, there are two update site
-URLs, one for the edition used by the Municipiality of Vienna,
-Austria, the other a generic version. The URLs are
+build them), the recommended way to install the software is via an
+Eclipse update site. As of release {version}, there is only update
+site URL, the former generic version. The URL is
 
     [[http://azzyzt.manessinger.com/azzyzt_generic/]]
 
-    [[http://azzyzt.manessinger.com/azzyzt_magwien/]]
+The former edition especially for the Municipiality of Vienna,
+Austria, the ''azzyzt_magwien'' version has always been identical and
+with the increased level of configurability, the need for a separate
+version is currently not there.
 
 All announcements of new versions will be published on 
 
@@ -54,11 +56,15 @@ patches, etc, the complete sources are available on \GitHub under
 
 * The cookbook example
 
+** Introduction
+
 If you remember my
 [[http://programming.manessinger.com/tutorials/an-eclipse-glassfish-java-ee-6-tutorial/][Eclipse / \GlassFish / Java EE 6 Tutorial]], 
 here we will use more or less the same application, just slightly
 expanded to show off some new features. All subsequent examples will
-reference the same database and the same entities.
+reference the same database and the same entities. Like in the
+original tutorial, the sample application will be called
+"__cookbook__", although it still has nothing to do with cooking :)
 
 In the following I frequently reference a subdirectory ''doc'' of the
 [[https://github.com/amanessinger/azzyzt_jee_tools][Azzyzt source
@@ -72,13 +78,11 @@ and additionally the extracted content is available under
 
     [[http://azzyzt.manessinger.com/doc/]]
 
-If you want to follow the examples given, you should first set up a
-database. The subdirectory ''doc/cookbook'' of the Azzyzt source
-distribution contains a file ''README.txt''. Follow the directions
-therein. 
+Everything relevant to this tutorial is in a subdirectory
+''doc/cookbook''. Here is its tree structure:
 
 #Verbatim <<---
-doc/cookbook
+doc/cookbook/
 |
 |-- cookbook---REST-soapui-project.xml
 |
@@ -147,35 +151,167 @@ doc/cookbook
                 `-- com
                     `-- manessinger
                         `-- cookbook
-                            `-- meta
-                                `-- Azzyztant.java
+                            |-- meta
+                            |   `-- Azzyztant.java
+                            `-- util
+                                `-- Authorizer.java
 ---
 
-On the same level as ''README.txt'' you find one directory for each
-database that the tutorial supports. Note, it's not that Java EE 6 or
-\GlassFish or Azzyzt don't support other databases, it's just that I've
-not tested the tutorial with anything else.
+There are two directories with with SQL scripts, one for Oracle, one
+for PostgreSQL. No other database was tested by me, but all databases
+supported by JPA should be fine. 
 
-Each database subdirectory contains a set of SQL instructions on how
-to create the database user, the database, and scripts to create the
-schema objects (tables and sequences), to initialize the tables, and
-finally to drop the schema objects if you want to start over.
+ !!! Note please, that the sample entity sources may not work with all databases, because they rely on sequences. Thus, if you use another database, you'll probably have to adapt the entity classes. If you do so, please consider contributing your changes plus DDL scripts to set up the schema, and then I'll include them with future releases.
 
-Furthermore there is a directory ''src/base'', that contains the
-sources of entity classes and a ''persistence.xml'', that already
-references these classes. More about that in the next couple of
-sections. Another directory ''src/optional'' contains the sources of
-the JUnit test that I use.
+Apart from some README files there is also a directory "''src''" with
+two subdirectories, "''base''" and "''optional''". After finishing the
+tutorial you will have a set of database-backed Java EE services
+accessible via REST, SOAP and even Corba/IIOP, plus a JUnit test
+suite. The directory "''src''" contains all source files you would
+normally need to write yourself.
 
-Finally ''doc/cookbook'' contains a soapUI project file. This already
-contains the REST requests for the examples at the end of this
-tutorial.
+In various phases of the tutorial, instead of telling you what to
+write, I'll ask you to copy the contents of some subdirectories into
+your Eclipse workspace.
+
+
+** Prerequisites
+
+If you want to follow the examples given, I urge you to first try them
+with \GlassFish, even if you ultimately want to deploy your own
+application on another server. Download and install a recent version
+of \GlassFish and of Eclipse. See [[readme.html]] for a list of
+supported and tested versions.
+
+Download and install drivers for Oracle or PostgreSQL. Whatever
+database you choose, make sure that the JDBC driver is copied to the
+''glassfish3/glassfish/lib'' directory of the unpacked server.
+
+Download and install a recent JDK. A JRE runtime environment is enough
+to run Eclipse, but \GlassFish needs a JDK. Again, [[readme.html]]
+tells you what was tested.
+
+In order to interact with \GlassFish from within Eclipse, you need to
+install the Oracle \GlassFish Server Tools. In recent versions of
+Eclipse you can go to the Eclipse Marketplace by choosing 
+
+    __Help / Eclipse Marketplace__
+
+You'll get a search box, there you enter "''glassfish''", and from the
+result list you choose
+
+    __\GlassFish Java EE Application Server Plugin for Eclipse__
+
+Alternatively you can install it via
+
+    __Java EE Perspective / Servers View / Context menu / New / Server
+    / Link: Download additional server adapters__
+
+If Eclipse can't access the Internet, then you may be behind a
+proxy. Go to
+
+    __Window / Preferences / General / Network Connections__
+
+Choose an __Active Provider__ (__Native__ for Windows, uses browser
+settings, __Manual__ to set the proxy directly in Eclipse and to
+probably set a proxy user/password).
+
+One last step is needed, installation of
+[[http://www.azzyzt.org][Azzyzt JEE Tools]] themselves. You can either
+get them via the Eclipse Marketplace or directly from the update site
+[[http://azzyzt.manessinger.com/azzyzt_generic/]]. Accept the open
+source license, accept to install unsigned software (yes, I know, I
+should fix this), and finally restart Eclipse when prompted.
+
+At this step you should have a \GlassFish installation, Eclipse
+running and principally being able to connect to \GlassFish, and
+Azzyzt JEE Tools ready for action.
+
+
+** Preparation
+
+Now let's create a server instance. Choose
+
+    __Java EE Perspective / Servers View / Context menu / New /
+    Server__
+
+and select the version of \GlassFish that you want to use. Don't worry
+if you don't find \GlassFish 3.1.1, just select version 3.1, it will
+work.
+
+When creating the server instance, on the second page of the wizard,
+you will have to select a Java Runtime Environment (JRE). There is a
+link on that page, leading to the __Installed JRE preferences__. Use
+that to define a JDK as runtime (the default runtime of Eclipse will
+most likely a JRE and thus not enough to run \GlassFish).
+
+You find all that in greater depth in my
+[[http://programming.manessinger.com/tutorials/an-eclipse-glassfish-java-ee-6-tutorial/][Eclipse/
+\GlassFish / Java EE 6 Tutorial]], I just wanted to mention it.
+
+On the third page of the wizard, when asked for an admin password, I
+leave it empty. It's more convenient on a development server and I am
+behind a corporate firewall anyway. On the fourth and last page we
+could configure applications to run on the new server instance
+(i.e. deploy them). There is nothing to run yet, thus we click
+"__Finish__".
+
+Next set up a database. This consists of the following steps:
+
+ # decide between PostgreSQL and Oracle
+ # create a database and set up an empty database schema
+ # use the SQL files in the database-specific subdirectory of
+   ''doc/cookbook'' to create tables and initialize data. If you ever
+   want to start over, there is also a script to reinitialize the
+   database. 
+ # use a database-specific tool like "__sqlplus__", "__PgAdminIII__"
+   or a database-agnostic tool like "__Toad__" to verify that 
+   the database works, tables and sequences are there, and that 
+   the tables "''country''", "''city''", "''zip''" and
+   "''lang_table''" have initial content.
+
+In Eclipse go to the __Database Development Perspective__ (__Window /
+Open Perspective / Other ... / Database Development__). In the __Data
+Source Explorer__ view (tree on the left side) under __Database
+Connections__ add a new Connection (__New__ from the context
+menu). Choose your database type to your database. See my
+[[http://programming.manessinger.com/tutorials/an-eclipse-glassfish-java-ee-6-tutorial/][Eclipse/
+\GlassFish / Java EE 6 Tutorial]] for details.
+
+You also need to set up a database connection pool and a JDBC resource
+in \GlassFish. Regardless of how you call the connection pool, the
+JDBC resource must be called "''jdbc/cookbookdb''". Again, see my
+[[http://programming.manessinger.com/tutorials/an-eclipse-glassfish-java-ee-6-tutorial/][Eclipse/
+\GlassFish / Java EE 6 Tutorial]] for details and screenshots.
+
+At this point you have all the tools and the environment (server and
+database) ist set up. Next we will create Eclipse projects for the
+application.
 
 
 ** Creating an azzyzted project
 
-Make sure you are in the "Java EE" perspective. There are three ways
-to get to the "New Azzyzted JEE Project" wizard:
+There are different types of Java projects in Eclipse and there are
+different ways to structure your functionality into projects. The most
+simple way for us would be to use a so-called __Dynamic Web
+Project__. Today this project type allows you to use __Enterprise Java
+Beans__ and most other features of Java EE, but there are still some
+reasons, why one would put EJBs into an __EJB Project__, for instance
+that this is the only way to get an __EJB Client Project__, something
+you need when you want to call your beans the "traditional" way,
+i.e. via Corba/IIOP.
+
+When you do it yourself, it is certainly more convenient to use a
+single project, but when you use a generator, a multi-project setup is
+OK, especially if it grants you more flexibility in case you ever need
+it. 
+
+Azzyzt JEE Tools create such a multi-project setup, and we call the
+entirety of these projects an "__azzyzted project__".
+
+Let's do it now. Make sure you are in the "__Java EE__"
+perspective. There are three ways to get to the "New Azzyzted JEE
+Project" wizard:
 
  - __File / New / Other / Java EE / New Azzyzted JEE Project__
  - __\[Project Explorer\] / New / Other / Java EE / New Azzyzted JEE Project__
@@ -195,15 +331,19 @@ packages will be below this prefix.
 The target runtime is a list of all runtimes used in defined server
 instances. Thus if you have two servers supporting Java EE 6 running
 or at least defined in Eclipse, one for \GlassFish 3.01, one for 3.1,
-you will see a list of two runtimes. Choose one of them.
+you will see a list of two runtimes. Choose one of them. This does not
+mean you can't run the finished application on another server or
+server version, it only means that this is the runtime that is used to
+compile against.
 
 If the list of target runtimes is empty, then you have not yet defined
 a server. Do so from the Servers view with "__New / Server__".
 
 In the context of this tutorial, the project base name is
 "''cookbook''", the package name is
-"''com.manessinger.cookbook''". Try this and you will end up with the
-following five projects:
+"''com.manessinger.cookbook''". Use these names, because the sample
+sources under ''doc/cookbook'' rely on that. Try it and you will end
+up with the following five projects:
 
  - ''azzyzt_tools''
  - ''cookbookEAR''
@@ -223,7 +363,7 @@ EAR project is an enterprise archive, for instance
 "''cookbookEJB''" is where we put all application functionality,
 "''cookbookEJBClient''" is the EJB client project, its artifact could
 be distributed in order to allow clients to call EJB functionality via
-CORBA. All datatypes used as parameters or return values of EJB
+Corba. All datatypes used as parameters or return values of EJB
 service methods must be definied in the client project.
 
 "''cookbookServlets''" is a Dynamic Web Project. It is used for the
@@ -232,7 +372,7 @@ REST wrappers around service methods contained in
 number of servlets. Keep in mind though, that you need to put your
 logic into the EJB project, in order to have the most options for
 accessing it. If you stick to that pattern, you can access services
-via CORBA, SOAP and REST. Accesses via CORBA and SOAP can even partake
+via Corba, SOAP and REST. Accesses via Corba and SOAP can even partake
 in distributed transactions.
 
 The three Java projects will have two source folders each. One of them
@@ -246,7 +386,7 @@ initially:
 
 #Verbatim <<---
 azzyzt_tools
-`-- 1.2.4
+`-- 1.3.0
     |-- antlr-2.7.7.jar
     |-- commons-io-2.0.1.jar
     |-- org.azzyzt.jee.tools.mwe.jar
@@ -317,12 +457,16 @@ public class HelloTestBean {
 }
 ---
 
-Start the server, deploy the EAR ("__Add and Remove__" from the context
-menu of the server) and try it via the service test client built into
-the \GlassFish Administration Console.
+Start the server, deploy the EAR ("__Add and Remove__" from the
+context menu of the server) and try it via the service test client
+built into the __\GlassFish Administration Console__ (see "__Manual
+testing via \GlassFish web service tester__" in my
+[[http://programming.manessinger.com/tutorials/an-eclipse-glassfish-java-ee-6-tutorial/][Eclipse
+/ \GlassFish / Java EE 6 Tutorial]] about using the __Adminstration
+Console__).
 
 The second class that is generated into the user folder is
-"''com.manessinger.cookbook.meta.Azzyztant''". It is explained later,
+"''com.manessinger.cookbook.meta.Azzyztant''". It is explained later
 when we talk about customization.
 
 
@@ -374,7 +518,7 @@ There are two ways to create entities:
    perfectly legal cases as well, and one of those cases, the mapping
    of a many-to-many association where the join table has additional
    attributes and does not feature a separate id, is part of the
-   tutorial. 
+   tutorial.
 
 Whichever way you go, be prepared to have to do some manual work in
 this phase. Those problems have been in Dali for quite some time and I
@@ -387,7 +531,7 @@ Note please, that __Azzyzted Modeling With Entities__ only supports mapping
 annotations on fields, not on accessor methods. This is not a deeply
 rooted design decision but just a matter of how it was
 implemented. Though it would be principally possible to support
-annotations of accessor methods, I currently see no reason to do
+annotations on accessor methods, I currently see no reason to do
 so. The general consensus among experts seems to be, that none of the
 two methods has substantial advantages over the other. 
 
@@ -418,10 +562,10 @@ entity fields:
       ''javax.transaction.TransactionSynchronizationRegistry''
 
       As of release {version} this is only partially implemented. It
-      works for REST but not for SOAP and CORBA, and from a service
-      accessed via REST, it currently wouldn't be passed on to backend
-      services accessed via REST or SOAP. The crucial knowledge about
-      how to extract user information from a
+      works for REST and SOAP but not for Corba, and from a service
+      accessed via REST or SOAP, it currently wouldn't be passed on to
+      backend services accessed via REST or SOAP. The crucial
+      knowledge about how to extract user information from a
       ''javax.interceptor.InvocationContext'' is left to a standalone
       EJB that I call a \SiteAdapter. Azzyzt comes with a site adapter
       that uses information supplied in an HTTP header called
@@ -475,10 +619,15 @@ In order to use the entities, just copy the two folders
 into your workspace and then refresh the projects in Eclipse. Most
 likely an error symbol will be shown on the EJB project. Don't worry,
 use "__Project / Clean ... / Clean all projects__" and it will go
-away. I believe this to be an error in Eclipse. 
+away. In some cases, especially on Indigo, it may even be necessary to
+close all projects, open them again and then clean all project. I
+believe this to be an error in Eclipse.
+
+
+*** A few words about the sample database
 
 The sample database is pretty simple. We have have countries, cities,
-zips, visits from a zip code area to a certain city, guided using a
+ZIPs, visits from a ZIP code area to a certain city, guided using a
 certain language, and all languages used by guides. 
 
 A __Country__ has cities and each __City__ is in a certain country. A
@@ -694,8 +843,8 @@ private Date modificationTimestamp;
 
 and finally in ''Visit'' as string. This is not uncommon in legacy
 databases, and because there is no standard string representation that
-we can rely on, I have decided to require the format a format string
-as documented for ''java.text.SimpleDateFormat''.
+we can rely on, I have decided to require a format string as
+documented for ''java.text.SimpleDateFormat''.
 
 #Code id=createModifyTimestampDate syntax=Java <<---
 @CreateTimestamp(format="yyyy-MM-dd-HHmmss.SSS")
@@ -730,7 +879,7 @@ in the language table. And even if you don't agree, there is no way
 around the fact that we stumble upon this pattern in practically every
 legacy database.
 
-Here we are, that's our entity model.
+Here we are, that's our entity model. Now back to the tutorial.
 
 
 ** Generating a base application
@@ -1020,7 +1169,7 @@ __\JavaScript Object Notation__.
 
 The XML format of query specifications was chosen to be easily
 creatable from Adobe Flash REST clients. When the services are
-accessed via SOAP or CORBA, the "''list()''" methods take an object of
+accessed via SOAP or Corba, the "''list()''" methods take an object of
 type ''QuerySpec'' as parameter. Alternatively a second method
 "''listByXML()''" is generated, and those methods again take XML in
 form of a string parameter. The XML format is the same as for REST.
@@ -2608,7 +2757,7 @@ JBoss AS 6.0 runtime, because the interfaces generated in the client
 project were unchangeably annotated with ''@Remote'', and ''@Remote''
 is not part of the Java EE 6 web profile. On the other hand,
 ''@Remote'' is only needed if you want to call your services via
-CORBA/IIOP, and very often this will not be the case. Web services are
+Corba/IIOP, and very often this will not be the case. Web services are
 in fashion, so why should we tie the code to \GlassFish only, just to
 be able to potentially use something that we know we won't use anyway?
 Some users may want it though, and thus we like ''@Remote'' on
@@ -2963,7 +3112,7 @@ city with the requested ID. In both cases a
 
 Why should we bother with Java REST clients anyway? After all, Java
 has a fully conformant SOAP stack, thus we would be better off by just
-making SOAP calls or calling the beans via CORBA, right?
+making SOAP calls or calling the beans via Corba, right?
 
 Well, one good reason is, that we may want to make unit tests for our
 services. When doing so, we will want to maximize coverage by going

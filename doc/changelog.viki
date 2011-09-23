@@ -13,13 +13,16 @@
 
  - New URLs for SOAP and REST. The new URL schema bundles full
    services and restricted services. Thus it is possible to
-   allow/disallow one of thos categories based on the URL prefix.
+   allow/disallow one of those categories based on the URL
+   prefix. This breaks current applications and therefore we have
+   bumped the minor version.
 
  - The default HTTP header expected to contain a pre-authenticated
    username is now "''x-authenticate-userid''".
 
  - The default HTTP header expected to contain a user's credentials is
-   now "''x-authorize-roles''".
+   now "''x-authorize-roles''". See the tutorial for details on
+   credentials. 
 
  - These to HTTP header names and the default anonymous user name can
    still be changed via JNDI custon string resources, but this is more
@@ -33,6 +36,20 @@
    application it's "''cookbook''". If this name is not defined, the
    global name "''custom/stringvalues/http/header/username''" is
    tried, and if that isn't defined either, the default value is used.
+
+ - Added lots of \JavaDoc to runtime. Still not done though.
+
+ - Added an ''AuthorizationInterface''. You can add a reference to an
+   instance of a class implementing this interface to the
+   ''Azzyztant''. It's completely analogous to the username converter
+   and it can be used to check authorization per call, based on the
+   taget class/method and credentials.
+
+ - Eliminated the MAGWIEN feature. Through all the time it has been
+   identical to the GENERIC feature anyway. So far we don't need any
+   special or secret code and the configuration options suffice.
+
+ - Tested with \GlassFish 3.1.1
 
 ** Changes in 1.2.4
 #OPT: plain!

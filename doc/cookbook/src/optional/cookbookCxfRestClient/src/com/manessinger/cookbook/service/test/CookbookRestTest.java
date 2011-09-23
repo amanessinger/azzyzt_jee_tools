@@ -45,7 +45,7 @@ import com.manessinger.cookbook.service.ZipFullCxfRestInterface;
  */
 public class CookbookRestTest {
 	
-	private static final String BASE_URI = "http://localhost:8081/cookbookServlets/REST";
+	private static final String BASE_URI = "http://localhost:8080/cookbookServlets/REST";
 	
 	private static final String FRANCE = "France";
 	private static final String MARSEILLES = "Marseilles";

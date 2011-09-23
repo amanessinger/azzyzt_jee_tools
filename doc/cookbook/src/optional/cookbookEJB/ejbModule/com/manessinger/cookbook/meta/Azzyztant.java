@@ -26,7 +26,7 @@ import com.manessinger.cookbook.util.Authorizer;
         		// AzzyztGeneratorCutback.NoRestServicesJson, 
         		// AzzyztGeneratorCutback.NoRestServicesXml,
                 AzzyztGeneratorCutback.NoRemoteInterfaces,
-                AzzyztGeneratorCutback.NoSoapServices,
+                //AzzyztGeneratorCutback.NoSoapServices,
         },
         options = {
         		AzzyztGeneratorOption.AddCxfRestClient,
