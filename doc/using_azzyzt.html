@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 <meta name="language" content="en">
-<meta name="date" content="2011-09-23T15:16:37">
+<meta name="date" content="2011-10-05T10:50:18">
 <meta name="generator" content="deplate.rb 0.8.5">
 <link rel="start" href="using_azzyzt.html" title="Frontpage">
 <link rel="chapter" href="using_azzyzt.html#hd001" title="Azzyzt JEE Tools">
@@ -1400,9 +1400,20 @@ using the <em>Adminstration Console</em>).</p>
 &ldquo;<code>com.manessinger.cookbook.meta.Azzyztant</code>&rdquo;. It 
 is explained later when we talk about customization.</p>
 
+<p>For now you may undeploy the application (&ldquo;<em>Add and 
+Remove</em>&rdquo; from the context menu of the server), we&rsquo;re 
+going to copy files, do some edits and there&rsquo;s no use in deploying 
+everything to the server immediately.</p>
+
 
 
 <h2 id="hd003005">3.5&nbsp;Azzyzted Modeling With Entities</h2>
+
+<p>Before we go on with the tutorial and actually create code, let&rsquo;s 
+have a deeper look at entity classes, what you can express and how you 
+do it. This is not a reference chapter about JPA modeling, but it shows 
+off what Azzyzt supports and what additions to standard JPA 
+meta-information are available.</p>
 
 <p>Upon project creation, a package 
 &ldquo;<code>com.manessinger.cookbook.entity</code>&rdquo; (given the 
@@ -1564,20 +1575,36 @@ doc/cookbook/src/base
     </li>
 </ul>
 
-<p>into your workspace and then refresh the projects in Eclipse. Most 
-likely an error symbol will be shown on the EJB project. Don&rsquo;t 
-worry, use &ldquo;<em>Project / Clean &hellip; / Clean all 
+<p>into your workspace and then <em>refresh the projects in Eclipse</em>.</p>
+
+<p>Most likely an error symbol will be shown on the EJB project, 
+specifically on <code>cookbookEJB/META-INF/persistence.xml</code>. The 
+error that I usually get is 
+&ldquo;<code>The&nbsp;persistence.xml&nbsp;file&nbsp;does&nbsp;not&nbsp;have&nbsp;recognized&nbsp;content</code>&rdquo;.</p>
+
+<p>Don&rsquo;t worry, use &ldquo;<em>Project / Clean &hellip; / Clean all 
 projects</em>&rdquo; and it will go away. In some cases, especially on 
-Indigo, it may even be necessary to close all projects, open them again 
-and then clean all project. I believe this to be an error in Eclipse.</p>
+Indigo, it may even be necessary to close all projects 
+(&ldquo;<em>Collapse all</em>&rdquo;, select the four 
+<code>cookbook</code> projects, use &ldquo;<em>Close Project</em>&rdquo; 
+from the context menu), open them again (&ldquo;<em>Open 
+Project</em>&rdquo;) and then clean all projects. This repeatably works 
+for me.</p>
+
+<p>The cause seems to be an error in Eclipse, and I read in a comment on 
+stackoverflow.com that it will be fixed in Indigo SR2. Let&rsquo;s see.</p>
 
 
 
 <h3 id="hd003005003">3.5.3&nbsp;A few words about the sample database</h3>
 
-<p>The sample database is pretty simple. We have have countries, cities, 
-ZIPs, visits from a ZIP code area to a certain city, guided using a 
-certain language, and all languages used by guides.</p>
+<p>The sample database is pretty simple. It&rsquo;s not meant to reflect 
+any real application, it&rsquo;s just a utility to show off some common 
+mapping situations.</p>
+
+<p>We have have countries, cities, ZIPs, visits from a ZIP code area to a 
+certain city, guided using a certain language, and all languages used by 
+guides.</p>
 
 <p>A <em>Country</em> has cities and each <em>City</em> is in a certain 
 country. A country has a number of <em>Zip</em> areas and each ZIP area 
@@ -1863,9 +1890,11 @@ legacy database.</p>
 
 <h2 id="hd003006">3.6&nbsp;Generating a base application</h2>
 
-<p>Once you have entities, you can generate code. In order to do this, use 
-&ldquo;<em>Azzyzt / Start code generator</em>&rdquo; from the context 
-menu of the EJB project. That&rsquo;s it :)</p>
+<p>Once you have written your entities or (in case of this tutorial) copied 
+the two directories from <code>doc/cookbook/src/base</code>, you can 
+generate code. In order to do this, use &ldquo;<em>Azzyzt / Start code 
+generator</em>&rdquo; from the context menu of the EJB project. 
+That&rsquo;s it :)</p>
 
 
 
@@ -2036,9 +2065,12 @@ section titled &ldquo;<em>Specifying the database, testing, SQL
 log</em>&rdquo;, that shows how to do this in GlassFish. The sample 
 <code>persistence.xml</code> from 
 <code>doc/cookbook/src/cookbookEJB/ejbModule/META-INF</code> is already 
-set up correctly. In fact, after creating the azzyzted project, copying 
-over the enitites, refreshing the projects and rebuilding all, and then 
-finally generating code, you are ready to go.</p>
+set up correctly for a data source name 
+&ldquo;<code>jdbc/cookbookdb</code>&rdquo;. Please double-check that you 
+have defined such a JDBC resource in GlassFish and that it points to a 
+JDBC connection pool set up for our database. If so, after creating the 
+azzyzted project, copying over the enitites, refreshing the projects and 
+rebuilding all, and then finally generating code, we are ready to go.</p>
 
 <p>You deploy the application by first starting the Server from 
 Eclipse&rsquo;s &ldquo;<em>Servers</em>&rdquo; view. When the server 

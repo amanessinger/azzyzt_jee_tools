@@ -469,8 +469,18 @@ The second class that is generated into the user folder is
 "''com.manessinger.cookbook.meta.Azzyztant''". It is explained later
 when we talk about customization.
 
+For now you may undeploy the application ("__Add and Remove__" from the
+context menu of the server), we're going to copy files, do some edits
+and there's no use in deploying everything to the server immediately.
+
 
 ** Azzyzted Modeling With Entities
+
+Before we go on with the tutorial and actually create code, let's have
+a deeper look at entity classes, what you can express and how you do
+it. This is not a reference chapter about JPA modeling, but it shows
+off what Azzyzt supports and what additions to standard JPA
+meta-information are available.
 
 Upon project creation, a package "''com.manessinger.cookbook.entity''"
 (given the example) was generated under
@@ -616,19 +626,33 @@ In order to use the entities, just copy the two folders
  - ''cookbookEJB''
  - ''cookbookEJBClient''
 
-into your workspace and then refresh the projects in Eclipse. Most
-likely an error symbol will be shown on the EJB project. Don't worry,
-use "__Project / Clean ... / Clean all projects__" and it will go
-away. In some cases, especially on Indigo, it may even be necessary to
-close all projects, open them again and then clean all project. I
-believe this to be an error in Eclipse.
+into your workspace and then __refresh the projects in Eclipse__. 
+
+Most likely an error symbol will be shown on the EJB project,
+specifically on ''cookbookEJB/META-INF/persistence.xml''. The error
+that I usually get is "''The persistence.xml file does not have
+recognized content''".
+
+Don't worry, use "__Project / Clean ... / Clean all projects__" and it
+will go away. In some cases, especially on Indigo, it may even be
+necessary to close all projects ("__Collapse all__", select the four
+''cookbook'' projects, use "__Close Project__" from the context menu),
+open them again ("__Open Project__") and then clean all projects. This
+repeatably works for me.
+
+The cause seems to be an error in Eclipse, and I read in a comment on
+stackoverflow.com that it will be fixed in Indigo SR2. Let's see.
 
 
 *** A few words about the sample database
 
-The sample database is pretty simple. We have have countries, cities,
-ZIPs, visits from a ZIP code area to a certain city, guided using a
-certain language, and all languages used by guides. 
+The sample database is pretty simple. It's not meant to reflect any
+real application, it's just a utility to show off some common mapping
+situations. 
+
+We have have countries, cities, ZIPs, visits from a ZIP code area to a
+certain city, guided using a certain language, and all languages used
+by guides.
 
 A __Country__ has cities and each __City__ is in a certain country. A
 country has a number of __Zip__ areas and each ZIP area belongs to a
@@ -884,9 +908,10 @@ Here we are, that's our entity model. Now back to the tutorial.
 
 ** Generating a base application
 
-Once you have entities, you can generate code. In order to do this,
-use "__Azzyzt / Start code generator__" from the context menu of the EJB
-project. That's it :)
+Once you have written your entities or (in case of this tutorial)
+copied the two directories from ''doc/cookbook/src/base'', you can
+generate code. In order to do this, use "__Azzyzt / Start code
+generator__" from the context menu of the EJB project. That's it :)
 
 
 ** Structure of the generated code
@@ -1034,13 +1059,17 @@ The first step is to deploy the EAR project. Note please, that you
 have to modify ''persistence.xml'' to refer to a ''jta-data-source'',
 and that this data source must be defined in the application
 server. The
-[[http://programming.manessinger.com/tutorials/an-eclipse-glassfish-java-ee-6-tutorial/][Eclipse / \GlassFish / Java EE 6 Tutorial]] has a section titled "__Specifying
+[[http://programming.manessinger.com/tutorials/an-eclipse-glassfish-java-ee-6-tutorial/][Eclipse
+/ \GlassFish / Java EE 6 Tutorial]] has a section titled "__Specifying
 the database, testing, SQL log__", that shows how to do this in
 \GlassFish. The sample ''persistence.xml'' from
 ''doc/cookbook/src/cookbookEJB/ejbModule/META-INF'' is already set up
-correctly. In fact, after creating the azzyzted project, copying over
-the enitites, refreshing the projects and rebuilding all, and then
-finally generating code, you are ready to go.
+correctly for a data source name "''jdbc/cookbookdb''". Please
+double-check that you have defined such a JDBC resource in \GlassFish
+and that it points to a JDBC connection pool set up for our
+database. If so, after creating the azzyzted project, copying over the
+enitites, refreshing the projects and rebuilding all, and then finally
+generating code, we are ready to go.
 
 You deploy the application by first starting the Server from Eclipse's
 "__Servers__" view. When the server runs, select "__Add and Remove
