@@ -47,6 +47,9 @@ public class CookbookRestTest {
 	
 	private static final String BASE_URI = "http://localhost:8080/cookbookServlets/REST";
 	
+	private static final String LINZ = "Linz";
+	private static final String SALZBURG = "Salzburg";
+
 	private static final String FRANCE = "France";
 	private static final String MARSEILLES = "Marseilles";
 	private static final String PARIS = "Paris";
@@ -245,6 +248,39 @@ public class CookbookRestTest {
 			// name ascending
 			if (last != null) {
 				assertTrue(c.getName().compareTo(last.getName()) >= 0);
+			}
+			last = c;
+
+			dump(c);
+		}
+	}
+
+	/**
+	 * TEST: Query with two betweens:
+	 *  - City ID is between 2 and 5 
+	 *  - City name is between "Linz" and "Salzburg" (case-insensitive)
+	 *  - ascending by city ID
+	 */
+	@Test
+	public void testQueryWithTwoBetweens() {
+		List<Dto> cities = citySvc.list(from("META-INF/xml/query_with_two_betweens.xml"));
+		
+		assertNotNull(cities);
+		assertTrue(cities.size() >= 7);
+		CityDto last = null;
+		for (Dto d : cities) {
+			assertTrue(d instanceof CityDto);
+			CityDto c = (CityDto)d;
+			
+			// is within range
+			Long id = c.getId();
+			String name = c.getName();
+			assertTrue((id >=2 && id <= 5) 
+					|| (name.compareToIgnoreCase(LINZ) >= 0 && name.compareToIgnoreCase(SALZBURG) <= 0));
+			
+			// id ascending
+			if (last != null) {
+				assertTrue(c.getId() >= last.getId());
 			}
 			last = c;
 

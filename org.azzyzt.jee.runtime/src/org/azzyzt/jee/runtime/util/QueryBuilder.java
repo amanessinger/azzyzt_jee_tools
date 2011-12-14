@@ -54,6 +54,8 @@ import org.azzyzt.jee.runtime.dto.query.Operand;
 import org.azzyzt.jee.runtime.dto.query.Or;
 import org.azzyzt.jee.runtime.dto.query.OrderByClause;
 import org.azzyzt.jee.runtime.dto.query.QuerySpec;
+import org.azzyzt.jee.runtime.dto.query.TernaryFieldExpression;
+import org.azzyzt.jee.runtime.dto.query.TernaryFieldOperator;
 import org.azzyzt.jee.runtime.dto.query.UnaryBooleanExpression;
 import org.azzyzt.jee.runtime.dto.query.UnaryFieldExpression;
 import org.azzyzt.jee.runtime.entity.EntityBase;
@@ -222,6 +224,8 @@ public class QueryBuilder <ID, T extends EntityBase<ID>> {
 				p = processUnaryFieldExpression((UnaryFieldExpression)e);
 			} else if (e instanceof BinaryFieldExpression) {
 				p = processBinaryFieldExpression((BinaryFieldExpression)e);
+			} else if (e instanceof TernaryFieldExpression) {
+				p = processTernaryFieldExpression((TernaryFieldExpression)e);
 			} else {
 				throw new NotYetImplementedException();
 			}
@@ -281,30 +285,60 @@ public class QueryBuilder <ID, T extends EntityBase<ID>> {
 	}
 
 	private Predicate processBinaryFieldExpression(BinaryFieldExpression bfe) 
-		throws NotYetImplementedException, InvalidFieldException, AccessDeniedException 
-	{
-		String operand1FieldName = bfe.getFieldName();
-		javax.persistence.criteria.Expression<?> operand1Expr = toNameExpression(operand1FieldName);
-		Class<?> operand1Type = tmi.getFieldType(clazz, operand1FieldName);
-		Operand operand2 = bfe.getOperand();
-		BinaryFieldOperator operator = bfe.getOp();
-		if (operand2 instanceof Literal) {
-			if (String.class.isAssignableFrom(operand1Type)) {
-				return processBinaryStringFieldValueExpression(operand1Expr, operator, (Literal)operand2, bfe.isCaseSensitive());
+			throws NotYetImplementedException, InvalidFieldException, AccessDeniedException 
+		{
+			String operand1FieldName = bfe.getFieldName();
+			javax.persistence.criteria.Expression<?> operand1Expr = toNameExpression(operand1FieldName);
+			Class<?> operand1Type = tmi.getFieldType(clazz, operand1FieldName);
+			Operand operand2 = bfe.getOperand();
+			BinaryFieldOperator operator = bfe.getOp();
+			if (operand2 instanceof Literal) {
+				if (String.class.isAssignableFrom(operand1Type)) {
+					return processBinaryStringFieldValueExpression(operand1Expr, operator, (Literal)operand2, bfe.isCaseSensitive());
+				} else {
+					return processBinaryFieldValueExpression(operand1Expr, operand1Type, operator, (Literal)operand2);
+				}
+			} else if (operand2 instanceof FieldReference) {
+				if (String.class.isAssignableFrom(operand1Type)) {
+					return processBinaryStringFieldFieldExpression(operand1Expr, operator, (FieldReference)operand2, bfe.isCaseSensitive());
+				} else {
+					return processBinaryFieldFieldExpression(operand1Expr, operand1Type, operator, (FieldReference)operand2);
+				}
 			} else {
-				return processBinaryFieldValueExpression(operand1Expr, operand1Type, operator, (Literal)operand2);
+				throw new NotYetImplementedException();
 			}
-		} else if (operand2 instanceof FieldReference) {
-			if (String.class.isAssignableFrom(operand1Type)) {
-				return processBinaryStringFieldFieldExpression(operand1Expr, operator, (FieldReference)operand2, bfe.isCaseSensitive());
-			} else {
-				return processBinaryFieldFieldExpression(operand1Expr, operand1Type, operator, (FieldReference)operand2);
-			}
-		} else {
-			throw new NotYetImplementedException();
 		}
-	}
-	
+		
+	private Predicate processTernaryFieldExpression(TernaryFieldExpression tfe) 
+			throws NotYetImplementedException, InvalidFieldException, AccessDeniedException 
+		{
+			String operand1FieldName = tfe.getFieldName();
+			javax.persistence.criteria.Expression<?> operand1Expr = toNameExpression(operand1FieldName);
+			Class<?> operand1Type = tmi.getFieldType(clazz, operand1FieldName);
+			Operand operand2 = tfe.getOperand2();
+			Operand operand3 = tfe.getOperand3();
+			TernaryFieldOperator operator = tfe.getOp();
+			if (operand2 instanceof Literal && operand3 instanceof Literal) {
+				/*
+				 * So far we only implement BETWEEN <literal> AND <literal>. 
+				 * It doesn't overly bloat our code and may all we need in practice. 
+				 */
+				if (String.class.isAssignableFrom(operand1Type)) {
+					return processTernaryStringFieldValueValueExpression(operand1Expr, operator, (Literal)operand2, (Literal)operand3, tfe.isCaseSensitive());
+				} else {
+					return processTernaryFieldValueValueExpression(operand1Expr, operand1Type, operator, (Literal)operand2, (Literal)operand3);
+				}
+			} else if (operand2 instanceof Literal && operand3 instanceof FieldReference) {
+				throw new NotYetImplementedException();
+			} else if (operand2 instanceof FieldReference && operand3 instanceof Literal) {
+				throw new NotYetImplementedException();
+			} else if (operand2 instanceof FieldReference && operand3 instanceof FieldReference) {
+				throw new NotYetImplementedException();
+			} else {
+				throw new NotYetImplementedException();
+			}
+		}
+		
 	@SuppressWarnings("unchecked")
 	private Predicate processBinaryStringFieldValueExpression(
 			javax.persistence.criteria.Expression<?> operand1Expr,
@@ -325,6 +359,32 @@ public class QueryBuilder <ID, T extends EntityBase<ID>> {
 			return cb.like(stringOperand1Expr, stringOperand2);
 		} else {
 			return constructComparableBFVE(stringOperand1Expr, stringOperand2, operator);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private Predicate processTernaryStringFieldValueValueExpression(
+			javax.persistence.criteria.Expression<?> operand1Expr,
+			TernaryFieldOperator operator,
+			Literal operand2, 
+			Literal operand3, 
+			boolean isCaseSensitive
+			) 
+		throws NotYetImplementedException
+	{
+		javax.persistence.criteria.Expression<String> stringOperand1Expr 
+			= (javax.persistence.criteria.Expression<String>)operand1Expr;
+		String stringOperand2 = (String)operand2.getValue();
+		String stringOperand3 = (String)operand3.getValue();
+		if (!isCaseSensitive) {
+			stringOperand1Expr = cb.upper(stringOperand1Expr);
+			stringOperand2 = stringOperand2.toUpperCase();
+			stringOperand3 = stringOperand3.toUpperCase();
+		}
+		if (operator == TernaryFieldOperator.BETWEEN) {
+			return cb.between(stringOperand1Expr, stringOperand2, stringOperand3);
+		} else {
+			throw new NotYetImplementedException();
 		}
 	}
 
@@ -363,6 +423,27 @@ public class QueryBuilder <ID, T extends EntityBase<ID>> {
 	{
 		if (Comparable.class.isAssignableFrom(operand1Type)) {
 			return constructComparableBFVE((javax.persistence.criteria.Expression<C>)operand1Expr, (C)operand2.getValue(), operator);
+		} else {
+			throw new NotYetImplementedException();
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	private <C extends Comparable<? super C>> Predicate processTernaryFieldValueValueExpression(
+			javax.persistence.criteria.Expression<?> operand1Expr, 
+			Class<?> operand1Type, 
+			TernaryFieldOperator operator, 
+			Literal operand2, 
+			Literal operand3
+		)
+		throws NotYetImplementedException
+	{
+		if (Comparable.class.isAssignableFrom(operand1Type)) {
+			if (operator == TernaryFieldOperator.BETWEEN) {
+				return cb.between((javax.persistence.criteria.Expression<C>)operand1Expr, (C)operand2.getValue(), (C)operand3.getValue());
+			} else {
+				throw new NotYetImplementedException();
+			}
 		} else {
 			throw new NotYetImplementedException();
 		}

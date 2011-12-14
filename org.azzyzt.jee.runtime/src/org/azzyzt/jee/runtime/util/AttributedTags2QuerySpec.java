@@ -56,6 +56,8 @@ import org.azzyzt.jee.runtime.dto.query.Not;
 import org.azzyzt.jee.runtime.dto.query.Or;
 import org.azzyzt.jee.runtime.dto.query.OrderByClause;
 import org.azzyzt.jee.runtime.dto.query.QuerySpec;
+import org.azzyzt.jee.runtime.dto.query.TernaryFieldExpression;
+import org.azzyzt.jee.runtime.dto.query.TernaryFieldOperator;
 import org.azzyzt.jee.runtime.dto.query.UnaryFieldExpression;
 import org.azzyzt.jee.runtime.dto.query.UnaryFieldOperator;
 import org.azzyzt.jee.runtime.exception.NotYetImplementedException;
@@ -193,7 +195,22 @@ public class AttributedTags2QuerySpec extends DefaultHandler implements Xml2Quer
 						ufe.setOp(unOp);
 						currentFieldExpression = ufe;
 					} catch (IllegalArgumentException ex2) {
-						throw new QuerySyntaxException("Unsupported operation "+op);
+						try {
+							TernaryFieldOperator ternOp = TernaryFieldOperator.valueOf(op);
+							TernaryFieldExpression ternfe = new TernaryFieldExpression();
+							ternfe.setOp(ternOp);
+							currentFieldExpression = ternfe;
+							if (type == null) {
+								throw new QuerySyntaxException("No datatype given for ternary operation "+ternOp.name());
+							}
+							try {
+								currentFieldExpressionType = LiteralType.valueOf(type.toUpperCase());
+							} catch (IllegalArgumentException ex3) {
+								throw new QuerySyntaxException("Unsupported datatype "+type);
+							}
+						} catch (IllegalArgumentException ex3) {
+							throw new QuerySyntaxException("Unsupported operation "+op);
+						}
 					}
 				}
 				currentFieldExpression.setNegated(isNegated);
@@ -204,6 +221,7 @@ public class AttributedTags2QuerySpec extends DefaultHandler implements Xml2Quer
 				currentFieldExpression = null;
 			} else if (qName.equalsIgnoreCase("fieldName") 
 					|| qName.equalsIgnoreCase("value") 
+					|| qName.equalsIgnoreCase("value2") 
 					|| qName.equalsIgnoreCase("ascending")) {
 				collect = true;
 			} else {
@@ -235,9 +253,19 @@ public class AttributedTags2QuerySpec extends DefaultHandler implements Xml2Quer
 				bfe.setOperand(new FieldReference(getCollected(), bfe.isCaseSensitive()));
 				collect = false;
 			} else if (qName.equalsIgnoreCase("value")) {
-				BinaryFieldExpression bfe = currentBinaryFieldExpression();
 				Literal value = Literal.parse(getCollected(), currentFieldExpressionType);
-				bfe.setOperand(value);
+				if (currentFieldReferer instanceof BinaryFieldExpression) {
+					BinaryFieldExpression bfe = currentBinaryFieldExpression();
+					bfe.setOperand(value);
+				} else {
+					TernaryFieldExpression tfe = currentTernaryFieldExpression();
+					tfe.setOperand2(value);
+				}
+				collect = false;
+			} else if (qName.equalsIgnoreCase("value2")) {
+				Literal value2 = Literal.parse(getCollected(), currentFieldExpressionType);
+				TernaryFieldExpression tfe = currentTernaryFieldExpression();
+				tfe.setOperand3(value2);
 				collect = false;
 			} else if (qName.equalsIgnoreCase("ascending")) {
 				currentOrderBy.setAscending(Boolean.parseBoolean(collected));
@@ -260,6 +288,18 @@ public class AttributedTags2QuerySpec extends DefaultHandler implements Xml2Quer
 		}
 		BinaryFieldExpression bfe = (BinaryFieldExpression)currentFieldExpression;
 		return bfe;
+	}
+
+	private TernaryFieldExpression currentTernaryFieldExpression()
+			throws QuerySyntaxException {
+		if ( ! (currentFieldReferer instanceof TernaryFieldExpression 
+					&& currentFieldExpression.equals(currentFieldReferer)
+				)
+		) {
+			throw new QuerySyntaxException("TernaryFieldExpression syntax not inside a TernaryFieldExpression");
+		}
+		TernaryFieldExpression tfe = (TernaryFieldExpression)currentFieldExpression;
+		return tfe;
 	}
 
 	private String getCollected() {

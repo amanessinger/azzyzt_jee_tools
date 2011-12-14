@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or � as soon they
+ * Licensed under the EUPL, Version 1.1 or - as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -27,30 +27,11 @@
 
 package org.azzyzt.jee.runtime.dto.query;
 
-import java.io.Serializable;
-
-import javax.xml.bind.annotation.XmlSeeAlso;
-
 /**
- * The abstract parent class for boolean expressions and unary, binary and ternary expressions referencing fields.
- * A non-empty <code>Expression</code> is a tree of arbitrary depth. 
+ * Supported operators for expressions involving three fields / literals
  */
-@XmlSeeAlso({
-	And.class, Or.class, Not.class, UnaryFieldExpression.class, BinaryFieldExpression.class, TernaryFieldExpression.class})
-public abstract class Expression implements Serializable {
+public enum TernaryFieldOperator {
 	
-	private static final long serialVersionUID = 1L;
-	
-	public Expression() { }
+	BETWEEN
 
-	/* (non-Javadoc)
-	 * @see org.azzyzt.jee.runtime.dto.query.Node#isValid()
-	 */
-	public abstract boolean isValid();
-	
-	/* (non-Javadoc)
-	 * @see org.azzyzt.jee.runtime.dto.query.Node#getReplaceableBy()
-	 */
-	public abstract Expression getReplaceableBy();
-	
 }

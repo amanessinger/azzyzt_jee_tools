@@ -42,7 +42,7 @@ import javax.xml.bind.annotation.XmlSeeAlso;
  * 
  * @see FieldReference
  */
-@XmlSeeAlso({UnaryFieldExpression.class, BinaryFieldExpression.class})
+@XmlSeeAlso({UnaryFieldExpression.class, BinaryFieldExpression.class, TernaryFieldExpression.class})
 public abstract class FieldExpression extends Expression implements FieldReferer, Serializable {
 
 	private static final long serialVersionUID = 1L;

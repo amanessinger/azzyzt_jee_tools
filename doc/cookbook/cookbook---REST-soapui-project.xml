@@ -49,7 +49,24 @@
        <ascending>true</ascending>
    </orderBy>
 </query_spec>
-]]></con:request><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="store" path="store"><con:settings/><con:parameters/><con:method name="POST - cityStore" method="POST"><con:settings/><con:parameters/><con:representation type="REQUEST" id=""><con:mediaType>application/xml</con:mediaType><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:representation type="RESPONSE" id=""><con:mediaType>application/xml</con:mediaType><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:request name="5.6 Store a new record" mediaType="application/xml" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+]]></con:request><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request><con:request name="Query with BETWEEN" mediaType="application/xml" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request><![CDATA[<query_spec>
+   <expr type="OR">
+      <cond type="LONG" op="BETWEEN">
+         <fieldName>id</fieldName>
+         <value>2</value>
+         <value2>5</value2>
+      </cond>
+      <cond type="STRING" op="BETWEEN" caseSensitive="false">
+         <fieldName>name</fieldName>
+         <value>Linz</value>
+         <value2>Salzburg</value2>
+      </cond>
+   </expr>
+   <orderBy>
+       <fieldName>id</fieldName>
+       <ascending>true</ascending>
+   </orderBy>
+</query_spec>]]></con:request><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="store" path="store"><con:settings/><con:parameters/><con:method name="POST - cityStore" method="POST"><con:settings/><con:parameters/><con:representation type="REQUEST" id=""><con:mediaType>application/xml</con:mediaType><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:representation type="RESPONSE" id=""><con:mediaType>application/xml</con:mediaType><con:params/><con:element xsi:nil="true"/><con:description xsi:nil="true"/></con:representation><con:request name="5.6 Store a new record" mediaType="application/xml" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
   &lt;con:entry key="x-authorize-roles" value="azzyzt(200-on-error);modify()"/>
   &lt;con:entry key="x-authenticate-userid" value="muck"/>
 &lt;/xml-fragment></con:setting></con:settings><con:endpoint>http://localhost:8080</con:endpoint><con:request><![CDATA[<city>
