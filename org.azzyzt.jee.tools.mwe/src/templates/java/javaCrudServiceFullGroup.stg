@@ -14,10 +14,12 @@ group javaCrudServiceFullGroup : javaGroup;
 <listXmlBody(entity=mdt.properties.entity, dto=mdt.properties.dto)>
 
 @Override
+<mdt.properties.requiredCredentialModify>
 <storeHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>
 <storeBody(entity=mdt.properties.entity, dto=mdt.properties.dto)>
 
 @Override
+<mdt.properties.requiredCredentialModify>
 <deleteHead(entity=mdt.properties.entity, dto=mdt.properties.dto)>
 <deleteBody(entity=mdt.properties.entity, dto=mdt.properties.dto)>
 >>

@@ -27,6 +27,14 @@
 
 package org.azzyzt.jee.runtime.exception;
 
+/**
+ * Thrown by an authorizer implementing <code>AuthorizationInterface</code>
+ * in case of an unauthorized access.
+ * 
+ * @see org.azzyzt.jee.runtime.util.AuthorizationInterface
+ * @see org.azzyzt.jee.runtime.meta.Credentials
+ * @see org.azzyzt.jee.runtime.util.CredentialBasedAuthorizer
+ */
 public class AccessDeniedException extends TranslatableException {
 
 	private static final long serialVersionUID = 1L;

@@ -37,5 +37,6 @@ public class ModelProperties {
 	public static final String TRANSACTION_ROLLBACK_HANDLER = "transactionRollbackHandler";
 	public static final String TYPE_META_INFO = "typeMetaInfo";
 	public static final String VALID_ASSOCIATION_PATHS = "validAssociationPaths";
+	public static final String REQUIRED_CREDENTIAL_MODIFY = "requiredCredentialModify";
 
 }

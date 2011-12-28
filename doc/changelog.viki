@@ -24,7 +24,7 @@
    now "''x-authorize-roles''". See the tutorial for details on
    credentials. 
 
- - These to HTTP header names and the default anonymous user name can
+ - These two HTTP header names and the default anonymous user name can
    still be changed via JNDI custon string resources, but this is more
    elaborate now. The old JNDI resource for the username HTTP header
    was "''custom/stringvalues/http/header/username''", but as this is
@@ -49,7 +49,16 @@
    identical to the GENERIC feature anyway. So far we don't need any
    special or secret code and the configuration options suffice.
 
+ - Added a subset of ''BETWEEN'' to ''\QuerySpec''. You can specify
+   ''BETWEEN'' clauses where the result is limited to be between two
+   literals. This covers the most common uses. The general solution,
+   where each limit can be either a literal or a field reference,
+   would have needed a major refactoring or polluted the code to no
+   end.
+
  - Tested with \GlassFish 3.1.1
+
+ - Tested with Indigo SR1
 
 ** Changes in 1.2.4
 #OPT: plain!

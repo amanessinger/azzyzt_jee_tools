@@ -86,6 +86,15 @@ public class CrudServiceFullBeansModelBuilder extends DerivedModelBuilder implem
 			target.addReferencedForeignType(typeMetaInfo);
 			target.addReferencedForeignType(std.querySpec);
 
+			String requiredCredentialModify;
+			if (masterModel.isGeneratingCredentialBasedAuthorization()) {
+				target.addReferencedForeignType(std.requiresCredentials);
+				requiredCredentialModify = "@RequiresCredentials(\"modify()\")";
+			} else {
+				requiredCredentialModify = "";
+			}
+			target.setProperty(ModelProperties.REQUIRED_CREDENTIAL_MODIFY, requiredCredentialModify);
+			
 			if (me.isCombinedId()) {
 				target.addReferencedForeignType(me.getCombinedIdType());
 			}

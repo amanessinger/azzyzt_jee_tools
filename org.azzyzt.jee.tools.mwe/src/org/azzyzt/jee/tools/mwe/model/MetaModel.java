@@ -235,4 +235,8 @@ public class MetaModel {
 	public boolean isGeneratingCxfRestClient() {
 		return generatorOptions.hasOption(AzzyztGeneratorOption.AddCxfRestClient);
 	}
+
+	public boolean isGeneratingCredentialBasedAuthorization() {
+		return generatorOptions.hasOption(AzzyztGeneratorOption.AddCredentialBasedAuthorization);
+	}
 }

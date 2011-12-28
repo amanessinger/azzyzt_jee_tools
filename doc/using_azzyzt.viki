@@ -145,6 +145,7 @@ doc/cookbook/
         |               |-- get_austria.xml
         |               |-- nested_expressions.xml
         |               |-- query_with_three_conditions.xml
+        |               |-- query_with_two_betweens.xml
         |               `-- sorted_list_of_cities.xml
         `-- cookbookEJB
             `-- ejbModule
@@ -168,7 +169,7 @@ two subdirectories, "''base''" and "''optional''". After finishing the
 tutorial you will have a set of database-backed Java EE services
 accessible via REST, SOAP and even Corba/IIOP, plus a JUnit test
 suite. The directory "''src''" contains all source files you would
-normally need to write yourself.
+normally need to write for yourself.
 
 In various phases of the tutorial, instead of telling you what to
 write, I'll ask you to copy the contents of some subdirectories into
@@ -243,7 +244,7 @@ When creating the server instance, on the second page of the wizard,
 you will have to select a Java Runtime Environment (JRE). There is a
 link on that page, leading to the __Installed JRE preferences__. Use
 that to define a JDK as runtime (the default runtime of Eclipse will
-most likely a JRE and thus not enough to run \GlassFish).
+most likely be a JRE and thus not enough to run \GlassFish).
 
 You find all that in greater depth in my
 [[http://programming.manessinger.com/tutorials/an-eclipse-glassfish-java-ee-6-tutorial/][Eclipse/
@@ -1095,23 +1096,23 @@ for the generated service beans, assuming \GlassFish runs on port
 
   [[http://localhost:8080/cookbook/CityFullBean?wsdl]]
 
-  [[http://localhost:8080/cookbook/CityRestrictedBean?wsdl]]
+  [[http://localhost:8080/cookbook_restricted/CityRestrictedBean?wsdl]]
 
   [[http://localhost:8080/cookbook/CountryFullBean?wsdl]]
 
-  [[http://localhost:8080/cookbook/CountryRestrictedBean?wsdl]]
+  [[http://localhost:8080/cookbook_restricted/CountryRestrictedBean?wsdl]]
 
   [[http://localhost:8080/cookbook/LanguageFullBean?wsdl]]
 
-  [[http://localhost:8080/cookbook/LanguageRestrictedBean?wsdl]]
+  [[http://localhost:8080/cookbook_restricted/LanguageRestrictedBean?wsdl]]
 
   [[http://localhost:8080/cookbook/VisitFullBean?wsdl]]
 
-  [[http://localhost:8080/cookbook/VisitRestrictedBean?wsdl]]
+  [[http://localhost:8080/cookbook_restricted/VisitRestrictedBean?wsdl]]
 
   [[http://localhost:8080/cookbook/ZipFullBean?wsdl]]
 
-  [[http://localhost:8080/cookbook/ZipRestrictedBean?wsdl]]
+  [[http://localhost:8080/cookbook_restricted/ZipRestrictedBean?wsdl]]
 
   [[http://localhost:8080/cookbook/ModifyMultiBean?wsdl]]
 
@@ -1236,9 +1237,9 @@ the text.
 
 Issue a GET request to any of the following URLs:
 
-  [[http://localhost:8080/cookbookServlets/REST/country/all]]
+  [[http://localhost:8080/cookbookServlets/REST/ful/country/all]]
 
-  [[http://localhost:8080/cookbookServlets/REST/countryRestricted/all]]
+  [[http://localhost:8080/cookbookServlets/REST/ricted/country/all]]
 
 The result will be an unsorted list of all countries:
 
@@ -1273,9 +1274,9 @@ The result will be an unsorted list of all countries:
 
 Issue a GET request to any of the JSON equivalents:
 
-  [[http://localhost:8080/cookbookServlets/REST/country/allJson]]
+  [[http://localhost:8080/cookbookServlets/REST/ful/country/allJson]]
 
-  [[http://localhost:8080/cookbookServlets/REST/countryRestricted/allJson]]
+  [[http://localhost:8080/cookbookServlets/REST/ricted/country/allJson]]
 
 and you get the same list, but now in JSON notation:
 
@@ -1312,9 +1313,9 @@ and you get the same list, but now in JSON notation:
 
 A GET request to any of these URLs
 
-  [[http://localhost:8080/cookbookServlets/REST/city/byId?id=1]]
+  [[http://localhost:8080/cookbookServlets/REST/ful/city/byId?id=1]]
 
-  [[http://localhost:8080/cookbookServlets/REST/cityRestricted/byId?id=1]]
+  [[http://localhost:8080/cookbookServlets/REST/ricted/city/byId?id=1]]
 
 delivers
 
@@ -1332,9 +1333,9 @@ delivers
 
 or with JSON 
 
-  [[http://localhost:8080/cookbookServlets/REST/city/byIdJson?id=1]]
+  [[http://localhost:8080/cookbookServlets/REST/ful/city/byIdJson?id=1]]
 
-  [[http://localhost:8080/cookbookServlets/REST/cityRestricted/byIdJson?id=1]]
+  [[http://localhost:8080/cookbookServlets/REST/ricted/city/byIdJson?id=1]]
 
 delivers
 
@@ -1370,9 +1371,9 @@ POST the following XML document
 
 into one of these URLs
 
-  [[http://localhost:8080/cookbookServlets/REST/city/list]]
+  [[http://localhost:8080/cookbookServlets/REST/ful/city/list]]
 
-  [[http://localhost:8080/cookbookServlets/REST/cityRestricted/list]]
+  [[http://localhost:8080/cookbookServlets/REST/ricted/city/list]]
 
 to get a list of all cities, but sorted by the ID of their country
 ascending, and then alphabetically by their name descending. Here's
@@ -1494,9 +1495,9 @@ the result:
 For JSON you still post an XML document, in fact the same XML
 document, into one of these URLs
 
-  [[http://localhost:8080/cookbookServlets/REST/city/listJson]]
+  [[http://localhost:8080/cookbookServlets/REST/ful/city/listJson]]
 
-  [[http://localhost:8080/cookbookServlets/REST/cityRestricted/listJson]]
+  [[http://localhost:8080/cookbookServlets/REST/ricted/city/listJson]]
 
 and get
 
@@ -1675,9 +1676,9 @@ POST the following XML document
 
 into either of
 
-  [[http://localhost:8080/cookbookServlets/REST/city/list]]
+  [[http://localhost:8080/cookbookServlets/REST/ful/city/list]]
 
-  [[http://localhost:8080/cookbookServlets/REST/cityRestricted/list]]
+  [[http://localhost:8080/cookbookServlets/REST/ricted/city/list]]
 
 to get a list of all cities, where the country name equals "__Italy__"
 and the city's name does not begin with "''r''" (regardless case, this
@@ -1709,9 +1710,9 @@ been "''Venezia''").
 
 Alternatively use the JSON URLs
 
-  [[http://localhost:8080/cookbookServlets/REST/city/listJson]]
+  [[http://localhost:8080/cookbookServlets/REST/ful/city/listJson]]
 
-  [[http://localhost:8080/cookbookServlets/REST/cityRestricted/listJson]]
+  [[http://localhost:8080/cookbookServlets/REST/ricted/city/listJson]]
 
 and get this result:
 
@@ -1752,9 +1753,11 @@ Conditions have a type and an operator. Supported types are
 
 Supported operators are 
 
-  ''LIKE'', ''EQ'', ''LT'', ''LE'', ''GT'', ''GE''
+  ''LIKE'', ''EQ'', ''LT'', ''LE'', ''GT'', ''GE'', ''BETWEEN''
 
-where "''LIKE''" is only supported for type "''STRING''".
+where "''LIKE''" is only supported for type "''STRING''" and
+"''BETWEEN''" is special as it needs not one value but two (see next
+section).
 
 Field names in conditions or order by clauses can be cross-table
 references in the same dotted style as they are used in the Java
@@ -1768,6 +1771,119 @@ private Country country;
 
 and thus you can follow the association with "''country.name''".
 
+
+** Query with two BETWEENs
+
+POST the following XML document
+
+#Code syntax=XML <<---
+<query_spec>
+   <expr type="OR">
+      <cond type="LONG" op="BETWEEN">
+         <fieldName>id</fieldName>
+         <value>2</value>
+         <value2>5</value2>
+      </cond>
+      <cond type="STRING" op="BETWEEN" caseSensitive="false">
+         <fieldName>name</fieldName>
+         <value>Linz</value>
+         <value2>Salzburg</value2>
+      </cond>
+   </expr>
+   <orderBy>
+       <fieldName>id</fieldName>
+       <ascending>true</ascending>
+   </orderBy>
+</query_spec>
+---
+
+into either of
+
+  [[http://localhost:8080/cookbookServlets/REST/ful/city/list]]
+
+  [[http://localhost:8080/cookbookServlets/REST/ricted/city/list]]
+
+to get a list of all cities, where either the ID is between 2 and 5 or
+the name is between "__Linz__" and "__Salzburg__".
+
+#Code syntax=XML <<---
+---
+
+Alternatively use the JSON URLs
+
+  [[http://localhost:8080/cookbookServlets/REST/ful/city/listJson]]
+
+  [[http://localhost:8080/cookbookServlets/REST/ricted/city/listJson]]
+
+and get this result:
+
+#Code syntax=dot <<---
+{"city": [
+      {
+      "countryId": "1",
+      "createTimestamp": "2011-11-24T13:05:04.491+01:00",
+      "createUser": "admin",
+      "id": "2",
+      "modificationTimestamp": "2011-11-24T13:05:04.491+01:00",
+      "modificationUser": "admin",
+      "name": "Linz"
+   },
+      {
+      "countryId": "1",
+      "createTimestamp": "2011-11-24T13:05:04.512+01:00",
+      "createUser": "admin",
+      "id": "3",
+      "modificationTimestamp": "2011-11-24T13:05:04.512+01:00",
+      "modificationUser": "admin",
+      "name": "Salzburg"
+   },
+      {
+      "countryId": "1",
+      "createTimestamp": "2011-11-24T13:05:04.532+01:00",
+      "createUser": "admin",
+      "id": "4",
+      "modificationTimestamp": "2011-11-24T13:05:04.532+01:00",
+      "modificationUser": "admin",
+      "name": "Wien"
+   },
+      {
+      "countryId": "2",
+      "createTimestamp": "2011-11-24T13:05:04.553+01:00",
+      "createUser": "admin",
+      "id": "5",
+      "modificationTimestamp": "2011-11-24T13:05:04.553+01:00",
+      "modificationUser": "admin",
+      "name": "Bologna"
+   },
+      {
+      "countryId": "2",
+      "createTimestamp": "2011-11-24T13:05:04.594+01:00",
+      "createUser": "admin",
+      "id": "7",
+      "modificationTimestamp": "2011-11-24T13:05:04.594+01:00",
+      "modificationUser": "admin",
+      "name": "Roma"
+   },
+      {
+      "countryId": "3",
+      "createTimestamp": "2011-11-24T13:05:04.656+01:00",
+      "createUser": "admin",
+      "id": "10",
+      "modificationTimestamp": "2011-11-24T13:05:04.656+01:00",
+      "modificationUser": "admin",
+      "name": "Los Angeles"
+   },
+      {
+      "countryId": "3",
+      "createTimestamp": "2011-11-24T13:05:04.676+01:00",
+      "createUser": "admin",
+      "id": "11",
+      "modificationTimestamp": "2011-11-24T13:05:04.676+01:00",
+      "modificationUser": "admin",
+      "name": "New York"
+   }
+]}
+---
 
 ** Nested expressions
 
@@ -1800,9 +1916,9 @@ An example of a query specification with nested expressions is this:
 
 POST it into 
 
-  [[http://localhost:8080/cookbookServlets/REST/city/list]]
+  [[http://localhost:8080/cookbookServlets/REST/ful/city/list]]
 
-  [[http://localhost:8080/cookbookServlets/REST/cityRestricted/list]]
+  [[http://localhost:8080/cookbookServlets/REST/ricted/city/list]]
 
 to get a list of all cities in Italy and all other cities beginning
 with "l" (regardless case), but not the one with ID 2 (which would
@@ -1860,9 +1976,9 @@ have been "''Linz''").
 
 For JSON use 
 
-  [[http://localhost:8080/cookbookServlets/REST/city/listJson]]
+  [[http://localhost:8080/cookbookServlets/REST/ful/city/listJson]]
 
-  [[http://localhost:8080/cookbookServlets/REST/cityRestricted/listJson]]
+  [[http://localhost:8080/cookbookServlets/REST/ricted/city/listJson]]
 
 and get
 
@@ -1927,7 +2043,7 @@ the empty tables with sample data.
 
 In order to store a new city, use this URL
 
-  [[http://localhost:8080/cookbookServlets/REST/city/store]]
+  [[http://localhost:8080/cookbookServlets/REST/ful/city/store]]
 
 and POST an XML representation of a city, just as you may have got it
 from one of the reading operations, but in input data leave the ''id''
@@ -1962,7 +2078,7 @@ The new ''id'' will have been automatically allocated from a sequence.
 Let's try the same with another bogus city name, but this time in
 JSON. We use
 
-  [[http://localhost:8080/cookbookServlets/REST/city/storeJson]]
+  [[http://localhost:8080/cookbookServlets/REST/ful/city/storeJson]]
 
 and now the text that we send to the server is actually JSON, not
 XML. The server does not expect a string, it expects a city object,
@@ -2075,7 +2191,7 @@ POST the following XML
 
 into 
 
-  [[http://localhost:8080/cookbookServlets/REST/city/store]]
+  [[http://localhost:8080/cookbookServlets/REST/ful/city/store]]
 
 to rename "__Udinw__" to "__Udine__". This is the result,
 note the modification user and timestamp, while create user and
@@ -2095,7 +2211,7 @@ timestamp have stayed unchanged.
 
 Now let's update ''Anconx'' to ''Ancona'' via JSON. The URL is
 
-  [[http://localhost:8080/cookbookServlets/REST/city/storeJson]]
+  [[http://localhost:8080/cookbookServlets/REST/ful/city/storeJson]]
 
 and with the input
 
@@ -2127,7 +2243,7 @@ we get
 
 Make a GET request to the following URL
 
-  [[http://localhost:8080/cookbookServlets/REST/city/delete?id=13]]
+  [[http://localhost:8080/cookbookServlets/REST/ful/city/delete?id=13]]
 
 to delete "''Udine''", assuming its ID was indeed "''13''". The
 result will be
@@ -2138,7 +2254,7 @@ result will be
 
 and the same with the JSON URL
 
-  [[http://localhost:8080/cookbookServlets/REST/city/deleteJson?id=14]]
+  [[http://localhost:8080/cookbookServlets/REST/ful/city/deleteJson?id=14]]
 
 results in 
 
@@ -2189,7 +2305,7 @@ POST the following XML
 
 into
 
-  [[http://localhost:8080/cookbookServlets/REST/modifyMulti/storeMulti]]
+  [[http://localhost:8080/cookbookServlets/REST/ful/modifyMulti/storeMulti]]
 
 to store a new country named "''France''" and three of its cities,
 "''Marseille''", "''Paris''" and "''Rennes''". The result will be
@@ -2330,7 +2446,7 @@ POST the following XML
 
 into
 
-  [[http://localhost:8080/cookbookServlets/REST/modifyMulti/deleteMulti]]
+  [[http://localhost:8080/cookbookServlets/REST/ful/modifyMulti/deleteMulti]]
 
 Again the result will be
 
@@ -2377,7 +2493,7 @@ One more time POST the following XML
 
 into
 
-  [[http://localhost:8080/cookbookServlets/REST/modifyMulti/storeMulti]]
+  [[http://localhost:8080/cookbookServlets/REST/ful/modifyMulti/storeMulti]]
 
 and expect a result like
 
@@ -2467,7 +2583,7 @@ Now we can delete France again and insert Egypt. POST the following XML
 
 into
 
-  [[http://localhost:8080/cookbookServlets/REST/modifyMulti/storeDeleteMulti]]
+  [[http://localhost:8080/cookbookServlets/REST/ful/modifyMulti/storeDeleteMulti]]
 
 Make sure the first list, the list of objects to delete, contains the
 exact IDs that you got in the last step, i.e. the country ID of
@@ -2566,7 +2682,7 @@ POST the following XML
 
 into
 
-  [[http://localhost:8080/cookbookServlets/REST/modifyMulti/storeMulti]]
+  [[http://localhost:8080/cookbookServlets/REST/ful/modifyMulti/storeMulti]]
 
 The result is
 
@@ -2628,7 +2744,7 @@ POST the following XML
 
 into
 
-  [[http://localhost:8080/cookbookServlets/REST/modifyMulti/deleteMulti]]
+  [[http://localhost:8080/cookbookServlets/REST/ful/modifyMulti/deleteMulti]]
 
 Again the result will be
 

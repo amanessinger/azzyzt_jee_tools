@@ -58,6 +58,7 @@ public class ModifyMultiBeanModelBuilder extends DerivedModelBuilder implements 
 			String packageName = derivePackageNameFromEntityAndFollowPackage(me, PackageTails.SERVICE);
 			String simpleName = CLASS_NAME;
 			MetaClass target = MetaClass.forName(packageName, simpleName);
+
 			target.addInterface(modifyMultiInterface);
 			target.setModifiers(std.mod_public);
 			target.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxEjbLocalBean, target));
@@ -67,6 +68,12 @@ public class ModifyMultiBeanModelBuilder extends DerivedModelBuilder implements 
 				mai.setElement("serviceName", masterModel.getProjectBaseName());
 				target.addMetaAnnotationInstance(mai);
 			}
+			if (masterModel.isGeneratingCredentialBasedAuthorization()) {
+				target.addReferencedForeignType(std.requiresCredentials);
+				MetaAnnotationInstance mai = new MetaAnnotationInstance(std.requiresCredentials, target);
+				mai.setElement("value", "modify()");
+				target.addMetaAnnotationInstance(mai);
+			}			
 			
 			target.addReferencedForeignType(dtoBase);
 			target.addReferencedForeignType(storeDeleteDto);

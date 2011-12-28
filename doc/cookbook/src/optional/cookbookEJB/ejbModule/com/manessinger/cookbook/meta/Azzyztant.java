@@ -8,9 +8,8 @@ import org.azzyzt.jee.runtime.meta.AzzyztGeneratorCutback;
 import org.azzyzt.jee.runtime.meta.AzzyztGeneratorOption;
 import org.azzyzt.jee.runtime.meta.AzzyztantInterface;
 import org.azzyzt.jee.runtime.util.AuthorizationInterface;
+import org.azzyzt.jee.runtime.util.CredentialBasedAuthorizer;
 import org.azzyzt.jee.runtime.util.StringConverterInterface;
-
-import com.manessinger.cookbook.util.Authorizer;
 
 
 /**
@@ -30,6 +29,7 @@ import com.manessinger.cookbook.util.Authorizer;
         },
         options = {
         		AzzyztGeneratorOption.AddCxfRestClient,
+        		AzzyztGeneratorOption.AddCredentialBasedAuthorization,
         }
 )
 public class Azzyztant implements AzzyztantInterface {
@@ -65,7 +65,7 @@ public class Azzyztant implements AzzyztantInterface {
      * upon any invocation. The runtime won't try to synchronize its call to 
      * 'checkAuthorization()'. Neither should you.
      */
-    private final AuthorizationInterface authorizer = new Authorizer();
+    private final AuthorizationInterface authorizer = new CredentialBasedAuthorizer();
     
     public Azzyztant() { super(); }
 

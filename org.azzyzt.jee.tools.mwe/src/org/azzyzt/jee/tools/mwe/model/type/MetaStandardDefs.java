@@ -187,6 +187,7 @@ public class MetaStandardDefs {
 	public final MetaAnnotation azzyztGeneratorOptions;
 	public final MetaEnum azzyztGeneratorCutback;
 	public final MetaClass invocationMetaInfo;
+	public final MetaAnnotation requiresCredentials;
 	
 
 	@SuppressWarnings("deprecation")
@@ -375,5 +376,6 @@ public class MetaStandardDefs {
 		azzyztantInterface = MetaInterface.forType(org.azzyzt.jee.runtime.meta.AzzyztantInterface.class);
 		azzyztGeneratorOptions = MetaAnnotation.forType(org.azzyzt.jee.runtime.annotation.AzzyztGeneratorOptions.class);
 		azzyztGeneratorCutback = MetaEnum.forType(org.azzyzt.jee.runtime.meta.AzzyztGeneratorCutback.class);
+		requiresCredentials = MetaAnnotation.forType(org.azzyzt.jee.runtime.annotation.RequiresCredentials.class);
 	}
 }
