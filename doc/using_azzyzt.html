@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 <meta name="language" content="en">
-<meta name="date" content="2011-12-19T14:19:42">
+<meta name="date" content="2011-12-29T15:38:14">
 <meta name="generator" content="deplate.rb 0.8.5">
 <link rel="start" href="using_azzyzt.html" title="Frontpage">
 <link rel="chapter" href="using_azzyzt.html#hd001" title="Azzyzt JEE Tools">
@@ -2139,10 +2139,10 @@ resources with one sample request each.</p>
 
 <p>Look at the generated tree. The soapUI project has one service, named 
 just like the project. Below this service, there are resources, two for 
-each entity, one named like the entity, one named with a suffix 
-&ldquo;<code>Restricted</code>&rdquo;. They wrap the full and the 
-restricted beans. Below each resource you find the operations that it 
-supports. For the restricted variants these are</p>
+each entity, one &ldquo;<em>REST/ful</em>&rdquo;, the other 
+&ldquo;__REST/ricted&rdquo;. They wrap the full and the restricted 
+beans. Below each resource you find the operations that it supports. For 
+the restricted variants these are</p>
 
 <dl class="Description">
     <dt class="Description-1 Description"><code>all()</code></dt>
@@ -2923,7 +2923,71 @@ the name is between &ldquo;<em>Linz</em>&rdquo; and
 
 <div class="code">
 <pre>
-
+<span class="hl kwa">&lt;dtoes&gt;</span>
+   <span class="hl kwa">&lt;city&gt;</span>
+      <span class="hl kwa">&lt;countryId&gt;</span><span class="hl num">1</span><span class="hl kwa">&lt;/countryId&gt;</span>
+      <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">11</span>-<span class="hl num">24</span>T13:<span class="hl num">05</span>:<span class="hl num">04.491</span>+<span class="hl num">01</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
+      <span class="hl kwa">&lt;createUser&gt;</span>admin<span class="hl kwa">&lt;/createUser&gt;</span>
+      <span class="hl kwa">&lt;id&gt;</span><span class="hl num">2</span><span class="hl kwa">&lt;/id&gt;</span>
+      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">11</span>-<span class="hl num">24</span>T13:<span class="hl num">05</span>:<span class="hl num">04.491</span>+<span class="hl num">01</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
+      <span class="hl kwa">&lt;modificationUser&gt;</span>admin<span class="hl kwa">&lt;/modificationUser&gt;</span>
+      <span class="hl kwa">&lt;name&gt;</span>Linz<span class="hl kwa">&lt;/name&gt;</span>
+   <span class="hl kwa">&lt;/city&gt;</span>
+   <span class="hl kwa">&lt;city&gt;</span>
+      <span class="hl kwa">&lt;countryId&gt;</span><span class="hl num">1</span><span class="hl kwa">&lt;/countryId&gt;</span>
+      <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">11</span>-<span class="hl num">24</span>T13:<span class="hl num">05</span>:<span class="hl num">04.512</span>+<span class="hl num">01</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
+      <span class="hl kwa">&lt;createUser&gt;</span>admin<span class="hl kwa">&lt;/createUser&gt;</span>
+      <span class="hl kwa">&lt;id&gt;</span><span class="hl num">3</span><span class="hl kwa">&lt;/id&gt;</span>
+      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">11</span>-<span class="hl num">24</span>T13:<span class="hl num">05</span>:<span class="hl num">04.512</span>+<span class="hl num">01</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
+      <span class="hl kwa">&lt;modificationUser&gt;</span>admin<span class="hl kwa">&lt;/modificationUser&gt;</span>
+      <span class="hl kwa">&lt;name&gt;</span>Salzburg<span class="hl kwa">&lt;/name&gt;</span>
+   <span class="hl kwa">&lt;/city&gt;</span>
+   <span class="hl kwa">&lt;city&gt;</span>
+      <span class="hl kwa">&lt;countryId&gt;</span><span class="hl num">1</span><span class="hl kwa">&lt;/countryId&gt;</span>
+      <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">11</span>-<span class="hl num">24</span>T13:<span class="hl num">05</span>:<span class="hl num">04.532</span>+<span class="hl num">01</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
+      <span class="hl kwa">&lt;createUser&gt;</span>admin<span class="hl kwa">&lt;/createUser&gt;</span>
+      <span class="hl kwa">&lt;id&gt;</span><span class="hl num">4</span><span class="hl kwa">&lt;/id&gt;</span>
+      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">11</span>-<span class="hl num">24</span>T13:<span class="hl num">05</span>:<span class="hl num">04.532</span>+<span class="hl num">01</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
+      <span class="hl kwa">&lt;modificationUser&gt;</span>admin<span class="hl kwa">&lt;/modificationUser&gt;</span>
+      <span class="hl kwa">&lt;name&gt;</span>Wien<span class="hl kwa">&lt;/name&gt;</span>
+   <span class="hl kwa">&lt;/city&gt;</span>
+   <span class="hl kwa">&lt;city&gt;</span>
+      <span class="hl kwa">&lt;countryId&gt;</span><span class="hl num">2</span><span class="hl kwa">&lt;/countryId&gt;</span>
+      <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">11</span>-<span class="hl num">24</span>T13:<span class="hl num">05</span>:<span class="hl num">04.553</span>+<span class="hl num">01</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
+      <span class="hl kwa">&lt;createUser&gt;</span>admin<span class="hl kwa">&lt;/createUser&gt;</span>
+      <span class="hl kwa">&lt;id&gt;</span><span class="hl num">5</span><span class="hl kwa">&lt;/id&gt;</span>
+      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">11</span>-<span class="hl num">24</span>T13:<span class="hl num">05</span>:<span class="hl num">04.553</span>+<span class="hl num">01</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
+      <span class="hl kwa">&lt;modificationUser&gt;</span>admin<span class="hl kwa">&lt;/modificationUser&gt;</span>
+      <span class="hl kwa">&lt;name&gt;</span>Bologna<span class="hl kwa">&lt;/name&gt;</span>
+   <span class="hl kwa">&lt;/city&gt;</span>
+   <span class="hl kwa">&lt;city&gt;</span>
+      <span class="hl kwa">&lt;countryId&gt;</span><span class="hl num">2</span><span class="hl kwa">&lt;/countryId&gt;</span>
+      <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">11</span>-<span class="hl num">24</span>T13:<span class="hl num">05</span>:<span class="hl num">04.594</span>+<span class="hl num">01</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
+      <span class="hl kwa">&lt;createUser&gt;</span>admin<span class="hl kwa">&lt;/createUser&gt;</span>
+      <span class="hl kwa">&lt;id&gt;</span><span class="hl num">7</span><span class="hl kwa">&lt;/id&gt;</span>
+      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">11</span>-<span class="hl num">24</span>T13:<span class="hl num">05</span>:<span class="hl num">04.594</span>+<span class="hl num">01</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
+      <span class="hl kwa">&lt;modificationUser&gt;</span>admin<span class="hl kwa">&lt;/modificationUser&gt;</span>
+      <span class="hl kwa">&lt;name&gt;</span>Roma<span class="hl kwa">&lt;/name&gt;</span>
+   <span class="hl kwa">&lt;/city&gt;</span>
+   <span class="hl kwa">&lt;city&gt;</span>
+      <span class="hl kwa">&lt;countryId&gt;</span><span class="hl num">3</span><span class="hl kwa">&lt;/countryId&gt;</span>
+      <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">11</span>-<span class="hl num">24</span>T13:<span class="hl num">05</span>:<span class="hl num">04.656</span>+<span class="hl num">01</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
+      <span class="hl kwa">&lt;createUser&gt;</span>admin<span class="hl kwa">&lt;/createUser&gt;</span>
+      <span class="hl kwa">&lt;id&gt;</span><span class="hl num">10</span><span class="hl kwa">&lt;/id&gt;</span>
+      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">11</span>-<span class="hl num">24</span>T13:<span class="hl num">05</span>:<span class="hl num">04.656</span>+<span class="hl num">01</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
+      <span class="hl kwa">&lt;modificationUser&gt;</span>admin<span class="hl kwa">&lt;/modificationUser&gt;</span>
+      <span class="hl kwa">&lt;name&gt;</span>Los Angeles<span class="hl kwa">&lt;/name&gt;</span>
+   <span class="hl kwa">&lt;/city&gt;</span>
+   <span class="hl kwa">&lt;city&gt;</span>
+      <span class="hl kwa">&lt;countryId&gt;</span><span class="hl num">3</span><span class="hl kwa">&lt;/countryId&gt;</span>
+      <span class="hl kwa">&lt;createTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">11</span>-<span class="hl num">24</span>T13:<span class="hl num">05</span>:<span class="hl num">04.676</span>+<span class="hl num">01</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/createTimestamp&gt;</span>
+      <span class="hl kwa">&lt;createUser&gt;</span>admin<span class="hl kwa">&lt;/createUser&gt;</span>
+      <span class="hl kwa">&lt;id&gt;</span><span class="hl num">11</span><span class="hl kwa">&lt;/id&gt;</span>
+      <span class="hl kwa">&lt;modificationTimestamp&gt;</span><span class="hl num">2011</span>-<span class="hl num">11</span>-<span class="hl num">24</span>T13:<span class="hl num">05</span>:<span class="hl num">04.676</span>+<span class="hl num">01</span>:<span class="hl num">00</span><span class="hl kwa">&lt;/modificationTimestamp&gt;</span>
+      <span class="hl kwa">&lt;modificationUser&gt;</span>admin<span class="hl kwa">&lt;/modificationUser&gt;</span>
+      <span class="hl kwa">&lt;name&gt;</span>New York<span class="hl kwa">&lt;/name&gt;</span>
+   <span class="hl kwa">&lt;/city&gt;</span>
+<span class="hl kwa">&lt;/dtoes&gt;</span>
 </pre>
 </div>
 <p>Alternatively use the JSON URLs</p>

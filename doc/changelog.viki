@@ -60,6 +60,8 @@
 
  - Tested with Indigo SR1
 
+ - Added credential-based authorization
+
 ** Changes in 1.2.4
 #OPT: plain!
 

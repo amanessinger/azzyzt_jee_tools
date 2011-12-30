@@ -1134,10 +1134,9 @@ create all REST resources with one sample request each.
 
 Look at the generated tree. The soapUI project has one service, named
 just like the project. Below this service, there are resources, two
-for each entity, one named like the entity, one named with a suffix
-"''Restricted''". They wrap the full and the restricted
-beans. Below each resource you find the operations that it
-supports. For the restricted variants these are
+for each entity, one "__REST/ful__", the other "__REST/ricted". They
+wrap the full and the restricted beans. Below each resource you find
+the operations that it supports. For the restricted variants these are
 
   ''all()'' :: Delivers a list of all objects of that class. Useful if
       you intend to put the result into a set or a map. The typical
@@ -1807,6 +1806,71 @@ to get a list of all cities, where either the ID is between 2 and 5 or
 the name is between "__Linz__" and "__Salzburg__".
 
 #Code syntax=XML <<---
+<dtoes>
+   <city>
+      <countryId>1</countryId>
+      <createTimestamp>2011-11-24T13:05:04.491+01:00</createTimestamp>
+      <createUser>admin</createUser>
+      <id>2</id>
+      <modificationTimestamp>2011-11-24T13:05:04.491+01:00</modificationTimestamp>
+      <modificationUser>admin</modificationUser>
+      <name>Linz</name>
+   </city>
+   <city>
+      <countryId>1</countryId>
+      <createTimestamp>2011-11-24T13:05:04.512+01:00</createTimestamp>
+      <createUser>admin</createUser>
+      <id>3</id>
+      <modificationTimestamp>2011-11-24T13:05:04.512+01:00</modificationTimestamp>
+      <modificationUser>admin</modificationUser>
+      <name>Salzburg</name>
+   </city>
+   <city>
+      <countryId>1</countryId>
+      <createTimestamp>2011-11-24T13:05:04.532+01:00</createTimestamp>
+      <createUser>admin</createUser>
+      <id>4</id>
+      <modificationTimestamp>2011-11-24T13:05:04.532+01:00</modificationTimestamp>
+      <modificationUser>admin</modificationUser>
+      <name>Wien</name>
+   </city>
+   <city>
+      <countryId>2</countryId>
+      <createTimestamp>2011-11-24T13:05:04.553+01:00</createTimestamp>
+      <createUser>admin</createUser>
+      <id>5</id>
+      <modificationTimestamp>2011-11-24T13:05:04.553+01:00</modificationTimestamp>
+      <modificationUser>admin</modificationUser>
+      <name>Bologna</name>
+   </city>
+   <city>
+      <countryId>2</countryId>
+      <createTimestamp>2011-11-24T13:05:04.594+01:00</createTimestamp>
+      <createUser>admin</createUser>
+      <id>7</id>
+      <modificationTimestamp>2011-11-24T13:05:04.594+01:00</modificationTimestamp>
+      <modificationUser>admin</modificationUser>
+      <name>Roma</name>
+   </city>
+   <city>
+      <countryId>3</countryId>
+      <createTimestamp>2011-11-24T13:05:04.656+01:00</createTimestamp>
+      <createUser>admin</createUser>
+      <id>10</id>
+      <modificationTimestamp>2011-11-24T13:05:04.656+01:00</modificationTimestamp>
+      <modificationUser>admin</modificationUser>
+      <name>Los Angeles</name>
+   </city>
+   <city>
+      <countryId>3</countryId>
+      <createTimestamp>2011-11-24T13:05:04.676+01:00</createTimestamp>
+      <createUser>admin</createUser>
+      <id>11</id>
+      <modificationTimestamp>2011-11-24T13:05:04.676+01:00</modificationTimestamp>
+      <modificationUser>admin</modificationUser>
+      <name>New York</name>
+   </city>
+</dtoes>
 ---
 
 Alternatively use the JSON URLs

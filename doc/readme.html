@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 <meta name="language" content="en">
-<meta name="date" content="2011-09-22T13:16:04">
+<meta name="date" content="2011-12-29T13:51:15">
 <meta name="generator" content="deplate.rb 0.8.5">
 <link rel="start" href="readme.html" title="Frontpage">
 <link rel="chapter" href="readme.html#hd001" title="Azzyzt JEE Tools">
@@ -881,9 +881,6 @@ the command line.</p>
 
 <ul class="Itemize">
     <li class="Itemize-1 Itemize dash">
-        GlassFish v3
-    </li>
-    <li class="Itemize-1 Itemize dash">
         GlassFish v3.01
     </li>
     <li class="Itemize-1 Itemize dash">
@@ -898,13 +895,16 @@ the command line.</p>
 
 <ul class="Itemize">
     <li class="Itemize-1 Itemize dash">
-        Galileo SR1, SR2
+        Galileo SR2
     </li>
     <li class="Itemize-1 Itemize dash">
         Helios SR1, SR2
     </li>
     <li class="Itemize-1 Itemize dash">
         Indigo
+    </li>
+    <li class="Itemize-1 Itemize dash">
+        Indigo SR1
     </li>
 </ul>
 
@@ -915,12 +915,12 @@ IDE for Java EE Developers</a></span><a name="idx005"></a>. Other
 distributions may contain the required plugins and may work, but they 
 were not tested.</p>
 
-<p>The plugins were compiled on Eclipse 3.7 &ldquo;Indigo&rdquo; and tested 
-in the following configurations:</p>
+<p>The plugins were compiled on Eclipse 3.7 &ldquo;Indigo&rdquo; SR1 using 
+Java 1.6.0_26, and they were tested in the following configurations:</p>
 
 <ul class="Itemize">
     <li class="Itemize-1 Itemize dash">
-        Glassfish Tools Bundle for Eclipse (Galileo SR1 + GlassFish 3.0)
+        Galileo SR2 + GlassFish 3.01
     </li>
     <li class="Itemize-1 Itemize dash">
         Helios SR1 + GlassFish 3.01
@@ -936,30 +936,11 @@ in the following configurations:</p>
     </li>
 </ul>
 
-<p>All tests were done with JDK 1.6, because as of Indigo, Eclipse does not 
-support JDK 1.7. If you try to use it, but run Eclipse itself on a JRE 
-1.6, as soon as you try to generate code, you&rsquo;ll end up with an 
-obscure error &ldquo;<em>Can&rsquo;t read from temp file</em>&rdquo; and 
-then a long temporary file name. In the error log there will also be an 
-exception telling about an &ldquo;<em>UnsupportedClassVersionError: 
-&hellip; Unsupported major.minor version 51.0</em>&rdquo;. This means 
-that a class compiled with a newer version Java compiler (JDK 1.7 in our 
-case) has been attempted to be run on an older version Java VM (the VM 
-running Eclipse). Anyway, tests with Java 1.7 will really commence as 
-soon as Eclipse officially supports Java 1.7.</p>
+<p>All tests were done with JDK 1.6.</p>
 
-<p>Using JBOSS AS 6.0 as a runtime, generated code should compile. 
-<code>@Remote</code> annotations on generated service bean interfaces 
-have to be suppressed using 
-<code>AzzyztGeneratorCutback.NoRemoteInterfaces</code>, because JBOSS AS 
-6.0 only supports the JEE 6 web profile. No further testing with JBOSS 
-AS 6.0 has been done yet, JBOSS AS 7.0 has not been tested but is 
-supposed to work.</p>
-
-<p>In spring 2011 the project generator (#1) has been found to run with 
-Apache Geronimo v3.0-M1, but due to lacking support for REST, generated 
-applications did not compile. No further testing was done on Geronimo 
-since.</p>
+<p>No other application servers but GlassFish were tested. While in theory 
+all servers complying to the Java EE 6 full profile should work, they 
+are completely unsupported.</p>
 
 <p>Future extensions may provide generators for additional patterns 
 commonly used in Java EE applications.</p>
