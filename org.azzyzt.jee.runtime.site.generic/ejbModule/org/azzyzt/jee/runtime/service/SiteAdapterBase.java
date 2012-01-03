@@ -50,7 +50,7 @@ public abstract class SiteAdapterBase implements SiteAdapterInterface {
     private static final String JNDI_USERNAME_HEADER = "http/header/username";
 
     private static final String DEFAULT_CREDENTIALS_HEADER = "x-authorize-roles";
-    private static final String JNDI_CREDENTIALS_HEADER = "http/header/roles";
+    private static final String JNDI_CREDENTIALS_HEADER = "http/header/credentials";
     
     private static final String CRED_AZZYZT = "azzyzt";
     private static final String CRED_PROP_200_ON_ERROR = "200-on-error";

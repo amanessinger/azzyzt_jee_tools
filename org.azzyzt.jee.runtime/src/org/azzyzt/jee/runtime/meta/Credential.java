@@ -68,12 +68,24 @@ public class Credential {
 		if (propertyNames.isEmpty()) {
 			return true;
 		}
-		for (String propertyName : propertyNames) {
+		PROPERTIES: for (String propertyName : propertyNames) {
 			if (!hasProperty(propertyName)) {
 				return false;
 			}
-			if (!getPropertyValue(propertyName).equals(required.getPropertyValue(propertyName))) {
-				return false;
+			String suppliedValue = getPropertyValue(propertyName);
+			String requiredValue = required.getPropertyValue(propertyName);
+			if (suppliedValue.equals(requiredValue)) {
+				continue PROPERTIES;
+			} else {
+				try {
+					int suppliedNumber = Integer.parseInt(suppliedValue);
+					int requiredNumber = Integer.parseInt(requiredValue);
+					if (suppliedNumber < requiredNumber) {
+						return false;
+					}
+				} catch (NumberFormatException e) {
+					return false;
+				}
 			}
 		}
 		

@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 <meta name="language" content="en">
-<meta name="date" content="2011-12-29T15:38:14">
+<meta name="date" content="2012-01-03T16:25:19">
 <meta name="generator" content="deplate.rb 0.8.5">
 <link rel="start" href="using_azzyzt.html" title="Frontpage">
 <link rel="chapter" href="using_azzyzt.html#hd001" title="Azzyzt JEE Tools">
@@ -3316,15 +3316,18 @@ what the user name for a specific request is. I call this a <em>Site
 Adapter</em>, because it is used to encapsulate a site&rsquo;s 
 authentication technology and policy.</p>
 
-<p>The site adapter that comes with Azzyzt JEE Tools is currently only 
-involved for requests invoked via REST. What happens is, that the 
-generic code passes the request data to the site adapter, and the site 
-adapter tries to take the user name (which is expected to have been 
-authenticated and authorized for access by a portal in front of the 
-service) from an HTTP header. The header&rsquo;s name defaults to 
-&ldquo;<code>x-authenticate-userid</code>&rdquo;. This happens to be 
-what we use internally, but the name can be overridden by setting a 
-custom string resource in the application server.</p>
+<p>The site adapter that comes with Azzyzt JEE Tools is called via 
+Inteceptors, and it is called regardless of the invocation method, but 
+currently it is useful only for requests coming via HTTP, either SOAP or 
+REST.</p>
+
+<p>What happens is, that the interceptors pass the request data to the site 
+adapter, and the site adapter tries to take the user name (which is 
+expected to have been authenticated and authorized for access by a 
+portal in front of the service) from an HTTP header. The header&rsquo;s 
+name defaults to &ldquo;<code>x-authenticate-userid</code>&rdquo;. This 
+happens to be what we use internally, but the name can be overridden by 
+setting a custom string resource in the application server.</p>
 
 <p>The 
 <span class="remote"><a href="http://programming.manessinger.com/tutorials/an-eclipse-glassfish-java-ee-6-tutorial/" class="remote">Eclipse 
@@ -3333,19 +3336,31 @@ section titled &ldquo;<em>Configuration via JNDI Custom
 Resources</em>&rdquo;, that shows how to set custom resources in 
 GlassFish.</p>
 
-<p>The JNDI name of the resource has to be 
-&ldquo;<code>custom/stringvalues/http/header/username</code>&rdquo;, its 
-type must be <code>java.lang.String</code> and it has to have a property 
-with name &ldquo;<code>value</code>&rdquo; and the value of the property 
-should be whatever your HTTP header is called, for instance 
+<p>The runtime tries two JNDI names, an application-specific name, and if 
+that fails, a server-global name. This way we can have different 
+settings in different applications.</p>
+
+<p>The application-specific name for the application 
+&ldquo;<code>cookbook</code>&rdquo; would be 
+&ldquo;<code>custom/stringvalues/app_cookbook/http/header/username</code>&rdquo;, 
+its type must be <code>java.lang.String</code> and it has to have a 
+property with name &ldquo;<code>value</code>&rdquo; and the value of the 
+property should be whatever your HTTP header is called, for instance 
 &ldquo;<code>x-portal-username</code>&rdquo;.</p>
+
+<p>If that JNDI string resource is not found, the server-wide resource 
+&ldquo;<code>custom/stringvalues/http/header/username</code>&rdquo; is 
+looked up, again its type must be <code>java.lang.String</code> and it 
+has to have a property with name &ldquo;<code>value</code>&rdquo; and 
+the value of the property should be whatever your HTTP header is called.</p>
 
 <p>While we are at it, &ldquo;<code>anonymous</code>&rdquo;, as the name of 
 the username when no header is given, is also only a default. There is a 
-similar override via a JNDI string resource. The name of the resource 
-must be 
-&ldquo;<code>custom/stringvalues/username/anonymous</code>&rdquo;. Again 
-you need to define a property with name 
+similar override via JNDI string resources. Again it can be defined per 
+application or for the whole server. The name of the resource must be 
+&ldquo;<code>custom/stringvalues/app_cookbook/username/anonymous</code>&rdquo; 
+or &ldquo;<code>custom/stringvalues/username/anonymous</code>&rdquo;. 
+Again you need to define a property with name 
 &ldquo;<code>value</code>&rdquo;, having the string as value, that you 
 want to use, for instance &ldquo;<code>unknown</code>&rdquo;.</p>
 
@@ -3590,9 +3605,9 @@ with an <code>InvalidProxyIdException</code>, the transaction is rolled
 back and nothing is stored at all.</p>
 
 <p>Please note that you can freely mix inserts and updates in the same call 
-to <code>storeMulti(dtos)</code>. If it has and ID and an object with 
-that ID exists, then it is an update, if no object with the ID exists, 
-you will get an <code>EntityNotFoundException</code>, and if you 
+to <code>storeMulti(dtos)</code>. If something has and ID and an object 
+with that ID exists, then it is an update, if no object with the ID 
+exists, you will get an <code>EntityNotFoundException</code>, and if you 
 don&rsquo;t send an ID, a new object is inserted.</p>
 
 <p>As for JSON, it seems that we run into a problem with polymorphism 
@@ -4015,22 +4030,35 @@ Luxor itself and the language used.</p>
         <a href="#hd006004" class="toc">6.4 Adding features</a>
         <ul class="toc">
             <li class="Itemize-3 toc">
-                <a href="#hd006004001" class="toc">6.4.1 Adding an Apache CXF REST 
+                <a href="#hd006004001" class="toc">6.4.1 Adding credential-based 
+                authorization</a>
+                <ul class="toc">
+                    <li class="Itemize-5 toc">
+                        <a href="#hd006004001001" class="toc">6.4.1.1 Credentials</a>
+                    </li>
+                    <li class="Itemize-5 toc">
+                        <a href="#hd006004001002" class="toc">6.4.1.2 Credential-based 
+                        authorization</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="Itemize-3 toc">
+                <a href="#hd006004002" class="toc">6.4.2 Adding an Apache CXF REST 
                 client</a>
             </li>
             <li class="Itemize-3 toc">
-                <a href="#hd006004002" class="toc">6.4.2 CXF? Don&rsquo;t we use 
+                <a href="#hd006004003" class="toc">6.4.3 CXF? Don&rsquo;t we use 
                 Jersey?</a>
             </li>
             <li class="Itemize-3 toc">
-                <a href="#hd006004003" class="toc">6.4.3 The generated CXF REST client 
+                <a href="#hd006004004" class="toc">6.4.4 The generated CXF REST client 
                 interfaces</a>
             </li>
             <li class="Itemize-3 toc">
-                <a href="#hd006004004" class="toc">6.4.4 A simple CXF client example</a>
+                <a href="#hd006004005" class="toc">6.4.5 A simple CXF client example</a>
             </li>
             <li class="Itemize-3 toc">
-                <a href="#hd006004005" class="toc">6.4.5 In-server unit tests</a>
+                <a href="#hd006004006" class="toc">6.4.6 In-server unit tests</a>
             </li>
         </ul>
     </li>
@@ -4062,6 +4090,7 @@ to the <code>entity</code> package. This is how the
 <span class="hl kwa">import</span> javax<span class="hl opt">.</span>ejb<span class="hl opt">.</span>LocalBean<span class="hl opt">;</span>
 <span class="hl kwa">import</span> javax<span class="hl opt">.</span>ejb<span class="hl opt">.</span>Stateless<span class="hl opt">;</span>
 <span class="hl kwa">import</span> org<span class="hl opt">.</span>azzyzt<span class="hl opt">.</span>jee<span class="hl opt">.</span>runtime<span class="hl opt">.</span>meta<span class="hl opt">.</span>AzzyztantInterface<span class="hl opt">;</span>
+<span class="hl kwa">import</span> org<span class="hl opt">.</span>azzyzt<span class="hl opt">.</span>jee<span class="hl opt">.</span>runtime<span class="hl opt">.</span>util<span class="hl opt">.</span>AuthorizationInterface<span class="hl opt">;</span>
 <span class="hl kwa">import</span> org<span class="hl opt">.</span>azzyzt<span class="hl opt">.</span>jee<span class="hl opt">.</span>runtime<span class="hl opt">.</span>util<span class="hl opt">.</span>StringConverterInterface<span class="hl opt">;</span>
 
 
@@ -4096,6 +4125,18 @@ to the <code>entity</code> package. This is how the
 <span class="hl com">     */</span>
     <span class="hl kwa">private final</span> StringConverterInterface usernameConverter <span class="hl opt">=</span> null<span class="hl opt">;</span>
 
+    <span class="hl com">/*</span>
+<span class="hl com">     * 'authorizer' can be set to an instance of any class that implements</span>
+<span class="hl com">     * AuthorizationInterface.</span>
+<span class="hl com">     *</span>
+<span class="hl com">     * ATTENTION: keep this stateless, fast and thread-safe!!! </span>
+<span class="hl com">     * </span>
+<span class="hl com">     * This is actually a shared instance that, if not null, is called once </span>
+<span class="hl com">     * upon any invocation. The runtime won't try to synchronize its call to </span>
+<span class="hl com">     * 'checkAuthorization()'. Neither should you.</span>
+<span class="hl com">     */</span>
+    <span class="hl kwa">private final</span> AuthorizationInterface authorizer <span class="hl opt">=</span> null<span class="hl opt">;</span>
+
     <span class="hl kwa">public</span> <span class="hl kwd">Azzyztant</span><span class="hl opt">() {</span> <span class="hl kwa">super</span><span class="hl opt">(); }</span>
 
 
@@ -4104,9 +4145,16 @@ to the <code>entity</code> package. This is how the
         <span class="hl kwa">return</span> usernameConverter<span class="hl opt">;</span>
     <span class="hl opt">}</span>
 
+    <span class="hl kwc">&#64;Override</span>
+    <span class="hl kwa">public</span> AuthorizationInterface <span class="hl kwd">getAuthorizer</span><span class="hl opt">() {</span>
+        <span class="hl kwa">return</span> authorizer<span class="hl opt">;</span>
+    <span class="hl opt">}</span>
+
 <span class="hl opt">}</span>
 </pre>
 </div>
+<p>We go into details across the next couple of sections.</p>
+
 
 
 <h2 id="hd006002">6.2&nbsp;Transforming user names</h2>
@@ -4221,10 +4269,8 @@ the <code>Azzyztant</code>:</p>
 
 <span class="hl kwa">import</span> javax<span class="hl opt">.</span>ejb<span class="hl opt">.</span>LocalBean<span class="hl opt">;</span>
 <span class="hl kwa">import</span> javax<span class="hl opt">.</span>ejb<span class="hl opt">.</span>Stateless<span class="hl opt">;</span>
-
-<span class="hl kwa">import</span> org<span class="hl opt">.</span>azzyzt<span class="hl opt">.</span>jee<span class="hl opt">.</span>runtime<span class="hl opt">.</span>annotation<span class="hl opt">.</span>AzzyztGeneratorOptions<span class="hl opt">;</span>
-<span class="hl kwa">import</span> org<span class="hl opt">.</span>azzyzt<span class="hl opt">.</span>jee<span class="hl opt">.</span>runtime<span class="hl opt">.</span>meta<span class="hl opt">.</span>AzzyztGeneratorCutback<span class="hl opt">;</span>
 <span class="hl kwa">import</span> org<span class="hl opt">.</span>azzyzt<span class="hl opt">.</span>jee<span class="hl opt">.</span>runtime<span class="hl opt">.</span>meta<span class="hl opt">.</span>AzzyztantInterface<span class="hl opt">;</span>
+<span class="hl kwa">import</span> org<span class="hl opt">.</span>azzyzt<span class="hl opt">.</span>jee<span class="hl opt">.</span>runtime<span class="hl opt">.</span>util<span class="hl opt">.</span>AuthorizationInterface<span class="hl opt">;</span>
 <span class="hl kwa">import</span> org<span class="hl opt">.</span>azzyzt<span class="hl opt">.</span>jee<span class="hl opt">.</span>runtime<span class="hl opt">.</span>util<span class="hl opt">.</span>StringConverterInterface<span class="hl opt">;</span>
 
 
@@ -4242,12 +4288,21 @@ the <code>Azzyztant</code>:</p>
 
     <span class="hl kwa">private final</span> StringConverterInterface usernameConverter <span class="hl opt">=</span> null<span class="hl opt">;</span>
 
+    <span class="hl kwa">private final</span> AuthorizationInterface authorizer <span class="hl opt">=</span> null<span class="hl opt">;</span>
+
     <span class="hl kwa">public</span> <span class="hl kwd">Azzyztant</span><span class="hl opt">() {</span> <span class="hl kwa">super</span><span class="hl opt">(); }</span>
+
 
     <span class="hl kwc">&#64;Override</span>
     <span class="hl kwa">public</span> StringConverterInterface <span class="hl kwd">getUsernameConverter</span><span class="hl opt">() {</span>
         <span class="hl kwa">return</span> usernameConverter<span class="hl opt">;</span>
     <span class="hl opt">}</span>
+
+    <span class="hl kwc">&#64;Override</span>
+    <span class="hl kwa">public</span> AuthorizationInterface <span class="hl kwd">getAuthorizer</span><span class="hl opt">() {</span>
+        <span class="hl kwa">return</span> authorizer<span class="hl opt">;</span>
+    <span class="hl opt">}</span>
+
 <span class="hl opt">}</span>
 </pre>
 </div>
@@ -4273,7 +4328,206 @@ If you turn off both variants of REST, Azzyzt won&rsquo;t generate the REST serv
 features. You do that by adding options.</p>
 
 
-<h3 id="hd006004001">6.4.1&nbsp;Adding an Apache CXF REST client</h3>
+<h3 id="hd006004001">6.4.1&nbsp;Adding credential-based authorization</h3>
+
+
+<h4 id="hd006004001001">6.4.1.1&nbsp;Credentials</h4>
+
+<p>We have seen that Azzyzt does not even try to solve the problem of 
+authentication, i.e. of determining the principal on whose behalf a 
+request was made. Instead Azzyzt assumes that this is solved either by 
+the application server or by a web server, a gateway, in front of it. It 
+is the job of the site adapter to adapt to the method used.</p>
+
+<p>The site adapter delivered with Azzyzt JEE Tools relies on a gateway or 
+portal in front of the application server. This gateway is assumed to 
+authenticate the user, and to pass the information on to the application 
+server via HTTP headers. We have already seen how the username header 
+can be customized.</p>
+
+<p>Knowing who the user is solves only part of the problem though. We would 
+also like to know what the user is allowed to do in the application. 
+This is called authorization.</p>
+
+<p>Java EE 6 has its own model of authentication / authorization based on 
+annotations in the applications and the concepts of realms, users, 
+groups and roles. It is not particularly complicated, but in the 
+GlassFish implementation it is most useful when you have a complete 
+Oracle Enterprise environment.</p>
+
+<p>I think it would be possible to plug any custon solution into the 
+GlassFish server and make it play well with the Java EE 6 annotations, 
+but keeping that all out of scope makes our job even easier, especially 
+when some authentication / authorization infrastructure is already 
+present.</p>
+
+<p>Azzyzt comes with an option to use &ldquo;<em>credential-based 
+authorization</em>&rdquo;. The idea is, that the same gateway that 
+already authenticates the user, also delivers some information about the 
+user&rsquo;s rights, or as we say here, the user&rsquo;s 
+&ldquo;<em>credentials</em>&rdquo;.</p>
+
+<p>Imagine a gateway that authenticates users and looks them up in an X.500 
+tree via LDAP. It allows or denies access to the application, based on 
+the user and/or the user&rsquo;s membership in groups. Groups are 
+hierarchically organized, again in X.500, and for each configured 
+application, access to a list of URL prefixes is granted to a set of 
+principals (users and/or groups).</p>
+
+<p>For each pair of URL prefix and principal granted access, there can be a 
+list of credentials attached. The credentials are again expected to be 
+delivered in form of a single HTTP header. The name of the header can be 
+defined via JNDI resources. Again the runtime tries two resources, an 
+application-specific and a server-wide. For our application these would 
+be 
+&ldquo;<code>custom/stringvalues/app_cookbook/http/header/credentials</code>&rdquo; 
+and 
+&ldquo;<code>custom/stringvalues/http/header/credentials</code>&rdquo; 
+respectively. Again you need to define a property with name 
+&ldquo;value&rdquo;, having the string as value, that you want to use, 
+for instance &ldquo;<code>x-auth-credentials</code>&rdquo;.</p>
+
+<p>If no JNDI resources are found, the header name defaults to 
+&ldquo;<code>x-authorize-roles</code>&rdquo;, the name of the HTTP 
+header used around here.</p>
+
+<p>If no HTTP header is delivered at runtime, the principal is assumed to 
+have no credentials at all.</p>
+
+<p>The credentials header is a single string that is made up of a list of 
+credentials, separated by semicolons. Each credential may be modified by 
+a list of properties. Properties are name/value pairs given in parens. 
+White-space is optional. Let me give some quick examples:</p>
+
+<ul class="Itemize">
+    <li class="Itemize-1 Itemize dash">
+        &ldquo;&rdquo; is the empty list
+    </li>
+    <li class="Itemize-1 Itemize dash">
+        &ldquo;<code>modify</code>&rdquo; is a list containing a single 
+        credential allowing modifications. The credential has no properties 
+        specified
+    </li>
+    <li class="Itemize-1 Itemize dash">
+        &ldquo;<code>lookup(level=5)</code>&rdquo; may allow to lookup in the 
+        application, but the additional property 
+        &ldquo;<code>level</code>&rdquo; could be used to limit the results to a 
+        certain security level. In case of an empty property list, the use of 
+        empty parens (i.e. &ldquo;<code>lookup()</code>&rdquo;) is allowed.
+    </li>
+    <li class="Itemize-1 Itemize dash">
+        &ldquo;<code>cred_a(p1=v1,p2=v2,p3=v3);&nbsp;cred_b;&nbsp;cred_c(p4=v4);&nbsp;cred_d()</code>&rdquo; 
+        is a  hypothetic complex example with four credentials, two of them with 
+        properties
+    </li>
+</ul>
+
+<p>On the frontend, in the gateway, these credentials have no meaning at 
+all. They are simply strings to be sent when a certain principle 
+accesses a certain URL.</p>
+
+<p>Credentials come in two flavors: credentials supplied by the gateway via 
+HTTP headers and credentials required by the application.</p>
+
+<p>In order to require credentials, we can put an annotation 
+<code>@RequiresCredentials</code> on either an EJB class (which means 
+that all methods require these credentials) and/or an EJB class&rsquo; 
+methods. The effect is cumulative. An EJB could require a credential 
+&ldquo;<code>admin</code>&rdquo; and one of its methods, the method 
+&ldquo;<code>dangerous()</code>&rdquo; could require 
+&ldquo;<code>senior</code>&rdquo;. In such a case any access to 
+&ldquo;<code>dangerous()</code>&rdquo; would need the cumulative 
+credentials &ldquo;<code>admin();&nbsp;senior()</code>&rdquo; to be 
+supplied.</p>
+
+<p>A request is granted access if at least the credentials and properties 
+required are supplied. Additional credentials and properties are OK. 
+Thus if &ldquo;<code>admin</code>&rdquo; is required, a user with 
+credentials &ldquo;<code>admin;&nbsp;senior</code>&rdquo; is granted 
+access.</p>
+
+<p>If for instance &ldquo;<code>admin;&nbsp;senior(rank=2)</code>&rdquo; is 
+required, a user with only &ldquo;<code>admin;&nbsp;senior</code>&rdquo; 
+is denied access. Numeric property values are special. A user with 
+&ldquo;<code>admin;&nbsp;senior(rank=3)</code>&rdquo; would also be 
+granted access, although the property values don&rsquo;t match. The rule 
+for numeric properties is, that supplied property values greater or 
+equal required values are granted access.</p>
+
+<p>This is quite flexible and can be used for all sorts of sophisticated 
+authorization schemes. Try to not go over the top though. Simplicity is 
+a virtue.</p>
+
+
+
+<h4 id="hd006004001002">6.4.1.2&nbsp;Credential-based authorization</h4>
+
+<p>Look at the following <code>Azzyztant</code>:</p>
+
+<a name="AzzyztantCredentialBasedAuth"></a>
+<div class="code">
+<pre>
+<span class="hl kwa">package</span> com<span class="hl opt">.</span>manessinger<span class="hl opt">.</span>cookbook<span class="hl opt">.</span>meta<span class="hl opt">;</span>
+
+<span class="hl kwa">import</span> javax<span class="hl opt">.</span>ejb<span class="hl opt">.</span>LocalBean<span class="hl opt">;</span>
+<span class="hl kwa">import</span> javax<span class="hl opt">.</span>ejb<span class="hl opt">.</span>Stateless<span class="hl opt">;</span>
+
+<span class="hl kwa">import</span> org<span class="hl opt">.</span>azzyzt<span class="hl opt">.</span>jee<span class="hl opt">.</span>runtime<span class="hl opt">.</span>annotation<span class="hl opt">.</span>AzzyztGeneratorOptions<span class="hl opt">;</span>
+<span class="hl kwa">import</span> org<span class="hl opt">.</span>azzyzt<span class="hl opt">.</span>jee<span class="hl opt">.</span>runtime<span class="hl opt">.</span>meta<span class="hl opt">.</span>AzzyztGeneratorOption<span class="hl opt">;</span>
+<span class="hl kwa">import</span> org<span class="hl opt">.</span>azzyzt<span class="hl opt">.</span>jee<span class="hl opt">.</span>runtime<span class="hl opt">.</span>meta<span class="hl opt">.</span>AzzyztantInterface<span class="hl opt">;</span>
+<span class="hl kwa">import</span> org<span class="hl opt">.</span>azzyzt<span class="hl opt">.</span>jee<span class="hl opt">.</span>runtime<span class="hl opt">.</span>util<span class="hl opt">.</span>AuthorizationInterface<span class="hl opt">;</span>
+<span class="hl kwa">import</span> org<span class="hl opt">.</span>azzyzt<span class="hl opt">.</span>jee<span class="hl opt">.</span>runtime<span class="hl opt">.</span>util<span class="hl opt">.</span>CredentialBasedAuthorizer<span class="hl opt">;</span>
+<span class="hl kwa">import</span> org<span class="hl opt">.</span>azzyzt<span class="hl opt">.</span>jee<span class="hl opt">.</span>runtime<span class="hl opt">.</span>util<span class="hl opt">.</span>StringConverterInterface<span class="hl opt">;</span>
+
+<span class="hl kwc">&#64;LocalBean</span>
+<span class="hl kwc">&#64;Stateless</span>
+<span class="hl kwc">&#64;AzzyztGeneratorOptions</span><span class="hl opt">(</span>
+        options <span class="hl opt">= {</span>
+            AzzyztGeneratorOption<span class="hl opt">.</span>AddCredentialBasedAuthorization<span class="hl opt">,</span>
+        <span class="hl opt">}</span>
+<span class="hl opt">)</span>
+<span class="hl kwa">public class</span> Azzyztant <span class="hl kwa">implements</span> AzzyztantInterface <span class="hl opt">{</span>
+
+    <span class="hl kwa">private final</span> StringConverterInterface usernameConverter <span class="hl opt">=</span> null<span class="hl opt">;</span>    
+    <span class="hl kwa">private final</span> AuthorizationInterface authorizer <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">CredentialBasedAuthorizer</span><span class="hl opt">();</span>
+    
+    <span class="hl kwa">public</span> <span class="hl kwd">Azzyztant</span><span class="hl opt">() {</span> <span class="hl kwa">super</span><span class="hl opt">(); }</span>
+
+    <span class="hl kwc">&#64;Override</span>
+    <span class="hl kwa">public</span> StringConverterInterface <span class="hl kwd">getUsernameConverter</span><span class="hl opt">() {</span>
+        <span class="hl kwa">return</span> usernameConverter<span class="hl opt">;</span>
+    <span class="hl opt">}</span>
+
+    <span class="hl kwc">&#64;Override</span>
+    <span class="hl kwa">public</span> AuthorizationInterface <span class="hl kwd">getAuthorizer</span><span class="hl opt">() {</span>
+    <span class="hl kwa">return</span> authorizer<span class="hl opt">;</span>
+    <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+</pre>
+</div>
+<p>It specifies no cutbacks and a single option. The option 
+&ldquo;<code>AzzyztGeneratorOption.AddCredentialBasedAuthorization</code>&rdquo; 
+causes the code generator to generate an annotation 
+&ldquo;<code>@RequiresCredentials(&quot;modify()&quot;)</code>&rdquo; on 
+the &ldquo;<code>store()</code>&rdquo; and 
+&ldquo;<code>delete()</code>&rdquo; methods of the full beans and on the 
+class <code>ModifyMultiBean</code>.</p>
+
+<p>These annotations alone do nothing, but we also specify a non-null 
+authorizer, and the class used, <code>CredentialBasedAuthorizer</code>, 
+a class that comes with the Azzyzt runtime, exactly implements the 
+behavior sketched earlier.</p>
+
+<p>You can add your own service beans and you can require any credentials 
+you like. Just add &ldquo;<code>@RequiresCredentials()</code>&rdquo; to 
+your beans and/or methods and use the standard 
+<code>CredentialBasedAuthorizer</code>.</p>
+
+
+
+<h3 id="hd006004002">6.4.2&nbsp;Adding an Apache CXF REST client</h3>
+
+<p>In the next example we use a cutback and two options:</p>
 
 <a name="AzzyztantCxfClient"></a>
 <div class="code">
@@ -4287,6 +4541,8 @@ features. You do that by adding options.</p>
 <span class="hl kwa">import</span> org<span class="hl opt">.</span>azzyzt<span class="hl opt">.</span>jee<span class="hl opt">.</span>runtime<span class="hl opt">.</span>meta<span class="hl opt">.</span>AzzyztGeneratorCutback<span class="hl opt">;</span>
 <span class="hl kwa">import</span> org<span class="hl opt">.</span>azzyzt<span class="hl opt">.</span>jee<span class="hl opt">.</span>runtime<span class="hl opt">.</span>meta<span class="hl opt">.</span>AzzyztGeneratorOption<span class="hl opt">;</span>
 <span class="hl kwa">import</span> org<span class="hl opt">.</span>azzyzt<span class="hl opt">.</span>jee<span class="hl opt">.</span>runtime<span class="hl opt">.</span>meta<span class="hl opt">.</span>AzzyztantInterface<span class="hl opt">;</span>
+<span class="hl kwa">import</span> org<span class="hl opt">.</span>azzyzt<span class="hl opt">.</span>jee<span class="hl opt">.</span>runtime<span class="hl opt">.</span>util<span class="hl opt">.</span>AuthorizationInterface<span class="hl opt">;</span>
+<span class="hl kwa">import</span> org<span class="hl opt">.</span>azzyzt<span class="hl opt">.</span>jee<span class="hl opt">.</span>runtime<span class="hl opt">.</span>util<span class="hl opt">.</span>CredentialBasedAuthorizer<span class="hl opt">;</span>
 <span class="hl kwa">import</span> org<span class="hl opt">.</span>azzyzt<span class="hl opt">.</span>jee<span class="hl opt">.</span>runtime<span class="hl opt">.</span>util<span class="hl opt">.</span>StringConverterInterface<span class="hl opt">;</span>
 
 <span class="hl kwc">&#64;LocalBean</span>
@@ -4294,29 +4550,34 @@ features. You do that by adding options.</p>
 <span class="hl kwc">&#64;AzzyztGeneratorOptions</span><span class="hl opt">(</span>
         cutbacks <span class="hl opt">= {</span>
                 AzzyztGeneratorCutback<span class="hl opt">.</span>NoRemoteInterfaces<span class="hl opt">,</span>
-                AzzyztGeneratorCutback<span class="hl opt">.</span>NoSoapServices<span class="hl opt">,</span>
         <span class="hl opt">},</span>
         options <span class="hl opt">= {</span>
-                AzzyztGeneratorOption<span class="hl opt">.</span>AddCxfRestClient<span class="hl opt">,</span>
+            AzzyztGeneratorOption<span class="hl opt">.</span>AddCredentialBasedAuthorization<span class="hl opt">,</span>
+            AzzyztGeneratorOption<span class="hl opt">.</span>AddCxfRestClient<span class="hl opt">,</span>
         <span class="hl opt">}</span>
 <span class="hl opt">)</span>
 <span class="hl kwa">public class</span> Azzyztant <span class="hl kwa">implements</span> AzzyztantInterface <span class="hl opt">{</span>
 
     <span class="hl kwa">private final</span> StringConverterInterface usernameConverter <span class="hl opt">=</span> null<span class="hl opt">;</span>
-
+    <span class="hl kwa">private final</span> AuthorizationInterface authorizer <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">CredentialBasedAuthorizer</span><span class="hl opt">();</span>
+    
     <span class="hl kwa">public</span> <span class="hl kwd">Azzyztant</span><span class="hl opt">() {</span> <span class="hl kwa">super</span><span class="hl opt">(); }</span>
 
     <span class="hl kwc">&#64;Override</span>
     <span class="hl kwa">public</span> StringConverterInterface <span class="hl kwd">getUsernameConverter</span><span class="hl opt">() {</span>
         <span class="hl kwa">return</span> usernameConverter<span class="hl opt">;</span>
     <span class="hl opt">}</span>
+
+    <span class="hl kwc">&#64;Override</span>
+    <span class="hl kwa">public</span> AuthorizationInterface <span class="hl kwd">getAuthorizer</span><span class="hl opt">() {</span>
+    <span class="hl kwa">return</span> authorizer<span class="hl opt">;</span>
+    <span class="hl opt">}</span>
 <span class="hl opt">}</span>
 </pre>
 </div>
-<p>&ldquo;<code>AzzyztGeneratorOption.AddCxfRestClient</code>&rdquo; is 
-currently the only option, more may follow. Using that option causes the 
-code generator to create one more project, a REST client project using 
-the Apache CXF REST libraries.</p>
+<p>&ldquo;<code>AzzyztGeneratorOption.AddCxfRestClient</code>&rdquo; is an 
+option that causes the code generator to create one more project, a REST 
+client project using the Apache CXF REST libraries.</p>
 
 <p>The CXF REST client project is not created by default. It is only 
 created if the code generator finds this option. Once it is created, it 
@@ -4357,17 +4618,20 @@ class path set up to use them.</p>
 
 
 
-<h3 id="hd006004002">6.4.2&nbsp;CXF? Don&rsquo;t we use Jersey?</h3>
+<h3 id="hd006004003">6.4.3&nbsp;CXF? Don&rsquo;t we use Jersey?</h3>
 
 <p>Java EE defines REST bindings for Java. The standard is called JAX-RS 
 and its public API is restricted to the server side. This does not mean 
 that you can&rsquo;t use REST clients in Java, it only means that Java 
-EE does not mandate a specific client API. On the other hand, 
-implementing a server API is more than half of what you need for a 
-corresponding client API, and for testing purposes you&rsquo;ll want a 
-client API anyway. The only problem is, that due to the lack of 
+EE does not mandate a specific client API. This is expected to arrive 
+with Java EE 7.</p>
+
+<p>On the other hand, implementing a server API is more than half of what 
+you need for a corresponding client API, and for testing purposes 
+you&rsquo;ll want a client API anyway, and therefore all REST 
+implementations have one. The only problem is, that due to the lack of 
 standardization, the client APIs of the various JAX-RS implementations 
-are all different and we have to choose one of them.</p>
+are all different from each other and we have to choose one of them.</p>
 
 <p>Of course there is a 
 <span class="remote"><a href="http://jersey.java.net/nonav/documentation/latest/client-api.html" class="remote">client 
@@ -4400,7 +4664,7 @@ with the DTOs in our EJB client project.</p>
 
 
 
-<h3 id="hd006004003">6.4.3&nbsp;The generated CXF REST client interfaces</h3>
+<h3 id="hd006004004">6.4.4&nbsp;The generated CXF REST client interfaces</h3>
 
 <p>For each REST service we generate a corresponding client interface. 
 Let&rsquo;s take for example the full city client:</p>
@@ -4487,7 +4751,7 @@ Let&rsquo;s take for example the full city client:</p>
 </div>
 <p>As you can see, the annotations look exactly as on server side. Using 
 Apache CXF, this interface can be used to create a proxy implementing 
-this interface. Just as in SOAP, the methods return DTOs and lists of 
+the interface. Just as in SOAP, the methods return DTOs and lists of 
 DTOs, polymorphism included.</p>
 
 <p>In order to make this work, the CXF REST client project needs access to 
@@ -4497,7 +4761,7 @@ need the EJB client JAR on the class path.</p>
 
 
 
-<h3 id="hd006004004">6.4.4&nbsp;A simple CXF client example</h3>
+<h3 id="hd006004005">6.4.5&nbsp;A simple CXF client example</h3>
 
 <p>Here&rsquo;s a complete toy client. It prints the name of the city whose 
 ID is given on the command line.</p>
@@ -4571,7 +4835,7 @@ was on server side.</p>
 
 
 
-<h3 id="hd006004005">6.4.5&nbsp;In-server unit tests</h3>
+<h3 id="hd006004006">6.4.6&nbsp;In-server unit tests</h3>
 
 <p>Why should we bother with Java REST clients anyway? After all, Java has 
 a fully conformant SOAP stack, thus we would be better off by just 
@@ -4606,6 +4870,7 @@ doc/cookbook/src/optional
 |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;get_austria.xml
 |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;nested_expressions.xml
 |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;query_with_three_conditions.xml
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;query_with_two_betweens.xml
 |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;sorted_list_of_cities.xml
 `--&nbsp;cookbookEJB
 &nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;ejbModule
@@ -4647,6 +4912,7 @@ you use.</p>
 <span class="hl kwa">import static</span> org<span class="hl opt">.</span>junit<span class="hl opt">.</span>Assert<span class="hl opt">.</span>assertEquals<span class="hl opt">;</span>
 <span class="hl kwa">import static</span> org<span class="hl opt">.</span>junit<span class="hl opt">.</span>Assert<span class="hl opt">.</span>assertNotNull<span class="hl opt">;</span>
 <span class="hl kwa">import static</span> org<span class="hl opt">.</span>junit<span class="hl opt">.</span>Assert<span class="hl opt">.</span>assertTrue<span class="hl opt">;</span>
+<span class="hl kwa">import static</span> org<span class="hl opt">.</span>junit<span class="hl opt">.</span>Assert<span class="hl opt">.</span>fail<span class="hl opt">;</span>
 
 <span class="hl kwa">import</span> java<span class="hl opt">.</span>io<span class="hl opt">.</span>BufferedReader<span class="hl opt">;</span>
 <span class="hl kwa">import</span> java<span class="hl opt">.</span>io<span class="hl opt">.</span>IOException<span class="hl opt">;</span>
@@ -4661,6 +4927,7 @@ you use.</p>
 
 <span class="hl kwa">import</span> org<span class="hl opt">.</span>apache<span class="hl opt">.</span>cxf<span class="hl opt">.</span>jaxrs<span class="hl opt">.</span>client<span class="hl opt">.</span>Client<span class="hl opt">;</span>
 <span class="hl kwa">import</span> org<span class="hl opt">.</span>apache<span class="hl opt">.</span>cxf<span class="hl opt">.</span>jaxrs<span class="hl opt">.</span>client<span class="hl opt">.</span>JAXRSClientFactory<span class="hl opt">;</span>
+<span class="hl kwa">import</span> org<span class="hl opt">.</span>apache<span class="hl opt">.</span>cxf<span class="hl opt">.</span>jaxrs<span class="hl opt">.</span>client<span class="hl opt">.</span>ServerWebApplicationException<span class="hl opt">;</span>
 <span class="hl kwa">import</span> org<span class="hl opt">.</span>apache<span class="hl opt">.</span>cxf<span class="hl opt">.</span>jaxrs<span class="hl opt">.</span>client<span class="hl opt">.</span>WebClient<span class="hl opt">;</span>
 <span class="hl kwa">import</span> org<span class="hl opt">.</span>junit<span class="hl opt">.</span>Before<span class="hl opt">;</span>
 <span class="hl kwa">import</span> org<span class="hl opt">.</span>junit<span class="hl opt">.</span>BeforeClass<span class="hl opt">;</span>
@@ -4689,6 +4956,9 @@ you use.</p>
     
     <span class="hl kwa">private static final</span> String BASE_URI <span class="hl opt">=</span> <span class="hl str">&quot;http://localhost:8080/cookbookServlets/REST&quot;</span><span class="hl opt">;</span>
     
+    <span class="hl kwa">private static final</span> String LINZ <span class="hl opt">=</span> <span class="hl str">&quot;Linz&quot;</span><span class="hl opt">;</span>
+    <span class="hl kwa">private static final</span> String SALZBURG <span class="hl opt">=</span> <span class="hl str">&quot;Salzburg&quot;</span><span class="hl opt">;</span>
+
     <span class="hl kwa">private static final</span> String FRANCE <span class="hl opt">=</span> <span class="hl str">&quot;France&quot;</span><span class="hl opt">;</span>
     <span class="hl kwa">private static final</span> String MARSEILLES <span class="hl opt">=</span> <span class="hl str">&quot;Marseilles&quot;</span><span class="hl opt">;</span>
     <span class="hl kwa">private static final</span> String PARIS <span class="hl opt">=</span> <span class="hl str">&quot;Paris&quot;</span><span class="hl opt">;</span>
@@ -4711,6 +4981,9 @@ you use.</p>
     <span class="hl kwa">private static</span> Client multiClient<span class="hl opt">;</span>
     <span class="hl kwa">private static</span> Client visitClient<span class="hl opt">;</span>
     <span class="hl kwa">private static</span> Client zipClient<span class="hl opt">;</span>
+    
+    <span class="hl kwa">private static</span> CityFullCxfRestInterface cityProtectedSvc<span class="hl opt">;</span>
+    <span class="hl kwa">private static</span> Client cityProtectedClient<span class="hl opt">;</span>
     
     <span class="hl com">/**</span>
 <span class="hl com">     * BEFORE CLASS: setup proxies, set their media types to APPLICATION_XML. </span>
@@ -4735,37 +5008,50 @@ you use.</p>
         cityClient <span class="hl opt">=</span> WebClient<span class="hl opt">.</span><span class="hl kwd">client</span><span class="hl opt">(</span>citySvc<span class="hl opt">);</span>
         cityClient<span class="hl opt">.</span><span class="hl kwd">type</span><span class="hl opt">(</span>MediaType<span class="hl opt">.</span>APPLICATION_XML<span class="hl opt">);</span>
         cityClient<span class="hl opt">.</span><span class="hl kwd">accept</span><span class="hl opt">(</span>MediaType<span class="hl opt">.</span>MEDIA_TYPE_WILDCARD<span class="hl opt">);</span>
-        <span class="hl slc">// cityClient.header(&quot;X-Portal-Cred0&quot;, &quot;REST_200_ON_ERROR&quot;);</span>
+        cityClient<span class="hl opt">.</span><span class="hl kwd">header</span><span class="hl opt">(</span><span class="hl str">&quot;x-authorize-roles&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;azzyzt(200-on-error=false);modify()&quot;</span><span class="hl opt">);</span>
+        cityClient<span class="hl opt">.</span><span class="hl kwd">header</span><span class="hl opt">(</span><span class="hl str">&quot;x-authenticate-userid&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;junit&quot;</span><span class="hl opt">);</span>
         
         countrySvc <span class="hl opt">=</span> JAXRSClientFactory<span class="hl opt">.</span><span class="hl kwd">create</span><span class="hl opt">(</span>BASE_URI<span class="hl opt">,</span> CountryFullCxfRestInterface<span class="hl opt">.</span><span class="hl kwa">class</span><span class="hl opt">);</span>
         countryClient <span class="hl opt">=</span> WebClient<span class="hl opt">.</span><span class="hl kwd">client</span><span class="hl opt">(</span>countrySvc<span class="hl opt">);</span>
         countryClient<span class="hl opt">.</span><span class="hl kwd">type</span><span class="hl opt">(</span>MediaType<span class="hl opt">.</span>APPLICATION_XML<span class="hl opt">);</span>
         countryClient<span class="hl opt">.</span><span class="hl kwd">accept</span><span class="hl opt">(</span>MediaType<span class="hl opt">.</span>MEDIA_TYPE_WILDCARD<span class="hl opt">);</span>
-        <span class="hl slc">// countryClient.header(&quot;X-Portal-Cred0&quot;, &quot;REST_200_ON_ERROR&quot;);</span>
+        countryClient<span class="hl opt">.</span><span class="hl kwd">header</span><span class="hl opt">(</span><span class="hl str">&quot;x-authorize-roles&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;azzyzt(200-on-error=false);modify()&quot;</span><span class="hl opt">);</span>
+        countryClient<span class="hl opt">.</span><span class="hl kwd">header</span><span class="hl opt">(</span><span class="hl str">&quot;x-authenticate-userid&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;junit&quot;</span><span class="hl opt">);</span>
         
         languageSvc <span class="hl opt">=</span> JAXRSClientFactory<span class="hl opt">.</span><span class="hl kwd">create</span><span class="hl opt">(</span>BASE_URI<span class="hl opt">,</span> LanguageFullCxfRestInterface<span class="hl opt">.</span><span class="hl kwa">class</span><span class="hl opt">);</span>
         languageClient <span class="hl opt">=</span> WebClient<span class="hl opt">.</span><span class="hl kwd">client</span><span class="hl opt">(</span>languageSvc<span class="hl opt">);</span>
         languageClient<span class="hl opt">.</span><span class="hl kwd">type</span><span class="hl opt">(</span>MediaType<span class="hl opt">.</span>APPLICATION_XML<span class="hl opt">);</span>
         languageClient<span class="hl opt">.</span><span class="hl kwd">accept</span><span class="hl opt">(</span>MediaType<span class="hl opt">.</span>MEDIA_TYPE_WILDCARD<span class="hl opt">);</span>
-        <span class="hl slc">// languageClient.header(&quot;X-Portal-Cred0&quot;, &quot;REST_200_ON_ERROR&quot;);</span>
+        languageClient<span class="hl opt">.</span><span class="hl kwd">header</span><span class="hl opt">(</span><span class="hl str">&quot;x-authorize-roles&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;azzyzt(200-on-error=false);modify()&quot;</span><span class="hl opt">);</span>
+        languageClient<span class="hl opt">.</span><span class="hl kwd">header</span><span class="hl opt">(</span><span class="hl str">&quot;x-authenticate-userid&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;junit&quot;</span><span class="hl opt">);</span>
         
         multiSvc <span class="hl opt">=</span> JAXRSClientFactory<span class="hl opt">.</span><span class="hl kwd">create</span><span class="hl opt">(</span>BASE_URI<span class="hl opt">,</span> ModifyMultiCxfRestInterface<span class="hl opt">.</span><span class="hl kwa">class</span><span class="hl opt">);</span>
         multiClient <span class="hl opt">=</span> WebClient<span class="hl opt">.</span><span class="hl kwd">client</span><span class="hl opt">(</span>multiSvc<span class="hl opt">);</span>
         multiClient<span class="hl opt">.</span><span class="hl kwd">type</span><span class="hl opt">(</span>MediaType<span class="hl opt">.</span>APPLICATION_XML<span class="hl opt">);</span>
         multiClient<span class="hl opt">.</span><span class="hl kwd">accept</span><span class="hl opt">(</span>MediaType<span class="hl opt">.</span>MEDIA_TYPE_WILDCARD<span class="hl opt">);</span>
-        <span class="hl slc">// multiClient.header(&quot;X-Portal-Cred0&quot;, &quot;REST_200_ON_ERROR&quot;);</span>
+        multiClient<span class="hl opt">.</span><span class="hl kwd">header</span><span class="hl opt">(</span><span class="hl str">&quot;x-authorize-roles&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;azzyzt(200-on-error=false);modify()&quot;</span><span class="hl opt">);</span>
+        multiClient<span class="hl opt">.</span><span class="hl kwd">header</span><span class="hl opt">(</span><span class="hl str">&quot;x-authenticate-userid&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;junit&quot;</span><span class="hl opt">);</span>
         
         visitSvc <span class="hl opt">=</span> JAXRSClientFactory<span class="hl opt">.</span><span class="hl kwd">create</span><span class="hl opt">(</span>BASE_URI<span class="hl opt">,</span> VisitFullCxfRestInterface<span class="hl opt">.</span><span class="hl kwa">class</span><span class="hl opt">);</span>
         visitClient <span class="hl opt">=</span> WebClient<span class="hl opt">.</span><span class="hl kwd">client</span><span class="hl opt">(</span>visitSvc<span class="hl opt">);</span>
         visitClient<span class="hl opt">.</span><span class="hl kwd">type</span><span class="hl opt">(</span>MediaType<span class="hl opt">.</span>APPLICATION_XML<span class="hl opt">);</span>
         visitClient<span class="hl opt">.</span><span class="hl kwd">accept</span><span class="hl opt">(</span>MediaType<span class="hl opt">.</span>MEDIA_TYPE_WILDCARD<span class="hl opt">);</span>
-        <span class="hl slc">// visitClient.header(&quot;X-Portal-Cred0&quot;, &quot;REST_200_ON_ERROR&quot;);</span>
+        visitClient<span class="hl opt">.</span><span class="hl kwd">header</span><span class="hl opt">(</span><span class="hl str">&quot;x-authorize-roles&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;azzyzt(200-on-error=false);modify()&quot;</span><span class="hl opt">);</span>
+        visitClient<span class="hl opt">.</span><span class="hl kwd">header</span><span class="hl opt">(</span><span class="hl str">&quot;x-authenticate-userid&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;junit&quot;</span><span class="hl opt">);</span>
         
         zipSvc <span class="hl opt">=</span> JAXRSClientFactory<span class="hl opt">.</span><span class="hl kwd">create</span><span class="hl opt">(</span>BASE_URI<span class="hl opt">,</span> ZipFullCxfRestInterface<span class="hl opt">.</span><span class="hl kwa">class</span><span class="hl opt">);</span>
         zipClient <span class="hl opt">=</span> WebClient<span class="hl opt">.</span><span class="hl kwd">client</span><span class="hl opt">(</span>zipSvc<span class="hl opt">);</span>
         zipClient<span class="hl opt">.</span><span class="hl kwd">type</span><span class="hl opt">(</span>MediaType<span class="hl opt">.</span>APPLICATION_XML<span class="hl opt">);</span>
         zipClient<span class="hl opt">.</span><span class="hl kwd">accept</span><span class="hl opt">(</span>MediaType<span class="hl opt">.</span>MEDIA_TYPE_WILDCARD<span class="hl opt">);</span>
-        <span class="hl slc">// zipClient.header(&quot;X-Portal-Cred0&quot;, &quot;REST_200_ON_ERROR&quot;);</span>
+        zipClient<span class="hl opt">.</span><span class="hl kwd">header</span><span class="hl opt">(</span><span class="hl str">&quot;x-authorize-roles&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;azzyzt(200-on-error=false);modify()&quot;</span><span class="hl opt">);</span>
+        zipClient<span class="hl opt">.</span><span class="hl kwd">header</span><span class="hl opt">(</span><span class="hl str">&quot;x-authenticate-userid&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;junit&quot;</span><span class="hl opt">);</span>
+        
+        cityProtectedSvc <span class="hl opt">=</span> JAXRSClientFactory<span class="hl opt">.</span><span class="hl kwd">create</span><span class="hl opt">(</span>BASE_URI<span class="hl opt">,</span> CityFullCxfRestInterface<span class="hl opt">.</span><span class="hl kwa">class</span><span class="hl opt">);</span>
+        cityProtectedClient <span class="hl opt">=</span> WebClient<span class="hl opt">.</span><span class="hl kwd">client</span><span class="hl opt">(</span>cityProtectedSvc<span class="hl opt">);</span>
+        cityProtectedClient<span class="hl opt">.</span><span class="hl kwd">type</span><span class="hl opt">(</span>MediaType<span class="hl opt">.</span>APPLICATION_XML<span class="hl opt">);</span>
+        cityProtectedClient<span class="hl opt">.</span><span class="hl kwd">accept</span><span class="hl opt">(</span>MediaType<span class="hl opt">.</span>MEDIA_TYPE_WILDCARD<span class="hl opt">);</span>
+        cityProtectedClient<span class="hl opt">.</span><span class="hl kwd">header</span><span class="hl opt">(</span><span class="hl str">&quot;x-authorize-roles&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;azzyzt(200-on-error=false);&quot;</span><span class="hl opt">);</span>
+        cityProtectedClient<span class="hl opt">.</span><span class="hl kwd">header</span><span class="hl opt">(</span><span class="hl str">&quot;x-authenticate-userid&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;junit&quot;</span><span class="hl opt">);</span>
         
     <span class="hl opt">}</span>
     
@@ -4871,6 +5157,39 @@ you use.</p>
             <span class="hl slc">// name ascending</span>
             <span class="hl kwa">if</span> <span class="hl opt">(</span>last <span class="hl opt">!=</span> null<span class="hl opt">) {</span>
                 <span class="hl kwd">assertTrue</span><span class="hl opt">(</span>c<span class="hl opt">.</span><span class="hl kwd">getName</span><span class="hl opt">().</span><span class="hl kwd">compareTo</span><span class="hl opt">(</span>last<span class="hl opt">.</span><span class="hl kwd">getName</span><span class="hl opt">()) &gt;=</span> <span class="hl num">0</span><span class="hl opt">);</span>
+            <span class="hl opt">}</span>
+            last <span class="hl opt">=</span> c<span class="hl opt">;</span>
+
+            <span class="hl kwd">dump</span><span class="hl opt">(</span>c<span class="hl opt">);</span>
+        <span class="hl opt">}</span>
+    <span class="hl opt">}</span>
+
+    <span class="hl com">/**</span>
+<span class="hl com">     * TEST: Query with two betweens:</span>
+<span class="hl com">     *  - City ID is between 2 and 5 </span>
+<span class="hl com">     *  - City name is between &quot;Linz&quot; and &quot;Salzburg&quot; (case-insensitive)</span>
+<span class="hl com">     *  - ascending by city ID</span>
+<span class="hl com">     */</span>
+    <span class="hl kwc">&#64;Test</span>
+    <span class="hl kwa">public</span> <span class="hl kwb">void</span> <span class="hl kwd">testQueryWithTwoBetweens</span><span class="hl opt">() {</span>
+        List<span class="hl opt">&lt;</span>Dto<span class="hl opt">&gt;</span> cities <span class="hl opt">=</span> citySvc<span class="hl opt">.</span><span class="hl kwd">list</span><span class="hl opt">(</span><span class="hl kwd">from</span><span class="hl opt">(</span><span class="hl str">&quot;META-INF/xml/query_with_two_betweens.xml&quot;</span><span class="hl opt">));</span>
+        
+        <span class="hl kwd">assertNotNull</span><span class="hl opt">(</span>cities<span class="hl opt">);</span>
+        <span class="hl kwd">assertTrue</span><span class="hl opt">(</span>cities<span class="hl opt">.</span><span class="hl kwd">size</span><span class="hl opt">() &gt;=</span> <span class="hl num">7</span><span class="hl opt">);</span>
+        CityDto last <span class="hl opt">=</span> null<span class="hl opt">;</span>
+        <span class="hl kwa">for</span> <span class="hl opt">(</span>Dto d <span class="hl opt">:</span> cities<span class="hl opt">) {</span>
+            <span class="hl kwd">assertTrue</span><span class="hl opt">(</span>d <span class="hl kwa">instanceof</span> CityDto<span class="hl opt">);</span>
+            CityDto c <span class="hl opt">= (</span>CityDto<span class="hl opt">)</span>d<span class="hl opt">;</span>
+            
+            <span class="hl slc">// is within range</span>
+            Long id <span class="hl opt">=</span> c<span class="hl opt">.</span><span class="hl kwd">getId</span><span class="hl opt">();</span>
+            String name <span class="hl opt">=</span> c<span class="hl opt">.</span><span class="hl kwd">getName</span><span class="hl opt">();</span>
+            <span class="hl kwd">assertTrue</span><span class="hl opt">((</span>id <span class="hl opt">&gt;=</span><span class="hl num">2</span> <span class="hl opt">&amp;&amp;</span> id <span class="hl opt">&lt;=</span> <span class="hl num">5</span><span class="hl opt">)</span> 
+                    <span class="hl opt">|| (</span>name<span class="hl opt">.</span><span class="hl kwd">compareToIgnoreCase</span><span class="hl opt">(</span>LINZ<span class="hl opt">) &gt;=</span> <span class="hl num">0</span> <span class="hl opt">&amp;&amp;</span> name<span class="hl opt">.</span><span class="hl kwd">compareToIgnoreCase</span><span class="hl opt">(</span>SALZBURG<span class="hl opt">) &lt;=</span> <span class="hl num">0</span><span class="hl opt">));</span>
+            
+            <span class="hl slc">// id ascending</span>
+            <span class="hl kwa">if</span> <span class="hl opt">(</span>last <span class="hl opt">!=</span> null<span class="hl opt">) {</span>
+                <span class="hl kwd">assertTrue</span><span class="hl opt">(</span>c<span class="hl opt">.</span><span class="hl kwd">getId</span><span class="hl opt">() &gt;=</span> last<span class="hl opt">.</span><span class="hl kwd">getId</span><span class="hl opt">());</span>
             <span class="hl opt">}</span>
             last <span class="hl opt">=</span> c<span class="hl opt">;</span>
 
@@ -5049,6 +5368,27 @@ you use.</p>
     <span class="hl opt">}</span>
 
     <span class="hl com">/**</span>
+<span class="hl com">     * TEST: Store a city with the protected client. It does not send a </span>
+<span class="hl com">     * &quot;modify&quot; credential, thus the server should throw an AccessDenied Exception.</span>
+<span class="hl com">     */</span>
+    <span class="hl kwc">&#64;Test</span><span class="hl opt">(</span>expected<span class="hl opt">=</span>ServerWebApplicationException<span class="hl opt">.</span><span class="hl kwa">class</span><span class="hl opt">)</span>
+    <span class="hl kwa">public</span> <span class="hl kwb">void</span> <span class="hl kwd">testTryStoreCity</span><span class="hl opt">() {</span>
+        List<span class="hl opt">&lt;</span>Dto<span class="hl opt">&gt;</span> countries <span class="hl opt">=</span> countrySvc<span class="hl opt">.</span><span class="hl kwd">list</span><span class="hl opt">(</span><span class="hl kwd">from</span><span class="hl opt">(</span><span class="hl str">&quot;META-INF/xml/get_austria.xml&quot;</span><span class="hl opt">));</span>
+        <span class="hl kwd">assertNotNull</span><span class="hl opt">(</span>countries<span class="hl opt">);</span>
+        <span class="hl kwd">assertEquals</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">,</span> countries<span class="hl opt">.</span><span class="hl kwd">size</span><span class="hl opt">());</span>
+        CountryDto austria <span class="hl opt">= (</span>CountryDto<span class="hl opt">)</span>countries<span class="hl opt">.</span><span class="hl kwd">get</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">);</span>
+        <span class="hl kwd">assertEquals</span><span class="hl opt">(</span><span class="hl str">&quot;Austria&quot;</span><span class="hl opt">,</span> austria<span class="hl opt">.</span><span class="hl kwd">getName</span><span class="hl opt">());</span>
+        
+        CityDto c <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">CityDto</span><span class="hl opt">();</span>
+        c<span class="hl opt">.</span><span class="hl kwd">setCountryId</span><span class="hl opt">(</span>austria<span class="hl opt">.</span><span class="hl kwd">getId</span><span class="hl opt">());</span>
+        c<span class="hl opt">.</span><span class="hl kwd">setName</span><span class="hl opt">(</span><span class="hl str">&quot;Villach&quot;</span><span class="hl opt">);</span>
+        <span class="hl kwd">dump</span><span class="hl opt">(</span>c<span class="hl opt">);</span>
+        
+        c <span class="hl opt">=</span> cityProtectedSvc<span class="hl opt">.</span><span class="hl kwd">store</span><span class="hl opt">(</span>c<span class="hl opt">);</span>
+        <span class="hl kwd">fail</span><span class="hl opt">(</span><span class="hl str">&quot;This should be unreachable&quot;</span><span class="hl opt">);</span>
+    <span class="hl opt">}</span>
+    
+    <span class="hl com">/**</span>
 <span class="hl com">     * Helper method that creates DTOs for a country and its cities</span>
 <span class="hl com">     * </span>
 <span class="hl com">     * &#64;param name of country</span>
@@ -5221,19 +5561,10 @@ Now we need to respond differently for different clients, and in order
 to do that, a client has to signal the type of response it expects.</p>
 
 <p>Our solution is, by default to be strictly HTTP compliant, unless the 
-client sends a certain custom HTTP request header. We don&rsquo;t let 
-the client send the header though, we insert the header when the request 
-traverses our portal. The way our portal works, we can define so-called 
-<em>credentials</em> per user group and URL prefix, and those 
-credentials are delivered to the server via custom HTTP headers 
-&ldquo;<code>X-Portal-Cred0</code>&rdquo;, 
-&ldquo;<code>X-Portal-Cred1</code>&rdquo; and so on. The libraries used 
-by the generated REST code look for HTTP request headers starting with 
-&ldquo;<code>X-Portal-Cred</code>&rdquo; and a value of 
-&ldquo;<code>REST_200_ON_ERROR</code>&rdquo;. If such a header is found 
-and an error occurs, the response to that request is sent in 
-non-conformant mode. Such a non-conformant response could look more or 
-less like this:</p>
+client supplies a credential &ldquo;<code>azzyzt</code>&rdquo; with a 
+property named &ldquo;<code>200-on-error</code>&rdquo;. If so and an 
+error occurs, the response to that request is sent in non-conformant 
+mode. Such a non-conformant response could look more or less like this:</p>
 
 <pre class="verbatim">
 HTTP/1.1&nbsp;200&nbsp;OK

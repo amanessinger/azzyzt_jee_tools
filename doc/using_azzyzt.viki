@@ -2184,29 +2184,44 @@ what the user name for a specific request is. I call this a __Site
 Adapter__, because it is used to encapsulate a site's authentication
 technology and policy.
 
-The site adapter that comes with Azzyzt JEE Tools is currently only
-involved for requests invoked via REST. What happens is, that the
-generic code passes the request data to the site adapter, and the site
-adapter tries to take the user name (which is expected to have been
-authenticated and authorized for access by a portal in front of the
-service) from an HTTP header. The header's name defaults to
-"''x-authenticate-userid''". This happens to be what we use
-internally, but the name can be overridden by setting a custom string
-resource in the application server.
+The site adapter that comes with Azzyzt JEE Tools is called via
+Inteceptors, and it is called regardless of the invocation method, but
+currently it is useful only for requests coming via HTTP, either SOAP
+or REST.
+
+What happens is, that the interceptors pass the request data to the
+site adapter, and the site adapter tries to take the user name (which
+is expected to have been authenticated and authorized for access by a
+portal in front of the service) from an HTTP header. The header's name
+defaults to "''x-authenticate-userid''". This happens to be what we
+use internally, but the name can be overridden by setting a custom
+string resource in the application server.
 
 The
 [[http://programming.manessinger.com/tutorials/an-eclipse-glassfish-java-ee-6-tutorial/][Eclipse / \GlassFish / Java EE 6 Tutorial]] has a section titled "__Configuration via JNDI Custom Resources__", that shows how to set custom resources in
 \GlassFish. 
 
-The JNDI name of the resource has to be
-"''custom/stringvalues/http/header/username''", its type must be
+The runtime tries two JNDI names, an application-specific name, and if
+that fails, a server-global name. This way we can have different
+settings in different applications.
+
+The application-specific name for the application "''cookbook''" would be
+"''custom/stringvalues/app_cookbook/http/header/username''", its type must be
 ''java.lang.String'' and it has to have a property with name
 "''value''" and the value of the property should be whatever your HTTP
 header is called, for instance "''x-portal-username''".
 
+If that JNDI string resource is not found, the server-wide resource
+"''custom/stringvalues/http/header/username''" is looked up, again its type must be
+''java.lang.String'' and it has to have a property with name
+"''value''" and the value of the property should be whatever your HTTP
+header is called.
+
 While we are at it, "''anonymous''", as the name of the username when
 no header is given, is also only a default. There is a similar
-override via a JNDI string resource. The name of the resource must be
+override via JNDI string resources. Again it can be defined per
+application or for the whole server. The name of the resource must be
+"''custom/stringvalues/app_cookbook/username/anonymous''" or
 "''custom/stringvalues/username/anonymous''". Again you need to define
 a property with name "''value''", having the string as value, that you
 want to use, for instance "''unknown''".
@@ -2433,10 +2448,10 @@ with an ''\InvalidProxyIdException'', the transaction is rolled back
 and nothing is stored at all.
 
 Please note that you can freely mix inserts and updates in the same
-call to ''storeMulti(dtos)''. If it has and ID and an object with that
-ID exists, then it is an update, if no object with the ID exists, you
-will get an ''\EntityNotFoundException'', and if you don't send an ID,
-a new object is inserted.
+call to ''storeMulti(dtos)''. If something has and ID and an object
+with that ID exists, then it is an update, if no object with the ID
+exists, you will get an ''\EntityNotFoundException'', and if you don't
+send an ID, a new object is inserted.
 
 
 As for JSON, it seems that we run into a problem with polymorphism
@@ -2837,6 +2852,7 @@ package com.manessinger.cookbook.meta;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import org.azzyzt.jee.runtime.meta.AzzyztantInterface;
+import org.azzyzt.jee.runtime.util.AuthorizationInterface;
 import org.azzyzt.jee.runtime.util.StringConverterInterface;
 
 
@@ -2871,6 +2887,18 @@ public class Azzyztant implements AzzyztantInterface {
      */
     private final StringConverterInterface usernameConverter = null;
 
+    /*
+     * 'authorizer' can be set to an instance of any class that implements
+     * AuthorizationInterface.
+     *
+     * ATTENTION: keep this stateless, fast and thread-safe!!! 
+     * 
+     * This is actually a shared instance that, if not null, is called once 
+     * upon any invocation. The runtime won't try to synchronize its call to 
+     * 'checkAuthorization()'. Neither should you.
+     */
+    private final AuthorizationInterface authorizer = null;
+
     public Azzyztant() { super(); }
 
 
@@ -2879,8 +2907,15 @@ public class Azzyztant implements AzzyztantInterface {
         return usernameConverter;
     }
 
+    @Override
+    public AuthorizationInterface getAuthorizer() {
+        return authorizer;
+    }
+
 }
 ---
+
+We go into details across the next couple of sections.
 
 
 ** Transforming user names
@@ -2983,10 +3018,8 @@ package com.manessinger.cookbook.meta;
 
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
-
-import org.azzyzt.jee.runtime.annotation.AzzyztGeneratorOptions;
-import org.azzyzt.jee.runtime.meta.AzzyztGeneratorCutback;
 import org.azzyzt.jee.runtime.meta.AzzyztantInterface;
+import org.azzyzt.jee.runtime.util.AuthorizationInterface;
 import org.azzyzt.jee.runtime.util.StringConverterInterface;
 
 
@@ -3004,12 +3037,21 @@ public class Azzyztant implements AzzyztantInterface {
 
     private final StringConverterInterface usernameConverter = null;
 
+    private final AuthorizationInterface authorizer = null;
+
     public Azzyztant() { super(); }
+
 
     @Override
     public StringConverterInterface getUsernameConverter() {
         return usernameConverter;
     }
+
+    @Override
+    public AuthorizationInterface getAuthorizer() {
+        return authorizer;
+    }
+
 }
 ---
 
@@ -3032,7 +3074,178 @@ Cutting back on features is not the only customization, you can also
 add features. You do that by adding options.
 
 
+*** Adding credential-based authorization
+
+**** Credentials
+
+We have seen that Azzyzt does not even try to solve the problem of
+authentication, i.e. of determining the principal on whose behalf a
+request was made. Instead Azzyzt assumes that this is solved either by
+the application server or by a web server, a gateway, in front of
+it. It is the job of the site adapter to adapt to the method used.
+
+The site adapter delivered with Azzyzt JEE Tools relies on a gateway
+or portal in front of the application server. This gateway is assumed
+to authenticate the user, and to pass the information on to the
+application server via HTTP headers. We have already seen how the
+username header can be customized.
+
+Knowing who the user is solves only part of the problem though. We
+would also like to know what the user is allowed to do in the
+application. This is called authorization.
+
+Java EE 6 has its own model of authentication / authorization based on
+annotations in the applications and the concepts of realms, users,
+groups and roles. It is not particularly complicated, but in the
+\GlassFish implementation it is most useful when you have a complete
+Oracle Enterprise environment.
+
+I think it would be possible to plug any custon solution into the
+\GlassFish server and make it play well with the Java EE 6
+annotations, but keeping that all out of scope makes our job even
+easier, especially when some authentication / authorization
+infrastructure is already present.
+
+Azzyzt comes with an option to use "__credential-based
+authorization__". The idea is, that the same gateway that already
+authenticates the user, also delivers some information about the
+user's rights, or as we say here, the user's "__credentials__".
+
+Imagine a gateway that authenticates users and looks them up in an
+X.500 tree via LDAP. It allows or denies access to the application,
+based on the user and/or the user's membership in groups. Groups are
+hierarchically organized, again in X.500, and for each configured
+application, access to a list of URL prefixes is granted to a set of
+principals (users and/or groups).
+
+For each pair of URL prefix and principal granted access, there can be
+a list of credentials attached. The credentials are again expected to
+be delivered in form of a single HTTP header. The name of the header
+can be defined via JNDI resources. Again the runtime tries two
+resources, an application-specific and a server-wide. For our
+application these would be
+"''custom/stringvalues/app_cookbook/http/header/credentials''" and
+"''custom/stringvalues/http/header/credentials''" respectively. Again
+you need to define a property with name "value", having the string as
+value, that you want to use, for instance "''x-auth-credentials''".
+
+If no JNDI resources are found, the header name defaults to
+"''x-authorize-roles''", the name of the HTTP header used around here.
+
+If no HTTP header is delivered at runtime, the principal is assumed
+to have no credentials at all.
+
+The credentials header is a single string that is made up of a list of
+credentials, separated by semicolons. Each credential may be modified
+by a list of properties. Properties are name/value pairs given in
+parens. White-space is optional. Let me give some quick examples:
+
+ - "" is the empty list
+ - "''modify''" is a list containing a single credential allowing
+   modifications. The credential has no properties specified
+ - "''lookup(level=5)''" may allow to lookup in the application,
+   but the additional property "''level''" could be used to
+   limit the results to a certain security level. In case of an empty
+   property list, the use of empty parens (i.e. "''lookup()''") is allowed.
+ - "''cred_a(p1=v1,p2=v2,p3=v3); cred_b; cred_c(p4=v4); cred_d()''" is a 
+   hypothetic complex example with four credentials, two of them with 
+   properties
+
+On the frontend, in the gateway, these credentials have no meaning at
+all. They are simply strings to be sent when a certain principle
+accesses a certain URL. 
+
+Credentials come in two flavors: credentials supplied by the gateway
+via HTTP headers and credentials required by the application.
+
+In order to require credentials, we can put an annotation
+''@RequiresCredentials'' on either an EJB class (which means that all
+methods require these credentials) and/or an EJB class' methods. The
+effect is cumulative. An EJB could require a credential "''admin''"
+and one of its methods, the method "''dangerous()''" could require "''senior''". In such
+a case any access to "''dangerous()''" would need the cumulative
+credentials "''admin(); senior()''" to be supplied.
+
+A request is granted access if at least the credentials and properties
+required are supplied. Additional credentials and properties are
+OK. Thus if "''admin''" is required, a user with credentials "''admin;
+senior''" is granted access.
+
+If for instance "''admin; senior(rank=2)''" is required, a user with
+only "''admin; senior''" is denied access. Numeric property values are
+special. A user with "''admin; senior(rank=3)''" would also be granted
+access, although the property values don't match. The rule for numeric
+properties is, that supplied property values greater or equal required
+values are granted access.
+
+This is quite flexible and can be used for all sorts of sophisticated
+authorization schemes. Try to not go over the top though. Simplicity
+is a virtue.
+
+
+**** Credential-based authorization
+
+Look at the following ''Azzyztant'':
+
+#Code id=AzzyztantCredentialBasedAuth syntax=Java <<---
+package com.manessinger.cookbook.meta;
+
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+
+import org.azzyzt.jee.runtime.annotation.AzzyztGeneratorOptions;
+import org.azzyzt.jee.runtime.meta.AzzyztGeneratorOption;
+import org.azzyzt.jee.runtime.meta.AzzyztantInterface;
+import org.azzyzt.jee.runtime.util.AuthorizationInterface;
+import org.azzyzt.jee.runtime.util.CredentialBasedAuthorizer;
+import org.azzyzt.jee.runtime.util.StringConverterInterface;
+
+@LocalBean
+@Stateless
+@AzzyztGeneratorOptions(
+        options = {
+       		AzzyztGeneratorOption.AddCredentialBasedAuthorization,
+        }
+)
+public class Azzyztant implements AzzyztantInterface {
+
+    private final StringConverterInterface usernameConverter = null;    
+    private final AuthorizationInterface authorizer = new CredentialBasedAuthorizer();
+    
+    public Azzyztant() { super(); }
+
+    @Override
+    public StringConverterInterface getUsernameConverter() {
+        return usernameConverter;
+    }
+
+    @Override
+    public AuthorizationInterface getAuthorizer() {
+	return authorizer;
+    }
+}
+---
+
+It specifies no cutbacks and a single option. The option
+"''AzzyztGeneratorOption.AddCredentialBasedAuthorization''" causes the
+code generator to generate an annotation
+"''@RequiresCredentials("modify()")''" on the "''store()''" and
+"''delete()''" methods of the full beans and on the class
+''ModifyMultiBean''.
+
+These annotations alone do nothing, but we also specify a non-null
+authorizer, and the class used, ''CredentialBasedAuthorizer'', a class
+that comes with the Azzyzt runtime, exactly implements the behavior
+sketched earlier.
+
+You can add your own service beans and you can require any credentials
+you like. Just add "''@RequiresCredentials()''" to your beans and/or
+methods and use the standard ''CredentialBasedAuthorizer''.
+
+
 *** Adding an Apache CXF REST client
+
+In the next example we use a cutback and two options:
 
 #Code id=AzzyztantCxfClient syntax=Java <<---
 package com.manessinger.cookbook.meta;
@@ -3044,6 +3257,8 @@ import org.azzyzt.jee.runtime.annotation.AzzyztGeneratorOptions;
 import org.azzyzt.jee.runtime.meta.AzzyztGeneratorCutback;
 import org.azzyzt.jee.runtime.meta.AzzyztGeneratorOption;
 import org.azzyzt.jee.runtime.meta.AzzyztantInterface;
+import org.azzyzt.jee.runtime.util.AuthorizationInterface;
+import org.azzyzt.jee.runtime.util.CredentialBasedAuthorizer;
 import org.azzyzt.jee.runtime.util.StringConverterInterface;
 
 @LocalBean
@@ -3051,29 +3266,34 @@ import org.azzyzt.jee.runtime.util.StringConverterInterface;
 @AzzyztGeneratorOptions(
         cutbacks = {
                 AzzyztGeneratorCutback.NoRemoteInterfaces,
-                AzzyztGeneratorCutback.NoSoapServices,
         },
         options = {
-                AzzyztGeneratorOption.AddCxfRestClient,
+       		AzzyztGeneratorOption.AddCredentialBasedAuthorization,
+       		AzzyztGeneratorOption.AddCxfRestClient,
         }
 )
 public class Azzyztant implements AzzyztantInterface {
 
     private final StringConverterInterface usernameConverter = null;
-
+    private final AuthorizationInterface authorizer = new CredentialBasedAuthorizer();
+    
     public Azzyztant() { super(); }
 
     @Override
     public StringConverterInterface getUsernameConverter() {
         return usernameConverter;
     }
+
+    @Override
+    public AuthorizationInterface getAuthorizer() {
+	return authorizer;
+    }
 }
 ---
 
-"''AzzyztGeneratorOption.AddCxfRestClient''" is currently the only
-option, more may follow. Using that option causes the code generator
-to create one more project, a REST client project using the Apache CXF
-REST libraries.
+"''AzzyztGeneratorOption.AddCxfRestClient''" is an option that causes
+the code generator to create one more project, a REST client project
+using the Apache CXF REST libraries.
 
 The CXF REST client project is not created by default. It is only
 created if the code generator finds this option. Once it is created,
@@ -3118,12 +3338,15 @@ class path set up to use them.
 Java EE defines REST bindings for Java. The standard is called JAX-RS
 and its public API is restricted to the server side. This does not
 mean that you can't use REST clients in Java, it only means that Java
-EE does not mandate a specific client API. On the other hand,
-implementing a server API is more than half of what you need for a
-corresponding client API, and for testing purposes you'll want a
-client API anyway. The only problem is, that due to the lack of
+EE does not mandate a specific client API. This is expected to arrive
+with Java EE 7.
+
+On the other hand, implementing a server API is more than half of what
+you need for a corresponding client API, and for testing purposes
+you'll want a client API anyway, and therefore all REST
+implementations have one. The only problem is, that due to the lack of
 standardization, the client APIs of the various JAX-RS implementations
-are all different and we have to choose one of them.
+are all different from each other and we have to choose one of them.
 
 Of course there is a
 [[http://jersey.java.net/nonav/documentation/latest/client-api.html][client
@@ -3238,7 +3461,7 @@ public interface CityFullCxfRestInterface {
 
 As you can see, the annotations look exactly as on server side. Using
 Apache CXF, this interface can be used to create a proxy implementing
-this interface. Just as in SOAP, the methods return DTOs and lists of
+the interface. Just as in SOAP, the methods return DTOs and lists of
 DTOs, polymorphism included.
 
 In order to make this work, the CXF REST client project needs access
@@ -3352,6 +3575,7 @@ doc/cookbook/src/optional
 |               |-- get_austria.xml
 |               |-- nested_expressions.xml
 |               |-- query_with_three_conditions.xml
+|               |-- query_with_two_betweens.xml
 |               `-- sorted_list_of_cities.xml
 `-- cookbookEJB
     `-- ejbModule
@@ -3390,6 +3614,7 @@ package com.manessinger.cookbook.service.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -3404,6 +3629,7 @@ import javax.xml.bind.JAXB;
 
 import org.apache.cxf.jaxrs.client.Client;
 import org.apache.cxf.jaxrs.client.JAXRSClientFactory;
+import org.apache.cxf.jaxrs.client.ServerWebApplicationException;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -3432,6 +3658,9 @@ public class CookbookRestTest {
     
     private static final String BASE_URI = "http://localhost:8080/cookbookServlets/REST";
     
+    private static final String LINZ = "Linz";
+    private static final String SALZBURG = "Salzburg";
+
     private static final String FRANCE = "France";
     private static final String MARSEILLES = "Marseilles";
     private static final String PARIS = "Paris";
@@ -3454,6 +3683,9 @@ public class CookbookRestTest {
     private static Client multiClient;
     private static Client visitClient;
     private static Client zipClient;
+    
+    private static CityFullCxfRestInterface cityProtectedSvc;
+    private static Client cityProtectedClient;
     
     /**
      * BEFORE CLASS: setup proxies, set their media types to APPLICATION_XML. 
@@ -3478,37 +3710,50 @@ public class CookbookRestTest {
         cityClient = WebClient.client(citySvc);
         cityClient.type(MediaType.APPLICATION_XML);
         cityClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
-        // cityClient.header("X-Portal-Cred0", "REST_200_ON_ERROR");
+        cityClient.header("x-authorize-roles", "azzyzt(200-on-error=false);modify()");
+        cityClient.header("x-authenticate-userid", "junit");
         
         countrySvc = JAXRSClientFactory.create(BASE_URI, CountryFullCxfRestInterface.class);
         countryClient = WebClient.client(countrySvc);
         countryClient.type(MediaType.APPLICATION_XML);
         countryClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
-        // countryClient.header("X-Portal-Cred0", "REST_200_ON_ERROR");
+        countryClient.header("x-authorize-roles", "azzyzt(200-on-error=false);modify()");
+        countryClient.header("x-authenticate-userid", "junit");
         
         languageSvc = JAXRSClientFactory.create(BASE_URI, LanguageFullCxfRestInterface.class);
         languageClient = WebClient.client(languageSvc);
         languageClient.type(MediaType.APPLICATION_XML);
         languageClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
-        // languageClient.header("X-Portal-Cred0", "REST_200_ON_ERROR");
+        languageClient.header("x-authorize-roles", "azzyzt(200-on-error=false);modify()");
+        languageClient.header("x-authenticate-userid", "junit");
         
         multiSvc = JAXRSClientFactory.create(BASE_URI, ModifyMultiCxfRestInterface.class);
         multiClient = WebClient.client(multiSvc);
         multiClient.type(MediaType.APPLICATION_XML);
         multiClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
-        // multiClient.header("X-Portal-Cred0", "REST_200_ON_ERROR");
+        multiClient.header("x-authorize-roles", "azzyzt(200-on-error=false);modify()");
+        multiClient.header("x-authenticate-userid", "junit");
         
         visitSvc = JAXRSClientFactory.create(BASE_URI, VisitFullCxfRestInterface.class);
         visitClient = WebClient.client(visitSvc);
         visitClient.type(MediaType.APPLICATION_XML);
         visitClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
-        // visitClient.header("X-Portal-Cred0", "REST_200_ON_ERROR");
+        visitClient.header("x-authorize-roles", "azzyzt(200-on-error=false);modify()");
+        visitClient.header("x-authenticate-userid", "junit");
         
         zipSvc = JAXRSClientFactory.create(BASE_URI, ZipFullCxfRestInterface.class);
         zipClient = WebClient.client(zipSvc);
         zipClient.type(MediaType.APPLICATION_XML);
         zipClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
-        // zipClient.header("X-Portal-Cred0", "REST_200_ON_ERROR");
+        zipClient.header("x-authorize-roles", "azzyzt(200-on-error=false);modify()");
+        zipClient.header("x-authenticate-userid", "junit");
+        
+        cityProtectedSvc = JAXRSClientFactory.create(BASE_URI, CityFullCxfRestInterface.class);
+        cityProtectedClient = WebClient.client(cityProtectedSvc);
+        cityProtectedClient.type(MediaType.APPLICATION_XML);
+        cityProtectedClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
+        cityProtectedClient.header("x-authorize-roles", "azzyzt(200-on-error=false);");
+        cityProtectedClient.header("x-authenticate-userid", "junit");
         
     }
     
@@ -3614,6 +3859,39 @@ public class CookbookRestTest {
             // name ascending
             if (last != null) {
                 assertTrue(c.getName().compareTo(last.getName()) >= 0);
+            }
+            last = c;
+
+            dump(c);
+        }
+    }
+
+    /**
+     * TEST: Query with two betweens:
+     *  - City ID is between 2 and 5 
+     *  - City name is between "Linz" and "Salzburg" (case-insensitive)
+     *  - ascending by city ID
+     */
+    @Test
+    public void testQueryWithTwoBetweens() {
+        List<Dto> cities = citySvc.list(from("META-INF/xml/query_with_two_betweens.xml"));
+        
+        assertNotNull(cities);
+        assertTrue(cities.size() >= 7);
+        CityDto last = null;
+        for (Dto d : cities) {
+            assertTrue(d instanceof CityDto);
+            CityDto c = (CityDto)d;
+            
+            // is within range
+            Long id = c.getId();
+            String name = c.getName();
+            assertTrue((id >=2 && id <= 5) 
+                    || (name.compareToIgnoreCase(LINZ) >= 0 && name.compareToIgnoreCase(SALZBURG) <= 0));
+            
+            // id ascending
+            if (last != null) {
+                assertTrue(c.getId() >= last.getId());
             }
             last = c;
 
@@ -3792,6 +4070,27 @@ public class CookbookRestTest {
     }
 
     /**
+     * TEST: Store a city with the protected client. It does not send a 
+     * "modify" credential, thus the server should throw an AccessDenied Exception.
+     */
+    @Test(expected=ServerWebApplicationException.class)
+    public void testTryStoreCity() {
+        List<Dto> countries = countrySvc.list(from("META-INF/xml/get_austria.xml"));
+        assertNotNull(countries);
+        assertEquals(1, countries.size());
+        CountryDto austria = (CountryDto)countries.get(0);
+        assertEquals("Austria", austria.getName());
+        
+        CityDto c = new CityDto();
+        c.setCountryId(austria.getId());
+        c.setName("Villach");
+        dump(c);
+        
+        c = cityProtectedSvc.store(c);
+        fail("This should be unreachable");
+    }
+    
+    /**
      * Helper method that creates DTOs for a country and its cities
      * 
      * @param name of country
@@ -3964,15 +4263,8 @@ clients, and in order to do that, a client has to signal the type of
 response it expects.
 
 Our solution is, by default to be strictly HTTP compliant, unless the
-client sends a certain custom HTTP request header. We don't let the
-client send the header though, we insert the header when the request
-traverses our portal. The way our portal works, we can define
-so-called __credentials__ per user group and URL prefix, and those
-credentials are delivered to the server via custom HTTP headers
-"''X-Portal-Cred0''", "''X-Portal-Cred1''" and so on. The libraries
-used by the generated REST code look for HTTP request headers starting
-with "''X-Portal-Cred''" and a value of "''REST_200_ON_ERROR''". If
-such a header is found and an error occurs, the response to that
+client supplies a credential "''azzyzt''" with a property named
+"''200-on-error''". If so and an error occurs, the response to that
 request is sent in non-conformant mode. Such a non-conformant response
 could look more or less like this:
 
