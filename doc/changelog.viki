@@ -1,12 +1,68 @@
 #VAR: fmt=~html(site|slides): css=highlight.css,layout-deplate.css cssInclude=true
 #VAR: tableStyle=formal
 
-#VAR: version=1.2.4
+#VAR: version=1.3.0
 
 * Azzyzt JEE Tools
 #OPT: plain!
 
  !!! Release {version}
+
+** Changes in 1.3.0
+#OPT: plain!
+
+ - New URLs for SOAP and REST. The new URL schema bundles full
+   services and restricted services. Thus it is possible to
+   allow/disallow one of those categories based on the URL
+   prefix. This breaks current applications and therefore we have
+   bumped the minor version.
+
+ - The default HTTP header expected to contain a pre-authenticated
+   username is now "''x-authenticate-userid''".
+
+ - The default HTTP header expected to contain a user's credentials is
+   now "''x-authorize-roles''". See the tutorial for details on
+   credentials. 
+
+ - These two HTTP header names and the default anonymous user name can
+   still be changed via JNDI custon string resources, but this is more
+   elaborate now. The old JNDI resource for the username HTTP header
+   was "''custom/stringvalues/http/header/username''", but as this is
+   global and would define the header name for all applications, we
+   have recognized that a per-app definition may be useful. From 1.3.0
+   on the first resource checked is
+   "''custom/stringvalues/app_<APPNAME>/http/header/username''", where
+   "''<APPNAME>''" is the project base name, in the example
+   application it's "''cookbook''". If this name is not defined, the
+   global name "''custom/stringvalues/http/header/username''" is
+   tried, and if that isn't defined either, the default value is used.
+
+ - Added lots of \JavaDoc to runtime. Still not complete though.
+
+ - Added an ''AuthorizationInterface''. You can add a reference to an
+   instance of a class implementing this interface to the
+   ''Azzyztant''. It's completely analogous to the username converter
+   and it can be used to check authorization per call, based on the
+   taget class/method and credentials.
+
+ - Eliminated the MAGWIEN feature. Through all the time it has been
+   identical to the GENERIC feature anyway. So far we don't need any
+   special or secret code and the configuration options suffice.
+
+ - Added a subset of ''BETWEEN'' to ''\QuerySpec''. You can specify
+   ''BETWEEN'' clauses where the result is limited to be between two
+   literals. This covers the most common uses. The general solution,
+   where each limit can be either a literal or a field reference,
+   would have needed a major refactoring or polluted the code to no
+   end.
+
+ - Tested with \GlassFish 3.1.1
+
+ - Tested with Indigo SR1
+
+ - Added credential-based authorization
+
+ - Added unit tests for credential-based authorization
 
 ** Changes in 1.2.4
 #OPT: plain!

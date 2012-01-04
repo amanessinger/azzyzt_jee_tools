@@ -5,3 +5,7 @@ group javaSiteAdapterGroup : javaGroup;
 
 >>
 
+@javaClass.extra_constructors() ::= <<
+public <mdt.simpleName>() { super("<generator.masterModel.projectBaseName>"); }
+
+>>

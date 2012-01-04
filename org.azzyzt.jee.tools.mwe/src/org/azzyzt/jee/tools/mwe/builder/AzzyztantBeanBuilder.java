@@ -65,6 +65,7 @@ public class AzzyztantBeanBuilder extends DerivedModelBuilder implements Generic
 		target.addMetaAnnotationInstance(new MetaAnnotationInstance(std.javaxEjbStateless, target));
 		
 		target.addReferencedForeignType(std.stringConverterInterface);
+		target.addReferencedForeignType(std.authorizationInterface);
 		
 		targetModel.follow(targetPackageName);
 		targetModel.addMetaDeclaredTypeIfTarget(target);

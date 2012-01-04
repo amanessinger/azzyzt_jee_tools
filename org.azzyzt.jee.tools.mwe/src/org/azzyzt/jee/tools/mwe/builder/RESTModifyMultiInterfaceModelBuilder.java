@@ -29,6 +29,7 @@ package org.azzyzt.jee.tools.mwe.builder;
 
 import org.azzyzt.jee.tools.mwe.identifiers.ModelProperties;
 import org.azzyzt.jee.tools.mwe.identifiers.PackageTails;
+import org.azzyzt.jee.tools.mwe.identifiers.RESTPathFragments;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
 import org.azzyzt.jee.tools.mwe.model.annotation.MetaAnnotationInstance;
 import org.azzyzt.jee.tools.mwe.model.type.MetaClass;
@@ -53,7 +54,7 @@ public class RESTModifyMultiInterfaceModelBuilder extends DerivedModelBuilder im
 			// create MetaInterface
 			String packageName = derivePackageNameFromEntityAndFollowPackage(me, PackageTails.SERVICE);
 			String simpleName = CLASS_NAME;
-			String pathString = "modifyMulti";
+			String pathString = RESTPathFragments.RESTFUL+"modifyMulti";
 			MetaInterface target = MetaInterface.forName(packageName, simpleName);
 			masterModel.setProperty(ModelProperties.REST_STORE_MULTI_CXF_INTERFACE, target);
 			target.setModifiers(std.mod_public);

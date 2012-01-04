@@ -29,6 +29,7 @@ package org.azzyzt.jee.tools.mwe.builder;
 
 import org.azzyzt.jee.tools.mwe.identifiers.ModelProperties;
 import org.azzyzt.jee.tools.mwe.identifiers.PackageTails;
+import org.azzyzt.jee.tools.mwe.identifiers.RESTPathFragments;
 import org.azzyzt.jee.tools.mwe.model.MetaModel;
 import org.azzyzt.jee.tools.mwe.model.annotation.MetaAnnotationInstance;
 import org.azzyzt.jee.tools.mwe.model.type.MetaClass;
@@ -54,7 +55,7 @@ public class CrudServiceRESTRestrictedInterfaceModelBuilder extends DerivedModel
 			// create MetaInterface
 			String packageName = derivePackageNameFromEntityAndFollowPackage(me, PackageTails.SERVICE);
 			String simpleName = me.getSimpleName();
-			String pathString = simpleName.toLowerCase()+"Restricted";
+			String pathString = RESTPathFragments.RESTRICTED+simpleName.toLowerCase();
 			simpleName += INTERFACE_SUFFIX;
 			MetaInterface target = MetaInterface.forName(packageName, simpleName);
 			me.setProperty(ModelProperties.REST_RESTRICTED_CXF_INTERFACE, target);

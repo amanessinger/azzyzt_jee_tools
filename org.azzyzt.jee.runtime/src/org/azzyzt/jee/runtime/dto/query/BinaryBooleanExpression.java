@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or - as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -32,12 +32,19 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
 
+/**
+ * Abstract boolean expression class with some common code for validity checking 
+ * and simplification 
+ */
 public abstract class BinaryBooleanExpression extends Expression implements Node {
 	
 	private static final long serialVersionUID = 1L;
 	private List<Expression> terms = new ArrayList<Expression>();
 	private Expression replaceableBy = null;
 
+	/* (non-Javadoc)
+	 * @see org.azzyzt.jee.runtime.dto.query.Expression#isValid()
+	 */
 	@Override
 	public boolean isValid() {
 		boolean result = false;
@@ -53,6 +60,10 @@ public abstract class BinaryBooleanExpression extends Expression implements Node
 		return result;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.azzyzt.jee.runtime.dto.query.Node#add(org.azzyzt.jee.runtime.dto.query.Expression)
+	 */
+	@Override
 	public void add(Expression e) {
 		terms.add(e);
 	}
@@ -66,6 +77,9 @@ public abstract class BinaryBooleanExpression extends Expression implements Node
 		this.terms = terms;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.azzyzt.jee.runtime.dto.query.Expression#getReplaceableBy()
+	 */
 	@Override
 	public Expression getReplaceableBy() {
 		return replaceableBy;

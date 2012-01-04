@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Azzyzt JEE site adapter, generic version
 Bundle-SymbolicName: org.azzyzt.jee.runtime.site.generic.fragment
-Bundle-Version: 1.2.4.qualifier
+Bundle-Version: 1.3.0.qualifier
 Bundle-Vendor: azzyzt.org
 Fragment-Host: org.azzyzt.jee.tools.mwe.projectgen.plugin;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

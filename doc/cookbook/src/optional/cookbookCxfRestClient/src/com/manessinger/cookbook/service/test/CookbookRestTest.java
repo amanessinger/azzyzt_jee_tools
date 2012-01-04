@@ -3,6 +3,7 @@ package com.manessinger.cookbook.service.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,6 +18,7 @@ import javax.xml.bind.JAXB;
 
 import org.apache.cxf.jaxrs.client.Client;
 import org.apache.cxf.jaxrs.client.JAXRSClientFactory;
+import org.apache.cxf.jaxrs.client.ServerWebApplicationException;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -33,6 +35,7 @@ import com.manessinger.cookbook.service.CityFullCxfRestInterface;
 import com.manessinger.cookbook.service.CountryFullCxfRestInterface;
 import com.manessinger.cookbook.service.LanguageFullCxfRestInterface;
 import com.manessinger.cookbook.service.ModifyMultiCxfRestInterface;
+import com.manessinger.cookbook.service.ProtectedCxfRestInterface;
 import com.manessinger.cookbook.service.VisitFullCxfRestInterface;
 import com.manessinger.cookbook.service.ZipFullCxfRestInterface;
 
@@ -45,6 +48,9 @@ public class CookbookRestTest {
 	
 	private static final String BASE_URI = "http://localhost:8080/cookbookServlets/REST";
 	
+	private static final String LINZ = "Linz";
+	private static final String SALZBURG = "Salzburg";
+
 	private static final String FRANCE = "France";
 	private static final String MARSEILLES = "Marseilles";
 	private static final String PARIS = "Paris";
@@ -54,19 +60,30 @@ public class CookbookRestTest {
 	private static final String ASSUAN = "Assuan";
 	private static final String CAIRO = "Cairo";
 	
+	private static final String HELLO = "Hello";
+	
 	private static CityFullCxfRestInterface citySvc;
 	private static CountryFullCxfRestInterface countrySvc;
 	private static LanguageFullCxfRestInterface languageSvc;
 	private static ModifyMultiCxfRestInterface multiSvc;
 	private static VisitFullCxfRestInterface visitSvc;
 	private static ZipFullCxfRestInterface zipSvc;
-
+	
 	private static Client cityClient;
 	private static Client countryClient;
 	private static Client languageClient;
 	private static Client multiClient;
 	private static Client visitClient;
 	private static Client zipClient;
+	
+	private static CityFullCxfRestInterface cityProtectedSvc;
+	private static Client cityProtectedClient;
+	
+	private static ProtectedCxfRestInterface highRankProtectedSvc;
+	private static Client highRankProtectedClient;
+	
+	private static ProtectedCxfRestInterface lowRankProtectedSvc;
+	private static Client lowRankProtectedClient;
 	
 	/**
 	 * BEFORE CLASS: setup proxies, set their media types to APPLICATION_XML. 
@@ -91,37 +108,64 @@ public class CookbookRestTest {
 		cityClient = WebClient.client(citySvc);
 		cityClient.type(MediaType.APPLICATION_XML);
 		cityClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
-		// cityClient.header("X-Portal-Cred0", "REST_200_ON_ERROR");
+		cityClient.header("x-authorize-roles", "azzyzt(200-on-error=false);modify()");
+		cityClient.header("x-authenticate-userid", "junit");
 		
 		countrySvc = JAXRSClientFactory.create(BASE_URI, CountryFullCxfRestInterface.class);
 		countryClient = WebClient.client(countrySvc);
 		countryClient.type(MediaType.APPLICATION_XML);
 		countryClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
-		// countryClient.header("X-Portal-Cred0", "REST_200_ON_ERROR");
+		countryClient.header("x-authorize-roles", "azzyzt(200-on-error=false);modify()");
+		countryClient.header("x-authenticate-userid", "junit");
 		
 		languageSvc = JAXRSClientFactory.create(BASE_URI, LanguageFullCxfRestInterface.class);
 		languageClient = WebClient.client(languageSvc);
 		languageClient.type(MediaType.APPLICATION_XML);
 		languageClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
-		// languageClient.header("X-Portal-Cred0", "REST_200_ON_ERROR");
+		languageClient.header("x-authorize-roles", "azzyzt(200-on-error=false);modify()");
+		languageClient.header("x-authenticate-userid", "junit");
 		
 		multiSvc = JAXRSClientFactory.create(BASE_URI, ModifyMultiCxfRestInterface.class);
 		multiClient = WebClient.client(multiSvc);
 		multiClient.type(MediaType.APPLICATION_XML);
 		multiClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
-		// multiClient.header("X-Portal-Cred0", "REST_200_ON_ERROR");
+		multiClient.header("x-authorize-roles", "azzyzt(200-on-error=false);modify()");
+		multiClient.header("x-authenticate-userid", "junit");
 		
 		visitSvc = JAXRSClientFactory.create(BASE_URI, VisitFullCxfRestInterface.class);
 		visitClient = WebClient.client(visitSvc);
 		visitClient.type(MediaType.APPLICATION_XML);
 		visitClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
-		// visitClient.header("X-Portal-Cred0", "REST_200_ON_ERROR");
+		visitClient.header("x-authorize-roles", "azzyzt(200-on-error=false);modify()");
+		visitClient.header("x-authenticate-userid", "junit");
 		
 		zipSvc = JAXRSClientFactory.create(BASE_URI, ZipFullCxfRestInterface.class);
 		zipClient = WebClient.client(zipSvc);
 		zipClient.type(MediaType.APPLICATION_XML);
 		zipClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
-		// zipClient.header("X-Portal-Cred0", "REST_200_ON_ERROR");
+		zipClient.header("x-authorize-roles", "azzyzt(200-on-error=false);modify()");
+		zipClient.header("x-authenticate-userid", "junit");
+		
+		cityProtectedSvc = JAXRSClientFactory.create(BASE_URI, CityFullCxfRestInterface.class);
+		cityProtectedClient = WebClient.client(cityProtectedSvc);
+		cityProtectedClient.type(MediaType.APPLICATION_XML);
+		cityProtectedClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
+		cityProtectedClient.header("x-authorize-roles", "azzyzt(200-on-error=false);");
+		cityProtectedClient.header("x-authenticate-userid", "junit");
+		
+		highRankProtectedSvc = JAXRSClientFactory.create(BASE_URI, ProtectedCxfRestInterface.class);
+		highRankProtectedClient = WebClient.client(highRankProtectedSvc);
+		highRankProtectedClient.type(MediaType.APPLICATION_XML);
+		highRankProtectedClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
+		highRankProtectedClient.header("x-authorize-roles", "azzyzt(200-on-error=false); admin; senior(rank=3)");
+		highRankProtectedClient.header("x-authenticate-userid", "junit");
+		
+		lowRankProtectedSvc = JAXRSClientFactory.create(BASE_URI, ProtectedCxfRestInterface.class);
+		lowRankProtectedClient = WebClient.client(lowRankProtectedSvc);
+		lowRankProtectedClient.type(MediaType.APPLICATION_XML);
+		lowRankProtectedClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
+		lowRankProtectedClient.header("x-authorize-roles", "azzyzt(200-on-error=false); admin; senior(rank=1)");
+		lowRankProtectedClient.header("x-authenticate-userid", "junit");
 		
 	}
 	
@@ -227,6 +271,39 @@ public class CookbookRestTest {
 			// name ascending
 			if (last != null) {
 				assertTrue(c.getName().compareTo(last.getName()) >= 0);
+			}
+			last = c;
+
+			dump(c);
+		}
+	}
+
+	/**
+	 * TEST: Query with two betweens:
+	 *  - City ID is between 2 and 5 
+	 *  - City name is between "Linz" and "Salzburg" (case-insensitive)
+	 *  - ascending by city ID
+	 */
+	@Test
+	public void testQueryWithTwoBetweens() {
+		List<Dto> cities = citySvc.list(from("META-INF/xml/query_with_two_betweens.xml"));
+		
+		assertNotNull(cities);
+		assertTrue(cities.size() >= 7);
+		CityDto last = null;
+		for (Dto d : cities) {
+			assertTrue(d instanceof CityDto);
+			CityDto c = (CityDto)d;
+			
+			// is within range
+			Long id = c.getId();
+			String name = c.getName();
+			assertTrue((id >=2 && id <= 5) 
+					|| (name.compareToIgnoreCase(LINZ) >= 0 && name.compareToIgnoreCase(SALZBURG) <= 0));
+			
+			// id ascending
+			if (last != null) {
+				assertTrue(c.getId() >= last.getId());
 			}
 			last = c;
 
@@ -404,6 +481,58 @@ public class CookbookRestTest {
 		assertEquals("<result>OK</result>", result);
 	}
 
+	/**
+	 * TEST: Store a city with the protected client. It does not send a 
+	 * "modify" credential, thus the server should throw an AccessDenied Exception.
+	 */
+	@Test(expected=ServerWebApplicationException.class)
+	public void testTryStoreCity() {
+		List<Dto> countries = countrySvc.list(from("META-INF/xml/get_austria.xml"));
+		assertNotNull(countries);
+		assertEquals(1, countries.size());
+		CountryDto austria = (CountryDto)countries.get(0);
+		assertEquals("Austria", austria.getName());
+		
+		CityDto c = new CityDto();
+		c.setCountryId(austria.getId());
+		c.setName("Villach");
+		dump(c);
+		
+		c = cityProtectedSvc.store(c);
+		fail("This should be unreachable");
+	}
+	
+	/**
+	 * TEST: call a method requiring no rank with low rank
+	 */
+	@Test
+	public void testCallProtectedNoWithLowRank() {
+		String reply = lowRankProtectedSvc.helloAdmin(HELLO);
+		assertNotNull(reply);
+		assertEquals(HELLO, reply);
+	}
+	
+	/**
+	 * TEST: call a method requiring high rank with low rank.
+	 * The server should throw an AccessDenied Exception.
+	 */
+	@Test(expected=ServerWebApplicationException.class)
+	public void testCallProtectedHighWithLowRank() {
+		lowRankProtectedSvc.helloSeniorAdmin(HELLO);
+		fail("This should be unreachable");
+	}
+	
+	/**
+	 * TEST: call a method requiring high rank with higher rank
+	 */
+	@Test
+	public void testCallProtectedHighWithHighRank() {
+		String reply = highRankProtectedSvc.helloSeniorAdmin(HELLO);
+		assertNotNull(reply);
+		assertEquals(HELLO, reply);
+		
+	}
+	
 	/**
 	 * Helper method that creates DTOs for a country and its cities
 	 * 

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or � as soon they
+ * Licensed under the EUPL, Version 1.1 or - as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -119,6 +119,7 @@ public class MetaStandardDefs {
 	public final MetaAnnotation javaxPersistenceEmbeddable;
 	
 	public final MetaAnnotation javaxJwsWebService;
+	public final MetaInterface javaxXmlWsWebServiceContext;
 	
 	public final MetaAnnotation javaxXmlBindAnnotationXmlRootElement;
 	public final MetaAnnotation javaxXmlBindAnnotationXmlElementWrapper;
@@ -181,12 +182,15 @@ public class MetaStandardDefs {
 	public final MetaClass exceptionToSuccessMapper;
 	public final MetaClass idTranslator;
 	public final MetaInterface stringConverterInterface;
+	public final MetaInterface authorizationInterface;
 	public final MetaInterface azzyztantInterface;
 	public final MetaAnnotation azzyztGeneratorOptions;
 	public final MetaEnum azzyztGeneratorCutback;
 	public final MetaClass invocationMetaInfo;
+	public final MetaAnnotation requiresCredentials;
 	
 
+	@SuppressWarnings("deprecation")
 	public MetaStandardDefs() {
 		
 		mod_private = new MetaModifiers();
@@ -302,6 +306,7 @@ public class MetaStandardDefs {
 		javaxPersistenceEmbeddable = MetaAnnotation.forType(javax.persistence.Embeddable.class);
 		
 		javaxJwsWebService = MetaAnnotation.forType(javax.jws.WebService.class);
+		javaxXmlWsWebServiceContext = MetaInterface.forType(javax.xml.ws.WebServiceContext.class);
 		
 		javaxXmlBindAnnotationXmlRootElement = MetaAnnotation.forType(javax.xml.bind.annotation.XmlRootElement.class);
 		javaxXmlBindAnnotationXmlElementWrapper = MetaAnnotation.forType(javax.xml.bind.annotation.XmlElementWrapper.class);
@@ -367,8 +372,10 @@ public class MetaStandardDefs {
 		exceptionToSuccessMapper = MetaClass.forType(org.azzyzt.jee.runtime.service.ExceptionToSuccessMapper.class);
 		idTranslator = MetaClass.forType(org.azzyzt.jee.runtime.eao.IdTranslator.class);
 		stringConverterInterface = MetaInterface.forType(org.azzyzt.jee.runtime.util.StringConverterInterface.class);
+		authorizationInterface = MetaInterface.forType(org.azzyzt.jee.runtime.util.AuthorizationInterface.class);
 		azzyztantInterface = MetaInterface.forType(org.azzyzt.jee.runtime.meta.AzzyztantInterface.class);
 		azzyztGeneratorOptions = MetaAnnotation.forType(org.azzyzt.jee.runtime.annotation.AzzyztGeneratorOptions.class);
 		azzyztGeneratorCutback = MetaEnum.forType(org.azzyzt.jee.runtime.meta.AzzyztGeneratorCutback.class);
+		requiresCredentials = MetaAnnotation.forType(org.azzyzt.jee.runtime.annotation.RequiresCredentials.class);
 	}
 }

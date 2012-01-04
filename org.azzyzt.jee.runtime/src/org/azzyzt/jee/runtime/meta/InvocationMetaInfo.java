@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or - as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -36,6 +36,8 @@ public class InvocationMetaInfo {
 	private String authenticatedUserName;
 	
 	private boolean return200OnError = false;
+
+	private Credentials credentials;
 	
 	public InvocationMetaInfo() {
 		this.started = new Date();
@@ -59,6 +61,14 @@ public class InvocationMetaInfo {
 
 	public void setReturn200OnError(boolean return200OnError) {
 		this.return200OnError = return200OnError;
+	}
+
+	public void setCredentials(Credentials c) {
+		this.credentials = c;
+	}
+
+	public Credentials getCredentials() {
+		return credentials;
 	}
 
 }

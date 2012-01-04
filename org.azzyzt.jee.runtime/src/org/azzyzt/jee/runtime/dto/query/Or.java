@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or - as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -29,6 +29,12 @@ package org.azzyzt.jee.runtime.dto.query;
 
 import java.io.Serializable;
 
+/**
+ * A binary boolean expression that is true when at least one of its terms is true. An <code>Or</code> can
+ * have any number of terms. Or expressions in JPA criteria expressions otoh are strictly
+ * binary, thus the <code>QueryBuilder</code> converts an <code>Or</code> with more than
+ * two terms in a cascade of JPA Or expressions with two terms each.
+ */
 public class Or extends BinaryBooleanExpression implements Serializable {
 	
 	private static final long serialVersionUID = 1L;

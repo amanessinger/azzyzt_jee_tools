@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or � as soon they
+ * Licensed under the EUPL, Version 1.1 or - as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -28,38 +28,62 @@
 package org.azzyzt.jee.runtime.service;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.interceptor.InvocationContext;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MultivaluedMap;
+import javax.xml.ws.WebServiceContext;
+import javax.xml.ws.handler.MessageContext;
 
+import org.azzyzt.jee.runtime.meta.Credential;
+import org.azzyzt.jee.runtime.meta.Credentials;
 import org.azzyzt.jee.runtime.meta.InvocationMetaInfo;
+import org.azzyzt.jee.runtime.util.SiteAdapterInterface;
 
-public class SiteAdapterBase {
+public abstract class SiteAdapterBase implements SiteAdapterInterface {
+	
+	private static final String JNDI_STRINGVALUES_PFX = "custom/stringvalues/";
 
 	private static final String DEFAULT_USERNAME_HEADER = "x-authenticate-userid";
-    private static final String JNDI_USERNAME_HEADER = "custom/stringvalues/http/header/username";
+    private static final String JNDI_USERNAME_HEADER = "http/header/username";
 
-    private static final String DEFAULT_200_ON_ERROR_HEADER_PREFIX = "x-portal-cred";
-    private static final String JNDI_200_ON_ERROR_HEADER_PREFIX = "custom/stringvalues/http/header/200_ON_ERROR";
-    private static final String REST_200_ON_ERROR = "REST_200_ON_ERROR";
+    private static final String DEFAULT_CREDENTIALS_HEADER = "x-authorize-roles";
+    private static final String JNDI_CREDENTIALS_HEADER = "http/header/credentials";
+    
+    private static final String CRED_AZZYZT = "azzyzt";
+    private static final String CRED_PROP_200_ON_ERROR = "200-on-error";
 
     private static final String DEFAULT_ANONYMOUS_USER = "anonymous";
-    private static final String JNDI_ANONYMOUS_USER = "custom/stringvalues/username/anonymous";
+    private static final String JNDI_ANONYMOUS_USER = "username/anonymous";
     
-    private static String anonymousUser;
-    private static String usernameHeader;
-    private static String onError200Header;
+    private static String anonymousUser = null;
+    private static String usernameHeader = null;
+    private static String credentialsHeader = null;
     
-    static {    	
-    	anonymousUser = lookupString(JNDI_ANONYMOUS_USER, DEFAULT_ANONYMOUS_USER);
-    	usernameHeader = lookupString(JNDI_USERNAME_HEADER, DEFAULT_USERNAME_HEADER);
-    	onError200Header = lookupString(JNDI_200_ON_ERROR_HEADER_PREFIX, DEFAULT_200_ON_ERROR_HEADER_PREFIX);
-    }
-
 	public SiteAdapterBase() { }
+
+	public SiteAdapterBase(String appName) {
+		if (anonymousUser == null) {
+			anonymousUser = lookupString(
+					JNDI_STRINGVALUES_PFX+"app_"+appName+'/'+JNDI_ANONYMOUS_USER, 
+					JNDI_STRINGVALUES_PFX+JNDI_ANONYMOUS_USER, 
+					DEFAULT_ANONYMOUS_USER);
+		}
+		if (usernameHeader == null) {
+			usernameHeader = lookupString(
+					JNDI_STRINGVALUES_PFX+"app_"+appName+'/'+JNDI_USERNAME_HEADER, 
+					JNDI_STRINGVALUES_PFX+JNDI_USERNAME_HEADER, 
+					DEFAULT_USERNAME_HEADER);
+		}
+		if (credentialsHeader == null) {
+			credentialsHeader = lookupString(
+					JNDI_STRINGVALUES_PFX+"app_"+appName+'/'+JNDI_CREDENTIALS_HEADER, 
+					JNDI_STRINGVALUES_PFX+JNDI_CREDENTIALS_HEADER, 
+					DEFAULT_CREDENTIALS_HEADER);
+		}
+	}
 
     public InvocationMetaInfo fromRESTContext(InvocationContext ctx) {
     	
@@ -74,38 +98,80 @@ public class SiteAdapterBase {
     	
     	if (httpHeaders == null) return i;
     	
-    	i.setReturn200OnError(false);
-    	MultivaluedMap<String,String> requestHeaders = httpHeaders.getRequestHeaders();
-    	CHECK_REST_ERROR_BEHAVIOR: for (String key : requestHeaders.keySet()) {
-    		if (key.toLowerCase().startsWith(onError200Header)) {
-    			List<String> values = requestHeaders.get(key);
-    			for (String v : values) {
-    				if (v.equals(REST_200_ON_ERROR)) {
-    					i.setReturn200OnError(true);
-    					break CHECK_REST_ERROR_BEHAVIOR;
-    				}
-    			}
-    		}
-    	}
-    	
-		List<String> userIds = httpHeaders.getRequestHeader(usernameHeader);
-    	
-    	if (userIds == null || userIds.isEmpty()) return i;
-    	
-    	i.setAuthenticatedUserName(userIds.get(0));
+    	extractCredentials(i, httpHeaders.getRequestHeader(credentialsHeader));
+		extractUserId(i, httpHeaders.getRequestHeader(usernameHeader));
     	
     	return i;
     }
 
-	private static String lookupString(String jndiName, String defaultValue) {
-		String result;
+    @SuppressWarnings("unchecked")
+	public InvocationMetaInfo fromSOAPContext(WebServiceContext wsc) {
+    	
+    	InvocationMetaInfo i = new InvocationMetaInfo();
+		i.setAuthenticatedUserName(anonymousUser);
+		
+		if (wsc != null) {
+    		MessageContext messageContext = wsc.getMessageContext();
+			if (messageContext.containsKey(MessageContext.HTTP_REQUEST_HEADERS)) {
+				
+    			Map<String, List<String>> httpHeaders;
+				httpHeaders = (Map<String, List<String>>)messageContext.get(MessageContext.HTTP_REQUEST_HEADERS);
+				
+		    	extractCredentials(i, httpHeaders.get(credentialsHeader));
+				extractUserId(i, httpHeaders.get(usernameHeader));
+    		}
+		}
+
+    	return i;
+    }
+    
+	private void extractCredentials(InvocationMetaInfo i, List<String> credentialsHeaders) 
+	{
+		i.setReturn200OnError(false);
+		
+		String credentials = "";
+
+		if (credentialsHeaders != null && !credentialsHeaders.isEmpty()) {
+			// there shouldn't ever be more than one header, but just if, string them together
+	    	StringBuffer credentialsSb = new StringBuffer();
+	    	for (String h : credentialsHeaders) {
+	    		credentialsSb.append(h);
+	    		if (!h.endsWith(";")) {
+	    			credentialsSb.append(';');
+	    		}
+	    	}
+			credentials = credentialsSb.toString();
+		}
+    	Credentials creds = Credentials.fromString(credentials); // copes with null/empty/...
+		i.setCredentials(creds);
+		if (creds.hasCredential(CRED_AZZYZT)) {
+			Credential credAzzyzt = creds.getCredential(CRED_AZZYZT);
+			if (credAzzyzt.isPropertyTrue(CRED_PROP_200_ON_ERROR)) {
+				i.setReturn200OnError(true);
+			}
+		}
+	}
+    
+	private void extractUserId(InvocationMetaInfo i, List<String> userIds) {
+		if (userIds != null && !userIds.isEmpty()) {
+			i.setAuthenticatedUserName(userIds.get(0));
+		}
+	}
+	
+	private static String lookupString(String appName, String globalName, String defaultValue) {
+		String result = null;
+		InitialContext ctxt = null;
         try {
-            // Lookup via JNDI
-            result = (String) new InitialContext()
-            .lookup(jndiName);
-        } catch (NamingException e) {
-            // initialize with default
-            result = (String) defaultValue;
+			ctxt = new InitialContext();
+            result = (String) ctxt.lookup(appName);
+        } catch (NamingException e) { }
+        if (result == null) {
+        	try {
+                result = (String) ctxt.lookup(globalName);
+        	} catch (NamingException e) { }
+        }
+        if (result == null) {
+        	result = (String) defaultValue;
         }
 		return result;
 	}

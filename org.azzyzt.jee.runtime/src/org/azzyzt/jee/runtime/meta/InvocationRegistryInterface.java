@@ -2,18 +2,24 @@ package org.azzyzt.jee.runtime.meta;
 
 import java.util.Calendar;
 
+import javax.interceptor.InvocationContext;
 import javax.transaction.TransactionSynchronizationRegistry;
+import javax.xml.ws.WebServiceContext;
 
 import org.azzyzt.jee.runtime.util.SiteAdapterInterface;
 
 public interface InvocationRegistryInterface {
 
-	public abstract SiteAdapterInterface getSiteAdapter();
+	public SiteAdapterInterface getSiteAdapter();
 
-	public abstract TransactionSynchronizationRegistry getTsr();
+	public TransactionSynchronizationRegistry getTsr();
 	
-	public abstract Calendar getInvocationTimestamp();
+	public Calendar getInvocationTimestamp();
 
-	public abstract AzzyztantInterface getAzzyztant();
+	public AzzyztantInterface getAzzyztant();
+	
+	public InvocationMetaInfo registerRESTInvocation(InvocationContext ctx);
+	
+	public InvocationMetaInfo registerEJBInvocation(WebServiceContext ctx);
 
 }

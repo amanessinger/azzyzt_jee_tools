@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or - as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -27,6 +27,14 @@
 
 package org.azzyzt.jee.runtime.exception;
 
+/**
+ * Thrown by an authorizer implementing <code>AuthorizationInterface</code>
+ * in case of an unauthorized access.
+ * 
+ * @see org.azzyzt.jee.runtime.util.AuthorizationInterface
+ * @see org.azzyzt.jee.runtime.meta.Credentials
+ * @see org.azzyzt.jee.runtime.util.CredentialBasedAuthorizer
+ */
 public class AccessDeniedException extends TranslatableException {
 
 	private static final long serialVersionUID = 1L;

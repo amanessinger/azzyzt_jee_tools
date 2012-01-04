@@ -1,0 +1,27 @@
+group javaEJBInterceptorGroup : javaGroup;
+
+@javaClass.extra_methods() ::= <<
+@Resource WebServiceContext wsc;
+
+@AroundInvoke
+public Object aroundBeanInvocation(InvocationContext ctx) throws Exception {
+    InvocationMetaInfo mi = invocationRegistry.registerEJBInvocation(wsc);
+    
+    try {
+        
+        AuthorizationInterface authorizer = invocationRegistry.getAzzyztant().getAuthorizer();
+        if (authorizer != null) {
+            authorizer.checkAuthorization(ctx.getTarget().getClass(), ctx.getMethod(), mi);
+        }
+        Object result = ctx.proceed();
+        eao.flush();
+        return result;
+    } catch (EJBTransactionRolledbackException etrbe) {
+        throw new Exception(etrbe);
+    } catch (TranslatableException te) {
+        sessionContext.setRollbackOnly();
+        throw te;
+    }
+}
+
+>>

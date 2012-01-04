@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or - as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -27,6 +27,15 @@
 
 package org.azzyzt.jee.runtime.dto.query;
 
+/**
+ * A <code>FieldReference</code> is an <code>Operand</code> in an <code>Expression</code>.
+ * A field reference can be to a field of the result entity of the query (with the field
+ * name exactly being the name of a field of that entity), or it can refer to a field in 
+ * another entity that is reachable via a mapped association. In the latter case we use 
+ * the same dotted notation as in JPQL.
+ * 
+ * @see Expression
+ */
 public class FieldReference extends Operand implements FieldReferer {
 	
 	private String fieldName;
@@ -47,10 +56,18 @@ public class FieldReference extends Operand implements FieldReferer {
 		setCaseSensitive(isCaseSensitive);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.azzyzt.jee.runtime.dto.query.FieldReferer#getFieldName()
+	 */
+	@Override
 	public String getFieldName() {
 		return fieldName;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.azzyzt.jee.runtime.dto.query.FieldReferer#setFieldName(java.lang.String)
+	 */
+	@Override
 	public void setFieldName(String fieldName) {
 		this.fieldName = fieldName;
 	}
@@ -63,6 +80,9 @@ public class FieldReference extends Operand implements FieldReferer {
 		this.isCaseSensitive = isCaseSensitive;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.azzyzt.jee.runtime.dto.query.Operand#isValid()
+	 */
 	@Override
 	public boolean isValid() {
 		return fieldName != null && ! fieldName.isEmpty();

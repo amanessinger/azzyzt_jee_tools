@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or - as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -27,6 +27,15 @@
 
 package org.azzyzt.jee.runtime.dto.query;
 
+/**
+ * A binary field expression is a <code>FieldExpresssion</code> with a binary operator.
+ * It always involves one field, the second <code>Operand</code> can either be a <code>Literal</code>
+ * or a <code>FieldReference</code> as well.
+ * 
+ * @see Operand
+ * @see BinaryFieldOperator
+ * @see FieldReference
+ */
 public class BinaryFieldExpression extends FieldExpression {
 
 	private static final long serialVersionUID = 1L;
@@ -59,6 +68,9 @@ public class BinaryFieldExpression extends FieldExpression {
 		this.operand = operand;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.azzyzt.jee.runtime.dto.query.FieldExpression#isValid()
+	 */
 	@Override
 	public boolean isValid() {
 		boolean result = super.isValid() && op != null && operand.isValid();

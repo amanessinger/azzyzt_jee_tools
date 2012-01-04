@@ -10,8 +10,6 @@ package <mdt.packageName>;
  */
 <mdt:annotations()><mdt.modifiers> class <mdt.simpleName><extendsClasses(mdt)><implementsInterfaces(mdt)> {
 
-    private static final long serialVersionUID = 1L;
-
     <mdt.fields:fieldDeclaration()>
     <defaultConstructor(mdt)>
     <injectionConstructor(mdt)>

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Municipiality of Vienna, Austria
  *
- * Licensed under the EUPL, Version 1.1 or – as soon they
+ * Licensed under the EUPL, Version 1.1 or ï¿½ as soon they
  * will be approved by the European Commission - subsequent
  * versions of the EUPL (the "Licence");
  * You may not use this work except in compliance with the
@@ -30,6 +30,9 @@ package org.azzyzt.jee.runtime.dto.query;
 import org.azzyzt.jee.runtime.exception.QuerySyntaxException;
 
 
+/**
+ * Parent class for boolean expressions with one term. Well, basically <code>Not</code>.
+ */
 public abstract class UnaryBooleanExpression extends Expression implements Node {
 	
 	private static final long serialVersionUID = 1L;
@@ -39,9 +42,13 @@ public abstract class UnaryBooleanExpression extends Expression implements Node 
 		return expression;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.azzyzt.jee.runtime.dto.query.Node#add(org.azzyzt.jee.runtime.dto.query.Expression)
+	 */
+	@Override
 	public void add(Expression e) throws QuerySyntaxException {
 		if (this.expression != null) {
-			throw new QuerySyntaxException("A QuerySpec can only have a single expression");
+			throw new QuerySyntaxException("A UnaryBooleanExpression can only have a single expression");
 		}
 		expression = e;
 	}
@@ -50,11 +57,17 @@ public abstract class UnaryBooleanExpression extends Expression implements Node 
 		this.expression = expression;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.azzyzt.jee.runtime.dto.query.Expression#isValid()
+	 */
 	@Override
 	public boolean isValid() {
 		return expression != null;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.azzyzt.jee.runtime.dto.query.Expression#getReplaceableBy()
+	 */
 	@Override
 	public Expression getReplaceableBy() {
 		return null;

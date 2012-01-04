@@ -4,7 +4,11 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ * TODO class seems to be unused. Remove it. 
+ */
 @XmlRootElement(name="list")
+@Deprecated
 public class StringListWrapper {
 	
 	private List<String> item;

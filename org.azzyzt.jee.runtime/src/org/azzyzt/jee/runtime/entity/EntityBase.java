@@ -27,8 +27,18 @@
 
 package org.azzyzt.jee.runtime.entity;
 
+/**
+ * Abstract base class for all entity classes. Inheriting from this class guarantees availability 
+ * of an ID value. Additionally static and non-static tests for ID values are included. 
+ *
+ * @param <ID> the type of the entity class' ID
+ */
 public abstract class EntityBase<ID> {
 
+	/**
+	 * @param id a value to be tested
+	 * @return true if the value of the parameter could possibly an ID value.
+	 */
 	public static boolean couldBeIdValue(Object id) {
 		
 		if (id == null) return false;
@@ -41,11 +51,22 @@ public abstract class EntityBase<ID> {
 		}
 	}
 
+	/**
+	 * @return true if an entity is likely to have a valid ID value
+	 */
 	public boolean likelyHasId() {
 		return couldBeIdValue(getId());
 	}
 
+	/**
+	 * @return the ID of an entity
+	 */
 	public abstract ID getId();
 
+	/**
+	 * Sets the ID of an entity to a certain value.
+	 * 
+	 * @param id a value
+	 */
 	public abstract void setId(ID id);
 }

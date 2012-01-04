@@ -45,6 +45,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jst.j2ee.earcreation.IEarFacetInstallDataModelProperties;
 import org.eclipse.jst.j2ee.internal.project.facet.EARFacetProjectCreationDataModelProvider;
 import org.eclipse.jst.j2ee.project.facet.IJ2EEFacetConstants;
@@ -71,7 +72,7 @@ public class EarProject extends FacetedProject {
 	private static final String LIBARCHIVETYPE = "lib";
 	
 	private AzzyztProperties azzyztProperties = null;
-	private boolean isRuntimeLibraryOutOfDate = false;
+	private boolean isRuntimeLibraryOutOfDate = Platform.inDevelopmentMode(); // always considered out-of-date in development
 
 	public EarProject(String azzyztVersion, String name, Context context, Map<String, URL> runtimeJars) 
 	throws CoreException 

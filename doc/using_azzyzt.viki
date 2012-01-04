@@ -2,7 +2,7 @@
 #VAR: tableStyle=formal
 #VAR: subToC=true
 
-#VAR: version=1.2.4
+#VAR: version=1.3.0
 
 * Azzyzt JEE Tools
 #OPT: plain!
@@ -24,14 +24,16 @@ Licensed under the EUPL, Version 1.1 or subsequent versions
 * Using Azzyzt JEE Tools
 
 If you just want to use Azzyzt JEE Tools (as opposed to modify and
-build them), the recommended way to install the software is via
-an Eclipse update site. As of release {version}, there are two update site
-URLs, one for the edition used by the Municipiality of Vienna,
-Austria, the other a generic version. The URLs are
+build them), the recommended way to install the software is via an
+Eclipse update site. As of release {version}, there is only update
+site URL, the former generic version. The URL is
 
     [[http://azzyzt.manessinger.com/azzyzt_generic/]]
 
-    [[http://azzyzt.manessinger.com/azzyzt_magwien/]]
+The former edition especially for the Municipiality of Vienna,
+Austria, the ''azzyzt_magwien'' version has always been identical and
+with the increased level of configurability, the need for a separate
+version is currently not there.
 
 All announcements of new versions will be published on 
 
@@ -54,11 +56,15 @@ patches, etc, the complete sources are available on \GitHub under
 
 * The cookbook example
 
+** Introduction
+
 If you remember my
 [[http://programming.manessinger.com/tutorials/an-eclipse-glassfish-java-ee-6-tutorial/][Eclipse / \GlassFish / Java EE 6 Tutorial]], 
 here we will use more or less the same application, just slightly
 expanded to show off some new features. All subsequent examples will
-reference the same database and the same entities.
+reference the same database and the same entities. Like in the
+original tutorial, the sample application will be called
+"__cookbook__", although it still has nothing to do with cooking :)
 
 In the following I frequently reference a subdirectory ''doc'' of the
 [[https://github.com/amanessinger/azzyzt_jee_tools][Azzyzt source
@@ -72,10 +78,8 @@ and additionally the extracted content is available under
 
     [[http://azzyzt.manessinger.com/doc/]]
 
-If you want to follow the examples given, you should first set up a
-database. The subdirectory ''doc/cookbook'' of the Azzyzt source
-distribution contains a file ''README.txt''. Follow the directions
-therein. 
+Everything relevant to this tutorial is in a subdirectory
+''doc/cookbook''. Here is its tree structure:
 
 #Verbatim <<---
 doc/cookbook
@@ -132,6 +136,7 @@ doc/cookbook
         |       |   `-- manessinger
         |       |       `-- cookbook
         |       |           `-- service
+        |       |               |-- ProtectedCxfRestInterface.java
         |       |               `-- test
         |       |                   |-- CityById.java
         |       |                   |-- CookbookRestTest.java
@@ -141,41 +146,181 @@ doc/cookbook
         |               |-- get_austria.xml
         |               |-- nested_expressions.xml
         |               |-- query_with_three_conditions.xml
+        |               |-- query_with_two_betweens.xml
         |               `-- sorted_list_of_cities.xml
-        `-- cookbookEJB
-            `-- ejbModule
+        |-- cookbookEJB
+        |   `-- ejbModule
+        |       `-- com
+        |           `-- manessinger
+        |               `-- cookbook
+        |                   |-- meta
+        |                   |   `-- Azzyztant.java
+        |                   `-- service
+        |                       `-- ProtectedBean.java
+        `-- cookbookServlets
+            `-- src
                 `-- com
                     `-- manessinger
                         `-- cookbook
-                            `-- meta
-                                `-- Azzyztant.java
+                            `-- service
+                                `-- ProtectedDelegator.java
 ---
 
-On the same level as ''README.txt'' you find one directory for each
-database that the tutorial supports. Note, it's not that Java EE 6 or
-\GlassFish or Azzyzt don't support other databases, it's just that I've
-not tested the tutorial with anything else.
+There are two directories with with SQL scripts, one for Oracle, one
+for PostgreSQL. No other database was tested by me, but all databases
+supported by JPA should be fine. 
 
-Each database subdirectory contains a set of SQL instructions on how
-to create the database user, the database, and scripts to create the
-schema objects (tables and sequences), to initialize the tables, and
-finally to drop the schema objects if you want to start over.
+ !!! Note please, that the sample entity sources may not work with all databases, because they rely on sequences. Thus, if you use another database, you'll probably have to adapt the entity classes. If you do so, please consider contributing your changes plus DDL scripts to set up the schema, and then I'll include them with future releases.
 
-Furthermore there is a directory ''src/base'', that contains the
-sources of entity classes and a ''persistence.xml'', that already
-references these classes. More about that in the next couple of
-sections. Another directory ''src/optional'' contains the sources of
-the JUnit test that I use.
+Apart from some README files there is also a directory "''src''" with
+two subdirectories, "''base''" and "''optional''". After finishing the
+tutorial you will have a set of database-backed Java EE services
+accessible via REST, SOAP and even Corba/IIOP, plus a JUnit test
+suite. The directory "''src''" contains all source files you would
+normally need to write for yourself.
 
-Finally ''doc/cookbook'' contains a soapUI project file. This already
-contains the REST requests for the examples at the end of this
-tutorial.
+In various phases of the tutorial, instead of telling you what to
+write, I'll ask you to copy the contents of some subdirectories into
+your Eclipse workspace.
+
+
+** Prerequisites
+
+If you want to follow the examples given, I urge you to first try them
+with \GlassFish, even if you ultimately want to deploy your own
+application on another server. Download and install a recent version
+of \GlassFish and of Eclipse. See [[readme.html]] for a list of
+supported and tested versions.
+
+Download and install drivers for Oracle or PostgreSQL. Whatever
+database you choose, make sure that the JDBC driver is copied to the
+''glassfish3/glassfish/lib'' directory of the unpacked server.
+
+Download and install a recent JDK. A JRE runtime environment is enough
+to run Eclipse, but \GlassFish needs a JDK. Again, [[readme.html]]
+tells you what was tested.
+
+In order to interact with \GlassFish from within Eclipse, you need to
+install the Oracle \GlassFish Server Tools. In recent versions of
+Eclipse you can go to the Eclipse Marketplace by choosing 
+
+    __Help / Eclipse Marketplace__
+
+You'll get a search box, there you enter "''glassfish''", and from the
+result list you choose
+
+    __\GlassFish Java EE Application Server Plugin for Eclipse__
+
+Alternatively you can install it via
+
+    __Java EE Perspective / Servers View / Context menu / New / Server
+    / Link: Download additional server adapters__
+
+If Eclipse can't access the Internet, then you may be behind a
+proxy. Go to
+
+    __Window / Preferences / General / Network Connections__
+
+Choose an __Active Provider__ (__Native__ for Windows, uses browser
+settings, __Manual__ to set the proxy directly in Eclipse and to
+probably set a proxy user/password).
+
+One last step is needed, installation of
+[[http://www.azzyzt.org][Azzyzt JEE Tools]] themselves. You can either
+get them via the Eclipse Marketplace or directly from the update site
+[[http://azzyzt.manessinger.com/azzyzt_generic/]]. Accept the open
+source license, accept to install unsigned software (yes, I know, I
+should fix this), and finally restart Eclipse when prompted.
+
+At this step you should have a \GlassFish installation, Eclipse
+running and principally being able to connect to \GlassFish, and
+Azzyzt JEE Tools ready for action.
+
+
+** Preparation
+
+Now let's create a server instance. Choose
+
+    __Java EE Perspective / Servers View / Context menu / New /
+    Server__
+
+and select the version of \GlassFish that you want to use. Don't worry
+if you don't find \GlassFish 3.1.1, just select version 3.1, it will
+work.
+
+When creating the server instance, on the second page of the wizard,
+you will have to select a Java Runtime Environment (JRE). There is a
+link on that page, leading to the __Installed JRE preferences__. Use
+that to define a JDK as runtime (the default runtime of Eclipse will
+most likely be a JRE and thus not enough to run \GlassFish).
+
+You find all that in greater depth in my
+[[http://programming.manessinger.com/tutorials/an-eclipse-glassfish-java-ee-6-tutorial/][Eclipse/
+\GlassFish / Java EE 6 Tutorial]], I just wanted to mention it.
+
+On the third page of the wizard, when asked for an admin password, I
+leave it empty. It's more convenient on a development server and I am
+behind a corporate firewall anyway. On the fourth and last page we
+could configure applications to run on the new server instance
+(i.e. deploy them). There is nothing to run yet, thus we click
+"__Finish__".
+
+Next set up a database. This consists of the following steps:
+
+ # decide between PostgreSQL and Oracle
+ # create a database and set up an empty database schema
+ # use the SQL files in the database-specific subdirectory of
+   ''doc/cookbook'' to create tables and initialize data. If you ever
+   want to start over, there is also a script to reinitialize the
+   database. 
+ # use a database-specific tool like "__sqlplus__", "__PgAdminIII__"
+   or a database-agnostic tool like "__Toad__" to verify that 
+   the database works, tables and sequences are there, and that 
+   the tables "''country''", "''city''", "''zip''" and
+   "''lang_table''" have initial content.
+
+In Eclipse go to the __Database Development Perspective__ (__Window /
+Open Perspective / Other ... / Database Development__). In the __Data
+Source Explorer__ view (tree on the left side) under __Database
+Connections__ add a new Connection (__New__ from the context
+menu). Choose your database type to your database. See my
+[[http://programming.manessinger.com/tutorials/an-eclipse-glassfish-java-ee-6-tutorial/][Eclipse/
+\GlassFish / Java EE 6 Tutorial]] for details.
+
+You also need to set up a database connection pool and a JDBC resource
+in \GlassFish. Regardless of how you call the connection pool, the
+JDBC resource must be called "''jdbc/cookbookdb''". Again, see my
+[[http://programming.manessinger.com/tutorials/an-eclipse-glassfish-java-ee-6-tutorial/][Eclipse/
+\GlassFish / Java EE 6 Tutorial]] for details and screenshots.
+
+At this point you have all the tools and the environment (server and
+database) ist set up. Next we will create Eclipse projects for the
+application.
 
 
 ** Creating an azzyzted project
 
-Make sure you are in the "Java EE" perspective. There are three ways
-to get to the "New Azzyzted JEE Project" wizard:
+There are different types of Java projects in Eclipse and there are
+different ways to structure your functionality into projects. The most
+simple way for us would be to use a so-called __Dynamic Web
+Project__. Today this project type allows you to use __Enterprise Java
+Beans__ and most other features of Java EE, but there are still some
+reasons, why one would put EJBs into an __EJB Project__, for instance
+that this is the only way to get an __EJB Client Project__, something
+you need when you want to call your beans the "traditional" way,
+i.e. via Corba/IIOP.
+
+When you do it yourself, it is certainly more convenient to use a
+single project, but when you use a generator, a multi-project setup is
+OK, especially if it grants you more flexibility in case you ever need
+it. 
+
+Azzyzt JEE Tools create such a multi-project setup, and we call the
+entirety of these projects an "__azzyzted project__".
+
+Let's do it now. Make sure you are in the "__Java EE__"
+perspective. There are three ways to get to the "New Azzyzted JEE
+Project" wizard:
 
  - __File / New / Other / Java EE / New Azzyzted JEE Project__
  - __\[Project Explorer\] / New / Other / Java EE / New Azzyzted JEE Project__
@@ -195,15 +340,19 @@ packages will be below this prefix.
 The target runtime is a list of all runtimes used in defined server
 instances. Thus if you have two servers supporting Java EE 6 running
 or at least defined in Eclipse, one for \GlassFish 3.01, one for 3.1,
-you will see a list of two runtimes. Choose one of them.
+you will see a list of two runtimes. Choose one of them. This does not
+mean you can't run the finished application on another server or
+server version, it only means that this is the runtime that is used to
+compile against.
 
 If the list of target runtimes is empty, then you have not yet defined
 a server. Do so from the Servers view with "__New / Server__".
 
 In the context of this tutorial, the project base name is
 "''cookbook''", the package name is
-"''com.manessinger.cookbook''". Try this and you will end up with the
-following five projects:
+"''com.manessinger.cookbook''". Use these names, because the sample
+sources under ''doc/cookbook'' rely on that. Try it and you will end
+up with the following five projects:
 
  - ''azzyzt_tools''
  - ''cookbookEAR''
@@ -223,7 +372,7 @@ EAR project is an enterprise archive, for instance
 "''cookbookEJB''" is where we put all application functionality,
 "''cookbookEJBClient''" is the EJB client project, its artifact could
 be distributed in order to allow clients to call EJB functionality via
-CORBA. All datatypes used as parameters or return values of EJB
+Corba. All datatypes used as parameters or return values of EJB
 service methods must be definied in the client project.
 
 "''cookbookServlets''" is a Dynamic Web Project. It is used for the
@@ -232,7 +381,7 @@ REST wrappers around service methods contained in
 number of servlets. Keep in mind though, that you need to put your
 logic into the EJB project, in order to have the most options for
 accessing it. If you stick to that pattern, you can access services
-via CORBA, SOAP and REST. Accesses via CORBA and SOAP can even partake
+via Corba, SOAP and REST. Accesses via Corba and SOAP can even partake
 in distributed transactions.
 
 The three Java projects will have two source folders each. One of them
@@ -246,7 +395,7 @@ initially:
 
 #Verbatim <<---
 azzyzt_tools
-`-- 1.2.4
+`-- 1.3.0
     |-- antlr-2.7.7.jar
     |-- commons-io-2.0.1.jar
     |-- org.azzyzt.jee.tools.mwe.jar
@@ -317,16 +466,30 @@ public class HelloTestBean {
 }
 ---
 
-Start the server, deploy the EAR ("__Add and Remove__" from the context
-menu of the server) and try it via the service test client built into
-the \GlassFish Administration Console.
+Start the server, deploy the EAR ("__Add and Remove__" from the
+context menu of the server) and try it via the service test client
+built into the __\GlassFish Administration Console__ (see "__Manual
+testing via \GlassFish web service tester__" in my
+[[http://programming.manessinger.com/tutorials/an-eclipse-glassfish-java-ee-6-tutorial/][Eclipse
+/ \GlassFish / Java EE 6 Tutorial]] about using the __Adminstration
+Console__).
 
 The second class that is generated into the user folder is
-"''com.manessinger.cookbook.meta.Azzyztant''". It is explained later,
+"''com.manessinger.cookbook.meta.Azzyztant''". It is explained later
 when we talk about customization.
+
+For now you may undeploy the application ("__Add and Remove__" from the
+context menu of the server), we're going to copy files, do some edits
+and there's no use in deploying everything to the server immediately.
 
 
 ** Azzyzted Modeling With Entities
+
+Before we go on with the tutorial and actually create code, let's have
+a deeper look at entity classes, what you can express and how you do
+it. This is not a reference chapter about JPA modeling, but it shows
+off what Azzyzt supports and what additions to standard JPA
+meta-information are available.
 
 Upon project creation, a package "''com.manessinger.cookbook.entity''"
 (given the example) was generated under
@@ -374,7 +537,7 @@ There are two ways to create entities:
    perfectly legal cases as well, and one of those cases, the mapping
    of a many-to-many association where the join table has additional
    attributes and does not feature a separate id, is part of the
-   tutorial. 
+   tutorial.
 
 Whichever way you go, be prepared to have to do some manual work in
 this phase. Those problems have been in Dali for quite some time and I
@@ -387,7 +550,7 @@ Note please, that __Azzyzted Modeling With Entities__ only supports mapping
 annotations on fields, not on accessor methods. This is not a deeply
 rooted design decision but just a matter of how it was
 implemented. Though it would be principally possible to support
-annotations of accessor methods, I currently see no reason to do
+annotations on accessor methods, I currently see no reason to do
 so. The general consensus among experts seems to be, that none of the
 two methods has substantial advantages over the other. 
 
@@ -418,10 +581,10 @@ entity fields:
       ''javax.transaction.TransactionSynchronizationRegistry''
 
       As of release {version} this is only partially implemented. It
-      works for REST but not for SOAP and CORBA, and from a service
-      accessed via REST, it currently wouldn't be passed on to backend
-      services accessed via REST or SOAP. The crucial knowledge about
-      how to extract user information from a
+      works for REST and SOAP but not for Corba, and from a service
+      accessed via REST or SOAP, it currently wouldn't be passed on to
+      backend services accessed via REST or SOAP. The crucial
+      knowledge about how to extract user information from a
       ''javax.interceptor.InvocationContext'' is left to a standalone
       EJB that I call a \SiteAdapter. Azzyzt comes with a site adapter
       that uses information supplied in an HTTP header called
@@ -472,14 +635,33 @@ In order to use the entities, just copy the two folders
  - ''cookbookEJB''
  - ''cookbookEJBClient''
 
-into your workspace and then refresh the projects in Eclipse. Most
-likely an error symbol will be shown on the EJB project. Don't worry,
-use "__Project / Clean ... / Clean all projects__" and it will go
-away. I believe this to be an error in Eclipse. 
+into your workspace and then __refresh the projects in Eclipse__. 
 
-The sample database is pretty simple. We have have countries, cities,
-zips, visits from a zip code area to a certain city, guided using a
-certain language, and all languages used by guides. 
+Most likely an error symbol will be shown on the EJB project,
+specifically on ''cookbookEJB/META-INF/persistence.xml''. The error
+that I usually get is "''The persistence.xml file does not have
+recognized content''".
+
+Don't worry, use "__Project / Clean ... / Clean all projects__" and it
+will go away. In some cases, especially on Indigo, it may even be
+necessary to close all projects ("__Collapse all__", select the four
+''cookbook'' projects, use "__Close Project__" from the context menu),
+open them again ("__Open Project__") and then clean all projects. This
+repeatably works for me.
+
+The cause seems to be an error in Eclipse, and I read in a comment on
+stackoverflow.com that it will be fixed in Indigo SR2. Let's see.
+
+
+*** A few words about the sample database
+
+The sample database is pretty simple. It's not meant to reflect any
+real application, it's just a utility to show off some common mapping
+situations. 
+
+We have have countries, cities, ZIPs, visits from a ZIP code area to a
+certain city, guided using a certain language, and all languages used
+by guides.
 
 A __Country__ has cities and each __City__ is in a certain country. A
 country has a number of __Zip__ areas and each ZIP area belongs to a
@@ -694,8 +876,8 @@ private Date modificationTimestamp;
 
 and finally in ''Visit'' as string. This is not uncommon in legacy
 databases, and because there is no standard string representation that
-we can rely on, I have decided to require the format a format string
-as documented for ''java.text.SimpleDateFormat''.
+we can rely on, I have decided to require a format string as
+documented for ''java.text.SimpleDateFormat''.
 
 #Code id=createModifyTimestampDate syntax=Java <<---
 @CreateTimestamp(format="yyyy-MM-dd-HHmmss.SSS")
@@ -730,14 +912,15 @@ in the language table. And even if you don't agree, there is no way
 around the fact that we stumble upon this pattern in practically every
 legacy database.
 
-Here we are, that's our entity model.
+Here we are, that's our entity model. Now back to the tutorial.
 
 
 ** Generating a base application
 
-Once you have entities, you can generate code. In order to do this,
-use "__Azzyzt / Start code generator__" from the context menu of the EJB
-project. That's it :)
+Once you have written your entities or (in case of this tutorial)
+copied the two directories from ''doc/cookbook/src/base'', you can
+generate code. In order to do this, use "__Azzyzt / Start code
+generator__" from the context menu of the EJB project. That's it :)
 
 
 ** Structure of the generated code
@@ -885,13 +1068,17 @@ The first step is to deploy the EAR project. Note please, that you
 have to modify ''persistence.xml'' to refer to a ''jta-data-source'',
 and that this data source must be defined in the application
 server. The
-[[http://programming.manessinger.com/tutorials/an-eclipse-glassfish-java-ee-6-tutorial/][Eclipse / \GlassFish / Java EE 6 Tutorial]] has a section titled "__Specifying
+[[http://programming.manessinger.com/tutorials/an-eclipse-glassfish-java-ee-6-tutorial/][Eclipse
+/ \GlassFish / Java EE 6 Tutorial]] has a section titled "__Specifying
 the database, testing, SQL log__", that shows how to do this in
 \GlassFish. The sample ''persistence.xml'' from
 ''doc/cookbook/src/cookbookEJB/ejbModule/META-INF'' is already set up
-correctly. In fact, after creating the azzyzted project, copying over
-the enitites, refreshing the projects and rebuilding all, and then
-finally generating code, you are ready to go.
+correctly for a data source name "''jdbc/cookbookdb''". Please
+double-check that you have defined such a JDBC resource in \GlassFish
+and that it points to a JDBC connection pool set up for our
+database. If so, after creating the azzyzted project, copying over the
+enitites, refreshing the projects and rebuilding all, and then finally
+generating code, we are ready to go.
 
 You deploy the application by first starting the Server from Eclipse's
 "__Servers__" view. When the server runs, select "__Add and Remove
@@ -917,23 +1104,23 @@ for the generated service beans, assuming \GlassFish runs on port
 
   [[http://localhost:8080/cookbook/CityFullBean?wsdl]]
 
-  [[http://localhost:8080/cookbook/CityRestrictedBean?wsdl]]
+  [[http://localhost:8080/cookbook_restricted/CityRestrictedBean?wsdl]]
 
   [[http://localhost:8080/cookbook/CountryFullBean?wsdl]]
 
-  [[http://localhost:8080/cookbook/CountryRestrictedBean?wsdl]]
+  [[http://localhost:8080/cookbook_restricted/CountryRestrictedBean?wsdl]]
 
   [[http://localhost:8080/cookbook/LanguageFullBean?wsdl]]
 
-  [[http://localhost:8080/cookbook/LanguageRestrictedBean?wsdl]]
+  [[http://localhost:8080/cookbook_restricted/LanguageRestrictedBean?wsdl]]
 
   [[http://localhost:8080/cookbook/VisitFullBean?wsdl]]
 
-  [[http://localhost:8080/cookbook/VisitRestrictedBean?wsdl]]
+  [[http://localhost:8080/cookbook_restricted/VisitRestrictedBean?wsdl]]
 
   [[http://localhost:8080/cookbook/ZipFullBean?wsdl]]
 
-  [[http://localhost:8080/cookbook/ZipRestrictedBean?wsdl]]
+  [[http://localhost:8080/cookbook_restricted/ZipRestrictedBean?wsdl]]
 
   [[http://localhost:8080/cookbook/ModifyMultiBean?wsdl]]
 
@@ -955,10 +1142,9 @@ create all REST resources with one sample request each.
 
 Look at the generated tree. The soapUI project has one service, named
 just like the project. Below this service, there are resources, two
-for each entity, one named like the entity, one named with a suffix
-"''Restricted''". They wrap the full and the restricted
-beans. Below each resource you find the operations that it
-supports. For the restricted variants these are
+for each entity, one "__REST/ful__", the other "__REST/ricted". They
+wrap the full and the restricted beans. Below each resource you find
+the operations that it supports. For the restricted variants these are
 
   ''all()'' :: Delivers a list of all objects of that class. Useful if
       you intend to put the result into a set or a map. The typical
@@ -1020,7 +1206,7 @@ __\JavaScript Object Notation__.
 
 The XML format of query specifications was chosen to be easily
 creatable from Adobe Flash REST clients. When the services are
-accessed via SOAP or CORBA, the "''list()''" methods take an object of
+accessed via SOAP or Corba, the "''list()''" methods take an object of
 type ''QuerySpec'' as parameter. Alternatively a second method
 "''listByXML()''" is generated, and those methods again take XML in
 form of a string parameter. The XML format is the same as for REST.
@@ -1058,9 +1244,9 @@ the text.
 
 Issue a GET request to any of the following URLs:
 
-  [[http://localhost:8080/cookbookServlets/REST/country/all]]
+  [[http://localhost:8080/cookbookServlets/REST/ful/country/all]]
 
-  [[http://localhost:8080/cookbookServlets/REST/countryRestricted/all]]
+  [[http://localhost:8080/cookbookServlets/REST/ricted/country/all]]
 
 The result will be an unsorted list of all countries:
 
@@ -1095,9 +1281,9 @@ The result will be an unsorted list of all countries:
 
 Issue a GET request to any of the JSON equivalents:
 
-  [[http://localhost:8080/cookbookServlets/REST/country/allJson]]
+  [[http://localhost:8080/cookbookServlets/REST/ful/country/allJson]]
 
-  [[http://localhost:8080/cookbookServlets/REST/countryRestricted/allJson]]
+  [[http://localhost:8080/cookbookServlets/REST/ricted/country/allJson]]
 
 and you get the same list, but now in JSON notation:
 
@@ -1134,9 +1320,9 @@ and you get the same list, but now in JSON notation:
 
 A GET request to any of these URLs
 
-  [[http://localhost:8080/cookbookServlets/REST/city/byId?id=1]]
+  [[http://localhost:8080/cookbookServlets/REST/ful/city/byId?id=1]]
 
-  [[http://localhost:8080/cookbookServlets/REST/cityRestricted/byId?id=1]]
+  [[http://localhost:8080/cookbookServlets/REST/ricted/city/byId?id=1]]
 
 delivers
 
@@ -1154,9 +1340,9 @@ delivers
 
 or with JSON 
 
-  [[http://localhost:8080/cookbookServlets/REST/city/byIdJson?id=1]]
+  [[http://localhost:8080/cookbookServlets/REST/ful/city/byIdJson?id=1]]
 
-  [[http://localhost:8080/cookbookServlets/REST/cityRestricted/byIdJson?id=1]]
+  [[http://localhost:8080/cookbookServlets/REST/ricted/city/byIdJson?id=1]]
 
 delivers
 
@@ -1192,9 +1378,9 @@ POST the following XML document
 
 into one of these URLs
 
-  [[http://localhost:8080/cookbookServlets/REST/city/list]]
+  [[http://localhost:8080/cookbookServlets/REST/ful/city/list]]
 
-  [[http://localhost:8080/cookbookServlets/REST/cityRestricted/list]]
+  [[http://localhost:8080/cookbookServlets/REST/ricted/city/list]]
 
 to get a list of all cities, but sorted by the ID of their country
 ascending, and then alphabetically by their name descending. Here's
@@ -1316,9 +1502,9 @@ the result:
 For JSON you still post an XML document, in fact the same XML
 document, into one of these URLs
 
-  [[http://localhost:8080/cookbookServlets/REST/city/listJson]]
+  [[http://localhost:8080/cookbookServlets/REST/ful/city/listJson]]
 
-  [[http://localhost:8080/cookbookServlets/REST/cityRestricted/listJson]]
+  [[http://localhost:8080/cookbookServlets/REST/ricted/city/listJson]]
 
 and get
 
@@ -1497,9 +1683,9 @@ POST the following XML document
 
 into either of
 
-  [[http://localhost:8080/cookbookServlets/REST/city/list]]
+  [[http://localhost:8080/cookbookServlets/REST/ful/city/list]]
 
-  [[http://localhost:8080/cookbookServlets/REST/cityRestricted/list]]
+  [[http://localhost:8080/cookbookServlets/REST/ricted/city/list]]
 
 to get a list of all cities, where the country name equals "__Italy__"
 and the city's name does not begin with "''r''" (regardless case, this
@@ -1531,9 +1717,9 @@ been "''Venezia''").
 
 Alternatively use the JSON URLs
 
-  [[http://localhost:8080/cookbookServlets/REST/city/listJson]]
+  [[http://localhost:8080/cookbookServlets/REST/ful/city/listJson]]
 
-  [[http://localhost:8080/cookbookServlets/REST/cityRestricted/listJson]]
+  [[http://localhost:8080/cookbookServlets/REST/ricted/city/listJson]]
 
 and get this result:
 
@@ -1574,9 +1760,11 @@ Conditions have a type and an operator. Supported types are
 
 Supported operators are 
 
-  ''LIKE'', ''EQ'', ''LT'', ''LE'', ''GT'', ''GE''
+  ''LIKE'', ''EQ'', ''LT'', ''LE'', ''GT'', ''GE'', ''BETWEEN''
 
-where "''LIKE''" is only supported for type "''STRING''".
+where "''LIKE''" is only supported for type "''STRING''" and
+"''BETWEEN''" is special as it needs not one value but two (see next
+section).
 
 Field names in conditions or order by clauses can be cross-table
 references in the same dotted style as they are used in the Java
@@ -1590,6 +1778,184 @@ private Country country;
 
 and thus you can follow the association with "''country.name''".
 
+
+** Query with two BETWEENs
+
+POST the following XML document
+
+#Code syntax=XML <<---
+<query_spec>
+   <expr type="OR">
+      <cond type="LONG" op="BETWEEN">
+         <fieldName>id</fieldName>
+         <value>2</value>
+         <value2>5</value2>
+      </cond>
+      <cond type="STRING" op="BETWEEN" caseSensitive="false">
+         <fieldName>name</fieldName>
+         <value>Linz</value>
+         <value2>Salzburg</value2>
+      </cond>
+   </expr>
+   <orderBy>
+       <fieldName>id</fieldName>
+       <ascending>true</ascending>
+   </orderBy>
+</query_spec>
+---
+
+into either of
+
+  [[http://localhost:8080/cookbookServlets/REST/ful/city/list]]
+
+  [[http://localhost:8080/cookbookServlets/REST/ricted/city/list]]
+
+to get a list of all cities, where either the ID is between 2 and 5 or
+the name is between "__Linz__" and "__Salzburg__".
+
+#Code syntax=XML <<---
+<dtoes>
+   <city>
+      <countryId>1</countryId>
+      <createTimestamp>2011-11-24T13:05:04.491+01:00</createTimestamp>
+      <createUser>admin</createUser>
+      <id>2</id>
+      <modificationTimestamp>2011-11-24T13:05:04.491+01:00</modificationTimestamp>
+      <modificationUser>admin</modificationUser>
+      <name>Linz</name>
+   </city>
+   <city>
+      <countryId>1</countryId>
+      <createTimestamp>2011-11-24T13:05:04.512+01:00</createTimestamp>
+      <createUser>admin</createUser>
+      <id>3</id>
+      <modificationTimestamp>2011-11-24T13:05:04.512+01:00</modificationTimestamp>
+      <modificationUser>admin</modificationUser>
+      <name>Salzburg</name>
+   </city>
+   <city>
+      <countryId>1</countryId>
+      <createTimestamp>2011-11-24T13:05:04.532+01:00</createTimestamp>
+      <createUser>admin</createUser>
+      <id>4</id>
+      <modificationTimestamp>2011-11-24T13:05:04.532+01:00</modificationTimestamp>
+      <modificationUser>admin</modificationUser>
+      <name>Wien</name>
+   </city>
+   <city>
+      <countryId>2</countryId>
+      <createTimestamp>2011-11-24T13:05:04.553+01:00</createTimestamp>
+      <createUser>admin</createUser>
+      <id>5</id>
+      <modificationTimestamp>2011-11-24T13:05:04.553+01:00</modificationTimestamp>
+      <modificationUser>admin</modificationUser>
+      <name>Bologna</name>
+   </city>
+   <city>
+      <countryId>2</countryId>
+      <createTimestamp>2011-11-24T13:05:04.594+01:00</createTimestamp>
+      <createUser>admin</createUser>
+      <id>7</id>
+      <modificationTimestamp>2011-11-24T13:05:04.594+01:00</modificationTimestamp>
+      <modificationUser>admin</modificationUser>
+      <name>Roma</name>
+   </city>
+   <city>
+      <countryId>3</countryId>
+      <createTimestamp>2011-11-24T13:05:04.656+01:00</createTimestamp>
+      <createUser>admin</createUser>
+      <id>10</id>
+      <modificationTimestamp>2011-11-24T13:05:04.656+01:00</modificationTimestamp>
+      <modificationUser>admin</modificationUser>
+      <name>Los Angeles</name>
+   </city>
+   <city>
+      <countryId>3</countryId>
+      <createTimestamp>2011-11-24T13:05:04.676+01:00</createTimestamp>
+      <createUser>admin</createUser>
+      <id>11</id>
+      <modificationTimestamp>2011-11-24T13:05:04.676+01:00</modificationTimestamp>
+      <modificationUser>admin</modificationUser>
+      <name>New York</name>
+   </city>
+</dtoes>
+---
+
+Alternatively use the JSON URLs
+
+  [[http://localhost:8080/cookbookServlets/REST/ful/city/listJson]]
+
+  [[http://localhost:8080/cookbookServlets/REST/ricted/city/listJson]]
+
+and get this result:
+
+#Code syntax=dot <<---
+{"city": [
+      {
+      "countryId": "1",
+      "createTimestamp": "2011-11-24T13:05:04.491+01:00",
+      "createUser": "admin",
+      "id": "2",
+      "modificationTimestamp": "2011-11-24T13:05:04.491+01:00",
+      "modificationUser": "admin",
+      "name": "Linz"
+   },
+      {
+      "countryId": "1",
+      "createTimestamp": "2011-11-24T13:05:04.512+01:00",
+      "createUser": "admin",
+      "id": "3",
+      "modificationTimestamp": "2011-11-24T13:05:04.512+01:00",
+      "modificationUser": "admin",
+      "name": "Salzburg"
+   },
+      {
+      "countryId": "1",
+      "createTimestamp": "2011-11-24T13:05:04.532+01:00",
+      "createUser": "admin",
+      "id": "4",
+      "modificationTimestamp": "2011-11-24T13:05:04.532+01:00",
+      "modificationUser": "admin",
+      "name": "Wien"
+   },
+      {
+      "countryId": "2",
+      "createTimestamp": "2011-11-24T13:05:04.553+01:00",
+      "createUser": "admin",
+      "id": "5",
+      "modificationTimestamp": "2011-11-24T13:05:04.553+01:00",
+      "modificationUser": "admin",
+      "name": "Bologna"
+   },
+      {
+      "countryId": "2",
+      "createTimestamp": "2011-11-24T13:05:04.594+01:00",
+      "createUser": "admin",
+      "id": "7",
+      "modificationTimestamp": "2011-11-24T13:05:04.594+01:00",
+      "modificationUser": "admin",
+      "name": "Roma"
+   },
+      {
+      "countryId": "3",
+      "createTimestamp": "2011-11-24T13:05:04.656+01:00",
+      "createUser": "admin",
+      "id": "10",
+      "modificationTimestamp": "2011-11-24T13:05:04.656+01:00",
+      "modificationUser": "admin",
+      "name": "Los Angeles"
+   },
+      {
+      "countryId": "3",
+      "createTimestamp": "2011-11-24T13:05:04.676+01:00",
+      "createUser": "admin",
+      "id": "11",
+      "modificationTimestamp": "2011-11-24T13:05:04.676+01:00",
+      "modificationUser": "admin",
+      "name": "New York"
+   }
+]}
+---
 
 ** Nested expressions
 
@@ -1622,9 +1988,9 @@ An example of a query specification with nested expressions is this:
 
 POST it into 
 
-  [[http://localhost:8080/cookbookServlets/REST/city/list]]
+  [[http://localhost:8080/cookbookServlets/REST/ful/city/list]]
 
-  [[http://localhost:8080/cookbookServlets/REST/cityRestricted/list]]
+  [[http://localhost:8080/cookbookServlets/REST/ricted/city/list]]
 
 to get a list of all cities in Italy and all other cities beginning
 with "l" (regardless case), but not the one with ID 2 (which would
@@ -1682,9 +2048,9 @@ have been "''Linz''").
 
 For JSON use 
 
-  [[http://localhost:8080/cookbookServlets/REST/city/listJson]]
+  [[http://localhost:8080/cookbookServlets/REST/ful/city/listJson]]
 
-  [[http://localhost:8080/cookbookServlets/REST/cityRestricted/listJson]]
+  [[http://localhost:8080/cookbookServlets/REST/ricted/city/listJson]]
 
 and get
 
@@ -1749,7 +2115,7 @@ the empty tables with sample data.
 
 In order to store a new city, use this URL
 
-  [[http://localhost:8080/cookbookServlets/REST/city/store]]
+  [[http://localhost:8080/cookbookServlets/REST/ful/city/store]]
 
 and POST an XML representation of a city, just as you may have got it
 from one of the reading operations, but in input data leave the ''id''
@@ -1784,7 +2150,7 @@ The new ''id'' will have been automatically allocated from a sequence.
 Let's try the same with another bogus city name, but this time in
 JSON. We use
 
-  [[http://localhost:8080/cookbookServlets/REST/city/storeJson]]
+  [[http://localhost:8080/cookbookServlets/REST/ful/city/storeJson]]
 
 and now the text that we send to the server is actually JSON, not
 XML. The server does not expect a string, it expects a city object,
@@ -1826,29 +2192,44 @@ what the user name for a specific request is. I call this a __Site
 Adapter__, because it is used to encapsulate a site's authentication
 technology and policy.
 
-The site adapter that comes with Azzyzt JEE Tools is currently only
-involved for requests invoked via REST. What happens is, that the
-generic code passes the request data to the site adapter, and the site
-adapter tries to take the user name (which is expected to have been
-authenticated and authorized for access by a portal in front of the
-service) from an HTTP header. The header's name defaults to
-"''x-authenticate-userid''". This happens to be what we use
-internally, but the name can be overridden by setting a custom string
-resource in the application server.
+The site adapter that comes with Azzyzt JEE Tools is called via
+Inteceptors, and it is called regardless of the invocation method, but
+currently it is useful only for requests coming via HTTP, either SOAP
+or REST.
+
+What happens is, that the interceptors pass the request data to the
+site adapter, and the site adapter tries to take the user name (which
+is expected to have been authenticated and authorized for access by a
+portal in front of the service) from an HTTP header. The header's name
+defaults to "''x-authenticate-userid''". This happens to be what we
+use internally, but the name can be overridden by setting a custom
+string resource in the application server.
 
 The
 [[http://programming.manessinger.com/tutorials/an-eclipse-glassfish-java-ee-6-tutorial/][Eclipse / \GlassFish / Java EE 6 Tutorial]] has a section titled "__Configuration via JNDI Custom Resources__", that shows how to set custom resources in
 \GlassFish. 
 
-The JNDI name of the resource has to be
-"''custom/stringvalues/http/header/username''", its type must be
+The runtime tries two JNDI names, an application-specific name, and if
+that fails, a server-global name. This way we can have different
+settings in different applications.
+
+The application-specific name for the application "''cookbook''" would be
+"''custom/stringvalues/app_cookbook/http/header/username''", its type must be
 ''java.lang.String'' and it has to have a property with name
 "''value''" and the value of the property should be whatever your HTTP
 header is called, for instance "''x-portal-username''".
 
+If that JNDI string resource is not found, the server-wide resource
+"''custom/stringvalues/http/header/username''" is looked up, again its type must be
+''java.lang.String'' and it has to have a property with name
+"''value''" and the value of the property should be whatever your HTTP
+header is called.
+
 While we are at it, "''anonymous''", as the name of the username when
 no header is given, is also only a default. There is a similar
-override via a JNDI string resource. The name of the resource must be
+override via JNDI string resources. Again it can be defined per
+application or for the whole server. The name of the resource must be
+"''custom/stringvalues/app_cookbook/username/anonymous''" or
 "''custom/stringvalues/username/anonymous''". Again you need to define
 a property with name "''value''", having the string as value, that you
 want to use, for instance "''unknown''".
@@ -1897,7 +2278,7 @@ POST the following XML
 
 into 
 
-  [[http://localhost:8080/cookbookServlets/REST/city/store]]
+  [[http://localhost:8080/cookbookServlets/REST/ful/city/store]]
 
 to rename "__Udinw__" to "__Udine__". This is the result,
 note the modification user and timestamp, while create user and
@@ -1917,7 +2298,7 @@ timestamp have stayed unchanged.
 
 Now let's update ''Anconx'' to ''Ancona'' via JSON. The URL is
 
-  [[http://localhost:8080/cookbookServlets/REST/city/storeJson]]
+  [[http://localhost:8080/cookbookServlets/REST/ful/city/storeJson]]
 
 and with the input
 
@@ -1949,7 +2330,7 @@ we get
 
 Make a GET request to the following URL
 
-  [[http://localhost:8080/cookbookServlets/REST/city/delete?id=13]]
+  [[http://localhost:8080/cookbookServlets/REST/ful/city/delete?id=13]]
 
 to delete "''Udine''", assuming its ID was indeed "''13''". The
 result will be
@@ -1960,7 +2341,7 @@ result will be
 
 and the same with the JSON URL
 
-  [[http://localhost:8080/cookbookServlets/REST/city/deleteJson?id=14]]
+  [[http://localhost:8080/cookbookServlets/REST/ful/city/deleteJson?id=14]]
 
 results in 
 
@@ -2011,7 +2392,7 @@ POST the following XML
 
 into
 
-  [[http://localhost:8080/cookbookServlets/REST/modifyMulti/storeMulti]]
+  [[http://localhost:8080/cookbookServlets/REST/ful/modifyMulti/storeMulti]]
 
 to store a new country named "''France''" and three of its cities,
 "''Marseille''", "''Paris''" and "''Rennes''". The result will be
@@ -2075,10 +2456,10 @@ with an ''\InvalidProxyIdException'', the transaction is rolled back
 and nothing is stored at all.
 
 Please note that you can freely mix inserts and updates in the same
-call to ''storeMulti(dtos)''. If it has and ID and an object with that
-ID exists, then it is an update, if no object with the ID exists, you
-will get an ''\EntityNotFoundException'', and if you don't send an ID,
-a new object is inserted.
+call to ''storeMulti(dtos)''. If something has and ID and an object
+with that ID exists, then it is an update, if no object with the ID
+exists, you will get an ''\EntityNotFoundException'', and if you don't
+send an ID, a new object is inserted.
 
 
 As for JSON, it seems that we run into a problem with polymorphism
@@ -2152,7 +2533,7 @@ POST the following XML
 
 into
 
-  [[http://localhost:8080/cookbookServlets/REST/modifyMulti/deleteMulti]]
+  [[http://localhost:8080/cookbookServlets/REST/ful/modifyMulti/deleteMulti]]
 
 Again the result will be
 
@@ -2199,7 +2580,7 @@ One more time POST the following XML
 
 into
 
-  [[http://localhost:8080/cookbookServlets/REST/modifyMulti/storeMulti]]
+  [[http://localhost:8080/cookbookServlets/REST/ful/modifyMulti/storeMulti]]
 
 and expect a result like
 
@@ -2289,7 +2670,7 @@ Now we can delete France again and insert Egypt. POST the following XML
 
 into
 
-  [[http://localhost:8080/cookbookServlets/REST/modifyMulti/storeDeleteMulti]]
+  [[http://localhost:8080/cookbookServlets/REST/ful/modifyMulti/storeDeleteMulti]]
 
 Make sure the first list, the list of objects to delete, contains the
 exact IDs that you got in the last step, i.e. the country ID of
@@ -2388,7 +2769,7 @@ POST the following XML
 
 into
 
-  [[http://localhost:8080/cookbookServlets/REST/modifyMulti/storeMulti]]
+  [[http://localhost:8080/cookbookServlets/REST/ful/modifyMulti/storeMulti]]
 
 The result is
 
@@ -2450,7 +2831,7 @@ POST the following XML
 
 into
 
-  [[http://localhost:8080/cookbookServlets/REST/modifyMulti/deleteMulti]]
+  [[http://localhost:8080/cookbookServlets/REST/ful/modifyMulti/deleteMulti]]
 
 Again the result will be
 
@@ -2461,7 +2842,7 @@ Again the result will be
 
 * Customization of the generated code
 
-** Introducing your Azzyztant
+** Introducing your friendly Azzyztant
 
 There are cases when we want to influence either what features are
 generated, or how the generated features behave at runtime. The idea
@@ -2479,6 +2860,7 @@ package com.manessinger.cookbook.meta;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import org.azzyzt.jee.runtime.meta.AzzyztantInterface;
+import org.azzyzt.jee.runtime.util.AuthorizationInterface;
 import org.azzyzt.jee.runtime.util.StringConverterInterface;
 
 
@@ -2513,6 +2895,18 @@ public class Azzyztant implements AzzyztantInterface {
      */
     private final StringConverterInterface usernameConverter = null;
 
+    /*
+     * 'authorizer' can be set to an instance of any class that implements
+     * AuthorizationInterface.
+     *
+     * ATTENTION: keep this stateless, fast and thread-safe!!! 
+     * 
+     * This is actually a shared instance that, if not null, is called once 
+     * upon any invocation. The runtime won't try to synchronize its call to 
+     * 'checkAuthorization()'. Neither should you.
+     */
+    private final AuthorizationInterface authorizer = null;
+
     public Azzyztant() { super(); }
 
 
@@ -2521,8 +2915,15 @@ public class Azzyztant implements AzzyztantInterface {
         return usernameConverter;
     }
 
+    @Override
+    public AuthorizationInterface getAuthorizer() {
+        return authorizer;
+    }
+
 }
 ---
+
+We go into details across the next couple of sections.
 
 
 ** Transforming user names
@@ -2608,7 +3009,7 @@ JBoss AS 6.0 runtime, because the interfaces generated in the client
 project were unchangeably annotated with ''@Remote'', and ''@Remote''
 is not part of the Java EE 6 web profile. On the other hand,
 ''@Remote'' is only needed if you want to call your services via
-CORBA/IIOP, and very often this will not be the case. Web services are
+Corba/IIOP, and very often this will not be the case. Web services are
 in fashion, so why should we tie the code to \GlassFish only, just to
 be able to potentially use something that we know we won't use anyway?
 Some users may want it though, and thus we like ''@Remote'' on
@@ -2625,10 +3026,8 @@ package com.manessinger.cookbook.meta;
 
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
-
-import org.azzyzt.jee.runtime.annotation.AzzyztGeneratorOptions;
-import org.azzyzt.jee.runtime.meta.AzzyztGeneratorCutback;
 import org.azzyzt.jee.runtime.meta.AzzyztantInterface;
+import org.azzyzt.jee.runtime.util.AuthorizationInterface;
 import org.azzyzt.jee.runtime.util.StringConverterInterface;
 
 
@@ -2646,12 +3045,21 @@ public class Azzyztant implements AzzyztantInterface {
 
     private final StringConverterInterface usernameConverter = null;
 
+    private final AuthorizationInterface authorizer = null;
+
     public Azzyztant() { super(); }
+
 
     @Override
     public StringConverterInterface getUsernameConverter() {
         return usernameConverter;
     }
+
+    @Override
+    public AuthorizationInterface getAuthorizer() {
+        return authorizer;
+    }
+
 }
 ---
 
@@ -2674,7 +3082,178 @@ Cutting back on features is not the only customization, you can also
 add features. You do that by adding options.
 
 
+*** Adding credential-based authorization
+
+**** Credentials
+
+We have seen that Azzyzt does not even try to solve the problem of
+authentication, i.e. of determining the principal on whose behalf a
+request was made. Instead Azzyzt assumes that this is solved either by
+the application server or by a web server, a gateway, in front of
+it. It is the job of the site adapter to adapt to the method used.
+
+The site adapter delivered with Azzyzt JEE Tools relies on a gateway
+or portal in front of the application server. This gateway is assumed
+to authenticate the user, and to pass the information on to the
+application server via HTTP headers. We have already seen how the
+username header can be customized.
+
+Knowing who the user is solves only part of the problem though. We
+would also like to know what the user is allowed to do in the
+application. This is called authorization.
+
+Java EE 6 has its own model of authentication / authorization based on
+annotations in the applications and the concepts of realms, users,
+groups and roles. It is not particularly complicated, but in the
+\GlassFish implementation it is most useful when you have a complete
+Oracle Enterprise environment.
+
+I think it would be possible to plug any custon solution into the
+\GlassFish server and make it play well with the Java EE 6
+annotations, but keeping that all out of scope makes our job even
+easier, especially when some authentication / authorization
+infrastructure is already present.
+
+Azzyzt comes with an option to use "__credential-based
+authorization__". The idea is, that the same gateway that already
+authenticates the user, also delivers some information about the
+user's rights, or as we say here, the user's "__credentials__".
+
+Imagine a gateway that authenticates users and looks them up in an
+X.500 tree via LDAP. It allows or denies access to the application,
+based on the user and/or the user's membership in groups. Groups are
+hierarchically organized, again in X.500, and for each configured
+application, access to a list of URL prefixes is granted to a set of
+principals (users and/or groups).
+
+For each pair of URL prefix and principal granted access, there can be
+a list of credentials attached. The credentials are again expected to
+be delivered in form of a single HTTP header. The name of the header
+can be defined via JNDI resources. Again the runtime tries two
+resources, an application-specific and a server-wide. For our
+application these would be
+"''custom/stringvalues/app_cookbook/http/header/credentials''" and
+"''custom/stringvalues/http/header/credentials''" respectively. Again
+you need to define a property with name "value", having the string as
+value, that you want to use, for instance "''x-auth-credentials''".
+
+If no JNDI resources are found, the header name defaults to
+"''x-authorize-roles''", the name of the HTTP header used around here.
+
+If no HTTP header is delivered at runtime, the principal is assumed
+to have no credentials at all.
+
+The credentials header is a single string that is made up of a list of
+credentials, separated by semicolons. Each credential may be modified
+by a list of properties. Properties are name/value pairs given in
+parens. White-space is optional. Let me give some quick examples:
+
+ - "" is the empty list
+ - "''modify''" is a list containing a single credential allowing
+   modifications. The credential has no properties specified
+ - "''lookup(level=5)''" may allow to lookup in the application,
+   but the additional property "''level''" could be used to
+   limit the results to a certain security level. In case of an empty
+   property list, the use of empty parens (i.e. "''lookup()''") is allowed.
+ - "''cred_a(p1=v1,p2=v2,p3=v3); cred_b; cred_c(p4=v4); cred_d()''" is a 
+   hypothetic complex example with four credentials, two of them with 
+   properties
+
+On the frontend, in the gateway, these credentials have no meaning at
+all. They are simply strings to be sent when a certain principle
+accesses a certain URL. 
+
+Credentials come in two flavors: credentials supplied by the gateway
+via HTTP headers and credentials required by the application.
+
+In order to require credentials, we can put an annotation
+''@RequiresCredentials'' on either an EJB class (which means that all
+methods require these credentials) and/or an EJB class' methods. The
+effect is cumulative. An EJB could require a credential "''admin''"
+and one of its methods, the method "''dangerous()''" could require "''senior''". In such
+a case any access to "''dangerous()''" would need the cumulative
+credentials "''admin(); senior()''" to be supplied.
+
+A request is granted access if at least the credentials and properties
+required are supplied. Additional credentials and properties are
+OK. Thus if "''admin''" is required, a user with credentials "''admin;
+senior''" is granted access.
+
+If for instance "''admin; senior(rank=2)''" is required, a user with
+only "''admin; senior''" is denied access. Numeric property values are
+special. A user with "''admin; senior(rank=3)''" would also be granted
+access, although the property values don't match. The rule for numeric
+properties is, that supplied property values greater or equal required
+values are granted access.
+
+This is quite flexible and can be used for all sorts of sophisticated
+authorization schemes. Try to not go over the top though. Simplicity
+is a virtue.
+
+
+**** Credential-based authorization
+
+Look at the following ''Azzyztant'':
+
+#Code id=AzzyztantCredentialBasedAuth syntax=Java <<---
+package com.manessinger.cookbook.meta;
+
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+
+import org.azzyzt.jee.runtime.annotation.AzzyztGeneratorOptions;
+import org.azzyzt.jee.runtime.meta.AzzyztGeneratorOption;
+import org.azzyzt.jee.runtime.meta.AzzyztantInterface;
+import org.azzyzt.jee.runtime.util.AuthorizationInterface;
+import org.azzyzt.jee.runtime.util.CredentialBasedAuthorizer;
+import org.azzyzt.jee.runtime.util.StringConverterInterface;
+
+@LocalBean
+@Stateless
+@AzzyztGeneratorOptions(
+        options = {
+       		AzzyztGeneratorOption.AddCredentialBasedAuthorization,
+        }
+)
+public class Azzyztant implements AzzyztantInterface {
+
+    private final StringConverterInterface usernameConverter = null;    
+    private final AuthorizationInterface authorizer = new CredentialBasedAuthorizer();
+    
+    public Azzyztant() { super(); }
+
+    @Override
+    public StringConverterInterface getUsernameConverter() {
+        return usernameConverter;
+    }
+
+    @Override
+    public AuthorizationInterface getAuthorizer() {
+	return authorizer;
+    }
+}
+---
+
+It specifies no cutbacks and a single option. The option
+"''AzzyztGeneratorOption.AddCredentialBasedAuthorization''" causes the
+code generator to generate an annotation
+"''@RequiresCredentials("modify()")''" on the "''store()''" and
+"''delete()''" methods of the full beans and on the class
+''ModifyMultiBean''.
+
+These annotations alone do nothing, but we also specify a non-null
+authorizer, and the class used, ''CredentialBasedAuthorizer'', a class
+that comes with the Azzyzt runtime, exactly implements the behavior
+sketched earlier.
+
+You can add your own service beans and you can require any credentials
+you like. Just add "''@RequiresCredentials()''" to your beans and/or
+methods and use the standard ''CredentialBasedAuthorizer''.
+
+
 *** Adding an Apache CXF REST client
+
+In the next example we use a cutback and two options:
 
 #Code id=AzzyztantCxfClient syntax=Java <<---
 package com.manessinger.cookbook.meta;
@@ -2686,6 +3265,8 @@ import org.azzyzt.jee.runtime.annotation.AzzyztGeneratorOptions;
 import org.azzyzt.jee.runtime.meta.AzzyztGeneratorCutback;
 import org.azzyzt.jee.runtime.meta.AzzyztGeneratorOption;
 import org.azzyzt.jee.runtime.meta.AzzyztantInterface;
+import org.azzyzt.jee.runtime.util.AuthorizationInterface;
+import org.azzyzt.jee.runtime.util.CredentialBasedAuthorizer;
 import org.azzyzt.jee.runtime.util.StringConverterInterface;
 
 @LocalBean
@@ -2693,29 +3274,34 @@ import org.azzyzt.jee.runtime.util.StringConverterInterface;
 @AzzyztGeneratorOptions(
         cutbacks = {
                 AzzyztGeneratorCutback.NoRemoteInterfaces,
-                AzzyztGeneratorCutback.NoSoapServices,
         },
         options = {
-                AzzyztGeneratorOption.AddCxfRestClient,
+       		AzzyztGeneratorOption.AddCredentialBasedAuthorization,
+       		AzzyztGeneratorOption.AddCxfRestClient,
         }
 )
 public class Azzyztant implements AzzyztantInterface {
 
     private final StringConverterInterface usernameConverter = null;
-
+    private final AuthorizationInterface authorizer = new CredentialBasedAuthorizer();
+    
     public Azzyztant() { super(); }
 
     @Override
     public StringConverterInterface getUsernameConverter() {
         return usernameConverter;
     }
+
+    @Override
+    public AuthorizationInterface getAuthorizer() {
+	return authorizer;
+    }
 }
 ---
 
-"''AzzyztGeneratorOption.AddCxfRestClient''" is currently the only
-option, more may follow. Using that option causes the code generator
-to create one more project, a REST client project using the Apache CXF
-REST libraries.
+"''AzzyztGeneratorOption.AddCxfRestClient''" is an option that causes
+the code generator to create one more project, a REST client project
+using the Apache CXF REST libraries.
 
 The CXF REST client project is not created by default. It is only
 created if the code generator finds this option. Once it is created,
@@ -2760,12 +3346,15 @@ class path set up to use them.
 Java EE defines REST bindings for Java. The standard is called JAX-RS
 and its public API is restricted to the server side. This does not
 mean that you can't use REST clients in Java, it only means that Java
-EE does not mandate a specific client API. On the other hand,
-implementing a server API is more than half of what you need for a
-corresponding client API, and for testing purposes you'll want a
-client API anyway. The only problem is, that due to the lack of
+EE does not mandate a specific client API. This is expected to arrive
+with Java EE 7.
+
+On the other hand, implementing a server API is more than half of what
+you need for a corresponding client API, and for testing purposes
+you'll want a client API anyway, and therefore all REST
+implementations have one. The only problem is, that due to the lack of
 standardization, the client APIs of the various JAX-RS implementations
-are all different and we have to choose one of them.
+are all different from each other and we have to choose one of them.
 
 Of course there is a
 [[http://jersey.java.net/nonav/documentation/latest/client-api.html][client
@@ -2880,7 +3469,7 @@ public interface CityFullCxfRestInterface {
 
 As you can see, the annotations look exactly as on server side. Using
 Apache CXF, this interface can be used to create a proxy implementing
-this interface. Just as in SOAP, the methods return DTOs and lists of
+the interface. Just as in SOAP, the methods return DTOs and lists of
 DTOs, polymorphism included.
 
 In order to make this work, the CXF REST client project needs access
@@ -2963,7 +3552,7 @@ city with the requested ID. In both cases a
 
 Why should we bother with Java REST clients anyway? After all, Java
 has a fully conformant SOAP stack, thus we would be better off by just
-making SOAP calls or calling the beans via CORBA, right?
+making SOAP calls or calling the beans via Corba, right?
 
 Well, one good reason is, that we may want to make unit tests for our
 services. When doing so, we will want to maximize coverage by going
@@ -2973,6 +3562,8 @@ because the REST wrappers call down into the beans anyway. Sure, this
 way we don't test access via SOAP, but SOAP web service functionality
 is basic server functionality enabled by a single annotation. Not much
 can possibly go wrong here :)
+
+**** Test sources
 
 The doc directory of the Azzyzt distribution contains an optional
 source tree.
@@ -2985,6 +3576,7 @@ doc/cookbook/src/optional
 |       |   `-- manessinger
 |       |       `-- cookbook
 |       |           `-- service
+|       |               |-- ProtectedCxfRestInterface.java
 |       |               `-- test
 |       |                   |-- CityById.java
 |       |                   |-- CookbookRestTest.java
@@ -2994,14 +3586,24 @@ doc/cookbook/src/optional
 |               |-- get_austria.xml
 |               |-- nested_expressions.xml
 |               |-- query_with_three_conditions.xml
+|               |-- query_with_two_betweens.xml
 |               `-- sorted_list_of_cities.xml
-`-- cookbookEJB
-    `-- ejbModule
+|-- cookbookEJB
+|   `-- ejbModule
+|       `-- com
+|           `-- manessinger
+|               `-- cookbook
+|                   |-- meta
+|                   |   `-- Azzyztant.java
+|                   `-- service
+|                       `-- ProtectedBean.java
+`-- cookbookServlets
+    `-- src
         `-- com
             `-- manessinger
                 `-- cookbook
-                    `-- meta
-                        `-- Azzyztant.java
+                    `-- service
+                        `-- ProtectedDelegator.java
 ---
 
 In order to use these sources, make sure that you already have
@@ -3024,7 +3626,64 @@ idea to run ''reinitialize.sql'' from either
 ''doc/cookbook/oracle/sql'' or ''doc/cookbook/postgresql/sql'',
 depending on the database that you use.
 
-Here is the full unit test:
+**** Testing credential-based authorization
+
+Note that there is a new service bean ''ProtectedBean'' under
+''cookbookEJB/ejbModule'' and a matching REST delegator under
+''cookbookServlets/src''. The service bean is annotated with
+"''@RequiresCredentials("admin")''" on the bean and
+"''@RequiresCredentials("senior(rank=2)")''" on one of its two
+methods:
+
+#Code id=ProtectedTestBean syntax=Java <<---
+package com.manessinger.cookbook.service;
+
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
+import javax.jws.WebService;
+
+import org.azzyzt.jee.runtime.annotation.RequiresCredentials;
+
+import com.manessinger.cookbook.meta.EJBInterceptor;
+
+@LocalBean
+@Stateless
+@WebService(serviceName="cookbook")
+@RequiresCredentials("admin")
+@Interceptors(EJBInterceptor.class)
+public class ProtectedBean {
+
+    public String helloAdmin(String s) {
+        return s;
+    }
+    
+    @RequiresCredentials("senior(rank=2)")
+    public String helloSeniorAdmin(String s) {
+        return s;
+    }
+}
+---
+
+Both methods return their argument. The point is simply to check
+whether the methods can be called from clients with different
+credentials. 
+
+ !!! Note please that the service bean is annotated ''@Interceptors(EJBInterceptor.class)''. This is the interceptor that causes credentials to be checked. All generated service beans carry that annotation. Never forget it on your own service beans!
+
+In order to test credentials, the unit test defines two clients
+for the protected interface, one with credentials "''admin;
+senior(rank=1)''" (the low rank client) and one with "''admin;
+senior(rank=3)''" (the high rank client). 
+
+In three tests the low rank client calls the non-annotated method and
+succeeds (because it has "''admin''"), then the annotated method and
+fails (because its numeric rank is too low) and finally the high rank
+client calls the annotated method and succeeds (because its rank is
+even higher than required).
+
+
+**** The full unit test
 
 #Code id=CookbookRestTest syntax=Java <<---
 package com.manessinger.cookbook.service.test;
@@ -3032,6 +3691,7 @@ package com.manessinger.cookbook.service.test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -3046,6 +3706,7 @@ import javax.xml.bind.JAXB;
 
 import org.apache.cxf.jaxrs.client.Client;
 import org.apache.cxf.jaxrs.client.JAXRSClientFactory;
+import org.apache.cxf.jaxrs.client.ServerWebApplicationException;
 import org.apache.cxf.jaxrs.client.WebClient;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -3062,6 +3723,7 @@ import com.manessinger.cookbook.service.CityFullCxfRestInterface;
 import com.manessinger.cookbook.service.CountryFullCxfRestInterface;
 import com.manessinger.cookbook.service.LanguageFullCxfRestInterface;
 import com.manessinger.cookbook.service.ModifyMultiCxfRestInterface;
+import com.manessinger.cookbook.service.ProtectedCxfRestInterface;
 import com.manessinger.cookbook.service.VisitFullCxfRestInterface;
 import com.manessinger.cookbook.service.ZipFullCxfRestInterface;
 
@@ -3074,6 +3736,9 @@ public class CookbookRestTest {
     
     private static final String BASE_URI = "http://localhost:8080/cookbookServlets/REST";
     
+    private static final String LINZ = "Linz";
+    private static final String SALZBURG = "Salzburg";
+
     private static final String FRANCE = "France";
     private static final String MARSEILLES = "Marseilles";
     private static final String PARIS = "Paris";
@@ -3083,19 +3748,30 @@ public class CookbookRestTest {
     private static final String ASSUAN = "Assuan";
     private static final String CAIRO = "Cairo";
     
+    private static final String HELLO = "Hello";
+    
     private static CityFullCxfRestInterface citySvc;
     private static CountryFullCxfRestInterface countrySvc;
     private static LanguageFullCxfRestInterface languageSvc;
     private static ModifyMultiCxfRestInterface multiSvc;
     private static VisitFullCxfRestInterface visitSvc;
     private static ZipFullCxfRestInterface zipSvc;
-
+    
     private static Client cityClient;
     private static Client countryClient;
     private static Client languageClient;
     private static Client multiClient;
     private static Client visitClient;
     private static Client zipClient;
+    
+    private static CityFullCxfRestInterface cityProtectedSvc;
+    private static Client cityProtectedClient;
+    
+    private static ProtectedCxfRestInterface highRankProtectedSvc;
+    private static Client highRankProtectedClient;
+    
+    private static ProtectedCxfRestInterface lowRankProtectedSvc;
+    private static Client lowRankProtectedClient;
     
     /**
      * BEFORE CLASS: setup proxies, set their media types to APPLICATION_XML. 
@@ -3120,37 +3796,64 @@ public class CookbookRestTest {
         cityClient = WebClient.client(citySvc);
         cityClient.type(MediaType.APPLICATION_XML);
         cityClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
-        // cityClient.header("X-Portal-Cred0", "REST_200_ON_ERROR");
+        cityClient.header("x-authorize-roles", "azzyzt(200-on-error=false);modify()");
+        cityClient.header("x-authenticate-userid", "junit");
         
         countrySvc = JAXRSClientFactory.create(BASE_URI, CountryFullCxfRestInterface.class);
         countryClient = WebClient.client(countrySvc);
         countryClient.type(MediaType.APPLICATION_XML);
         countryClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
-        // countryClient.header("X-Portal-Cred0", "REST_200_ON_ERROR");
+        countryClient.header("x-authorize-roles", "azzyzt(200-on-error=false);modify()");
+        countryClient.header("x-authenticate-userid", "junit");
         
         languageSvc = JAXRSClientFactory.create(BASE_URI, LanguageFullCxfRestInterface.class);
         languageClient = WebClient.client(languageSvc);
         languageClient.type(MediaType.APPLICATION_XML);
         languageClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
-        // languageClient.header("X-Portal-Cred0", "REST_200_ON_ERROR");
+        languageClient.header("x-authorize-roles", "azzyzt(200-on-error=false);modify()");
+        languageClient.header("x-authenticate-userid", "junit");
         
         multiSvc = JAXRSClientFactory.create(BASE_URI, ModifyMultiCxfRestInterface.class);
         multiClient = WebClient.client(multiSvc);
         multiClient.type(MediaType.APPLICATION_XML);
         multiClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
-        // multiClient.header("X-Portal-Cred0", "REST_200_ON_ERROR");
+        multiClient.header("x-authorize-roles", "azzyzt(200-on-error=false);modify()");
+        multiClient.header("x-authenticate-userid", "junit");
         
         visitSvc = JAXRSClientFactory.create(BASE_URI, VisitFullCxfRestInterface.class);
         visitClient = WebClient.client(visitSvc);
         visitClient.type(MediaType.APPLICATION_XML);
         visitClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
-        // visitClient.header("X-Portal-Cred0", "REST_200_ON_ERROR");
+        visitClient.header("x-authorize-roles", "azzyzt(200-on-error=false);modify()");
+        visitClient.header("x-authenticate-userid", "junit");
         
         zipSvc = JAXRSClientFactory.create(BASE_URI, ZipFullCxfRestInterface.class);
         zipClient = WebClient.client(zipSvc);
         zipClient.type(MediaType.APPLICATION_XML);
         zipClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
-        // zipClient.header("X-Portal-Cred0", "REST_200_ON_ERROR");
+        zipClient.header("x-authorize-roles", "azzyzt(200-on-error=false);modify()");
+        zipClient.header("x-authenticate-userid", "junit");
+        
+        cityProtectedSvc = JAXRSClientFactory.create(BASE_URI, CityFullCxfRestInterface.class);
+        cityProtectedClient = WebClient.client(cityProtectedSvc);
+        cityProtectedClient.type(MediaType.APPLICATION_XML);
+        cityProtectedClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
+        cityProtectedClient.header("x-authorize-roles", "azzyzt(200-on-error=false);");
+        cityProtectedClient.header("x-authenticate-userid", "junit");
+        
+        highRankProtectedSvc = JAXRSClientFactory.create(BASE_URI, ProtectedCxfRestInterface.class);
+        highRankProtectedClient = WebClient.client(highRankProtectedSvc);
+        highRankProtectedClient.type(MediaType.APPLICATION_XML);
+        highRankProtectedClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
+        highRankProtectedClient.header("x-authorize-roles", "azzyzt(200-on-error=false); admin; senior(rank=3)");
+        highRankProtectedClient.header("x-authenticate-userid", "junit");
+        
+        lowRankProtectedSvc = JAXRSClientFactory.create(BASE_URI, ProtectedCxfRestInterface.class);
+        lowRankProtectedClient = WebClient.client(lowRankProtectedSvc);
+        lowRankProtectedClient.type(MediaType.APPLICATION_XML);
+        lowRankProtectedClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
+        lowRankProtectedClient.header("x-authorize-roles", "azzyzt(200-on-error=false); admin; senior(rank=1)");
+        lowRankProtectedClient.header("x-authenticate-userid", "junit");
         
     }
     
@@ -3256,6 +3959,39 @@ public class CookbookRestTest {
             // name ascending
             if (last != null) {
                 assertTrue(c.getName().compareTo(last.getName()) >= 0);
+            }
+            last = c;
+
+            dump(c);
+        }
+    }
+
+    /**
+     * TEST: Query with two betweens:
+     *  - City ID is between 2 and 5 
+     *  - City name is between "Linz" and "Salzburg" (case-insensitive)
+     *  - ascending by city ID
+     */
+    @Test
+    public void testQueryWithTwoBetweens() {
+        List<Dto> cities = citySvc.list(from("META-INF/xml/query_with_two_betweens.xml"));
+        
+        assertNotNull(cities);
+        assertTrue(cities.size() >= 7);
+        CityDto last = null;
+        for (Dto d : cities) {
+            assertTrue(d instanceof CityDto);
+            CityDto c = (CityDto)d;
+            
+            // is within range
+            Long id = c.getId();
+            String name = c.getName();
+            assertTrue((id >=2 && id <= 5) 
+                    || (name.compareToIgnoreCase(LINZ) >= 0 && name.compareToIgnoreCase(SALZBURG) <= 0));
+            
+            // id ascending
+            if (last != null) {
+                assertTrue(c.getId() >= last.getId());
             }
             last = c;
 
@@ -3434,6 +4170,58 @@ public class CookbookRestTest {
     }
 
     /**
+     * TEST: Store a city with the protected client. It does not send a 
+     * "modify" credential, thus the server should throw an AccessDenied Exception.
+     */
+    @Test(expected=ServerWebApplicationException.class)
+    public void testTryStoreCity() {
+        List<Dto> countries = countrySvc.list(from("META-INF/xml/get_austria.xml"));
+        assertNotNull(countries);
+        assertEquals(1, countries.size());
+        CountryDto austria = (CountryDto)countries.get(0);
+        assertEquals("Austria", austria.getName());
+        
+        CityDto c = new CityDto();
+        c.setCountryId(austria.getId());
+        c.setName("Villach");
+        dump(c);
+        
+        c = cityProtectedSvc.store(c);
+        fail("This should be unreachable");
+    }
+    
+    /**
+     * TEST: call a method requiring no rank with low rank
+     */
+    @Test
+    public void testCallProtectedNoWithLowRank() {
+        String reply = lowRankProtectedSvc.helloAdmin(HELLO);
+        assertNotNull(reply);
+        assertEquals(HELLO, reply);
+    }
+    
+    /**
+     * TEST: call a method requiring high rank with low rank.
+     * The server should throw an AccessDenied Exception.
+     */
+    @Test(expected=ServerWebApplicationException.class)
+    public void testCallProtectedHighWithLowRank() {
+        lowRankProtectedSvc.helloSeniorAdmin(HELLO);
+        fail("This should be unreachable");
+    }
+    
+    /**
+     * TEST: call a method requiring high rank with higher rank
+     */
+    @Test
+    public void testCallProtectedHighWithHighRank() {
+        String reply = highRankProtectedSvc.helloSeniorAdmin(HELLO);
+        assertNotNull(reply);
+        assertEquals(HELLO, reply);
+        
+    }
+    
+    /**
      * Helper method that creates DTOs for a country and its cities
      * 
      * @param name of country
@@ -3563,7 +4351,7 @@ public class CookbookRestTest {
 }
 ---
 
-Run the test via "__Run As / JUnit Test__". You will see soem output
+Run the test via "__Run As / JUnit Test__". You will see some output
 in the console, and in the JUnit view the bar should stay green and all
 tests should succeed.
 
@@ -3606,15 +4394,8 @@ clients, and in order to do that, a client has to signal the type of
 response it expects.
 
 Our solution is, by default to be strictly HTTP compliant, unless the
-client sends a certain custom HTTP request header. We don't let the
-client send the header though, we insert the header when the request
-traverses our portal. The way our portal works, we can define
-so-called __credentials__ per user group and URL prefix, and those
-credentials are delivered to the server via custom HTTP headers
-"''X-Portal-Cred0''", "''X-Portal-Cred1''" and so on. The libraries
-used by the generated REST code look for HTTP request headers starting
-with "''X-Portal-Cred''" and a value of "''REST_200_ON_ERROR''". If
-such a header is found and an error occurs, the response to that
+client supplies a credential "''azzyzt''" with a property named
+"''200-on-error''". If so and an error occurs, the response to that
 request is sent in non-conformant mode. Such a non-conformant response
 could look more or less like this:
 

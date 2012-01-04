@@ -26,12 +26,29 @@ group javaAzzyztantGroup : javaGroup;
  */
 private final StringConverterInterface usernameConverter = null;
 
+/*
+ * 'authorizer' can be set to an instance of any class that implements
+ * AuthorizationInterface.
+ *
+ * ATTENTION: keep this stateless, fast and thread-safe!!! 
+ * 
+ * This is actually a shared instance that, if not null, is called once 
+ * upon any invocation. The runtime won't try to synchronize its call to 
+ * 'checkAuthorization()'. Neither should you.
+ */
+private final AuthorizationInterface authorizer = null;
+
 >>
 
 @javaClass.extra_methods() ::= <<
 @Override
 public StringConverterInterface getUsernameConverter() {
     return usernameConverter;
+}
+
+@Override
+public AuthorizationInterface getAuthorizer() {
+    return authorizer;
 }
 
 >>

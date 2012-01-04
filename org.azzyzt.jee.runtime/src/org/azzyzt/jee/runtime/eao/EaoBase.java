@@ -47,16 +47,36 @@ import org.azzyzt.jee.runtime.meta.TypeMetaInfoInterface;
 import org.azzyzt.jee.runtime.util.QueryBuilder;
 
 
+/**
+ * The abstract base class of the generated generic entity access objects. 
+ * The generated generic EAO is a stateless session bean, and its only 
+ * purpose is to be a target for injection. All interaction with JPA happens here. 
+ */
 public abstract class EaoBase {
 	
 	
 
+    /**
+     * The <code>EntityManager</code> is injected into the concrete generated
+     * child class. This abstract method lets the generic methods access the 
+     * persistence context.
+     * 
+     * @return the <code>EntityManager</code>
+     */
     public abstract EntityManager getEm();
     
 	public void flush() {
 	    getEm().flush();
 	}
 
+	/**
+	 * Fetches an entity by ID or, if it does not exist, fails with an exception.
+	 *  
+	 * @param clazz an entity class
+	 * @param id the ID of an entity
+	 * @return the entity
+	 * @throws EntityNotFoundException
+	 */
 	public <I, T extends EntityBase<I>> T findOrFail(Class<T> clazz, I id)
 	throws EntityNotFoundException 
 	{
@@ -68,15 +88,15 @@ public abstract class EaoBase {
 	}
 
 	/**
-	 * Another version needed in cases when we are definite about the classes,
+	 * A raw version of {@link #findOrFail(Class, Object)} needed in cases when we are definite about the classes,
 	 * but have no way to prove it to the compiler. Used for the "delete" part
 	 * of "storeDelete()".
 	 * 
 	 * Order changed because of otherwise identical erasure.
 	 * 
-	 * @param id
-	 * @param clazz
-	 * @return
+	 * @param clazz an entity class
+	 * @param id the ID of an entity
+	 * @return the entity
 	 * @throws EntityNotFoundException
 	 */
 	public Object findOrFail(Object id, Class<?> clazz)
@@ -89,6 +109,15 @@ public abstract class EaoBase {
 	    return e;
 	}
 
+	/**
+	 * Fetches an entity by ID or, if it does not exist, creates it.
+	 * 
+	 * @param clazz an entity class
+	 * @param id the ID of an entity
+	 * @return the entity
+	 * @throws EntityNotFoundException
+	 * @throws EntityInstantiationException
+	 */
 	public <I, T extends EntityBase<I>> T findOrCreate(Class<T> clazz, I id)
 	throws EntityNotFoundException, EntityInstantiationException 
 	{
@@ -109,6 +138,15 @@ public abstract class EaoBase {
 		return result;
 	}
 
+	/**
+	 * Fetches an entity by ID or, if the ID is invalid or <code>null</code>, fails.
+	 * 
+	 * @param clazz an entity class
+	 * @param id the ID of an entity
+	 * @return the entity
+	 * @throws EntityNotFoundException
+	 * @throws InvalidIdException
+	 */
 	public <I, T extends EntityBase<I>> T findOrInvalidId(Class<T> clazz, I id)
 	throws EntityNotFoundException, InvalidIdException 
 	{
@@ -121,6 +159,14 @@ public abstract class EaoBase {
 		return result;
 	}
 	
+	/**
+	 * Fetches an entity by ID or, if not found, returns <code>null</code>.
+	 * 
+	 * @param clazz an entity class
+	 * @param id the ID of an entity
+	 * @return the entity or <code>null</code>
+	 * @throws InvalidIdException
+	 */
 	public <I, T extends EntityBase<I>> T findOrNull(Class<T> clazz, I id) 
 	throws InvalidIdException
 	{
@@ -133,6 +179,11 @@ public abstract class EaoBase {
 		return result;
 	}
 
+	/**
+	 * Stores an entity.
+	 * 
+	 * @param entity the entity
+	 */
 	public <I, T extends EntityBase<I>> void persist(T entity) {
 	    if (entity.likelyHasId()) {
 	        getEm().merge(entity);
@@ -141,6 +192,13 @@ public abstract class EaoBase {
 	    }
 	}
 
+	/**
+	 * Deletes an entity of a given class and ID.
+	 * 
+	 * @param clazz an entity class
+	 * @param id the ID of an entity
+	 * @throws EntityNotFoundException
+	 */
 	public <I, T extends EntityBase<I>> void delete(Class<T> clazz, I id)
 	throws EntityNotFoundException {
 		T e = findOrFail(clazz, id);
@@ -154,8 +212,8 @@ public abstract class EaoBase {
 	 * 
 	 * Order changed because of otherwise identical erasure.
 	 * 
-	 * @param id
-	 * @param clazz
+	 * @param id the ID of an entity
+	 * @param clazz an entity class
 	 * @throws EntityNotFoundException
 	 */
 	public void delete(Object id, Class<?> clazz)
@@ -164,12 +222,24 @@ public abstract class EaoBase {
 		getEm().remove(e);
 	}
 
+	/**
+	 * Deletes all entities with a name matching a certain wildcard.
+	 * 
+	 * @param clazz an entity class
+	 * @param nameWc a name wildcard string
+	 */
 	public <I, T extends EntityBase<I>> void deleteByName(Class<T> clazz, String nameWc) {
 		Query q = getEm().createQuery("delete from "+clazz.getSimpleName()+" where name like :nameWc");
 		q.setParameter("nameWc", nameWc);
 		q.executeUpdate();
 	}
 
+	/**
+	 * Returns all entities of a certain class
+	 * 
+	 * @param clazz an entity class
+	 * @return a list of entities
+	 */
 	@SuppressWarnings("unchecked")
 	public <I, T extends EntityBase<I>> List<T> all(Class<T> clazz) {
 		Query q = getEm().createQuery("select c from "+clazz.getSimpleName()+" c");
@@ -177,6 +247,19 @@ public abstract class EaoBase {
 		return result;
 	}
 	
+	/**
+	 * Returns the result of a typed query. The query is built by a <code>QueryBuilder</code> from
+	 * a <code>QuerySpec</code>. 
+	 * 
+	 * @param qs a query specification
+	 * @param clazz an entity class
+	 * @param tmi type meta information generated by Azzyzt JEE Tools
+	 * @return a list of entities
+	 * @throws InvalidFieldException
+	 * @throws AccessDeniedException
+	 * @throws QuerySyntaxException
+	 * @throws NotYetImplementedException
+	 */
 	public <I, T extends EntityBase<I>> List<T> list(QuerySpec qs, Class<T> clazz, TypeMetaInfoInterface tmi) 
 	    throws InvalidFieldException, AccessDeniedException, QuerySyntaxException, NotYetImplementedException 
 	{
@@ -187,6 +270,13 @@ public abstract class EaoBase {
 		return result;
 	}
 	
+	/**
+	 * Returns all entities of a certain class, ordered according to an <code>OrderByClause</code>.
+	 * 
+	 * @param clazz an entity class
+	 * @param orderBy an <code>OrderByClause</code>
+	 * @return an ordered list of all entities of the given class
+	 */
 	@SuppressWarnings("unchecked")
 	public <I, T extends EntityBase<I>> List<T> allOrdered(Class<T> clazz, OrderByClause orderBy) { 
 		// orderBy is expected to be validated

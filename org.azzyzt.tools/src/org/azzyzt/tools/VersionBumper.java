@@ -56,17 +56,14 @@ public class VersionBumper {
 	
 	private static final String[] SITES = {
 		"azzyzt_generic/site.xml",
-		"azzyzt_magwien/site.xml",
 	};
 	
 	private static final String[] FEATURES = {
 		"org.azzyzt.jee.mwe.generic.feature/feature.xml",
-		"org.azzyzt.jee.mwe.magwien.feature/feature.xml",
 	};
 	
 	private static final String[] MANIFESTS = {
 		"org.azzyzt.jee.runtime.site.generic.fragment/META-INF/MANIFEST.MF",
-		"org.azzyzt.jee.runtime.site.magwien.fragment/META-INF/MANIFEST.MF",
 		"org.azzyzt.jee.tools.common.plugin/META-INF/MANIFEST.MF",
 		"org.azzyzt.jee.tools.mwe.projectgen.plugin/META-INF/MANIFEST.MF",
 		"org.azzyzt.jee.tools.project.plugin/META-INF/MANIFEST.MF",
