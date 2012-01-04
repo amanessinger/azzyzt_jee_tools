@@ -37,7 +37,7 @@
    global name "''custom/stringvalues/http/header/username''" is
    tried, and if that isn't defined either, the default value is used.
 
- - Added lots of \JavaDoc to runtime. Still not done though.
+ - Added lots of \JavaDoc to runtime. Still not complete though.
 
  - Added an ''AuthorizationInterface''. You can add a reference to an
    instance of a class implementing this interface to the
@@ -61,6 +61,8 @@
  - Tested with Indigo SR1
 
  - Added credential-based authorization
+
+ - Added unit tests for credential-based authorization
 
 ** Changes in 1.2.4
 #OPT: plain!

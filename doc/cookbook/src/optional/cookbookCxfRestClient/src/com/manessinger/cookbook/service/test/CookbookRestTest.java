@@ -35,6 +35,7 @@ import com.manessinger.cookbook.service.CityFullCxfRestInterface;
 import com.manessinger.cookbook.service.CountryFullCxfRestInterface;
 import com.manessinger.cookbook.service.LanguageFullCxfRestInterface;
 import com.manessinger.cookbook.service.ModifyMultiCxfRestInterface;
+import com.manessinger.cookbook.service.ProtectedCxfRestInterface;
 import com.manessinger.cookbook.service.VisitFullCxfRestInterface;
 import com.manessinger.cookbook.service.ZipFullCxfRestInterface;
 
@@ -59,13 +60,15 @@ public class CookbookRestTest {
 	private static final String ASSUAN = "Assuan";
 	private static final String CAIRO = "Cairo";
 	
+	private static final String HELLO = "Hello";
+	
 	private static CityFullCxfRestInterface citySvc;
 	private static CountryFullCxfRestInterface countrySvc;
 	private static LanguageFullCxfRestInterface languageSvc;
 	private static ModifyMultiCxfRestInterface multiSvc;
 	private static VisitFullCxfRestInterface visitSvc;
 	private static ZipFullCxfRestInterface zipSvc;
-
+	
 	private static Client cityClient;
 	private static Client countryClient;
 	private static Client languageClient;
@@ -75,6 +78,12 @@ public class CookbookRestTest {
 	
 	private static CityFullCxfRestInterface cityProtectedSvc;
 	private static Client cityProtectedClient;
+	
+	private static ProtectedCxfRestInterface highRankProtectedSvc;
+	private static Client highRankProtectedClient;
+	
+	private static ProtectedCxfRestInterface lowRankProtectedSvc;
+	private static Client lowRankProtectedClient;
 	
 	/**
 	 * BEFORE CLASS: setup proxies, set their media types to APPLICATION_XML. 
@@ -143,6 +152,20 @@ public class CookbookRestTest {
 		cityProtectedClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
 		cityProtectedClient.header("x-authorize-roles", "azzyzt(200-on-error=false);");
 		cityProtectedClient.header("x-authenticate-userid", "junit");
+		
+		highRankProtectedSvc = JAXRSClientFactory.create(BASE_URI, ProtectedCxfRestInterface.class);
+		highRankProtectedClient = WebClient.client(highRankProtectedSvc);
+		highRankProtectedClient.type(MediaType.APPLICATION_XML);
+		highRankProtectedClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
+		highRankProtectedClient.header("x-authorize-roles", "azzyzt(200-on-error=false); admin; senior(rank=3)");
+		highRankProtectedClient.header("x-authenticate-userid", "junit");
+		
+		lowRankProtectedSvc = JAXRSClientFactory.create(BASE_URI, ProtectedCxfRestInterface.class);
+		lowRankProtectedClient = WebClient.client(lowRankProtectedSvc);
+		lowRankProtectedClient.type(MediaType.APPLICATION_XML);
+		lowRankProtectedClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
+		lowRankProtectedClient.header("x-authorize-roles", "azzyzt(200-on-error=false); admin; senior(rank=1)");
+		lowRankProtectedClient.header("x-authenticate-userid", "junit");
 		
 	}
 	
@@ -477,6 +500,37 @@ public class CookbookRestTest {
 		
 		c = cityProtectedSvc.store(c);
 		fail("This should be unreachable");
+	}
+	
+	/**
+	 * TEST: call a method requiring no rank with low rank
+	 */
+	@Test
+	public void testCallProtectedNoWithLowRank() {
+		String reply = lowRankProtectedSvc.helloAdmin(HELLO);
+		assertNotNull(reply);
+		assertEquals(HELLO, reply);
+	}
+	
+	/**
+	 * TEST: call a method requiring high rank with low rank.
+	 * The server should throw an AccessDenied Exception.
+	 */
+	@Test(expected=ServerWebApplicationException.class)
+	public void testCallProtectedHighWithLowRank() {
+		lowRankProtectedSvc.helloSeniorAdmin(HELLO);
+		fail("This should be unreachable");
+	}
+	
+	/**
+	 * TEST: call a method requiring high rank with higher rank
+	 */
+	@Test
+	public void testCallProtectedHighWithHighRank() {
+		String reply = highRankProtectedSvc.helloSeniorAdmin(HELLO);
+		assertNotNull(reply);
+		assertEquals(HELLO, reply);
+		
 	}
 	
 	/**

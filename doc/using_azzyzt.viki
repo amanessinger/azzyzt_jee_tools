@@ -82,7 +82,7 @@ Everything relevant to this tutorial is in a subdirectory
 ''doc/cookbook''. Here is its tree structure:
 
 #Verbatim <<---
-doc/cookbook/
+doc/cookbook
 |
 |-- cookbook---REST-soapui-project.xml
 |
@@ -136,6 +136,7 @@ doc/cookbook/
         |       |   `-- manessinger
         |       |       `-- cookbook
         |       |           `-- service
+        |       |               |-- ProtectedCxfRestInterface.java
         |       |               `-- test
         |       |                   |-- CityById.java
         |       |                   |-- CookbookRestTest.java
@@ -147,15 +148,22 @@ doc/cookbook/
         |               |-- query_with_three_conditions.xml
         |               |-- query_with_two_betweens.xml
         |               `-- sorted_list_of_cities.xml
-        `-- cookbookEJB
-            `-- ejbModule
+        |-- cookbookEJB
+        |   `-- ejbModule
+        |       `-- com
+        |           `-- manessinger
+        |               `-- cookbook
+        |                   |-- meta
+        |                   |   `-- Azzyztant.java
+        |                   `-- service
+        |                       `-- ProtectedBean.java
+        `-- cookbookServlets
+            `-- src
                 `-- com
                     `-- manessinger
                         `-- cookbook
-                            |-- meta
-                            |   `-- Azzyztant.java
-                            `-- util
-                                `-- Authorizer.java
+                            `-- service
+                                `-- ProtectedDelegator.java
 ---
 
 There are two directories with with SQL scripts, one for Oracle, one
@@ -2834,7 +2842,7 @@ Again the result will be
 
 * Customization of the generated code
 
-** Introducing your Azzyztant
+** Introducing your friendly Azzyztant
 
 There are cases when we want to influence either what features are
 generated, or how the generated features behave at runtime. The idea
@@ -3555,6 +3563,8 @@ way we don't test access via SOAP, but SOAP web service functionality
 is basic server functionality enabled by a single annotation. Not much
 can possibly go wrong here :)
 
+**** Test sources
+
 The doc directory of the Azzyzt distribution contains an optional
 source tree.
 
@@ -3566,6 +3576,7 @@ doc/cookbook/src/optional
 |       |   `-- manessinger
 |       |       `-- cookbook
 |       |           `-- service
+|       |               |-- ProtectedCxfRestInterface.java
 |       |               `-- test
 |       |                   |-- CityById.java
 |       |                   |-- CookbookRestTest.java
@@ -3577,13 +3588,22 @@ doc/cookbook/src/optional
 |               |-- query_with_three_conditions.xml
 |               |-- query_with_two_betweens.xml
 |               `-- sorted_list_of_cities.xml
-`-- cookbookEJB
-    `-- ejbModule
+|-- cookbookEJB
+|   `-- ejbModule
+|       `-- com
+|           `-- manessinger
+|               `-- cookbook
+|                   |-- meta
+|                   |   `-- Azzyztant.java
+|                   `-- service
+|                       `-- ProtectedBean.java
+`-- cookbookServlets
+    `-- src
         `-- com
             `-- manessinger
                 `-- cookbook
-                    `-- meta
-                        `-- Azzyztant.java
+                    `-- service
+                        `-- ProtectedDelegator.java
 ---
 
 In order to use these sources, make sure that you already have
@@ -3606,7 +3626,64 @@ idea to run ''reinitialize.sql'' from either
 ''doc/cookbook/oracle/sql'' or ''doc/cookbook/postgresql/sql'',
 depending on the database that you use.
 
-Here is the full unit test:
+**** Testing credential-based authorization
+
+Note that there is a new service bean ''ProtectedBean'' under
+''cookbookEJB/ejbModule'' and a matching REST delegator under
+''cookbookServlets/src''. The service bean is annotated with
+"''@RequiresCredentials("admin")''" on the bean and
+"''@RequiresCredentials("senior(rank=2)")''" on one of its two
+methods:
+
+#Code id=ProtectedTestBean syntax=Java <<---
+package com.manessinger.cookbook.service;
+
+import javax.ejb.LocalBean;
+import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
+import javax.jws.WebService;
+
+import org.azzyzt.jee.runtime.annotation.RequiresCredentials;
+
+import com.manessinger.cookbook.meta.EJBInterceptor;
+
+@LocalBean
+@Stateless
+@WebService(serviceName="cookbook")
+@RequiresCredentials("admin")
+@Interceptors(EJBInterceptor.class)
+public class ProtectedBean {
+
+    public String helloAdmin(String s) {
+        return s;
+    }
+    
+    @RequiresCredentials("senior(rank=2)")
+    public String helloSeniorAdmin(String s) {
+        return s;
+    }
+}
+---
+
+Both methods return their argument. The point is simply to check
+whether the methods can be called from clients with different
+credentials. 
+
+ !!! Note please that the service bean is annotated ''@Interceptors(EJBInterceptor.class)''. This is the interceptor that causes credentials to be checked. All generated service beans carry that annotation. Never forget it on your own service beans!
+
+In order to test credentials, the unit test defines two clients
+for the protected interface, one with credentials "''admin;
+senior(rank=1)''" (the low rank client) and one with "''admin;
+senior(rank=3)''" (the high rank client). 
+
+In three tests the low rank client calls the non-annotated method and
+succeeds (because it has "''admin''"), then the annotated method and
+fails (because its numeric rank is too low) and finally the high rank
+client calls the annotated method and succeeds (because its rank is
+even higher than required).
+
+
+**** The full unit test
 
 #Code id=CookbookRestTest syntax=Java <<---
 package com.manessinger.cookbook.service.test;
@@ -3646,6 +3723,7 @@ import com.manessinger.cookbook.service.CityFullCxfRestInterface;
 import com.manessinger.cookbook.service.CountryFullCxfRestInterface;
 import com.manessinger.cookbook.service.LanguageFullCxfRestInterface;
 import com.manessinger.cookbook.service.ModifyMultiCxfRestInterface;
+import com.manessinger.cookbook.service.ProtectedCxfRestInterface;
 import com.manessinger.cookbook.service.VisitFullCxfRestInterface;
 import com.manessinger.cookbook.service.ZipFullCxfRestInterface;
 
@@ -3670,13 +3748,15 @@ public class CookbookRestTest {
     private static final String ASSUAN = "Assuan";
     private static final String CAIRO = "Cairo";
     
+    private static final String HELLO = "Hello";
+    
     private static CityFullCxfRestInterface citySvc;
     private static CountryFullCxfRestInterface countrySvc;
     private static LanguageFullCxfRestInterface languageSvc;
     private static ModifyMultiCxfRestInterface multiSvc;
     private static VisitFullCxfRestInterface visitSvc;
     private static ZipFullCxfRestInterface zipSvc;
-
+    
     private static Client cityClient;
     private static Client countryClient;
     private static Client languageClient;
@@ -3686,6 +3766,12 @@ public class CookbookRestTest {
     
     private static CityFullCxfRestInterface cityProtectedSvc;
     private static Client cityProtectedClient;
+    
+    private static ProtectedCxfRestInterface highRankProtectedSvc;
+    private static Client highRankProtectedClient;
+    
+    private static ProtectedCxfRestInterface lowRankProtectedSvc;
+    private static Client lowRankProtectedClient;
     
     /**
      * BEFORE CLASS: setup proxies, set their media types to APPLICATION_XML. 
@@ -3754,6 +3840,20 @@ public class CookbookRestTest {
         cityProtectedClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
         cityProtectedClient.header("x-authorize-roles", "azzyzt(200-on-error=false);");
         cityProtectedClient.header("x-authenticate-userid", "junit");
+        
+        highRankProtectedSvc = JAXRSClientFactory.create(BASE_URI, ProtectedCxfRestInterface.class);
+        highRankProtectedClient = WebClient.client(highRankProtectedSvc);
+        highRankProtectedClient.type(MediaType.APPLICATION_XML);
+        highRankProtectedClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
+        highRankProtectedClient.header("x-authorize-roles", "azzyzt(200-on-error=false); admin; senior(rank=3)");
+        highRankProtectedClient.header("x-authenticate-userid", "junit");
+        
+        lowRankProtectedSvc = JAXRSClientFactory.create(BASE_URI, ProtectedCxfRestInterface.class);
+        lowRankProtectedClient = WebClient.client(lowRankProtectedSvc);
+        lowRankProtectedClient.type(MediaType.APPLICATION_XML);
+        lowRankProtectedClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
+        lowRankProtectedClient.header("x-authorize-roles", "azzyzt(200-on-error=false); admin; senior(rank=1)");
+        lowRankProtectedClient.header("x-authenticate-userid", "junit");
         
     }
     
@@ -4091,6 +4191,37 @@ public class CookbookRestTest {
     }
     
     /**
+     * TEST: call a method requiring no rank with low rank
+     */
+    @Test
+    public void testCallProtectedNoWithLowRank() {
+        String reply = lowRankProtectedSvc.helloAdmin(HELLO);
+        assertNotNull(reply);
+        assertEquals(HELLO, reply);
+    }
+    
+    /**
+     * TEST: call a method requiring high rank with low rank.
+     * The server should throw an AccessDenied Exception.
+     */
+    @Test(expected=ServerWebApplicationException.class)
+    public void testCallProtectedHighWithLowRank() {
+        lowRankProtectedSvc.helloSeniorAdmin(HELLO);
+        fail("This should be unreachable");
+    }
+    
+    /**
+     * TEST: call a method requiring high rank with higher rank
+     */
+    @Test
+    public void testCallProtectedHighWithHighRank() {
+        String reply = highRankProtectedSvc.helloSeniorAdmin(HELLO);
+        assertNotNull(reply);
+        assertEquals(HELLO, reply);
+        
+    }
+    
+    /**
      * Helper method that creates DTOs for a country and its cities
      * 
      * @param name of country
@@ -4220,7 +4351,7 @@ public class CookbookRestTest {
 }
 ---
 
-Run the test via "__Run As / JUnit Test__". You will see soem output
+Run the test via "__Run As / JUnit Test__". You will see some output
 in the console, and in the JUnit view the bar should stay green and all
 tests should succeed.
 

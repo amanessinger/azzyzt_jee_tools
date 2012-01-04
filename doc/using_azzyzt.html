@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 <meta name="language" content="en">
-<meta name="date" content="2012-01-03T16:25:19">
+<meta name="date" content="2012-01-04T12:07:29">
 <meta name="generator" content="deplate.rb 0.8.5">
 <link rel="start" href="using_azzyzt.html" title="Frontpage">
 <link rel="chapter" href="using_azzyzt.html#hd001" title="Azzyzt JEE Tools">
@@ -959,7 +959,7 @@ available under</p>
 <code>doc/cookbook</code>. Here is its tree structure:</p>
 
 <pre class="verbatim">
-doc/cookbook/
+doc/cookbook
 |
 |--&nbsp;cookbook---REST-soapui-project.xml
 |
@@ -1013,6 +1013,7 @@ doc/cookbook/
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;`--&nbsp;manessinger
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;cookbook
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;service
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;ProtectedCxfRestInterface.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;test
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;CityById.java
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;CookbookRestTest.java
@@ -1024,15 +1025,22 @@ doc/cookbook/
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;query_with_three_conditions.xml
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;query_with_two_betweens.xml
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;sorted_list_of_cities.xml
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;cookbookEJB
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;ejbModule
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;cookbookEJB
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;`--&nbsp;ejbModule
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;com
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;manessinger
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;cookbook
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;meta
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;`--&nbsp;Azzyztant.java
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;service
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;ProtectedBean.java
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;cookbookServlets
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;src
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;com
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;manessinger
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;cookbook
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;meta
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;`--&nbsp;Azzyztant.java
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;util
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;Authorizer.java
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;service
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;ProtectedDelegator.java
 </pre>
 
 <p>There are two directories with with SQL scripts, one for Oracle, one for 
@@ -4018,7 +4026,8 @@ Luxor itself and the language used.</p>
 <div id="Table_of_ContentsBlock" class="toc">
 <ul class="toc">
     <li class="Itemize-1 toc">
-        <a href="#hd006001" class="toc">6.1 Introducing your Azzyztant</a>
+        <a href="#hd006001" class="toc">6.1 Introducing your friendly 
+        Azzyztant</a>
     </li>
     <li class="Itemize-1 toc">
         <a href="#hd006002" class="toc">6.2 Transforming user names</a>
@@ -4059,6 +4068,18 @@ Luxor itself and the language used.</p>
             </li>
             <li class="Itemize-3 toc">
                 <a href="#hd006004006" class="toc">6.4.6 In-server unit tests</a>
+                <ul class="toc">
+                    <li class="Itemize-5 toc">
+                        <a href="#hd006004006001" class="toc">6.4.6.1 Test sources</a>
+                    </li>
+                    <li class="Itemize-5 toc">
+                        <a href="#hd006004006002" class="toc">6.4.6.2 Testing credential-based 
+                        authorization</a>
+                    </li>
+                    <li class="Itemize-5 toc">
+                        <a href="#hd006004006003" class="toc">6.4.6.3 The full unit test</a>
+                    </li>
+                </ul>
             </li>
         </ul>
     </li>
@@ -4069,7 +4090,7 @@ Luxor itself and the language used.</p>
 </ul>
 </div></div>
 
-<h2 id="hd006001">6.1&nbsp;Introducing your Azzyztant</h2>
+<h2 id="hd006001">6.1&nbsp;Introducing your friendly Azzyztant</h2>
 
 <p>There are cases when we want to influence either what features are 
 generated, or how the generated features behave at runtime. The idea is, 
@@ -4850,6 +4871,9 @@ don&rsquo;t test access via SOAP, but SOAP web service functionality is
 basic server functionality enabled by a single annotation. Not much can 
 possibly go wrong here :)</p>
 
+
+<h4 id="hd006004006001">6.4.6.1&nbsp;Test sources</h4>
+
 <p>The doc directory of the Azzyzt distribution contains an optional source 
 tree.</p>
 
@@ -4861,6 +4885,7 @@ doc/cookbook/src/optional
 |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;`--&nbsp;manessinger
 |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;cookbook
 |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;service
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;ProtectedCxfRestInterface.java
 |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;test
 |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;CityById.java
 |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;CookbookRestTest.java
@@ -4872,13 +4897,22 @@ doc/cookbook/src/optional
 |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;query_with_three_conditions.xml
 |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;query_with_two_betweens.xml
 |&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;sorted_list_of_cities.xml
-`--&nbsp;cookbookEJB
-&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;ejbModule
+|--&nbsp;cookbookEJB
+|&nbsp;&nbsp;&nbsp;`--&nbsp;ejbModule
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;com
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;manessinger
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;cookbook
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|--&nbsp;meta
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;`--&nbsp;Azzyztant.java
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;service
+|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;ProtectedBean.java
+`--&nbsp;cookbookServlets
+&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;src
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;com
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;manessinger
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;cookbook
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;meta
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;Azzyztant.java
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;service
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--&nbsp;ProtectedDelegator.java
 </pre>
 
 <p>In order to use these sources, make sure that you already have 
@@ -4902,7 +4936,73 @@ idea to run <code>reinitialize.sql</code> from either
 <code>doc/cookbook/postgresql/sql</code>, depending on the database that 
 you use.</p>
 
-<p>Here is the full unit test:</p>
+
+
+<h4 id="hd006004006002">6.4.6.2&nbsp;Testing credential-based authorization</h4>
+
+<p>Note that there is a new service bean <code>ProtectedBean</code> under 
+<code>cookbookEJB/ejbModule</code> and a matching REST delegator under 
+<code>cookbookServlets/src</code>. The service bean is annotated with 
+&ldquo;<code>@RequiresCredentials(&quot;admin&quot;)</code>&rdquo; on 
+the bean and 
+&ldquo;<code>@RequiresCredentials(&quot;senior(rank=2)&quot;)</code>&rdquo; 
+on one of its two methods:</p>
+
+<a name="ProtectedTestBean"></a>
+<div class="code">
+<pre>
+<span class="hl kwa">package</span> com<span class="hl opt">.</span>manessinger<span class="hl opt">.</span>cookbook<span class="hl opt">.</span>service<span class="hl opt">;</span>
+
+<span class="hl kwa">import</span> javax<span class="hl opt">.</span>ejb<span class="hl opt">.</span>LocalBean<span class="hl opt">;</span>
+<span class="hl kwa">import</span> javax<span class="hl opt">.</span>ejb<span class="hl opt">.</span>Stateless<span class="hl opt">;</span>
+<span class="hl kwa">import</span> javax<span class="hl opt">.</span>interceptor<span class="hl opt">.</span>Interceptors<span class="hl opt">;</span>
+<span class="hl kwa">import</span> javax<span class="hl opt">.</span>jws<span class="hl opt">.</span>WebService<span class="hl opt">;</span>
+
+<span class="hl kwa">import</span> org<span class="hl opt">.</span>azzyzt<span class="hl opt">.</span>jee<span class="hl opt">.</span>runtime<span class="hl opt">.</span>annotation<span class="hl opt">.</span>RequiresCredentials<span class="hl opt">;</span>
+
+<span class="hl kwa">import</span> com<span class="hl opt">.</span>manessinger<span class="hl opt">.</span>cookbook<span class="hl opt">.</span>meta<span class="hl opt">.</span>EJBInterceptor<span class="hl opt">;</span>
+
+<span class="hl kwc">&#64;LocalBean</span>
+<span class="hl kwc">&#64;Stateless</span>
+<span class="hl kwc">&#64;WebService</span><span class="hl opt">(</span>serviceName<span class="hl opt">=</span><span class="hl str">&quot;cookbook&quot;</span><span class="hl opt">)</span>
+<span class="hl kwc">&#64;RequiresCredentials</span><span class="hl opt">(</span><span class="hl str">&quot;admin&quot;</span><span class="hl opt">)</span>
+<span class="hl kwc">&#64;Interceptors</span><span class="hl opt">(</span>EJBInterceptor<span class="hl opt">.</span><span class="hl kwa">class</span><span class="hl opt">)</span>
+<span class="hl kwa">public class</span> ProtectedBean <span class="hl opt">{</span>
+
+    <span class="hl kwa">public</span> String <span class="hl kwd">helloAdmin</span><span class="hl opt">(</span>String s<span class="hl opt">) {</span>
+        <span class="hl kwa">return</span> s<span class="hl opt">;</span>
+    <span class="hl opt">}</span>
+    
+    <span class="hl kwc">&#64;RequiresCredentials</span><span class="hl opt">(</span><span class="hl str">&quot;senior(rank=2)&quot;</span><span class="hl opt">)</span>
+    <span class="hl kwa">public</span> String <span class="hl kwd">helloSeniorAdmin</span><span class="hl opt">(</span>String s<span class="hl opt">) {</span>
+        <span class="hl kwa">return</span> s<span class="hl opt">;</span>
+    <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+</pre>
+</div>
+<p>Both methods return their argument. The point is simply to check whether 
+the methods can be called from clients with different credentials.</p>
+
+<div class="important"><p class="important">
+Note please that the service bean is annotated <code>@Interceptors(EJBInterceptor.class)</code>. This is the interceptor that causes credentials to be checked. All generated service beans carry that annotation. Never forget it on your own service beans!
+</p></div>
+
+<p>In order to test credentials, the unit test defines two clients for the 
+protected interface, one with credentials 
+&ldquo;<code>admin;&nbsp;senior(rank=1)</code>&rdquo; (the low rank 
+client) and one with 
+&ldquo;<code>admin;&nbsp;senior(rank=3)</code>&rdquo; (the high rank 
+client).</p>
+
+<p>In three tests the low rank client calls the non-annotated method and 
+succeeds (because it has &ldquo;<code>admin</code>&rdquo;), then the 
+annotated method and fails (because its numeric rank is too low) and 
+finally the high rank client calls the annotated method and succeeds 
+(because its rank is even higher than required).</p>
+
+
+
+<h4 id="hd006004006003">6.4.6.3&nbsp;The full unit test</h4>
 
 <a name="CookbookRestTest"></a>
 <div class="code">
@@ -4944,6 +5044,7 @@ you use.</p>
 <span class="hl kwa">import</span> com<span class="hl opt">.</span>manessinger<span class="hl opt">.</span>cookbook<span class="hl opt">.</span>service<span class="hl opt">.</span>CountryFullCxfRestInterface<span class="hl opt">;</span>
 <span class="hl kwa">import</span> com<span class="hl opt">.</span>manessinger<span class="hl opt">.</span>cookbook<span class="hl opt">.</span>service<span class="hl opt">.</span>LanguageFullCxfRestInterface<span class="hl opt">;</span>
 <span class="hl kwa">import</span> com<span class="hl opt">.</span>manessinger<span class="hl opt">.</span>cookbook<span class="hl opt">.</span>service<span class="hl opt">.</span>ModifyMultiCxfRestInterface<span class="hl opt">;</span>
+<span class="hl kwa">import</span> com<span class="hl opt">.</span>manessinger<span class="hl opt">.</span>cookbook<span class="hl opt">.</span>service<span class="hl opt">.</span>ProtectedCxfRestInterface<span class="hl opt">;</span>
 <span class="hl kwa">import</span> com<span class="hl opt">.</span>manessinger<span class="hl opt">.</span>cookbook<span class="hl opt">.</span>service<span class="hl opt">.</span>VisitFullCxfRestInterface<span class="hl opt">;</span>
 <span class="hl kwa">import</span> com<span class="hl opt">.</span>manessinger<span class="hl opt">.</span>cookbook<span class="hl opt">.</span>service<span class="hl opt">.</span>ZipFullCxfRestInterface<span class="hl opt">;</span>
 
@@ -4968,13 +5069,15 @@ you use.</p>
     <span class="hl kwa">private static final</span> String ASSUAN <span class="hl opt">=</span> <span class="hl str">&quot;Assuan&quot;</span><span class="hl opt">;</span>
     <span class="hl kwa">private static final</span> String CAIRO <span class="hl opt">=</span> <span class="hl str">&quot;Cairo&quot;</span><span class="hl opt">;</span>
     
+    <span class="hl kwa">private static final</span> String HELLO <span class="hl opt">=</span> <span class="hl str">&quot;Hello&quot;</span><span class="hl opt">;</span>
+    
     <span class="hl kwa">private static</span> CityFullCxfRestInterface citySvc<span class="hl opt">;</span>
     <span class="hl kwa">private static</span> CountryFullCxfRestInterface countrySvc<span class="hl opt">;</span>
     <span class="hl kwa">private static</span> LanguageFullCxfRestInterface languageSvc<span class="hl opt">;</span>
     <span class="hl kwa">private static</span> ModifyMultiCxfRestInterface multiSvc<span class="hl opt">;</span>
     <span class="hl kwa">private static</span> VisitFullCxfRestInterface visitSvc<span class="hl opt">;</span>
     <span class="hl kwa">private static</span> ZipFullCxfRestInterface zipSvc<span class="hl opt">;</span>
-
+    
     <span class="hl kwa">private static</span> Client cityClient<span class="hl opt">;</span>
     <span class="hl kwa">private static</span> Client countryClient<span class="hl opt">;</span>
     <span class="hl kwa">private static</span> Client languageClient<span class="hl opt">;</span>
@@ -4984,6 +5087,12 @@ you use.</p>
     
     <span class="hl kwa">private static</span> CityFullCxfRestInterface cityProtectedSvc<span class="hl opt">;</span>
     <span class="hl kwa">private static</span> Client cityProtectedClient<span class="hl opt">;</span>
+    
+    <span class="hl kwa">private static</span> ProtectedCxfRestInterface highRankProtectedSvc<span class="hl opt">;</span>
+    <span class="hl kwa">private static</span> Client highRankProtectedClient<span class="hl opt">;</span>
+    
+    <span class="hl kwa">private static</span> ProtectedCxfRestInterface lowRankProtectedSvc<span class="hl opt">;</span>
+    <span class="hl kwa">private static</span> Client lowRankProtectedClient<span class="hl opt">;</span>
     
     <span class="hl com">/**</span>
 <span class="hl com">     * BEFORE CLASS: setup proxies, set their media types to APPLICATION_XML. </span>
@@ -5052,6 +5161,20 @@ you use.</p>
         cityProtectedClient<span class="hl opt">.</span><span class="hl kwd">accept</span><span class="hl opt">(</span>MediaType<span class="hl opt">.</span>MEDIA_TYPE_WILDCARD<span class="hl opt">);</span>
         cityProtectedClient<span class="hl opt">.</span><span class="hl kwd">header</span><span class="hl opt">(</span><span class="hl str">&quot;x-authorize-roles&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;azzyzt(200-on-error=false);&quot;</span><span class="hl opt">);</span>
         cityProtectedClient<span class="hl opt">.</span><span class="hl kwd">header</span><span class="hl opt">(</span><span class="hl str">&quot;x-authenticate-userid&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;junit&quot;</span><span class="hl opt">);</span>
+        
+        highRankProtectedSvc <span class="hl opt">=</span> JAXRSClientFactory<span class="hl opt">.</span><span class="hl kwd">create</span><span class="hl opt">(</span>BASE_URI<span class="hl opt">,</span> ProtectedCxfRestInterface<span class="hl opt">.</span><span class="hl kwa">class</span><span class="hl opt">);</span>
+        highRankProtectedClient <span class="hl opt">=</span> WebClient<span class="hl opt">.</span><span class="hl kwd">client</span><span class="hl opt">(</span>highRankProtectedSvc<span class="hl opt">);</span>
+        highRankProtectedClient<span class="hl opt">.</span><span class="hl kwd">type</span><span class="hl opt">(</span>MediaType<span class="hl opt">.</span>APPLICATION_XML<span class="hl opt">);</span>
+        highRankProtectedClient<span class="hl opt">.</span><span class="hl kwd">accept</span><span class="hl opt">(</span>MediaType<span class="hl opt">.</span>MEDIA_TYPE_WILDCARD<span class="hl opt">);</span>
+        highRankProtectedClient<span class="hl opt">.</span><span class="hl kwd">header</span><span class="hl opt">(</span><span class="hl str">&quot;x-authorize-roles&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;azzyzt(200-on-error=false); admin; senior(rank=3)&quot;</span><span class="hl opt">);</span>
+        highRankProtectedClient<span class="hl opt">.</span><span class="hl kwd">header</span><span class="hl opt">(</span><span class="hl str">&quot;x-authenticate-userid&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;junit&quot;</span><span class="hl opt">);</span>
+        
+        lowRankProtectedSvc <span class="hl opt">=</span> JAXRSClientFactory<span class="hl opt">.</span><span class="hl kwd">create</span><span class="hl opt">(</span>BASE_URI<span class="hl opt">,</span> ProtectedCxfRestInterface<span class="hl opt">.</span><span class="hl kwa">class</span><span class="hl opt">);</span>
+        lowRankProtectedClient <span class="hl opt">=</span> WebClient<span class="hl opt">.</span><span class="hl kwd">client</span><span class="hl opt">(</span>lowRankProtectedSvc<span class="hl opt">);</span>
+        lowRankProtectedClient<span class="hl opt">.</span><span class="hl kwd">type</span><span class="hl opt">(</span>MediaType<span class="hl opt">.</span>APPLICATION_XML<span class="hl opt">);</span>
+        lowRankProtectedClient<span class="hl opt">.</span><span class="hl kwd">accept</span><span class="hl opt">(</span>MediaType<span class="hl opt">.</span>MEDIA_TYPE_WILDCARD<span class="hl opt">);</span>
+        lowRankProtectedClient<span class="hl opt">.</span><span class="hl kwd">header</span><span class="hl opt">(</span><span class="hl str">&quot;x-authorize-roles&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;azzyzt(200-on-error=false); admin; senior(rank=1)&quot;</span><span class="hl opt">);</span>
+        lowRankProtectedClient<span class="hl opt">.</span><span class="hl kwd">header</span><span class="hl opt">(</span><span class="hl str">&quot;x-authenticate-userid&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;junit&quot;</span><span class="hl opt">);</span>
         
     <span class="hl opt">}</span>
     
@@ -5389,6 +5512,37 @@ you use.</p>
     <span class="hl opt">}</span>
     
     <span class="hl com">/**</span>
+<span class="hl com">     * TEST: call a method requiring no rank with low rank</span>
+<span class="hl com">     */</span>
+    <span class="hl kwc">&#64;Test</span>
+    <span class="hl kwa">public</span> <span class="hl kwb">void</span> <span class="hl kwd">testCallProtectedNoWithLowRank</span><span class="hl opt">() {</span>
+        String reply <span class="hl opt">=</span> lowRankProtectedSvc<span class="hl opt">.</span><span class="hl kwd">helloAdmin</span><span class="hl opt">(</span>HELLO<span class="hl opt">);</span>
+        <span class="hl kwd">assertNotNull</span><span class="hl opt">(</span>reply<span class="hl opt">);</span>
+        <span class="hl kwd">assertEquals</span><span class="hl opt">(</span>HELLO<span class="hl opt">,</span> reply<span class="hl opt">);</span>
+    <span class="hl opt">}</span>
+    
+    <span class="hl com">/**</span>
+<span class="hl com">     * TEST: call a method requiring high rank with low rank.</span>
+<span class="hl com">     * The server should throw an AccessDenied Exception.</span>
+<span class="hl com">     */</span>
+    <span class="hl kwc">&#64;Test</span><span class="hl opt">(</span>expected<span class="hl opt">=</span>ServerWebApplicationException<span class="hl opt">.</span><span class="hl kwa">class</span><span class="hl opt">)</span>
+    <span class="hl kwa">public</span> <span class="hl kwb">void</span> <span class="hl kwd">testCallProtectedHighWithLowRank</span><span class="hl opt">() {</span>
+        lowRankProtectedSvc<span class="hl opt">.</span><span class="hl kwd">helloSeniorAdmin</span><span class="hl opt">(</span>HELLO<span class="hl opt">);</span>
+        <span class="hl kwd">fail</span><span class="hl opt">(</span><span class="hl str">&quot;This should be unreachable&quot;</span><span class="hl opt">);</span>
+    <span class="hl opt">}</span>
+    
+    <span class="hl com">/**</span>
+<span class="hl com">     * TEST: call a method requiring high rank with higher rank</span>
+<span class="hl com">     */</span>
+    <span class="hl kwc">&#64;Test</span>
+    <span class="hl kwa">public</span> <span class="hl kwb">void</span> <span class="hl kwd">testCallProtectedHighWithHighRank</span><span class="hl opt">() {</span>
+        String reply <span class="hl opt">=</span> highRankProtectedSvc<span class="hl opt">.</span><span class="hl kwd">helloSeniorAdmin</span><span class="hl opt">(</span>HELLO<span class="hl opt">);</span>
+        <span class="hl kwd">assertNotNull</span><span class="hl opt">(</span>reply<span class="hl opt">);</span>
+        <span class="hl kwd">assertEquals</span><span class="hl opt">(</span>HELLO<span class="hl opt">,</span> reply<span class="hl opt">);</span>
+        
+    <span class="hl opt">}</span>
+    
+    <span class="hl com">/**</span>
 <span class="hl com">     * Helper method that creates DTOs for a country and its cities</span>
 <span class="hl com">     * </span>
 <span class="hl com">     * &#64;param name of country</span>
@@ -5519,7 +5673,7 @@ you use.</p>
 </pre>
 </div>
 <p>Run the test via &ldquo;<em>Run As / JUnit Test</em>&rdquo;. You will 
-see soem output in the console, and in the JUnit view the bar should 
+see some output in the console, and in the JUnit view the bar should 
 stay green and all tests should succeed.</p>
 
 <p>You can repeat the test as often as you like, the tests are written in a 
