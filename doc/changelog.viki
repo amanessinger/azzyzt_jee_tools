@@ -1,12 +1,17 @@
 #VAR: fmt=~html(site|slides): css=highlight.css,layout-deplate.css cssInclude=true
 #VAR: tableStyle=formal
 
-#VAR: version=1.3.0
+#VAR: version=1.3.1
 
 * Azzyzt JEE Tools
 #OPT: plain!
 
  !!! Release {version}
+
+** Changes in 1.3.1
+#OPT: plain!
+
+ - Built and tested with Eclipse Indigo SR2, \GlassFish 3.1.2 and Java 1.6.0_31
 
 ** Changes in 1.3.0
 #OPT: plain!
