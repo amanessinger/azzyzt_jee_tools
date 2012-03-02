@@ -79,6 +79,7 @@ Azzyzt JEE Tools are known to work with the runtimes of
  - \GlassFish v3.01
  - \GlassFish v3.1
  - \GlassFish v3.1.1
+ - \GlassFish v3.1.2
 
 and Eclipse versions
 
@@ -86,20 +87,22 @@ and Eclipse versions
  - Helios SR1, SR2
  - Indigo
  - Indigo SR1
+ - Indigo SR2
 
 In the context of this documentation Eclipse is always assumed as the
 generic bundle [[http://www.eclipse.org/downloads/][Eclipse IDE for
 Java EE Developers]]. Other distributions may contain the required
 plugins and may work, but they were not tested.
 
-The plugins were compiled on Eclipse 3.7 "Indigo" SR1 using Java
-1.6.0_26, and they were tested in the following configurations:
+The plugins were compiled on Eclipse 3.7 "Indigo" SR2 using Java
+1.6.0_31, and they were tested in the following configurations:
 
  - Galileo SR2 + \GlassFish 3.01
  - Helios SR1 + \GlassFish 3.01
  - Helios SR2 + \GlassFish 3.1
  - Indigo + \GlassFish 3.1
  - Indigo + \GlassFish 3.1.1
+ - Indigo SR2 + \GlassFish 3.1.2
 
 All tests were done with JDK 1.6.
 

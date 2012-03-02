@@ -2,7 +2,7 @@
 1 Azzyzt JEE Tools
 ==================
 
-  !!! Release 1.3.0
+  !!! Release 1.3.1
 
 Azzyzt JEE Tools is a collection of software tools helping software 
 developers to create services using Java Enterprise Edition 6. Use it if 
@@ -29,7 +29,7 @@ https://github.com/amanessinger/azzyzt_jee_tools[3].
 1.1 Current status
 ~~~~~~~~~~~~~~~~~~
 
-As of release 1.3.0, Azzyzt JEE Tools consists of three main parts:
+As of release 1.3.1, Azzyzt JEE Tools consists of three main parts:
 
   1. a project generator that creates so-called azzyzted projects. An 
     azzyzted project is a collection of four projects, an Enterprise 
@@ -68,53 +68,39 @@ the command line.
 
 Azzyzt JEE Tools are known to work with the runtimes of
 
-  * GlassFish v3
   * GlassFish v3.01
   * GlassFish v3.1
   * GlassFish v3.1.1
+  * GlassFish v3.1.2
 
 and Eclipse versions
 
-  * Galileo SR1, SR2
+  * Galileo SR2
   * Helios SR1, SR2
   * Indigo
+  * Indigo SR1
+  * Indigo SR2
 
 In the context of this documentation Eclipse is always assumed as the 
 generic bundle Eclipse IDE for Java EE Developers[5]. Other 
 distributions may contain the required plugins and may work, but they 
 were not tested.
 
-The plugins were compiled on Eclipse 3.7 "Indigo" and tested in the 
-following configurations:
+The plugins were compiled on Eclipse 3.7 "Indigo" SR2 using Java 
+1.6.0_31, and they were tested in the following configurations:
 
-  * Glassfish Tools Bundle for Eclipse (Galileo SR1 + GlassFish 3.0)
+  * Galileo SR2 + GlassFish 3.01
   * Helios SR1 + GlassFish 3.01
   * Helios SR2 + GlassFish 3.1
   * Indigo + GlassFish 3.1
   * Indigo + GlassFish 3.1.1
+  * Indigo SR2 + GlassFish 3.1.2
 
-All tests were done with JDK 1.6, because as of Indigo, Eclipse does not 
-support JDK 1.7. If you try to use it, but run Eclipse itself on a JRE 
-1.6, as soon as you try to generate code, you'll end up with an obscure 
-error "Can't read from temp file" and then a long temporary file name. 
-In the error log there will also be an exception telling about an 
-"UnsupportedClassVersionError: ... Unsupported major.minor version 
-51.0". This means that a class compiled with a newer version Java 
-compiler (JDK 1.7 in our case) has been attempted to be run on an older 
-version Java VM (the VM running Eclipse). Anyway, tests with Java 1.7 
-will really commence as soon as Eclipse officially supports Java 1.7.
+All tests were done with JDK 1.6.
 
-Using JBOSS AS 6.0 as a runtime, generated code should compile. @Remote 
-annotations on generated service bean interfaces have to be suppressed 
-using AzzyztGeneratorCutback.NoRemoteInterfaces, because JBOSS AS 6.0 
-only supports the JEE 6 web profile. No further testing with JBOSS AS 
-6.0 has been done yet, JBOSS AS 7.0 has not been tested but is supposed 
-to work.
-
-In spring 2011 the project generator (#1) has been found to run with 
-Apache Geronimo v3.0-M1, but due to lacking support for REST, generated 
-applications did not compile. No further testing was done on Geronimo 
-since.
+No other application servers but GlassFish were tested. While in theory 
+all servers complying to the Java EE 6 full profile should work, they 
+are completely unsupported.
 
 Future extensions may provide generators for additional patterns 
 commonly used in Java EE applications.
