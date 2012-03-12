@@ -29,6 +29,7 @@ import com.manessinger.cookbook.dto.CountryDto;
 import com.manessinger.cookbook.dto.Dto;
 import com.manessinger.cookbook.dto.LanguageDto;
 import com.manessinger.cookbook.dto.StoreDelete;
+import com.manessinger.cookbook.dto.TourDto;
 import com.manessinger.cookbook.dto.VisitDto;
 import com.manessinger.cookbook.entity.VisitId;
 import com.manessinger.cookbook.service.CityFullCxfRestInterface;
@@ -36,6 +37,7 @@ import com.manessinger.cookbook.service.CountryFullCxfRestInterface;
 import com.manessinger.cookbook.service.LanguageFullCxfRestInterface;
 import com.manessinger.cookbook.service.ModifyMultiCxfRestInterface;
 import com.manessinger.cookbook.service.ProtectedCxfRestInterface;
+import com.manessinger.cookbook.service.TourFullCxfRestInterface;
 import com.manessinger.cookbook.service.VisitFullCxfRestInterface;
 import com.manessinger.cookbook.service.ZipFullCxfRestInterface;
 
@@ -60,6 +62,9 @@ public class CookbookRestTest {
 	private static final String ASSUAN = "Assuan";
 	private static final String CAIRO = "Cairo";
 	
+	private static final String HUNGARY = "Hungary";
+	private static final String BUDAPEST = "Budapest";
+	
 	private static final String HELLO = "Hello";
 	
 	private static CityFullCxfRestInterface citySvc;
@@ -68,6 +73,7 @@ public class CookbookRestTest {
 	private static ModifyMultiCxfRestInterface multiSvc;
 	private static VisitFullCxfRestInterface visitSvc;
 	private static ZipFullCxfRestInterface zipSvc;
+	private static TourFullCxfRestInterface tourSvc;
 	
 	private static Client cityClient;
 	private static Client countryClient;
@@ -75,6 +81,7 @@ public class CookbookRestTest {
 	private static Client multiClient;
 	private static Client visitClient;
 	private static Client zipClient;
+	private static Client tourClient;
 	
 	private static CityFullCxfRestInterface cityProtectedSvc;
 	private static Client cityProtectedClient;
@@ -145,6 +152,13 @@ public class CookbookRestTest {
 		zipClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
 		zipClient.header("x-authorize-roles", "azzyzt(200-on-error=false);modify()");
 		zipClient.header("x-authenticate-userid", "junit");
+		
+		tourSvc = JAXRSClientFactory.create(BASE_URI, TourFullCxfRestInterface.class);
+		tourClient = WebClient.client(tourSvc);
+		tourClient.type(MediaType.APPLICATION_XML);
+		tourClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
+		tourClient.header("x-authorize-roles", "azzyzt(200-on-error=false);modify()");
+		tourClient.header("x-authenticate-userid", "junit");
 		
 		cityProtectedSvc = JAXRSClientFactory.create(BASE_URI, CityFullCxfRestInterface.class);
 		cityProtectedClient = WebClient.client(cityProtectedSvc);
@@ -401,6 +415,36 @@ public class CookbookRestTest {
 		List<Dto> dtos = createCountryAndCityDtos(FRANCE, MARSEILLES, PARIS, RENNES);
 		dtos = multiSvc.storeMulti(dtos);
 		checkCountryAndCityDtos(dtos, FRANCE, MARSEILLES, PARIS, RENNES);
+		
+		dump(dtos);
+
+		String result = multiSvc.deleteMulti(dtos);
+		assertEquals("<result>OK</result>", result);
+	}
+
+	/**
+	 * TEST: store Hungary and a tour through the country, delete them in one call
+	 * Tests for fix to issue #29
+	 */
+	@Test
+	public void testStoreDeleteHungaryAndTour() {
+		
+		List<Dto> languages = languageSvc.all();
+		LanguageDto tourLanguage = (LanguageDto)languages.get(0);
+		
+		List<Dto> dtos = new ArrayList<Dto>();
+
+		CountryDto hungary = new CountryDto();
+		hungary.setId(-1L);
+		hungary.setName(HUNGARY);
+		dtos.add(hungary);
+		
+		TourDto tour = new TourDto();
+		tour.setCountryId(hungary.getId());
+		tour.setLanguageId(tourLanguage.getId());
+		dtos.add(tour);
+		
+		dtos = multiSvc.storeMulti(dtos);
 		
 		dump(dtos);
 

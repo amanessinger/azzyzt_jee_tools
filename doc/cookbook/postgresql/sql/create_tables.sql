@@ -120,3 +120,33 @@ WITH (
 );
 ALTER TABLE visit OWNER TO cookbookuser;
 
+CREATE SEQUENCE tour_id_seq
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+ALTER TABLE tour_id_seq OWNER TO cookbookuser;
+ 
+CREATE TABLE tour
+(
+  id bigint NOT NULL,
+  country_id bigint,
+  name character varying(255),
+  lang_code character varying(8) NOT NULL, 
+  create_timestamp timestamp without time zone DEFAULT now(),
+  create_user character varying(255) DEFAULT 'anonymous'::character varying,
+  modification_timestamp timestamp without time zone DEFAULT now(),
+  modification_user character varying(255) DEFAULT 'anonymous'::character varying,
+  CONSTRAINT tour_pkey PRIMARY KEY (id),
+  CONSTRAINT fk_tour_country_id FOREIGN KEY (country_id)
+      REFERENCES country (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT fk_tour_lang_id FOREIGN KEY (lang_code)
+      REFERENCES lang_table (lang_code) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE tour OWNER TO cookbookuser;

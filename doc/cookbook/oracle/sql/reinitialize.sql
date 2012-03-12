@@ -86,6 +86,26 @@ CREATE TABLE visit
   CONSTRAINT fk_visit_lang_used FOREIGN KEY (lang_used)
       REFERENCES lang_table (lang_code)
 );
+
+CREATE SEQUENCE tour_id_seq;
+ 
+CREATE TABLE tour
+(
+  id NUMBER(19, 0) NOT NULL,
+  create_timestamp TIMESTAMP DEFAULT SYSDATE,
+  create_user VARCHAR2(255) DEFAULT 'anonymous',
+  modification_timestamp TIMESTAMP DEFAULT SYSDATE,
+  modification_user VARCHAR2(255) DEFAULT 'anonymous',
+  name VARCHAR2(255),
+  lang_code VARCHAR2(8) NOT NULL, 
+  country_id NUMBER(19, 0),
+  CONSTRAINT tour_pkey PRIMARY KEY (id),
+  CONSTRAINT fk_tour_country_id FOREIGN KEY (country_id)
+      REFERENCES country (id),
+  CONSTRAINT fk_tour_lang_id FOREIGN KEY (lang_code)
+      REFERENCES lang_table (lang_code)
+);
+
 -- Database: cookbookdb
 
  

@@ -196,7 +196,7 @@ fetchAssociatedEntities(field) ::= <<
 fetchSingleAssociatedEntity(field) ::= <<
 <field.fieldType.idField.fieldType.simpleName> <field.name>Value = in.get<field.ucName>Id();
 if (<field.name>Value != null) {
-    <if(field.ownerMdt.proxyIdPossible)>
+    <if(field.applicableForProxyIdTranslation)>
     if (idTranslator != null) {
         <field.name>Value = (<field.fieldType.idField.fieldType.simpleName>)idTranslator.translate(<field.name>Value);
     }
@@ -223,7 +223,7 @@ List\<<field.fieldType.entityMemberType.idField.fieldType.simpleName>\> <field.n
 
 fetchEntitiesLoop(field, keytype, valuetype, idsName, entitiesName) ::= <<
 for (<keytype> id : <idsName>) {
-    <if(field.ownerMdt.proxyIdPossible)>
+    <if(field.applicableForProxyIdTranslation)>
     if (idTranslator != null) {
         id = (<keytype>)idTranslator.translate(id);
     }

@@ -7,9 +7,11 @@
 		<class>com.manessinger.cookbook.entity.Zip</class>
 		<class>com.manessinger.cookbook.entity.Visit</class>
 		<class>com.manessinger.cookbook.entity.VisitId</class>
-		<class>com.manessinger.cookbook.entity.Language</class>
+        <class>com.manessinger.cookbook.entity.Language</class>
+        <class>com.manessinger.cookbook.entity.Tour</class>
 		<properties>
 			<property name="eclipselink.logging.level" value="FINE"/>
+			<property name="eclipselink.logging.parameters" value="true"/>
 		</properties>
 	</persistence-unit>
 </persistence>
