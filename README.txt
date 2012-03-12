@@ -2,7 +2,7 @@
 1 Azzyzt JEE Tools
 ==================
 
-  !!! Release 1.3.1
+  !!! Release 1.3.2
 
 Azzyzt JEE Tools is a collection of software tools helping software 
 developers to create services using Java Enterprise Edition 6. Use it if 
@@ -29,7 +29,7 @@ https://github.com/amanessinger/azzyzt_jee_tools[3].
 1.1 Current status
 ~~~~~~~~~~~~~~~~~~
 
-As of release 1.3.1, Azzyzt JEE Tools consists of three main parts:
+As of release 1.3.2, Azzyzt JEE Tools consists of three main parts:
 
   1. a project generator that creates so-called azzyzted projects. An 
     azzyzted project is a collection of four projects, an Enterprise 

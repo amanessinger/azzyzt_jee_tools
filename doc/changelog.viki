@@ -8,6 +8,18 @@
 
  !!! Release {version}
 
+** Changes in 1.3.2
+#OPT: plain!
+
+ - Fixed a bug where under certain conditions string IDs would break
+   storeMulti(). The cause was, that the check for the possibility of
+   proxy ID translation of an ID field was done on the field's owning
+   entity instead of the field's target entity. It broke as soon as an
+   entity with numeric ID had an association to an entity with a
+   string ID. String IDs inside of embedded IDs (like \VisitId) were no
+   problem, because embedded IDs are specisl-cased anyway. This closes
+   issue #29.
+
 ** Changes in 1.3.1
 #OPT: plain!
 
