@@ -2,7 +2,7 @@
 #VAR: tableStyle=formal
 #VAR: subToC=true
 
-#VAR: version=1.3.1
+#VAR: version=1.3.2
 
 * Azzyzt JEE Tools
 #OPT: plain!
@@ -117,6 +117,7 @@ doc/cookbook
     |   |       |               |-- City.java
     |   |       |               |-- Country.java
     |   |       |               |-- Language.java
+    |   |       |               |-- Tour.java
     |   |       |               |-- Visit.java
     |   |       |               `-- Zip.java
     |   |       `-- META-INF
@@ -395,7 +396,7 @@ initially:
 
 #Verbatim <<---
 azzyzt_tools
-`-- 1.3.0
+`-- 1.3.2
     |-- antlr-2.7.7.jar
     |-- commons-io-2.0.1.jar
     |-- org.azzyzt.jee.tools.mwe.jar
@@ -616,6 +617,7 @@ doc/cookbook/src/base
 |       |               |-- City.java
 |       |               |-- Country.java
 |       |               |-- Language.java
+|       |               |-- Tour.java
 |       |               |-- Visit.java
 |       |               `-- Zip.java
 |       `-- META-INF
@@ -661,7 +663,8 @@ situations.
 
 We have have countries, cities, ZIPs, visits from a ZIP code area to a
 certain city, guided using a certain language, and all languages used
-by guides.
+by guides. We have also tours that are offered through a country, and
+a tour is in a certain language.
 
 A __Country__ has cities and each __City__ is in a certain country. A
 country has a number of __Zip__ areas and each ZIP area belongs to a
@@ -947,6 +950,7 @@ cookbookEJB
 |   |           |   |-- City.java
 |   |           |   |-- Country.java
 |   |           |   |-- Language.java
+|   |           |   |-- Tour.java
 |   |           |   |-- Visit.java
 |   |           |   `-- Zip.java
 |   |           |-- meta
@@ -967,6 +971,7 @@ cookbookEJB
                 |   |-- CityConv.java
                 |   |-- CountryConv.java
                 |   |-- LanguageConv.java
+                |   |-- TourConv.java
                 |   |-- VisitConv.java
                 |   `-- ZipConv.java
                 |-- eao
@@ -1012,6 +1017,7 @@ cookbookEJBClient
                 |   |-- LanguageDto.java
                 |   |-- StoreDelete.java
                 |   |-- StoreWrapper.java
+                |   |-- TourDto.java
                 |   |-- VisitDto.java
                 |   `-- ZipDto.java
                 `-- service
@@ -1022,6 +1028,8 @@ cookbookEJBClient
                     |-- LanguageFullInterface.java
                     |-- LanguageRestrictedInterface.java
                     |-- ModifyMultiInterface.java
+                    |-- TourFullInterface.java
+                    |-- TourRestrictedInterface.java
                     |-- VisitFullInterface.java
                     |-- VisitRestrictedInterface.java
                     |-- ZipFullInterface.java
@@ -1043,6 +1051,8 @@ cookbookServlets
 |                   |-- RESTExceptionMapper.java
 |                   |-- RESTInterceptor.java
 |                   |-- RESTServlet.java
+|                   |-- TourFullDelegator.java
+|                   |-- TourRestrictedDelegator.java
 |                   |-- VisitFullDelegator.java
 |                   |-- VisitRestrictedDelegator.java
 |                   |-- ZipFullDelegator.java
@@ -1113,6 +1123,10 @@ for the generated service beans, assuming \GlassFish runs on port
   [[http://localhost:8080/cookbook/LanguageFullBean?wsdl]]
 
   [[http://localhost:8080/cookbook_restricted/LanguageRestrictedBean?wsdl]]
+
+  [[http://localhost:8080/cookbook/TourFullBean?wsdl]]
+
+  [[http://localhost:8080/cookbook_restricted/TourRestrictedBean?wsdl]]
 
   [[http://localhost:8080/cookbook/VisitFullBean?wsdl]]
 
@@ -3717,6 +3731,7 @@ import com.manessinger.cookbook.dto.CountryDto;
 import com.manessinger.cookbook.dto.Dto;
 import com.manessinger.cookbook.dto.LanguageDto;
 import com.manessinger.cookbook.dto.StoreDelete;
+import com.manessinger.cookbook.dto.TourDto;
 import com.manessinger.cookbook.dto.VisitDto;
 import com.manessinger.cookbook.entity.VisitId;
 import com.manessinger.cookbook.service.CityFullCxfRestInterface;
@@ -3724,6 +3739,7 @@ import com.manessinger.cookbook.service.CountryFullCxfRestInterface;
 import com.manessinger.cookbook.service.LanguageFullCxfRestInterface;
 import com.manessinger.cookbook.service.ModifyMultiCxfRestInterface;
 import com.manessinger.cookbook.service.ProtectedCxfRestInterface;
+import com.manessinger.cookbook.service.TourFullCxfRestInterface;
 import com.manessinger.cookbook.service.VisitFullCxfRestInterface;
 import com.manessinger.cookbook.service.ZipFullCxfRestInterface;
 
@@ -3748,6 +3764,9 @@ public class CookbookRestTest {
     private static final String ASSUAN = "Assuan";
     private static final String CAIRO = "Cairo";
     
+    private static final String HUNGARY = "Hungary";
+    private static final String BUDAPEST = "Budapest";
+    
     private static final String HELLO = "Hello";
     
     private static CityFullCxfRestInterface citySvc;
@@ -3756,6 +3775,7 @@ public class CookbookRestTest {
     private static ModifyMultiCxfRestInterface multiSvc;
     private static VisitFullCxfRestInterface visitSvc;
     private static ZipFullCxfRestInterface zipSvc;
+    private static TourFullCxfRestInterface tourSvc;
     
     private static Client cityClient;
     private static Client countryClient;
@@ -3763,6 +3783,7 @@ public class CookbookRestTest {
     private static Client multiClient;
     private static Client visitClient;
     private static Client zipClient;
+    private static Client tourClient;
     
     private static CityFullCxfRestInterface cityProtectedSvc;
     private static Client cityProtectedClient;
@@ -3833,6 +3854,13 @@ public class CookbookRestTest {
         zipClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
         zipClient.header("x-authorize-roles", "azzyzt(200-on-error=false);modify()");
         zipClient.header("x-authenticate-userid", "junit");
+        
+        tourSvc = JAXRSClientFactory.create(BASE_URI, TourFullCxfRestInterface.class);
+        tourClient = WebClient.client(tourSvc);
+        tourClient.type(MediaType.APPLICATION_XML);
+        tourClient.accept(MediaType.MEDIA_TYPE_WILDCARD);
+        tourClient.header("x-authorize-roles", "azzyzt(200-on-error=false);modify()");
+        tourClient.header("x-authenticate-userid", "junit");
         
         cityProtectedSvc = JAXRSClientFactory.create(BASE_URI, CityFullCxfRestInterface.class);
         cityProtectedClient = WebClient.client(cityProtectedSvc);
@@ -4097,6 +4125,36 @@ public class CookbookRestTest {
     }
 
     /**
+     * TEST: store Hungary and a tour through the country, delete them in one call
+     * Tests for fix to issue #29
+     */
+    @Test
+    public void testStoreDeleteHungaryAndTour() {
+        
+        List<Dto> languages = languageSvc.all();
+        LanguageDto tourLanguage = (LanguageDto)languages.get(0);
+        
+        List<Dto> dtos = new ArrayList<Dto>();
+
+        CountryDto hungary = new CountryDto();
+        hungary.setId(-1L);
+        hungary.setName(HUNGARY);
+        dtos.add(hungary);
+        
+        TourDto tour = new TourDto();
+        tour.setCountryId(hungary.getId());
+        tour.setLanguageId(tourLanguage.getId());
+        dtos.add(tour);
+        
+        dtos = multiSvc.storeMulti(dtos);
+        
+        dump(dtos);
+
+        String result = multiSvc.deleteMulti(dtos);
+        assertEquals("<result>OK</result>", result);
+    }
+
+    /**
      * TEST: store France, replace it with Egypt, make a visit to Luxor 
      * and clean up
      */
@@ -4348,6 +4406,7 @@ public class CookbookRestTest {
         }
         return result.toString().trim();
     }
+    
 }
 ---
 

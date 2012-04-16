@@ -221,6 +221,17 @@ public class MetaEntityField extends MetaField {
 		return (isCreateTimestampField || isModificationTimestampField) && isStringField();
 	}
 
+	public boolean isApplicableForProxyIdTranslation() {
+		if (!isHoldingAssociationEndpoint()) {
+			return false;
+		}
+		MetaEntity targetEntity = (MetaEntity)associationEndpoint.getTargetEntity();
+		if (targetEntity.isProxyIdPossible()) {
+			return true;
+		}
+		return false;
+	}
+	
 	@Override
 	public int hashCode() {
 		return super.hashCode();
@@ -230,5 +241,5 @@ public class MetaEntityField extends MetaField {
 	public boolean equals(Object obj) {
 		return super.equals(obj);
 	}
-
+	
 }
